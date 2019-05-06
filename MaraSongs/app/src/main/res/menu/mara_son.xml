@@ -1,0 +1,46 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+	<item android:title="@string/menu_func">
+		<menu>
+
+			<item android:id="@+id/menu_item_randumplay"
+				android:title="@string/menu_item_randumplay"
+				/>
+			<item android:id="@+id/menu_item_repeatplay"
+				android:title="@string/menu_item_repeatplay"
+				/>
+			<item android:id="@+id/menu_item_repeatplay_kaijo"
+				android:title="@string/menu_item_repeatplay_kaijo"
+				/>
+			<item android:id="@+id/pref_nitenkan_start_dt"
+				android:title="@string/pref_nitenkan_start_dt"
+				/>
+			<item android:id="@+id/pref_nitenkan_end_dt"
+				android:title="@string/pref_nitenkan_end_dt"
+				/>
+			<item android:id="@+id/menu_item_tone"
+				android:title="@string/menu_item_tone"
+				/>
+			<item android:id="@+id/effect_reverb"
+				android:title="@string/effect_reverb"/>
+<!-- 			<item android:id="@+id/menu_funk_artistmei" -->
+<!-- 				android:title="@string/menu_funk_artistmei" /><item android:id="@+id/comon_sakuseiyotei" android:title="@string/comon_sakuseiyotei" /> -->
+
+		</menu>
+	</item>
+	<item android:title="@string/menu_item_sonota">
+		<menu>
+			<item
+				android:id="@+id/menu_item_sonota_settei"
+				android:title="@string/menu_item_sonota_settei"/>
+			<item
+				android:id="@+id/menu_item_sonota_help"
+				android:title="@string/menu_item_sonota_help"/>
+			<item
+				android:id="@+id/menu_item_sonota_end"
+				android:title="@string/menu_item_sonota_end"/>
+		</menu>
+	</item>
+
+</menu>

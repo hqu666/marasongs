@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pgd_ll"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical"
+    tools:context=".ZenkyokuList" >
+
+  <ScrollView
+      android:id="@+id/pdg_scroll"
+      android:layout_width="300dp"
+      android:layout_height="350dp"
+      android:fillViewport="true" >
+
+    <TextView
+        android:id="@+id/pgd_msg_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="1"
+        android:textAppearance="?android:attr/textAppearanceSmall" >
+
+            </TextView>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="5dp" />
+
+    <LinearLayout
+        android:id="@+id/pgdBar1_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" >
+
+        <TextView
+            android:id="@+id/pgd_par_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1."
+            android:text="100" />
+
+        <TextView
+            android:id="@+id/pgd_val_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="0000" />
+
+        <TextView
+            android:id="@+id/pp_start_tf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/pgd_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:text="0000" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/ProgBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="5dp" />
+
+    <LinearLayout
+        android:id="@+id/pgdBar2_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" >
+
+        <TextView
+            android:id="@+id/pgd_par2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="100" />
+
+        <TextView
+            android:id="@+id/pgd_val2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:text="99" />
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/pgd_max2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="99" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/pgd_finsh_bt"
+        android:layout_width="294dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/menu_item_sonota_end" />
+
+</LinearLayout>

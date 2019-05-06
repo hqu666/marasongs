@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaraSongs</string>
+    <string name="psSarviceUri">.MusicPlayerService</string> <!-- com.hijiyam_koubou.marasongs.PlayerService -->
+    <string name="content_str">com.hijiyam_koubou.marasongs</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3146425308522831/2530772303</string>
+    <string name="banner_ad_unit_id2" translatable="false">ca-app-pub-3146425308522831/9367015102</string>
+<!-- 画面下部 -->
+<!-- <string name="nend_apiKey">69d09f7ffa1c07bf80b8b2b593b5a95d9462abbb</string> -->
+<!-- <string name="nend_spotID">472676</string> -->
+	<string name="nend_apiKey" translatable="false">69d09f7ffa1c07bf80b8b2b593b5a95d9462abbb</string>
+	<string name="nend_spotID" translatable="false">472676</string>
+<!-- 歌詞表示web【MaraSongs】 -->
+<!-- <string name="nend_ly_apiKey">54cc422b3a564b092538ebe5b4776eacadc7432a</string> -->
+<!-- <string name="nend_ly_spotID">542881</string> -->
+	 <string name="nend_ly_apiKey" translatable="false">54cc422b3a564b092538ebe5b4776eacadc7432a</string>
+	<string name="nend_ly_spotID" translatable="false">542881</string>
+<!-- test -->
+<!-- 	<string name="nend_apiKey">c5cb8bc474345961c6e7a9778c947957ed8e1e4f</string> -->
+<!-- 	<string name="nend_spotID">3174</string> -->
+
+    <string name="artist_reW_file">artist_rw.db</string>
+    <string name="artist_reW_table">artist_rw_table</string>
+    <string name="a_WSepalater"> >> </string> <!-- 変更するアーティスト名のセパレータ -->
+    <string name="aaWSepalater"> ;; </string> <!-- 特定アルバムの指定 -->
+    <string name="artist_file">artist.db</string>
+    <string name="artist_table">artist_table</string>
+    <string name="kari_file">kari.db</string>
+    <string name="zenkyoku_file">zenkyoku.db</string>
+    <string name="zenkyoku_table">zenkyoku_table</string>
+    <string name="shyuusei_file">shyuusei.db</string>
+    <string name="shyuusei_table">shyuusei_table</string>
+    <string name="rewind">Rewind</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="skip">Skip</string>
+    <string name="comon_ari">有り</string>
+    <string name="comon_nasi">無し</string>
+    <string name="comon_suru">する</string>
+    <string name="comon_sinai">しない</string>
+   <string name="comon_kyoku">曲</string>
+    <string name="comon_kyokume">曲目</string>
+    <string name="comon_jikkou">実行</string>
+   <string name="comon_sakusei">作成</string>
+   <string name="comon_kousinn">更新</string>
+   <string name="comon_jyunnbi">準備</string>
+   <string name="common_sansyou">参照</string>
+    <string name="common_yomitori">読み込み</string>
+    <string name="comon_zennkyoku_saisei">全曲再生</string>
+    <string name="comon_seisaku">制作</string>
+    <string name="comon_nen">年</string>
+    <string name="comon_ken">件</string>
+    <string name="comon_syorijikann">処理時間</string>
+    <string name="comon_curejitto">クレジットアーティスト</string>
+    <string name="comon_ninyuu">人中</string>
+    <string name="comon_nin">人</string>
+    <string name="comon_kencyuu">件中</string>
+    <string name="comon_kyokucyuu">曲中</string>
+    <string name="comon_keturaku">欠落</string>
+    <string name="comon_keturaku_nasi">欠落無し</string>
+    <string name="comon_syoyoujikan">所要時間</string>
+    <string name="comon_syori">処理</string>
+    <string name="comon_zennkai">前回</string>
+    <string name="comon_kakutei">確定</string>
+    <string name="comon_kakuninn">確認</string>
+    <string name="comon_kaisouka">階層化</string>
+    <string name="comon_syuusei">修正</string>
+    <string name="comon_henkou">変更</string>
+    <string name="comon_sakujyo">削除</string>
+    <string name="comon_cyusi">中止</string>
+    <string name="comon_syorikaisi">処理開始</string>
+    <string name="comon_album">アルバム</string>
+    <string name="comon_saisei_ijyou">が読み込めませんでした。</string>
+    <string name="comon_saisei_ijyou2">元ファイルが破損していたり、セキュリティ制限が行われている場合はご容赦ください。</string>
+    <string name="comon_compilation0">さまざまなアーティスト</string>
+    <string name="comon_compilation">コンピレーション</string>
+    <string name="comon_compilation1">VARIOUS ARTISTS</string>
+    <string name="comon_compilation2">Various Artists</string>
+     <string name="comon_comp_sezu">など</string>
+    <string name="comon_foluda">フォルダー</string>
+    <string name="comon_sakuseicyuu">作成中</string>
+    <string name="comon_karifile">仮ファイル</string>
+    <string name="comon_hukusuu_Artist">複数のアーティストが収録されたアルバム</string>
+    <string name="comon_matome">まとめ</string>
+    <string name="comon_sakuseiyotei">グレーは作成予定</string>
+    <string name="common_kakunincyuu">確認中</string>
+    <string name="jyunbicyuu">準備中</string>
+    <string name="common_syouryaku">省略</string>
+    <string name="common_tuika">追加</string>
+    <string name="comon_konkai">今回</string>
+    <string name="comon_tuginohouji">次の表示は</string>
+    <string name="comon_ni">に</string>
+    <string name="comon_wo_tuika">を追加</string>
+	<string name="comon_simple">シンプル</string>
+	<string name="comon_syousai">詳細</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="n99">99</string>
+    <string name="mm_ss">mm:ss 000</string>
+    <string name="pp_artist">アーティスト</string>
+    <string name="pp_mai">枚</string>
+    <string name="pp_kyoku">曲</string>
+    <string name="pp_zerozrozero">000</string>
+    <string name="pp_keika">経過</string>
+    <string name="pp_msec">[mS]</string>
+    <string name="comon_nuKnow_artist">アーティスト情報なし</string>
+    <string name="comon_nuKnow">不明</string>
+    <string name="comon_nuKnow_album">アルバム情報なし</string>
+    <string name="comon_syuuryousimasuka">終了しますか？</string>
+    <string name="comon_tukau">使う</string>
+    <string name="comon_tukawanai">使わない</string>
+    <string name="common_artist_list">アーティストリスト</string>
+
+    <!-- プレイヤーアクティビティメニュー -->
+    <string name="menu_func">機能</string>
+    <string name="menu_item_randumplay">ランダム再生</string>
+    <string name="menu_item_repeatplay">リピート再生</string>
+    <string name="menu_item_sonota">その他</string>
+    <string name="menu_item_sonota_settei">設定</string>
+    <string name="menu_item_sonota_help">ヘルプ表示</string>
+    <string name="menu_item_sonota_end">終了	</string>
+    <!-- リストアクティビティメニュー -->
+    <string name="menu_list_allveiw">サムネイル付リスト表示</string>
+    <string name="menu_item_plist_a_new">新規プレイリスト</string>
+    <string name="menu_item_plist_rquest">リクエストリスト</string>
+    <string name="menu_item_plist_zenkyoku_kousin">全曲リスト更新</string>
+    <string name="menu_hihyoujiArtist">表示されていないアーティスト</string>
+    <string name="menu_hihyoujiArtist_dt">選択したアーティスト名をそのままリストアップします</string>
+    <string name="menu_syuusei_lisuto_hyouji">修正リスト表示</string>
+    <!-- リストコンテキストメニュー -->
+    <string name="menu_item_plist_saikin_tuika">最近追加リストの更新</string>
+    <string name="menu_item_plist_saikin_tuika_dm">最近追加されたアルバムを何枚抽出するか選択して下さい</string>
+    <string name="menu_item_plist_saikin_sisei">最近再生リストの更新</string>
+
+    <!-- リストアップ調整 -->
+    <string name="list_contex_title">の操作</string>
+    <string name="muqu_dlog_kenwo">件を</string>
+    <string name="sentaku_wo_tudukeru">選択を続ける</string>
+    <string name="list_contex_listup">リストアップ編集</string>
+    <string name="list_contex_add_playlist">プレイリストに追加</string>
+    <string name="list_contex_item_delete">削除</string>
+    <string name="func_listup_titol">を選択したアーティストのアルバムとしてリストアップします</string>
+    <string name="menu_funk_artistmei_msg">の扱い</string>
+    <string name="menu_funk_artistmei1">のまま</string>
+    <string name="menu_funk_artistmei2">他のアーティストに統合する</string>
+    <string name="menu_funk_artistmei2msg">統合先を選択して下さい。</string>
+    <string name="menu_funk_artistmei3">名称修正</string>
+    <string name="menu_funk_artistmeiE">変更リストから削除</string>
+    <string name="menu_funk_artistmei_sentaku">変更メニュー選択</string>
+    <string name="le_ca_name">選択したアーティスト名に書換</string>
+     <string name="func_listup_jyunbi_msg">アーティスト名と作曲者名をリストアップします</string>
+    <string name="shyuuseiKakunit_dt">リストアップ先変更</string>
+    <string name="shyuuseiuListStuusei_dm">リストアップ先</string>
+
+    <!-- プリファレンス -->
+    <string name="pref_player">プレイヤーとリストの基本表示設定</string>
+	<string name="pref_pb_bgc_titol">プレイヤー色</string>
+     <string name="pref_pb_bgc_bk">黒系</string>
+    <string name="pref_pb_bgc_wh">白系</string>
+	<string name="pref_list_simple_title">リスト表示</string>
+	<string name="pref_list_simple_summaryOn">アイテムだけ</string>
+	<string name="pref_list_simple_summaryOff">詳細表示</string>
+    <string name="pref_main_file">main</string>
+    <string name="pref_titol">設定</string>
+    <string name="pref_gyapless">曲間隔時間のカット</string>
+    <string name="pref_gyapless_msg">0 ... 1000[ms] (0=リッピングした状態/1000msで曲間隔無し)</string>
+    <string name="pref_compBunki">コンピレーション設定</string>
+    <string name="pref_compBunki_msg">コンピレーションと判断する曲数[%]はアルバムの</string>
+    <string name="pref_list_artist_simple">アーティストリストの簡易表示</string>
+    <string name="pref_list_simple">シンプルなリスト表示（サムネールなど省略）</string>
+
+    <string name="pref_kisyubetu">機種別調整</string>
+    <string name="pref_notifplayer">ノティフィケーションプレイヤー</string>
+    <string name="pref_lockscreen">ロックスクリーンプレイヤー</string>
+    <string name="pref_bt_renkei_titol"> Bluetooth連携</string>
+	<string name="pref_cyakusinn_fukki">通話連携</string>
+    <string name="pref_bt_renkei_titol0"> Bluetoothの接続に連携して一時停止</string>
+    <string name="pref_bt_renkei_titol1"> Bluetoothの接続に連携して再開</string>
+
+    <string name="pref_titol_plist_saikin_sisei">最近再生リストへの登録設定</string>
+    <string name="pref_msg_plist_saikin_sisei">登録曲数</string>
+    <string name="pref_titol_plist_artist_bunnri">アーティストリストの分離</string>
+    <string name="pref_msg_plist_artist_bunnri">この曲数を超えたらアーティストリストを1画面目、2画面目アルバムとタイトルリストを階層化して読み込みを高速化します。</string>
+    <string name="pref_titol_plist_saikin_tuika">最近追加リストへの登録設定</string>
+    <string name="pref_msg_plist_saikin_tuika">最少アルバム枚数</string>
+    <string name="pref_saisei">レジューム再生情報</string>
+    <string name="pref_saisei_fname">再生中のファイル名</string>
+    <string name="pref_saisei_jikan">再開ポジション</string>
+    <string name="pref_saisei_nagasa">再生時間</string>
+    <string name="pref_zenkai_saiseijikann">前回の連続再生時間</string>
+    <string name="pref_zenkai_saiseikyokusuu">前回の再生曲数</string>
+    <string name="pref_saisei_come1">再開/再生時間</string>
+    <string name="pref_file_music">音楽ファイルの格納状況</string>
+    <string name="pref_file_in">内蔵メモリ</string>
+    <string name="pref_file_ex">メモリーカード</string>
+    <string name="pref_file_saisinn">最新更新日</string>
+    <string name="pref_file_kyoku">総曲数</string>
+    <string name="pref_file_album">総アルバム数</string>
+    <string name="pref_music_dir">再生する音楽ファイルがあるフォルダ</string>
+    <string name="pref_sonota">その他の設定</string>
+    <string name="pref_sonota_apil">APIレベル</string>
+    <string name="pref_sonota_dpad">ダイヤルキーの有無</string>
+    <string name="pref_reset_msg">このダイアログを閉じた時、初期化します。\n(異常動作が収まらない時の処置です。本当に消去して構いませんか？)</string>
+    <string name="pref_sonota_vercord">このアプリのバージョンコード</string>
+    <string name="pref_reset">設定初期化</string>
+    <string name="pref_listup_reset">調整リストのリセット</string>
+    <string name="hhmmss">hh:mm:ss</string>
+
+    <!-- 未使用？ -->
+    <string name="pref_artist_name">リストに表記されているアーティスト名</string>
+    <string name="pref_artist_file">artist_l</string>
+    <string name="end_msg">次回、高速起動の為のデータ保存中です。</string>
+    <string name="pref_file_wr">設定保存フォルダ</string>
+
+     <!-- com.hijiyam_koubou.marasongs.PlayerService -->
+    <!-- 全曲リスト -->
+    <string name="listmei_zemkyoku">全曲リスト</string>
+    <string name="medst_artist_make">アーティストリスト作成中</string>
+    <string name="medst_start">データ確認中</string>
+    <string name="medst_kakunin">メディアストアの欠落データ</string>
+    <string name="medst_syuusei">メディアストアの欠落データ修正</string>
+    <string name="zl_coment_create_kali_list">..アーティスト名からゲスト参加などの付属情報を削除\n..The抜き、大文字でソート</string>
+    <string name="zl_coment_comp_matome">..条件1.トラック番号の重複\n...条件2:アルバム制作年もしくはファイルを更新した日が同じ\n...条件3:設定した比率より別のアーティスト曲が多い</string>
+    <string name="zl_genzai_lisi">リストアップされる</string>
+    <string name="zl_create_zenkyoku_list">..成形したアーティスト名でソート\n..アルバムは年代順に</string>
+    <string name="zl_create_artist_list">..リストアップするアーティスト名毎の集計\n..コンピレーションなどはリストの末尾に</string>
+    <string name="medST_kekkka">MediaStore.Audioの更新結果</string>
+    <string name="medst_kousin_kakuninn">音楽ファイルの更新を確認</string>
+    <string name="medst_kousin_sinn">更新日付の新しいファイルがあります。</string>
+    <string name="fie_albam_artist_name">（リストアップする）アーティスト名</string>
+    <string name="fie_credit_artist_name">（アルバムに表記されている）アーティスト名</string>
+    <string name="fie_albam_name">アルバム名</string>
+    <string name="fie_year">(制作もしくは録音)年</string>
+    <string name="fie_taisyou_folder">対象フォルダ</string>
+    <string name="fie_taisyou_titol">タイトル</string>
+    <string name="fie_taisyou_track">トラック</string>
+    <string name="fie_sousa_tisyou">操作対象</string>
+    <string name="artist_tuika01">コンピレーション</string>
+    <string name="artist_tuika02">サウンドトラック</string>
+    <string name="artist_tuika03">クラシック</string>
+    <string name="saisinnFileKakuninn_f_titol">音楽ファイルを確認できません</string>
+    <string name="setteriYomikomi_data_meg">前回再生していた音楽ファイルが見つかりません。\n再生する曲を選択して下さい。</string>
+    <string name="saisinnFileKakuninn_f_meg">この端末に再生できる音楽ファイルが見つかりません。\nメモリーカードの装着や音楽ファイルの有無を確認してください</string>
+    <string name="saisinnFileKakuninn_f_btn">一旦終了</string>
+    <string name="zenkyoku_end_msg">お待たせしました。</string>
+    <string name="jyoukyouBunki_file_m">音楽ファイルに変更がある様です。全曲リストを作り直してもよろしいですか？\n
+	     			１～２分かかります。今お時間が無ければ"しない"でアプリを一旦終了します。</string>
+    <string name="medst_zebkyoku_make">全曲リスト作成中</string>
+    <string name="medst_jyuuhuku_make">ゲストやコンピレーションの処理</string>
+    <string name="data_lad">データ読み込み中</string>
+    <string name="activity_sample_device_admin">activity_sample_device_admin</string>
+
+    <!-- Bluetooth -->
+    <string name="bt_msg10">BluetoothがOffになっています。</string>
+    <string name="bt_msg11">がもうすぐ使えるようになりますが、STATE_ON メッセージが来るまでは実際に使うことはできません。</string>
+    <string name="bt_msg12">Bluetoothは使用可能です";</string>
+    <string name="bt_msg13">がもうすぐ使えなくなります。ただちに現在の Bluetooth 接続の後処理をして下さい。</string>
+    <string name="bt_msg20"> 問い合わせスキャン無効/呼び出しスキャン有効</string>
+    <string name="bt_msg21">  問い合わせ/スキャンが共に有効</string>
+    <string name="bt_msg23"> は問い合わせ/呼び出しスキャン有効</string>
+    <string name="bt_connected"> 接続済み</string>
+    <string name="bt_connecting"> 接続処理中</string>
+    <string name="bt_discnnected"> 切断</string>
+    <string name="bt_discnnecting"> 切断処理中</string>
+    <string name="bt_not_playing"> 一時停止</string>
+    <string name="bt_playing">再生中</string>
+    <string name="bt_unknown">不明</string>
+    <string name="sample_device_admin">refers to the user-readable label for the permission.</string>
+    <string name="sample_device_admin_description">refers to the user-readable description of the permission. A descripton is typically longer and more informative than a label.</string>
+        <string name="setvol_titol">音量設定</string>
+        <string name="comon_closs_dlog">戻るボタンでダイアログを閉じる</string>
+    <string name="saisinnVerKakuninn_titol">ご利用ありがとうございます。</string>
+    <string name="saisinnVerKakuninn_meg">再生可能な音楽ファイルの情報を集めますので少々お時間を頂けませんか？\n
+					お時間が無ければ起動を中断します。"一旦終了"を選択して下さい。</string>
+
+    <!-- プレイリスト -->
+    <string name="playlist_namae_saikinsisei">最近再生した曲</string>
+   <string name="playlist_namae_saikintuika">最近追加したアルバム</string>
+    <string name="comon_kara">から</string>
+    <string name="pref_playlist">プレイリスト</string>
+    <string name="pl_nasi_meg">ご指定のプレイリストは曲が登録されていないか、読み込めませんでした。</string>
+    <string name="list_contex_make_playlist">新規リストを作成して追加</string>
+    <string name="list_contex_rem_playlist">このリストから削除</string>
+    <string name="list_contex_oc_playlist">上下移動</string>
+    <string name="list_contex_del_playlist">リストを削除</string>
+    <string name="list_contex_rename_playlist">リスト名変更</string>
+    <string name="renameplaylist_titol">名称を変更するリストを選択して下さい。</string>
+    <string name="make_playlist_msg">リストの名称を設定してください。</string>
+    <string name="add_playlist_msg">追加する曲名</string>
+    <string name="make_playlist_msg_f">作成できませんでした。</string>
+    <string name="make_playlist_tuika_msg_f">追加できませんでした。</string>
+    <string name="add_playlist_titol">追加先のリスト</string>
+    <string name="playlist_del_line_titol1">削除するリストを選択して下さい。</string>
+    <string name="playlist_del_line_titol">削除しますか？</string>
+    <string name="playlist_idou_titol">選択する曲の前、もしくは次に移動します。</string>
+   <string name="playlist_idou_ue">前に</string>
+    <string name="playlist_idou_sita">次に</string>
+    <string name="playlist_namehennkou_dt">プレイリストの名前を変更</string>
+     <string name="large_text">Large Text</string>
+    <string name="jyoukyouBunki_list_t">プレイリストを選択して下さい。</string>
+    <string name="jyoukyouBunki_list_m">（初めてのご利用か）前回利用したリストが読み込めませんでした。</string>
+    <string name="jyoukyouBunki_titol_t">選曲して下さい。</string>
+    <string name="jyoukyouBunki_titol_m">（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
+    <string name="jyoukyouBunki_file_m2">再生できるプレイリストが見つかりません。全曲リストを作成させて下さい。</string>
+    <string name="jyoukyouBunki_titol_m2">プレイリストから再生する曲を選択して下さい。</string>
+    <string name="medst_album_artist_syuusei">アルバム情報のアーティスト名を修正</string>
+    <string name="menu_item_plist_saikin_saisei_dm">指定曲数に調整しています。</string>
+    <string name="menu_item_plist_saikin_saisei_dm0">重複削除</string>
+    <string name="jyoukyouBunki_file_t">全曲リストを更新します</string>
+    <string name="menu_list_simple">シンプル表示に切替</string>
+    <string name="menu_list_syousai">詳細表示に切替</string>
+    <string name="syokairiyou_dt">全曲リストを作成作成させ下さい。</string>
+    <string name="syokairiyou_dm">１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n今お時間が無ければ"しない"で作成を中断してこの端末にあるプレイリストを選択して下さい。</string>
+
+    <string name="playlist_namae_randam">ランダム再生</string>
+    <string name="menu_item_plist_randam_dm">ランダム再生準備</string>
+    <string name="menu_item_plist_randam_dm0">最近再生した曲を確認しています。</string>
+	<string name="common_kakikomi">書込み</string>
+    <string name="menu_item_plist_randam_dm1">乱数生成</string>
+    <string name="pref_rundam_list_size">ランダム再生の設定曲数</string>
+    <string name="pref_rundam_list_size_dm">ランダム再生用にリストアップする曲数を設定してください。</string>
+   <string name="pref_nitenkan">二点間再生中</string>
+   <string name="pref_nitenkan_start">開始</string>
+  <string name="pref_nitenkan_start_dt">二点間再生開始点</string>
+  <string name="pref_nitenkan_start_dm">二点間再生を開始するポイント[mm:ss 000]</string>
+  <string name="pref_nitenkan_end">終了</string>
+  <string name="pref_nitenkan_end_dt">二点間再生終了点</string>
+  <string name="pref_nitenkan_end_dm">二点間再生を終了するポイント[mm:ss 000]</string>
+
+   <string name="repeate_dt">リピート設定</string>
+   <string name="repeate_dt_nitenkan">textview</string>
+    <string name="menu_item_repeatplay_kaijo">二点間再生解除</string>
+    <string name="comon_kaisi">開始</string>
+    <string name="comon_syuuryou">終了</string>
+    <string name="playlist_namae_repeat">リピート再生</string>
+   <string name="menu_item_plist_saikin_saisei_dt">最近再生された楽曲</string>
+
+    <string name="playlist_namae_request">リクエスト</string>
+    <string name="list_contex_add_request">リクエスト</string>
+    <string name="cb_text_request_sugu">すぐ再生\n(チェックしなければ現在再生中の曲の次に再生します)</string>
+    <string name="request_msg">リクエスト用のプレイリストに追加します。</string>
+    <string name="menu_list_request_reset">リクエストリセット</string>
+	<string name="menu_item_tone">音質調整</string>
+	<string name="comon_hz">Hz</string>
+	<string name="tone_level_nom">合計レベル調整</string>
+	<string name="tone_name_flat">フラット</string>
+	<string name="tone_name_hi_up">高域強調</string>
+	<string name="tone_name_mid_up">中域強調</string>
+	<string name="tone_name_low_up">低域強調</string>
+	<string name="tone_name_hilow_up">高低域強調</string>
+	<string name="tone_name_puri">現在の設定</string>
+	<string name="tone_level_sum">レベル合計</string>
+	<string name="comon_genzai">現在の設定</string>
+	<string name="effect_bassbost">BassBoost</string>
+	<string name="effect_reverb">リバーブ</string>
+	<string name="reverb_none">解除</string>
+	<string name="reverb_small_room">Small Room</string>
+	<string name="reverb_medium_room">Medium Room</string>
+	<string name="reverb_large_room">Large Room</string>
+	<string name="reverb_medium_hall">Medium Hall</string>
+	<string name="reverb_large_hall">Large Hall</string>
+	<string name="reverb_plate">Plate</string>
+	<string name="pref_effect">サウンドエフェクト</string>
+	<string name="pref_effect_vi">ビジュアライザー</string>
+	<string name="pref_effect_vi_wave">オシロスコープ風</string>
+	<string name="pref_effect_vi_fft">スペクトラムアナライザ風</string>
+
+	<string name="lyric_nasi">この曲は歌詞が設定されていないか、読み込めませんでした。</string>
+	<string name="yomikomi_hunou">この曲はタグ情報を読み込めませんでした。</string>
+	<string name="tag_nasi">この曲にはタグ情報が設定されていません。</string>
+	<string name="tag_ver">この曲に設定されているタグ</string>
+	<string name="tag_prog_titol1">タグ情報</string>
+	<string name="tag_prog_msg1">歌詞を探しています。</string>
+	<string name="tag_prog_msg2">その他の書き込みを検索しています。</string>
+	<string name="comon_file">ファイル</string>
+	<string name="lylic_contex_title">歌詞表示の操作</string>
+	<string name="lylic_contex_lylic2web">拡大表示</string>
+	<string name="lylic_contex_encord">再エンコード</string>
+	<string name="lylic_contex_reload">歌詞の再読み込み</string>
+
+    				<!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=30] -->
+	<!--<string name="permlab_sdcardRead" product="nosdcard">test access to protected storage</string>-->
+	<!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+	<string name="permlab_sdcardRead" product="default">test access to protected storage</string>
+	<!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=30] -->
+	<!--<string name="permdesc_sdcardRead" product="nosdcard">Allows the app to test a permission for USB storage that will be availabe on future devices. </string>-->
+	<!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+	<string name="permdesc_sdcardRead" product="default">Allows the app to test a permission for the SD card that will be available on future devices.</string>
+	<string name="tag_fn_tpe2">アーティスト</string>
+	<string name="tag_fn_tcom">作曲者</string>
+	<string name="tag_fn_tyer">年/レコーディング年</string><!-- 年*15	Date*16	 Deprecated -->
+	<string name="tag_fn_talb">アルバム</string>
+	<string name="tag_fn_trak">トラックの番号</string><!-- Track Number	Track# -->
+	<string name="tag_fn_tit2">タイトル</string><!-- Track Title	Title -->
+	<string name="tag_fn_tdat">日付</string><!-- Date*11	Date*12	Year*13 Deprecated -->
+	<string name="tag_fn_tcon">ジャンル</string>
+	<string name="tag_fn_tcop">著作権情報</string>
+	<string name="tag_fn_tenc">エンコーディング ソフトウェア</string><!--<ENCODED BY>	Encoder -->
+	<string name="tag_fn_text">作詞家/文書作成者</string><!-- LYRICIST>	Lyricist -->
+	<string name="tag_fn_tpe1">主な演奏者</string><!-- 	Artist Name	Artist -->
+	<string name="tag_fn_tpe3">指揮者</string><!-- CONDUCTOR>	Conductor -->
+	<string name="tag_fn_tmoo">ムード</string><!-- 	<MOOD>	Mood -->
+	<string name="tag_fn_tpe4">翻訳者, リミックス, その他の修正</string><!-- ModifiedBy>	<REMIXED BY>	Mix Artist, Artists: Remixer -->
+	<string name="tag_fn_tpub">出版社/発行元</string><!--PUBLISHER>	Publisher -->
+	<string name="tag_fn_tpos">ディスク番号</string><!-- Disc Number	Disc -->
+	<string name="tag_fn_pppm">人気メーター</string><!--Popularimeter -->
+	<string name="tag_fn_comm">コメント</string><!--Private frame -->
+	<string name="tag_fn_priv">プライベートフレーム</string><!--Private frame -->
+	<string name="tag_fn_txxx">ユーザー定義文字情報フレーム</string>
+	<string name="tag_fn_ufid">一意的なファイル識別子/タグID</string>
+	<string name="tag_fn_apic">付属する画像</string><!--Attached picture -->
+	<string name="tag_fn_aenc">オーディオの暗号化</string><!--Audio encryption -->
+	<string name="tag_fn_oomr">コマーシャルフレーム</string><!--Commercial frame -->
+	<string name="tag_fn_encr">均一化/暗号化の手法の登録</string><!--Encryption method registration -->
+	<string name="tag_fn_equa">音質調整</string><!--Equalization -->
+	<string name="tag_fn_etco">イベントタイムコード</string><!-- Event timing codes] -->
+	<string name="tag_fn_geob">パッケージ化された一般的なオブジェクト</string><!--General encapsulated object] -->
+	<string name="tag_fn_grid">グループ識別子の登録</string><!--Group identification registration] -->
+	<string name="tag_fn_ipls">協力者一覧</string><!-- people list] -->
+	<string name="tag_fn_link">リンク情報</string><!--Linked information] -->
+	<string name="tag_fn_mcdi">音楽ＣＤ識別子</string><!--Music CD identifier -->
+	<string name="tag_fn_mllt">MPEGロケーションルックアップテーブル</string><!-- MPEG location lookup table] -->
+	<string name="tag_fn_owne">所有権フレーム</string><!--Ownership frame] -->
+	<string name="tag_fn_pcnt">演奏回数</string><!--Play counter] -->
+	<string name="tag_fn_poss">同期位置フレーム</string><!--Position synchronisation frame] -->
+	<string name="tag_fn_rbuf">推奨バッファサイズ</string><!--Recommended buffer size] -->
+	<string name="tag_fn_rvad">相対的ボリューム調整</string><!--Relative volume adjustment] -->
+	<string name="tag_fn_sytc">同期 テンポコード</string><!--Synchronized tempo codes -->
+	<string name="tag_fn_tbpm">一分間の拍数</string><!-- BPM (beats per minute) -->
+	<string name="tag_fn_tdly">プレイリスト遅延時間</string><!--Playlist delay -->
+	<string name="tag_fn_tflt">ファイルタイプ</string><!-- File type	判別文字 -->
+	<string name="tag_fn_time">時間</string><!-- Time Deprecated -->
+	<string name="tag_fn_tit1">内容の属するグループの説明</string><!--	Content group description -->
+	<string name="tag_fn_tit3">サブタイトル/説明の追加情報</string><!-- 	Subtitle/Description refinement -->
+	<string name="tag_fn_tkey">初めの調</string><!-- Initial key -->
+	<string name="tag_fn_tlan">言語</string><!--  	Language(s)] -->
+	<string name="tag_fn_tlen">長さ</string><!--	Length] -->
+	<string name="tag_fn_tmed">メディアタイプ</string><!-- Media type	判別文字 -->
+	<string name="tag_fn_toal">オリジナルのアルバムタイトル</string><!-- Original album/movie/show title -->
+	<string name="tag_fn_tofn">オリジナルファイル名</string><!-- Original filename] -->
+	<string name="tag_fn_tope">オリジナルアーティスト/演奏者</string><!-- Original artist(s)/performer(s)	 Deprecated -->
+	<string name="tag_fn_tory">オリジナルのリリース年</string><!-- Original release year -->
+	<string name="tag_fn_trda">録音日付</string><!-- 	Recording dates	Deprecated -->
+	<string name="tag_fn_trsn">インターネットラジオ局の名前</string><!-- 		Internet radio station name -->
+	<string name="tag_fn_trso">インターネットラジオ局の所有者</string><!-- Internet radio station owner -->
+	<string name="tag_fn_tsiz">サイズ</string><!-- Size	 Deprecated -->
+	<string name="tag_fn_tsrc">国際標準レコーディングコード</string><!--SRC (international standard recording code)（12文字） -->
+	<string name="tag_fn_tsse">エンコードに使用したソフトウエア/ハードウエアとセッティング</string><!-- Software/Hardware and settings used for encoding -->
+	<string name="tag_fn_wcom">商業上の情報</string><!-- Commercial information] -->
+	<string name="tag_fn_wcop">著作権/法的情報</string><!--	Copyright/Legal information -->
+	<string name="tag_fn_wcaf">オーディオファイルの公式Webページ</string><!--Official audio file webpage -->
+	<string name="tag_fn_woar">アーティスト/演奏者の公式Webページ</string><!--Official artist/performer webpage -->
+	<string name="tag_fn_woas">音源の公式Webページ</string><!--Official audio source webpage -->
+	<string name="tag_fn_wors">インターネットラジオ局の公式ホームページ</string><!--Official internet radio station homepage -->
+	<string name="tag_fn_wpay">支払い</string>
+	<string name="tag_fn_wpub">出版社の公式Webページ</string><!--Publishers official webpage -->
+	<string name="tag_fn_wxxx">ユーザー定義URLリンクフレーム</string><!--User defined URL link frame -->
+	<string name="tag_fn_user">使用条件</string><!--Terms of use -->
+	<string name="tag_fn_toly">オリジナルの作詞家/文書作成者</string><!--  Original lyricist(s)/text writer(s)] -->
+	<string name="tag_fn_rvrb">リバーブ</string><!--Reverb -->
+	<string name="tag_fn_town">ファイルの所有者/ライセンシー</string><!-- File owner/licensee -->
+	<string name="tag_fn_woaf">オーディオファイルの公式Webページ</string><!--Official audio file webpage -->
+	<string name="tag_fn_uslt">非同期 歌詞/文書のコピー</string><!--UNSYNCED LYRICS -->
+	<string name="tag_fn_sylt">同期 歌詞/文書</string><!--SYNCED LYRICS -->
+<!-- 	<string name="enc_iso88591">ISO-8859-1</string> -->
+<!-- 	<string name="enc_utf16">UTF-16</string> -->
+<!-- 	<string name="enc_utf8">UTF-8</string> -->
+<!-- 	<string name="enc_euc_jp">EUC_JP</string> -->
+<!-- 	<string name="enc_shift_jis">Shift_JIS</string> -->
+<!-- 			EUC_JP		ISO-8859-1	SJIS -->
+	<string name="tag_wma_ume">が埋め込まれたwma</string>
+	<string name="common_sousa">操作</string>
+	<string name="wk_menu_zu">ズームアップ</string>
+	<string name="wk_menu_zd">ズームダウン</string>
+	<string name="wk_menu_for">1ページ進む</string>
+	<string name="wk_menu_bck">1ページ戻る</string>
+	<string name="wk_menu_end">表示終了</string>
+	 <string name="lib_name">RemoteControllerImplV21</string>
+
+<!-- 変更 -->
+<!-- 追加 -->
+   <string name="pref_repeet_hukki">解除後の復帰先</string>
+    <string name="pref_henkou_titol">設定変更</string>
+   <string name="pref_henkou_msg">次に起動した時に変更が反映されます。</string>
+	<string name="comon_saikidou">再起動</string>
+	<string name="comon_atode">後で</string>
+
+<!-- 未使用 -->
+
+    <string name="menu_sonota_settei_syoukyo">設定消去</string>
+    <string name="menu_item_sonota_settei_syoukyo">設定消去</string>
+    <string name="menu_item_plist_usb">USBメモリー</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="content_db_str">com.hijiyama_koubou.marasongs.muqu.mqlist</string>
+    <string name="menu_settings">Settings</string>
+    <string name="saveMQName">muQue.db</string>
+    <string name="menu_item_plist">プレイリスト</string>
+    <string name="menu_item_plist_script">プレイリストなどの選択処理</string>
+    <string name="menu_item_plist_script_sub">再生するリストや操作を選択してください。</string>
+    <string name="menu_item_plist_in_mc">内部メモリーとメモリーカード</string>
+    <string name="pref_taisyou_type">再生する音楽ファイルの種類（拡張子指定）</string>
+    <string name="pref_titol_sonota_kikikousei">機器構成</string>
+    <string name="pref_bt_name">前回接続していたBluetooth機器名</string>
+    <string name="pref_mac_address">MACアドレス（機器固有番号）</string>
+    <string name="ptext_retbt_listhe">リストに戻る</string>
+    <string name="muqu_dlog_titol">リスト作成</string>
+    <string name="muqu_dlog_titol_in_mc">内部メモリーとメモリーカードの音楽ファイルから</string>
+    <string name="muqu_dlog_MediaStore_yomikomi">MediaStoreを読み込み</string>
+    <string name="muqu_dlog_m2db">SQLiteへ転記</string>
+    <string name="muqu_dlog_Stepend_byoude">m秒</string>
+    <string name="muqu_dlog_addRealFN">実データー確認</string>
+    <string name="menu_item_plist_in_mc_start_msg">から全曲リストを作成します。数分かかりますが大丈夫ですか？</string>
+    <string name="btnf_yattekure">やってくれ</string>
+    <string name="btnf_dameda">ダメだ</string>
+    <string name="todo" translatable="false">TODO</string>
+    <string name="handle">Handle</string>
+    <!--<string name="_" translatable="false">/</string>-->
+	<string name="srash" translatable="false">/</string>
+	<string name="n99_" translatable="false">99;</string>
+    <string name="textview" translatable="false">TextView</string>
+    <string name="menu_funk_artistmei">情報編集</string>
+    <string name="comon_tone_high">高域</string>
+    <string name="comon_tone_mid">中域</string>
+	<string name="comon_tone_low">低域</string>
+    <string name="comon_tone_high_level">高域レベル</string>
+
+</resources>

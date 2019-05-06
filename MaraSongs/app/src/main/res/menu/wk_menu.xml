@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+<item android:title="@string/common_sousa">			<!-- 	操作</string> -->
+		<menu>
+
+			<item android:id="@+id/wk_menu_zu"
+				android:title="@string/wk_menu_zu"
+				/><!-- 	//ズームアップ"; -->
+			<item android:id="@+id/wk_menu_zd"
+				android:title="@string/wk_menu_zd"
+				/><!-- 	ズームダウン -->
+			<item android:id="@+id/wk_menu_for"
+				android:title="@string/wk_menu_for"
+				/><!-- 	1ページ進む -->
+			<item android:id="@+id/wk_menu_bck"
+				android:title="@string/wk_menu_bck"
+				/><!-- 	1ページ戻る -->
+			<item android:id="@+id/wk_menu_end"
+				android:title="@string/wk_menu_end"
+				/><!-- 	終了 -->
+		</menu>
+	</item>
+
+</menu>

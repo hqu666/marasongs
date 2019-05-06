@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translate
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="500"
+    android:fromXDelta="-100%p"
+    android:toXDelta="0%p"
+    android:fromYDelta="0%p"
+    android:toYDelta="0%p">
+</translate>
+
+<!-- http://epian-wiki.appspot.com/wiki/Memo/20111018132343/Android%20ViewFlipper%E3%81%AE%E3%83%9A%E3%83%BC%E3%82%B8%E7%A7%BB%E5%8B%95%E3%82%92%E3%83%95%E3%83%AA%E3%83%83%E3%82%AF%E3%81%A7%E8%A1%8C%E3%81%86 -->

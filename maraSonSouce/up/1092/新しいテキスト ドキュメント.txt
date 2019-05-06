@@ -1,0 +1,20 @@
+1.0.92; November 25, 2015ÅGAbnormal movement measures 
+1.Measures of the phenomenon that a title of a musical composition is not displayed when I start reproduction before the indication of the player is over 
+2.Reading and the reproduction of a file copied right under an SD card.
+ *If there is tag information including the MP3, I read an artist name and an album name from there.
+ *When there is not tag information, "there is no artist information" and displays it when "there is no album information".
+ (there is the model that a name indicating the memory card is displayed.)
+ *Because it is a measure to lose a file not to be able to read, it is basic
+ Please manage the music file at the hierarchy called the /Music/ artist name / album excellent / musical piece file.  
+3.Reproduction / stop state reshuffling of Notification player. 
+(an appearance is troublesome, but the one that let you paint pictures again seems to be certain.)
+4.When they tapped a - key returning by a list, all songs list a list of albums, album lists if it is a list of music,
+ If a reproduction candidate is set in a list of all songs, to a player screen, I display end choice if a reproduction candidate is unestablished. 
+
+
+1.0.9 ; September 27, 2015
+*Silence / volume change button addition
+*Abnormal stop measures
+    1)I review the management method of the service that contained a reproduction engine.
+    2)Error processing reinforcement when I failed to read album art
+    3)The phenomenon that a bar to seek when it started again without being able to finish being finished works intensely

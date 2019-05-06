@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fie_sousa_tisyou"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+<RadioGroup
+    android:id="@+id/fe_sousa_taisyou"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RadioButton
+        android:id="@+id/fie_sousa_taisyou_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pp_artist" >
+
+        </RadioButton>
+
+    <RadioButton
+        android:id="@+id/fie_sousa_taisyou_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/comon_album" >
+
+        </RadioButton>
+    <RadioButton
+        android:id="@+id/fie_sousa_taisyou_kyoku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pp_kyoku" >
+
+        </RadioButton>
+</RadioGroup>
+    <TextView
+        android:id="@+id/pgd_msg_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fie_albam_artist_name"       android:textAppearance="?android:attr/textAppearanceSmall" />
+
+<!--     <Spinner -->
+<!--         android:id="@+id/fie_albam_artist_name_sp" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="wrap_content" /> -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/fie_albam_artist_name_et"
+            android:layout_width="289dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/fie_albam_artist_list_bt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_more" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/pp_start_tf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fie_credit_artist_name"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/fie_credit_artist_name_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/fie_albam_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fie_albam_name"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/fie_albam_name_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:singleLine="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/fie_year_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fie_year"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/fie_year_et"
+            android:layout_width="176dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:singleLine="true" >
+
+        </EditText>
+
+        <TextView
+            android:id="@+id/fie_nen_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:text="@string/comon_nen"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fie_titol_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fie_taisyou_titol"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/fie_taisyou_track"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.08"
+            android:ems="10"
+            android:singleLine="true" >
+
+        </EditText>
+
+        <EditText
+            android:id="@+id/fie_taisyou_titol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:singleLine="true" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewm5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fie_taisyou_folder"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/fie_taisyou_folder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/fie_nega_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="@string/comon_cyusi" />
+
+        <Button
+            android:id="@+id/fie_kakuninn_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.37"
+            android:text="@string/comon_kakuninn" />
+
+        <Button
+            android:id="@+id/fie_posi_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="@string/comon_kakutei" />
+    </LinearLayout>
+
+</LinearLayout>

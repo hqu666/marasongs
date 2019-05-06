@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string-array name="artist_tuika">
+		<item>@string/artist_tuika01</item>				<!-- コンピレーション -->
+		<item>@string/artist_tuika02</item>				<!-- サウンドトラック -->
+	</string-array>
+
+	<string-array name="tone_names">
+		<item>@string/tone_name_flat</item>				<!-- フラット -->
+		<item>@string/tone_name_hi_up</item>			<!-- 高域強調 -->
+		<item>@string/tone_name_mid_up</item>			<!-- 中域強調 -->
+		<item>@string/tone_name_low_up</item>			<!-- 低域強調 -->
+		<item>@string/tone_name_hilow_up</item>			<!-- 高低域強調 -->
+		<item>@string/tone_name_puri</item>				<!-- 現在の設定 -->
+	</string-array>
+
+	<string-array name="effect_rev">
+		<item>@string/reverb_none</item>				<!-- 解除 -->
+		<item>@string/reverb_small_room</item>			<!-- Small Room -->
+		<item>@string/reverb_medium_room</item>			<!-- Medium Room -->
+		<item>@string/reverb_large_room</item>			<!-- Large Room -->
+		<item>@string/reverb_medium_hall</item>			<!-- Medium Hall -->
+		<item>@string/reverb_large_hall</item>			<!-- Large Hall -->
+		<item>@string/reverb_plate</item>				<!-- Plate -->
+	</string-array>
+
+	<string-array name="effect_vi">
+		<item>@string/pref_effect_vi_wave</item>		<!-- オシロスコープ風 -->
+		<item>@string/pref_effect_vi_fft</item>			<!-- スペクトラムアナライザ風 -->
+		<item>@string/comon_tukawanai</item>			<!-- 使わない -->
+	</string-array>
+
+
+</resources>

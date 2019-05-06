@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item android:title="@string/menu_item_sonota">
+		<menu>
+			<item android:id="@+id/menu_item_sonota_help" android:title="@string/menu_item_sonota_help" />
+			
+			<item
+				android:id="@+id/menu_item_sonota_end"
+				android:title="@string/menu_item_sonota_end"/>
+		</menu>
+	</item>
+
+</menu>

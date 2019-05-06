@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+		  xmlns:tools="http://schemas.android.com/tools"
+		  package="com.hijiyam_koubou.marasongs"
+    android:versionCode="9341247"
+    android:versionName="1.2.47" >
+
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET"/>
+
+	<uses-permission android:name="android.permission.BLUETOOTH"/>
+	<uses-feature android:name="android.hardware.bluetooth"
+				  android:required="true" /><!-- リモコン操作 -->
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+	<!-- ビジュアライザー -->
+	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/><!-- BluetoothA2dpの取得も兼ねる -->
+	<!-- 未使用 -->
+<!-- 		<uses-permission android:name="android.permission.GET_TASKS" /> -->
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<!--20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt;-->
+	<permission android:name="android.permission.MEDIA_CONTENT_CONTROL" /><!-- ノティフィケーションプレイヤー -->
+
+	<application
+		android:icon="@drawable/ic_launcher"
+		android:label="@string/app_name" android:largeHeap="true"
+		android:allowTaskReparenting="true"
+		android:usesCleartextTraffic="true"
+		android:theme="@style/Theme.AppCompat"
+		tools:ignore="GoogleAppIndexingWarning">
+		<meta-data
+			android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+			android:value="true"/>
+		<!--   ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
+		<meta-data-->
+		<!--android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+		<!--android:value="@string/banner_ad_unit_id"/>-->
+			<meta-data android:name="com.google.android.gms.version"
+				android:value="@integer/google_play_services_version"/>
+			<meta-data android:name="NendDebuggable"
+				android:value="false" />
+	    <activity android:name=".MuList"
+            android:screenOrientation="portrait" android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+		<activity android:name=".MaraSonActivity"
+				  android:screenOrientation="portrait"
+				  android:label="@string/app_name"
+				  android:theme="@style/AppTheme">
+			<meta-data
+				android:name="com.google.android.gms.ads.APPLICATION_ID"
+				android:value="@string/banner_ad_unit_id"/>
+
+        </activity>
+        <receiver android:name=".MusicPlayerReceiver" >
+            <intent-filter>
+                <!-- action android:name="android.media.AUDIO_BECOMING_NOISY" /> -->
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".MusicPlayerService" >
+            <intent-filter>
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" />
+			</intent-filter>
+        </service>
+
+        <receiver android:name="BuletoohtReceiver">
+            <intent-filter>
+                <action android:name="android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED" />
+	            <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+	            <action android:name="android.bluetooth.device.action.FOUND" />
+	            <action android:name="android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED" />
+	            <action android:name="android.bluetoothA2dp.action.PLAYING_STATE_CHANGED" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+	            <action android:name="android.intent.action.MEDIA_BUTTON" />								<!-- 操作ボタン対応？ -->
+				<action android:name="android.intent.action.PACKAGE_ADDED" android:priority="200"/>
+			</intent-filter>
+      </receiver>
+
+        <receiver android:name="lsRecever"
+			android:label="@string/sample_device_admin"
+			android:description="@string/sample_device_admin_description"
+			android:permission="android.permission.BIND_DEVICE_ADMIN">
+			<meta-data
+				android:name="android.app.device_admin"
+				android:resource="@xml/ls_resource"/>
+			<intent-filter>
+				<action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+			</intent-filter>
+		</receiver>
+        <service android:name=".NotifRecever" />
+        <activity android:name="ZenkyokuList" android:theme="@android:style/Theme.Dialog" android:multiprocess="true">
+		</activity>
+		<activity android:name=".CreditNameHensyuu" />
+		<activity android:name=".MyPreferences" android:screenOrientation="portrait">
+		</activity><activity android:name="wKit"></activity>
+
+		<activity android:name="com.google.android.gms.ads.AdActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+			android:theme="@android:style/Theme.Translucent"
+			/>
+		<activity android:name="TagBrows"
+		    android:theme="@style/Theme.TranslucentBackground" >
+
+		</activity>
+		</application>
+
+</manifest>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/wk_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
+    </android.support.v7.widget.Toolbar>
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/wk_bottm_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="0dp"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/wk_rew_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/rewbtn" />
+
+        <ImageButton
+            android:id="@+id/wk_pp_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_weight="1"
+            android:src="@drawable/pouse40" />
+
+        <LinearLayout
+            android:id="@+id/wk_koukoku_ll"
+            android:layout_width="238dp"
+            android:layout_height="40dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/wk_koukou_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:clickable="true"
+                android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/wk_ad_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                    </LinearLayout>
+
+                <net.nend.android.NendAdView
+                    android:id="@+id/wk_nend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="0dp"
+                    NendAdjustSize="true"
+                    NendApiKey="@string/nend_ly_apiKey"
+                    NendSpotId="@string/nend_ly_spotID" >
+
+                </net.nend.android.NendAdView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/wk_ff_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:src="@drawable/ffbtn" />
+
+    </LinearLayout>
+	<!--
+		    android:layout_height="50dp"
+		    NendApiKey="@string/nend_apiKey"
+		    NendSpotId="@string/nend_spotID"
+歌詞表示web【MaraSongs】
+		    NendApiKey="54cc422b3a564b092538ebe5b4776eacadc7432a"
+		    NendSpotId="542881"
+Test
+		    NendApiKey="c5cb8bc474345961c6e7a9778c947957ed8e1e4f"
+		    NendSpotId="3174"
+ /> -->
+
+</LinearLayout>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>How to use "MaraSongs"</title>
+		<link rel="stylesheet" href="css/reset.css">
+	</head>
+	<body>
+		<table style="width: 400px; height: 85px">
+			<tr valign="top"><!--   align="left" style="width: 380px; " -->
+				<td style="width: 85px; height: 70px">
+				<img src="../img/ic_launcher.png" alt="Moji kara" width="80" height="80" ></td>
+				<!-- align="left" style="margin-top:0px;　margin-bottom:0px;　margin-left:0px;　margin-right:0px　;
+						padding-top:0px;　padding-bottom:0px;　padding-left:0px;　padding-right:0px; " -->
+				<td style="width: 446px; ">		<!--  style="width: 238px; height: 90px" -->
+					<H1><small><small><small>The music player ,it can revitalize all songs</small></small></small><br>
+							MaraSongs</H1>
+				</td>
+			</tr></table>
+		<h2>This application</h2>
+		MaraSongs is the music player who all songs are nonstop, and can play music carrying at Android terminal.<br>
+		<small><small>When I showed that "I followed endlessly", a word marathon had come out, and continuation reproduction started the making of the player who  stood and stopped, and did not need to choose the album again by an album unit even if a marathon runner used me who felt the specifications of the music player of Android which stopped in curiousness for BGM.</small></small>
+		
+		<h2>How to use & Summary</h2>
+		0.When You use it for the first time<br>
+		The music file of Android is managed at data table called MediaStore, but is normal when there is breaking off on this table; cannot list it.<br>
+		(1)If there is a change in music stored by the first start and terminal on (number of the music and latest update day), marathon checks data omission of MediaStore and supplements it.<br>
+		(2)MaraSongs make the list of artist names to become the list of top of the all songs reproduction next.<br>
+		*MaraSongs save the list of these file information and artist names as the configuration file and speed up start after the next time.<br>
+		<small>From 2014/2/16 ver,1.0.5</small></p>
+		
+		1.RESUME REPRODUCTION METHOD<br>
+It starts in the state that I continue the music that reproduced last time and can regenerate if even once reproduces.<br>
+		<p>
+		
+		2.Consecutive reproduction<br>
+		I start reproduction when I tap a left lower reproduction button<br>
+		<small><small>If reproduction for one piece of album is over; to the next album of the artist<br>
+		When finish reproducing until the last when the albums of the artist were listed; to the next artist<br>
+		I am sent back to a top artist when I finish reproducing all listed artists.
+		</small></small></p>
+		3.I make the copy of music data assuming the transfer with the MTP mode from Windows Media Player.<br>
+		<small><small>
+		The thing which had a function to play the music file in the terminal by USB connection directly from Android terminal appeared to the car audio system of the release after 2013. Because this is the first for the sound quality, the management of music data makes application in a standard in a state copied by MTP mode transfer in anticipation of this method becoming natural.
+		</small></small></small><p>
+
+		<h2>Tasks seen</h2>
+		・Proper key layout at the terminal with dial key<br>
+		・Stop when there was the receipt during reproduction<br>
+		・Because it is the button placement assuming operating it with the thumb of the right hand, I need the change to a layout for left hands<br>
+		・Change to the sideways-facing layout assuming using the tablets with a big screen,<br>
+		・The automatic length and breadth turn that a person employing does not aim at is the same as reckless driving. Optionally, I think the device to turn whether it is need like the above.<br>
+		・Reading of the file which is not extracted in MediaStore<br>
+		・Processing when album art is unestablished<br>
+		・In addition to a current right hand carrier layout; the left business and a screen when laid it<br>
+		・Wireless remote controller of Bluetoooth, interlocking movement with the connection, title of a musical composition indication<br>
+		・Playlist management<br>
+		・Words of song indication…An aim here is not in sight<br>
+		<small>"maraSongs" is free application until these problems disappear.</small>
+		<p>
+
+		<h2>Release record</h2>
+		1.0.5; February 16, 2014<br>
+		1)Shortening of the boot-time<br>
+		<small><small>・If there is not a change, I omit the check of MediaStore which went at the time of start in the situation (the number of the files and latest update date) of a music file copied by the first start and terminal.<br>
+		・ In addition, I continue the last list and use the artist list becoming high-end of the all songs reproduction if the situation of the file does not have a change.
+		</small></small><P>
+		
+		2)Setting menu addition<br>
+		It is following two to have added in the beginning.</P>
+		2-1)Music space time<br>
+		I fixed it in 0.5 seconds, but can adjust it until now from 0 to a 1,000m second.<br>
+		Please set a 1,000m second (one second) within value if you feel it when an interval before music being over, and the next music beginning is too long.<br>
+		<small><small>
+		This is custom from the 1980s when the standard of the CD was fixed at, and a long silence area of one second enters the end of the music.<br>
+		The long silence part is reproduced if I play a CD directly not to understand it, but a long silence part is included in the reproduction range when I do it in a file and does an island.<br>
+		Even a live board does it for fixed gap reply reproduction by an experiment at the time of the first release at the time when a break is not outstanding.<br>
+		</small></small><br>
+		・The URL of the file during the reproduction moves as "From a continuance at the time of the last time end" condition here, too</small><p>
+		2-2) Background color of thescreen<br>
+		・You can choose white / black either.<br>
+		<small><small>
+		※Only either may be usable by the setting of a version and the terminal of Android.<br>
+		※Because I do a player screen at the time of reboot to let you reflect setting, the music playing stops it once.
+		</P>
+		</small></small>
+		</P>
+		2-3) setting initialization (other setting)<br>
+		・I remake the configuration file.<br>
+		<small><small>
+		※When I turn on a check and close a setting window, I repeat movement at the time of the first start and remake a file storing a set point.<br>
+		※The list of all songs playlist menu updating is safe, and processing is finished in a short time than I use here.
+		</small></small>
+		</P>
+
+		3) The reduction of the malfunction outbreak element<br>
+		<small><small>
+		・The separation of the variable to use for a variable and reproduction movement to use by list operation and a feed motion reviews becoming it again
+		</small></small>
+		</P>
+		
+		1.0.4;January 18,2014<br>
+		<small><small>
+		・Measures to the malfunction that outbreak is expected when I operate it at the time of reproduction<br>
+		1)I completely separate data during reproduction and the operation<br>
+		2)A counter of the number of times that pushed the forwarding button<br>
+		</small></small><P>
+
+		1.0.3;January 12, 2014<br>
+		<small><small>
+		function addition<br>
+		・I add information to album choice and a list of music choice<br>
+		(because the artist choice is the list which it can predict that the number of the items becomes huge, in addition, the current simple indication is going to add an optional method)<br>
+		bug fix<br>
+			・Abnormal movement measures such as the reproduction double by a reproducing music change<br>
+		</small></small><P>
+
+				1.0.2;January 5, 2014<br>
+		<small><small>
+			Arbitrary update of MediaStore<br>
+			・Addition (including the list) of a part displaying album art<br>
+			・Bug corrections such as the accumulation time indication
+		</small></small><P>
+		On January 1, 2014, The first release
+		<P>
+		</nav>
+			<h4><Small><small>
+			Hijiyama Koubou</h4>
+		<Small><small>Copyright 2014</Small></small>
+		</footer>
+	</body>
+</html>

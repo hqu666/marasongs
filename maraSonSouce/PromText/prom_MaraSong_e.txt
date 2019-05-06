@@ -1,0 +1,85 @@
+MaraSongs
+Reproduction entirely consecutive music
+
+It is the music player who can revitalize all songs carrying at Android terminal for the sense to hear from tip to toe of the record shelf.It is not necessary to stand, and to stop, and to choose the album again even if a marathon runner uses it for BGM.
+If reproduction for one piece of album is over, I come back to the first music if the music of the ... last is over to the next artist if the artist is over to the next album of the artist and regenerate it consecutively until I operate a stop.
+Therefore I make an original all songs consecutive playlist (list of all songs). Bundle an album breaking up by guest participation by this original list; and of the option line up, and enable adjustment to order.
+
+The player screen kept interface with a little malfunction in mind.I lay it out, and the function not to always use like random / repeat reproduction (going to make it later) puts a one cushion at the position where the button does not push the button not to aim at each to operate it from a menu.On the contrary, I did the function that operation became hard to do by the installation to a terminal and a stand of the use like volume operation and the reshuffling of the lock screen on a button daringly.
+
+///削除候補２////////////////////////////////// 
+MaraSongs is particular about there being it by "a commonplace".
+*"Resume reproduction" to reproduce from the last continuance is a commonplace of the music player at the time of the second start.
+*The commonplace of a telephone being equipped with "the stop / reproduction cooperation" of the receipt and the Bluetooth connection to a basic apparatus.
+*The correspondence to notification/lock screen player is a commonplace as the Android application.
+
+I aim at the correspondence that went step further more after having handled the commonplace.
+*I change a list of all thumbnail item indication on with a light simple list of movement.
+*Repeated blows correspondence (it malfunctions only once, and the re-drawing prevents it) of the forwarding / return button.
+*You can choose visibility or electric power saving-related good one by the base color choice (white / black) of the player.
+
+///削除候補１////////////////////////////////// 
+Aim at the iPod classic equivalency functionally; afterwards...
+*Interface reshuffling for left hands of a located player screen for the right hands now
+*Placement for side for tablets.
+*I plan the start to no Malaysia's functions to relieve a volume difference every music.
+///削除候補１////////////////////////////////// 
+caution
+*Time required for list of all songs making is around two minutes with 5,000 pieces.
+*I make the placement of the music file assuming synchronizing from Windows media player basically.
+・The file which performed Rippig by iPod on the occasion of the use called each music folder \ artist \ album \ musical piece of the \ option, please use it by folder constitution (agree with Rippig being considered to be it).
+・I make the playlist planning after Ver1.1 on the basis of the general-purpose playlist of the .m3p form that Windows media player begins to write in the same period. Even if only memory card or built-in neither memory uses the all songs list of MaraSongs, it wants to be possible for an all songs list in that place.
+
+///削除候補3////////////////////////////////// 
+Production intention
+A word marathon had come out to one of the expressions indicating "following endlessly" and hit on this coined word as the name of the music player whom I continued regenerating endlessly.
+
+
+Release record
+1.0.9, September 25, 2015
+①Volume button deployment
+②Correction of the malfunction to stop in the limit substitute for musical piece during consecutive reproduction
+		
+テスト端末
+Android4.4.4　；　SHF32 (AQUOS K)
+Android4.4.2　；　304SH
+Android4.2.2　；　206SH
+Android4.2.2　；　SH-08E (7インチタブレット)
+Android4.1.2　；　203SH
+Android4.0.3　；　is15SH(ダイヤルキー付)
+
+1.0.81;2015年8月27日;バージョンアップ時などの誤動作対応
+①アップデートして頂いた方から再生動作が始まらない旨の連絡あり。
+　古いバージョンのデータベースを書き直す事で対策。
+　継続してご利用の方も、お手数ですがリストを更新してください。
+②最短の名称に縮めきれていないアーティスト名の対処とリストの誤動作対策
+③ダイヤルキー付端末のキー操作修正
+　（選択していたところの文字色が黒く反転したままの処は後日修正予定）
+
+1.0.8;2015年8月18日;約一年がかりの修正と仕様の見直し
+変更
+・全曲リストの作成時や起動時など時間が掛かるところはプログレス表示。
+・ロックスクリーンプレイヤーの動作
+　注意;初めて使うときはデバイスマネージャーを使うかどうかを問い合わせるダイアログが表示されますので、使用する様に選択して下さい。
+　アーティスト名表示は次回の修正で。
+・ノティフィケーションプレイヤーの動作
+　表示されないときはアイコンをロングタッチして「アプリ情報」を表示、そこから「通知を表示」をOnにして下さい 
+・Bluetooth対応
+接続している機器名、接続状況、　リモコンからの操作指定などの表示
+カーステレオなど接続している機器がOffになったらポーズ、再接続したら再生再開（設定でOn/Off）
+・その他の誤動作対策
+正常起動しないケースへの対策
+・設定ファイルの保存と初回作成条件の見直し
+・アーティストリストなど、サイズが大きくなる可能性があるものは、テキストファイルからデータベースに変更
+・メモリーカードを使用していない場合
+・メモリーカードもしくは内蔵メモリの最上位デレクトリに1ファイルだけコピー
+windows Media Playerのシンクロ機能を使わない場合などファイルの置き方で発生するバグの想定対処
+・見えにくいので単色にアイコンデザイン変更
+
+1.0.7　;2014年5月6日（非公開）
+1.0.6　;2014年2月21日
+1.0.5　;2014年2月16日
+1.0.4　;2014年1月18日
+1.0.3　;2014年1月12日
+1.0.2　;2014年1月5日
+1.0.0　;2014年1月1日；初回リリース

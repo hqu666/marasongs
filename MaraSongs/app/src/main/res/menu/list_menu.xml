@@ -1,0 +1,42 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item android:title="@string/menu_func">
+		<menu>
+			<item android:id="@+id/menu_list_simple"
+				android:title="@string/menu_list_simple" />
+			<item android:id="@+id/menu_list_syousai"
+				android:title="@string/menu_list_syousai" />
+			<item android:id="@+id/menu_item_plist_saikin_tuika"
+					android:title="@string/menu_item_plist_saikin_tuika"/>
+<!-- 			<item android:id="@+id/menu_item_plist_saikin_sisei" -->
+<!-- 					android:title="@string/menu_item_plist_saikin_sisei"/> -->
+			<item android:id="@+id/list_contex_rename_playlist"
+					android:title="@string/list_contex_rename_playlist"/>
+			<item android:id="@+id/list_contex_del_playlist"
+					android:title="@string/list_contex_del_playlist"/>
+			<item android:id="@+id/menu_list_request_reset"
+					android:title="@string/menu_list_request_reset"/>
+			<item android:id="@+id/menu_hihyoujiArtist"
+					android:title="@string/menu_hihyoujiArtist"/>
+			<item android:id="@+id/menu_item_plist_zenkyoku_kousin"
+				android:title="@string/menu_item_plist_zenkyoku_kousin" />
+		</menu>
+	</item>
+	<item android:title="@string/menu_item_sonota">
+		<menu>
+			<item
+				android:id="@+id/menu_item_sonota_settei"
+				android:title="@string/menu_item_sonota_settei"/>
+			<item
+				android:id="@+id/menu_syuusei_lisuto_hyouji"
+				android:title="@string/menu_syuusei_lisuto_hyouji"/>
+			<item
+				android:id="@+id/menu_item_sonota_help"
+				android:title="@string/menu_item_sonota_help"/>
+			<item
+				android:id="@+id/menu_item_sonota_end"
+				android:title="@string/menu_item_sonota_end"/>
+		</menu>
+	</item>
+
+</menu>
