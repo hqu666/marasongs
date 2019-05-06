@@ -185,8 +185,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	 *  プレイリストからデータを読み込む時に再生順に齟齬が有れば修正する
 	 *  */
 	public static List<Item> getItems(Context context) {
-		final String TAG = "getItems[Item]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "getItems";
+		String dbMsg= "[Item];";
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			Cursor cursor = null;
@@ -202,7 +202,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 				dbMsg += ",prefのプレイリスト[" + rVal ;				//in16.pla=29236
 				nowList_id = Integer.valueOf(rVal);			//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
 	//		}
-			String nowList = String.valueOf(keys.get("nowList").toString());
+			String nowList = String.valueOf(keys.get("nowList"));                  //20190506;[-1でjava.lang.NullPointerException:
 			if(nowList == null ){
 				nowList_id = -1;
 				dbMsg += ">>" + nowList_id  ;
@@ -333,7 +333,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			}
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg +="["+context.getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]"+items.size() +context.getResources().getString(R.string.comon_ken);		//	<string name="">所要時間</string>
-	//		myLog(TAG,dbMsg );
+			myLog(TAG,dbMsg );
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}

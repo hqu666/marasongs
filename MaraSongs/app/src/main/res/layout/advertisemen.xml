@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/background_floating_material_dark"
+	>
+	<LinearLayout
+		android:id="@+id/advertisement_ll"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:background="#000000"
+		android:gravity="bottom|center"
+		android:orientation="horizontal"
+		>
+
+		<LinearLayout
+			android:id="@+id/ad_layout"
+			android:layout_width="320px"
+			android:layout_height="50px"
+			android:layout_gravity="center"
+			android:layout_margin="5px"
+			android:orientation="vertical">
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/nend_layout"
+			android:layout_width="320px"
+			android:layout_height="50px"
+			android:layout_gravity="center"
+			android:layout_margin="5px"
+			android:orientation="vertical">
+		</LinearLayout>
+
+	</LinearLayout>
+</LinearLayout>

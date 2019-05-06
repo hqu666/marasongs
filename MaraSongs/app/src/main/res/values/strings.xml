@@ -5,7 +5,9 @@
     <string name="content_str">com.hijiyam_koubou.marasongs</string>
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3146425308522831/2530772303</string>
     <string name="banner_ad_unit_id2" translatable="false">ca-app-pub-3146425308522831/9367015102</string>
-<!-- 画面下部 -->
+	<string name="banner_test_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+
+	<!-- 画面下部 -->
 <!-- <string name="nend_apiKey">69d09f7ffa1c07bf80b8b2b593b5a95d9462abbb</string> -->
 <!-- <string name="nend_spotID">472676</string> -->
 	<string name="nend_apiKey" translatable="false">69d09f7ffa1c07bf80b8b2b593b5a95d9462abbb</string>

@@ -528,39 +528,40 @@
                         android:textAppearance="?android:attr/textAppearanceSmall" /><!--  zennkaiLL -->
                 </LinearLayout><!--  LinearLayout50 -->
 
-                <LinearLayout
-                    android:id="@+id/pp_koukoku"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal" >
+                <!--<LinearLayout-->
+                    <!--android:id="@+id/pp_koukoku"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:orientation="horizontal" >-->
 
-                    <net.nend.android.NendAdView
-                        android:id="@+id/pp_nend"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        NendApiKey="@string/nend_apiKey"
-                        NendSpotId="@string/nend_spotID" >
+                    <!--<net.nend.android.NendAdView-->
+                        <!--android:id="@+id/pp_nend"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--NendApiKey="@string/nend_apiKey"-->
+                        <!--NendSpotId="@string/nend_spotID" >-->
 
-                    </net.nend.android.NendAdView>
-<!--                         NendApiKey="c5cb8bc474345961c6e7a9778c947957ed8e1e4f" -->
-<!--                         NendSpotId="3174" > -->
-<!-- 					<com.google.android.gms.ads.AdView android:id="@+id/pp_adView" -->
-<!--                          android:layout_width="wrap_content" -->
-<!--                          android:layout_height="wrap_content" -->
-<!--                          ads:adUnitId="@string/banner_ad_unit_id" -->
-<!--                          ads:adSize="BANNER" -->
-<!--                          /> -->
+                    <!--</net.nend.android.NendAdView>-->
+<!--&lt;!&ndash;                         NendApiKey="c5cb8bc474345961c6e7a9778c947957ed8e1e4f" &ndash;&gt;-->
+<!--&lt;!&ndash;                         NendSpotId="3174" > &ndash;&gt;-->
+<!--&lt;!&ndash; 					<com.google.android.gms.ads.AdView android:id="@+id/pp_adView" &ndash;&gt;-->
+<!--&lt;!&ndash;                          android:layout_width="wrap_content" &ndash;&gt;-->
+<!--&lt;!&ndash;                          android:layout_height="wrap_content" &ndash;&gt;-->
+<!--&lt;!&ndash;                          ads:adUnitId="@string/banner_ad_unit_id" &ndash;&gt;-->
+<!--&lt;!&ndash;                          ads:adSize="BANNER" &ndash;&gt;-->
+<!--&lt;!&ndash;                          /> &ndash;&gt;-->
 
-                    <LinearLayout
-                        android:id="@+id/pp_ad_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" >
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/pp_ad_ll"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="vertical" >-->
 
-                    </LinearLayout>
+                    <!--</LinearLayout>-->
 
-                </LinearLayout><!-- pp_koukoku -->
+                <!--</LinearLayout>-->
+                <!-- pp_koukoku -->
 
                 <LinearLayout
                     android:id="@+id/pp_bt_ll"
@@ -595,5 +596,11 @@
         </LinearLayout>
 
         </LinearLayout>
-	</LinearLayout>
+
+        <include
+            layout="@layout/advertisemen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10px"/>
+    </LinearLayout>
 </LinearLayout>

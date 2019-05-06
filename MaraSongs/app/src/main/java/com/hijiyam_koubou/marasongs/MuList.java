@@ -142,6 +142,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	public String file_ex ;						//メモリーカードの音楽ファイルフォルダ
 	public String file_wr;						//設定保存フォルダ
 	public boolean prTT_dpad = false;			//ダイヤルキー有り
+
 	private int mIndex;
 	private Item playingItem;						//再生中の楽曲レコード
 	public long backTime=0;						//このActivtyに戻った時間
@@ -328,7 +329,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		messageShow(titolStr , mggStr);
 	}
 
-
 	public void messageShow(String titolStr , String mggStr) {
 		Util UTIL = new Util();
 		UTIL.messageShow(titolStr , mggStr , MuList.this);
@@ -434,59 +434,87 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		final String TAG = "readPref";
 		String dbMsg = "[MuList]";
 		try {
+			MyPreferences myPreferences = new MyPreferences();
+			dbMsg += "MyPreferencesy読込み";
+			myPreferences.readPrif(this);
+			dbMsg += "完了";
+
+//			sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());			//	this.getSharedPreferences(this, MODE_PRIVATE);		//
+			sharedPref =myPreferences.sharedPref;
+			myEditor =myPreferences.myEditor;
+//			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
+			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
+			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
+
+			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
+//			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
+			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
+//			pref_pb_bgc = myPreferences.pref_pb_bgc;				//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
+
+			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
+			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
+			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
+			pref_rundam_list_size =myPreferences.pref_rundam_list_size;	//ランダム再生リストアップ曲数
+			repeatType = myPreferences.repeatType;							//リピート再生の種類
+			rp_pp = myPreferences.rp_pp;							//2点間リピート中
+//			pp_start = myPreferences.pp_start;							//リピート区間開始点
+//			pp_end = myPreferences.pp_end;								//リピート区間終了点
+
+			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
+			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
+			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
+			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
+//			pref_reset = myPreferences.pref_reset;					//設定を初期化
+//			pref_listup_reset = myPreferences.pref_listup_reset;			//調整リストを初期化
+
+//			saisei_fname =myPreferences.saisei_fname;				//再生中のファイル名
+//			pref_saisei_jikan =myPreferences.pref_saisei_jikan;			//再開時間		Integer
+//			pref_saisei_nagasa  =myPreferences.pref_saisei_nagasa;		//再生時間
+//			pref_zenkai_saiseKyoku =myPreferences.pref_zenkai_saiseKyoku;			//前回の連続再生曲数
+//			pref_zenkai_saiseijikann =myPreferences.pref_zenkai_saiseijikann;			//前回の連続再生時間
+
+//			pref_file_in =myPreferences.pref_file_in;		//内蔵メモリ
+//			pref_file_ex=myPreferences.pref_file_ex;		//メモリーカード
+//			pref_file_wr= myPreferences.pref_file_wr;		//設定保存フォルダ
+//			pref_file_kyoku= myPreferences.pref_file_kyoku;		//総曲数
+//			pref_file_album= myPreferences.pref_file_album;		//総アルバム数
+//			pref_file_saisinn= myPreferences.pref_file_saisinn;	//最新更新日
+
+			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
+			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
+			play_order = Integer.parseInt(myPreferences.play_order);
+			//アーティストごとの情報
+			artistID = Integer.parseInt(myPreferences.artistID);
+			//アルバムごとの情報
+			albumID = Integer.parseInt(myPreferences.albumID);
+			//曲ごとの情報
+//			audioID = myPreferences.audioID;
+//			dataURL = myPreferences.dataURL;
+//			b_List =myPreferences.b_List;			//前に再生していたプレイリスト
+//			b_List_id = myPreferences.b_List_id;			//前のプレイリストID
+//			modori_List_id = myPreferences.modori_List_id;			//リピート前のプレイリストID
+//			b_index= myPreferences.b_index;				//前の曲順
+
+//			prBTname = myPreferences.prBTname;			//前回接続していたBluetooth機器名
+//			prBTAdress = myPreferences.prBTAdress;			//MACアドレス（機器固有番号）
+//			 pMusic_dir = myPreferences.pMusic_dir;			//再生する音楽ファイルがあるフォルダ
+//			pplist_usb = myPreferences.pplist_usb;			//再生する音楽ファイルがあるUSBメモリーのフォルダ
+//			pplist_rquest = myPreferences.pplist_rquest;		//リクエストリスト
+//			pplist_a_new = myPreferences.pplist_a_new;		//新規プレイリスト
+
+//			pref_toneList = myPreferences.pref_toneList;		//プリファレンス保存用トーンリスト
+//			toneSeparata = myPreferences.toneSeparata;
+//			tone_name = myPreferences.tone_name;				//トーン名称
+//			bBoot = myPreferences.bBoot;					//バスブート
+//			reverbBangou = myPreferences.reverbBangou;				//リバーブ効果番号
+//			 visualizerType =myPreferences.visualizerType;		//VisualizerはFFT
+
+//			prTT_dpad = myPreferences.prTT_dpad;		//ダイヤルキーの有無
+//			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
+//			others =myPreferences.others;				//その他の情報
+
+
 //			dbStart ();                //データベースの作成・オープン
-			sharedPref = PreferenceManager.getDefaultSharedPreferences(this);                    //this.getSharedPreferences(this, MODE_PRIVATE);		//
-			Map<String, ?> keys = sharedPref.getAll ();
-			dbMsg = "読み込み開始" + keys.size () + "項目;sharedPref=" + sharedPref;////////////////////////////////////////////////////////////////////////////
-//			if (keys.size () == 0) {            //初回起動時は			//初回起動時は
-//				myEditor = sharedPref.edit ();
-//				myEditor.putString ("pref_kurikaesi", "100");                //繰り返し判定数		putString
-//				myEditor.putBoolean ("prefUseDlog_ch", true);            //ダイアログの使用/未使用
-//				myEditor.putBoolean ("dPadAri", dPadAri);            //ダイヤルキー
-//				boolean kakikomi = myEditor.commit ();
-//				dbMsg += ",書込み=" + kakikomi;//////////////////
-//				keys = sharedPref.getAll ();
-//				dbMsg = "読み込み開始" + keys.size () + "項目;sharedPref=" + sharedPref;////////////////////////////////////////////////////////////////////////////
-//			}
-//			int i = 0;
-//			for (String key : keys.keySet ()) {
-//				i++;
-//				dbMsg += "\n" + i + "/" + keys.size () + ")　" + key + "は" + keys.get (key);///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//				try {
-//					if (key.equals ("prefUseDlog_ch")) {
-//						prefUseDlog = Boolean.valueOf (keys.get (key).toString ());                        //ダイアログの使用/未使用	true	false
-//						dbMsg += ",ダイアログの使用＝" + prefUseDlog;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//					} else if (key.equals ("kujiSyurui")) {
-//						kujiSyurui = keys.get (key).toString ();
-//					} else if (key.equals ("pref_kurikaesi")) {
-//						Object rStr = keys.get (key);
-//						if (rStr == null) {
-//							rStr = "100";
-//						}
-//						kurikaesi_val = Integer.valueOf (String.valueOf (keys.get (key)));        //繰り返し判定数
-//						//			kurikaesi_val=Integer.valueOf(keys.get(key).toString());		//繰り返し判定数
-//						dbMsg += ",繰り返し＝" + kurikaesi_val;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//					} else if (key.equals ("repSyurui")) {
-//						dbMsg += ",繰り返し＝" + repSyurui;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//						repSyurui = String.valueOf (keys.get (key));
-//					} else if (key.equals ("dPadAri")) {
-//						dPadAri = Boolean.valueOf (keys.get (key).toString ());                        //ダイアログの使用/未使用	true	false
-//						dbMsg += ",ダイヤルキーは" + dPadAri;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//					}
-//				} catch (Exception e) {
-//					Log.e (TAG, dbMsg + "；" + e);
-//				}
-//			}            //	for (String key : keys.keySet()) {
-//			dbMsg = "このアプリのバージョンコード" + pref_sonota_vername;////////////////////////////////////////////////////////////////////////////
-//			if(pref_sonota_vername != null){
-//				if( Integer.valueOf (pref_sonota_vername) < 1034141 ){
-//					Log.i (TAG, dbMsg);
-//					delPrif ();        //プリファレンスの内容削除
-//				}
-//			} else {
-//				pref_sonota_vername = String.valueOf (getPackageManager().getPackageInfo(getPackageName(), getPackageManager().GET_META_DATA).versionCode);			//.versionNameは1.3.2など
-//			}
-//			dbMsg += randumStart_val + "～" + randumEnd_val + "を" + val_val + "個" + "；くじの種類" + kujiSyurui + ",繰り返し判定数" + kurikaesi_val + ",照合URL" + shyougouURL;////////////////////////////////////////////////////////////////////////////
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2196,7 +2224,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //////////////////////////////////////////////////////////ContextMenu///
 	  /**dataURIを読み込みながら欠けデータ確認*/
 	public void preRead(int reqCode , String msg) throws IOException {
-		final String TAG = "preRead[MuList]";
+		final String TAG = "preRead";
 		String dbMsg = "[MuList]";
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
@@ -5468,10 +5496,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 							MuList.this.sousalist_data = null;	//[1/5] /storage/sdcard0/Playlists/★お気に入りプレイリスト
 							dbMsg +=" ,保存場所= " + sousalist_data ;
 							dbMsg +=" ,yobidashiItem= " + yobidashiItem ;
-							dbMsg +=" ,maeList= " + maeList ;
-							if( yobidashiItem == MaraSonActivity.v_artist  ||							//2131558436
-									! maeList.equals(MuList.this.sousalistName)
-									){		//プレイヤー画面でタップされたアイテム
+							dbMsg +=" ,maeList= " + maeList ;         						//20190506
+							if( yobidashiItem == MaraSonActivity.v_artist  || ! maeList.equals(MuList.this.sousalistName)){		//プレイヤー画面でタップされたアイテム
 								dbMsg +=" ,cursorA= " + cursorA;
 								if(cursorA != null){							//既に読み込み中に誤動作したら読み込み処理に入らない
 									dbMsg +=" ,isClosed= " +  cursorA.isClosed() ;

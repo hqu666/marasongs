@@ -523,7 +523,7 @@ public class Util {
 				if(23 < TAG.length()){     				//APIL24以上（Android 7.0 Nougat 以上)
 					TAG = TAG.substring(0,22);
 				}
-				Log.i(TAG , dbMsg + "");
+				Log.w(TAG , dbMsg + "");
 			}
 		} catch (Exception er) {
 			Log.e(TAG , dbMsg + ";でエラー発生；" + er);
