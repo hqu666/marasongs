@@ -512,9 +512,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //			prTT_dpad = myPreferences.prTT_dpad;		//ダイヤルキーの有無
 //			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
 //			others =myPreferences.others;				//その他の情報
-
-
-//			dbStart ();                //データベースの作成・オープン
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2289,7 +2286,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		try{
 			long start = System.currentTimeMillis();	// 開始時刻の取得
 			dbMsg +=  ",start="+ start ;/////////////////////////////////////
-			checkMyPermission();
+			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
@@ -2356,7 +2353,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				list[i] = (String) activities[i * 2];
 			}
 			locale = Locale.getDefault();		// アプリで使用されているロケール情報を取得
-			setteriYomikomi();			//プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
+//			setteriYomikomi();			//プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
 			setContentView(R.layout.mu_list);				//			setContentView(R.layout.main);
 			toolbar = (Toolbar) findViewById(R.id.list_tool_bar);						//このアクティビティのtoolBar
 			toolbar.setTitle("");				//何かを設定しなければアプリ名が表示される		☆.setDisplayShowTitleEnabled(false);　はtoolbarに無い？
@@ -2552,7 +2549,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			}
 			Map<String, ?> keys = sharedPref.getAll();
 			MyPreferences MPRF = new MyPreferences();
-			MPRF.syokiPrif( keys);		//プリファレンス未作成時の初期作成
+//			MPRF.syokiPrif( keys);		//プリファレンス未作成時の初期作成
 			if( keys.size() > 0 ){			//プリファレンスが出来ている
 				int i=0;
 				i=0;
@@ -2963,7 +2960,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	public void jyoukyouBunki(){
 		//①ⅱファイルに変更が有れば全曲リスト更新の警告
 		//http://d.hatena.ne.jp/Kazzz/20100715/p1		 throws NumberFormatException
-		final String TAG = "jyoukyouBunki[MuList]";
+		final String TAG = "jyoukyouBunki";
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg ="プリファレンス；端末内にあるファイル数=" + ruikei_titol + ",更新日=" + file_saisinn;//// pref_saisei_fname //////
@@ -3010,7 +3007,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 								}else{																			//再生する曲が無ければ
 									dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
 									dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m2);	//プレイリストから再生するファイルを選択して下さい。</string>
-									//readDB();										//全曲リストの読み込み
+									readDB();										//全曲リストの読み込み
 								}
 							}else{																			//指定されたリストが無ければ
 								dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。

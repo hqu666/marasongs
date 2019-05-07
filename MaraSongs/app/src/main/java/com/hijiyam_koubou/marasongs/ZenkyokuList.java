@@ -46,11 +46,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	MaraSonActivity MSA;
 	public Context cContext ;
 	public plogTaskCallback callback;
-	public Thread motoThread;
 	public plogTask pTask;
-	public Dialog pDialog;
-	public HPDialog dialogFragment;
-	public boolean dlogShow;
 
 	public ScrollView pdg_scroll;		//スクロール
 	public TextView pgd_msg_tv ;
@@ -67,14 +63,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public Button pgd_finsh_bt;		//終了ボタン
 	public LinearLayout pgdBar1_ll;		//メインプログレスバーエリア
 	public LinearLayout pgdBar2_ll;		//セカンドプログレスバーエリア
-//	public int dlogID = 0;
 	public String _numberFormat = "%d/%d";
 	public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
 	//プリファレンス
 	public Editor pNFVeditor ;
-	public SharedPreferences main_pref;
+	public SharedPreferences sharedPref;
 	public Editor myEditor ;
-	public Editor mainEditor;
 	public String dataFN;						//再生中のファイル名
 	public String ruikei_artist;				//アーティスト累計
 	public String pref_compBunki = "40";		//コンピレーション設定[%]
@@ -100,7 +94,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
 	public int pd2MaxVal = 10;					//ProgressDialog の最大値を設定 (水平の時)
 	public int pd2CoundtVal;					//ProgressDialog表示値
-	public int pgCount=0;		//プログレスカウンタ
 
 	public int kyoku = 0 ;
 	public Cursor cursor;
@@ -137,7 +130,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public ZenkyokuHelper zenkyokuHelper = null;				//全曲リストヘルパー
 	public SQLiteDatabase Zenkyoku_db;		//全曲リストファイル
 	public String zenkyokuTName;			//全曲リストのテーブル名
-	public String[] zenkyokuColom = null ;
+//	public String[] zenkyokuColom = null ;
 	public SQLiteDatabase shyuusei_db;									//登録アーティスト修正DB
 	public shyuuseiHelper shyuusei_Helper = null;				//登録アーティストヘルパー
 	public String shyuuseiTName;
@@ -148,22 +141,13 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public static final int pt_mastKopusin=pt_preReadEnd+1;										//802;メディアストア更新  ←preReadで欠けが見つかった場合のみ
 	public static final int pt_KaliArtistList=pt_mastKopusin+1;									//803;仮アーティスト作成
 	public static final int pt_CreateKaliList=pt_KaliArtistList+1;									//804;仮リスト作成
-
-//	public static final int pt_albumReadAll = pt_CreateKaliList+1;									//803;MediaStore.Audio.Albumsの全レコード読み込み
-//	public static final int pt_albumRead2 = pt_albumReadAll +1;									//804;MediaStore.Audio.Albumsを仮リストへ転記
-//	public static final int pt_albumReadAllEnd = pt_albumRead2 +1;							//805;MediaStore.Audio.Albumsの全レコード仮読み込み終わり
-//	public static final int pt_dbSakusei = pt_albumReadAllEnd+1;								//806;artist_dbデータベース作成
-
+	
 	public static final int pt_jyuufukuSakujyo = pt_CreateKaliList+1;					//804;コンピレーション抽出；アルバムアーティスト名の重複
 	public static final int pt_HenkouHanei= pt_jyuufukuSakujyo+1;						//805;ユーザーの変更を反映
 	public static final int pt_CreateZenkyokuList = pt_HenkouHanei+1;					//806;全曲リスト作成
 	public static final int pt_CompList = pt_CreateZenkyokuList+1;						//807;全曲リストにコンピレーション追加
-//	public static final int pt_delPList = pt_CompList+1;									//プレイリスト
-//	public static final int pt_makePList = pt_delPList+1;								//809;汎用プレイリスト作成
-//	public static final int pt_albam_syuusei = pt_makePList+1;								//アルバムテーブルのアーティスト名変更
 	public static final int pt_artistList_yomikomi = pt_CompList+1;								//808;アーティストリストを読み込む(db未作成時は-)
 	public static final int pt_end = pt_artistList_yomikomi+1;										//809;最終処理
-	//11-02 20:49:16.689: I/Choreographer(18268): Skipped 397 frames!  The application may be doing too much work on its main thread.
 	public String bArtistN;
 	public String aArtist ;
 	public String b_AlbumMei ;
@@ -175,7 +159,34 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public int compCount;
 	public int comCount;			//コンピレーションなど末尾につける匿名
 
-/**
+
+	public void readPref () {        //プリファレンスの読込み
+		final String TAG = "readPref";
+		String dbMsg = "[ZenkyokuList]";
+		try {
+			MyPreferences myPreferences = new MyPreferences();
+			dbMsg += "MyPreferencesy読込み";
+			myPreferences.readPrif(this);
+			dbMsg += "完了";
+			sharedPref =myPreferences.sharedPref;
+			myEditor =myPreferences.myEditor;
+
+			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
+			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
+			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
+			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
+			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
+			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
+			play_order = Integer.parseInt(myPreferences.play_order);
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}																	//設定読込・旧バージョン設定の消去
+
+
+
+	/**
  * 起動時に２系統プログレスのxlm読み込み
  * @Bundle savedInstanceState
  * onWindowFocusChangedを経てpreReadへ
@@ -329,9 +340,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			rDir = saveDir.split(File.separator);
 			inDrive = rDir[0] + File.separator+ rDir[1] + File.separator+ rDir[2];
 			dbMsg=dbMsg +"、(do前)内蔵メモリ="+ inDrive + ",メモリカード="+ exDrive;
-			main_pref = this.cContext.getSharedPreferences( this.cContext.getResources().getString(R.string.pref_main_file) , this.cContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			pNFVeditor = main_pref.edit();
-			Map<String, ?> keys = main_pref.getAll();
+			sharedPref = this.cContext.getSharedPreferences( this.cContext.getResources().getString(R.string.pref_main_file) , this.cContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			pNFVeditor = sharedPref.edit();
+			Map<String, ?> keys = sharedPref.getAll();
 			dbMsg=dbMsg +",keys="+ keys.size() +"件" ;
 			saisinnbi = "0";
 			if(keys.size() > 0 ){
@@ -666,7 +677,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		final String TAG = "preReadEnd[ZenkyokuList]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
-//			pNFVeditor = main_pref.edit();
+//			pNFVeditor = sharedPref.edit();
 //			dbMsg=kyoku+"曲";
 //			pNFVeditor.putString( "pref_file_kyoku", String.valueOf(kyoku));		//総曲数
 //			dbMsg= dbMsg + "、更新日="+ ZenkyokuList.this.saisinnbi;
@@ -1380,7 +1391,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					Kari_db.close();
 				}
 			}
-			pNFVeditor = main_pref.edit();
+			pNFVeditor = sharedPref.edit();
 			dbMsg=kyoku+"曲";
 			pNFVeditor.putString( "pref_file_kyoku", String.valueOf(kyoku));		//総曲数
 			dbMsg= dbMsg + "、更新日="+ ZenkyokuList.this.saisinnbi;

@@ -1316,7 +1316,9 @@ id action_text
 id actionbar_spinner
 id actions
 id activity_chooser_view_content
+id ad_layout
 id add
+id advertisement_ll
 id album
 id albumCountLL
 id albumIDPTF
@@ -1562,6 +1564,7 @@ id nend_full_board_ad_information_margin_spacer
 id nend_full_board_ad_logo
 id nend_full_board_ad_margin_spacer
 id nend_full_board_ad_promotion
+id nend_layout
 id never
 id noView
 id nol_tv
@@ -1600,13 +1603,10 @@ id position
 id positionX
 id positionY
 id ppPButton
-id pp_ad_ll
 id pp_bt_ll
 id pp_end_rd
 id pp_end_tf
-id pp_koukoku
 id pp_mms_tv
-id pp_nend
 id pp_now_tf
 id pp_pp_end_tf
 id pp_pp_et
@@ -1861,6 +1861,7 @@ layout activity_mara_son
 layout activity_native_land_video_fullscreen_playing
 layout activity_native_port_video_fullscreen_playing
 layout activity_nend_ad_full_board
+layout advertisemen
 layout browser_actions_context_menu_page
 layout browser_actions_context_menu_row
 layout custom_item_layout
@@ -1989,6 +1990,7 @@ string artist_tuika02
 string artist_tuika03
 string banner_ad_unit_id
 string banner_ad_unit_id2
+string banner_test_id
 string bottom_sheet_behavior
 string bt_connected
 string bt_connecting
