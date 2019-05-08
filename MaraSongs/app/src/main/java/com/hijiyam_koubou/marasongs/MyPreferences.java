@@ -622,7 +622,9 @@ public class MyPreferences extends PreferenceActivity {
 		String dbMsg="[MyPreferences]";
 		try{
 			ORGUT = new OrgUtil();		//自作関数集
-			sharedPref = PreferenceManager.getDefaultSharedPreferences (context);
+			String pefName = context.getResources().getString(R.string.pref_main_file);
+			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			sharedPref = PreferenceManager.getDefaultSharedPreferences (context);
 			myEditor = sharedPref.edit();
 			String wrStr;
 			String selectStr = null;
@@ -989,7 +991,7 @@ public class MyPreferences extends PreferenceActivity {
 //					e.printStackTrace();
 //				}
 //				dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
-				others =others + getString(R.string.pref_sonota_vercord) + " : " + pref_sonota_vercord+"\n";		//バージョンコード
+//				others =others + getString(R.string.pref_sonota_vercord) + " : " + pref_sonota_vercord+"\n";		//バージョンコード
 				pref_reset = false;			//設定を初期化
 				dbMsg +=  "このダイアログを閉じたら設定を初期化"+pref_reset ;////////////////////////////////////////////////////////////////////////////
 				myEditor.putBoolean ("pref_reset", pref_reset);

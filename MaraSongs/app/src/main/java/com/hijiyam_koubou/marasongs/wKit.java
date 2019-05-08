@@ -70,8 +70,8 @@ public class wKit extends Activity {
     public boolean En_BAC=false;			//1ページ戻る";
     public CharSequence btStre;
 	//プリファレンス設定
-	SharedPreferences myNFV_S_Pref;
-	Editor pNFVeditor ;
+	public SharedPreferences sharedPref;
+	public Editor myEditor ;
 
 	public static final int MENU_WQKIT=800;							//これメニュー
 	public static final int MENU_WQKIT_ZUP = MENU_WQKIT+1;			//ズームアップ
@@ -90,6 +90,24 @@ public class wKit extends Activity {
 	public String psSarviceUri;
 	public ComponentName MPSName;
 	public MusicPlayerService MPS;
+
+
+	public void readPref () {        //プリファレンスの読込み
+		final String TAG = "readPref";
+		String dbMsg = "[MuList]";
+		try {
+			MyPreferences myPreferences = new MyPreferences();
+			dbMsg += "MyPreferencesy読込み";
+			myPreferences.readPrif(this);
+			sharedPref =myPreferences.sharedPref;
+			myEditor =myPreferences.myEditor;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}																	//設定読込・旧バージョン設定の消去
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		//org;publicvoid
@@ -786,32 +804,32 @@ public class wKit extends Activity {
 		try{
 			dbMsg="keyCode="+keyCode;//+",getDisplayLabel="+String.valueOf(event.getDisplayLabel())+",getAction="+event.getAction();////////////////////////////////
 	//		myLog("onKeyDown","[wKit]"+dbMsg);
-//		dbMsg="ppBtnID="+myNFV_S_Pref.getBoolean("prefKouseiD_PadUMU", false);///////////////////////////////////////////////////////////////////
+//		dbMsg="ppBtnID="+sharedPref.getBoolean("prefKouseiD_PadUMU", false);///////////////////////////////////////////////////////////////////
 //			myLog("onKeyDown","[wKit]"+dbMsg);
 		    dbMsg="サイドボリュームとディスプレイ下のキー；canGoBack="+webView.canGoBack();///////////////////////////////////////////////////////////////////
 			switch (keyCode) {	//キーにデフォルト以外の動作を与えるもののみを記述★KEYCODE_MENUをここに書くとメニュー表示されない
 			case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
 			//	wZoomUp();						//ズームアップして上限に達すればfalse
-			    if(! myNFV_S_Pref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
-					pNFVeditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
+			    if(! sharedPref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
+					myEditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
 			    }
 				return true;
 			case KeyEvent.KEYCODE_DPAD_DOWN:	//マルチガイド下；20
 			//	wZoomDown();					//ズームダウンして下限に達すればfalse
-			    if(! myNFV_S_Pref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
-					pNFVeditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
+			    if(! sharedPref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
+					myEditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
 			    }
 				return true;
 			case KeyEvent.KEYCODE_DPAD_LEFT:	//マルチガイド左；21
 				wForward();						//ページ履歴で1つ後のページに移動する					return true;
-			    if(! myNFV_S_Pref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
-					pNFVeditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
+			    if(! sharedPref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
+					myEditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
 			    }
 				return true;
 			case KeyEvent.KEYCODE_DPAD_RIGHT:	//マルチガイド右；22
 				wGoBack();					//ページ履歴で1つ前のページに移動する
-			    if(! myNFV_S_Pref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
-					pNFVeditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
+			    if(! sharedPref.getBoolean("prefKouseiD_PadUMU", false)){		//キーの利用が無効になっていたら
+					myEditor.putBoolean("prefKouseiD_PadUMU", true);			//キーの利用を有効にして
 			    }
 			    return true;
 			case KeyEvent.KEYCODE_VOLUME_UP:	//24

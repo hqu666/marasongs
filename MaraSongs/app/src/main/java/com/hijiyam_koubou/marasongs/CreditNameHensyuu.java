@@ -34,7 +34,7 @@ public class CreditNameHensyuu extends Activity {
 
 	public Context rContext;
 	public long start = 0;								// 開始時刻の取得
-	public SharedPreferences myNFV_S_Pref;
+	public SharedPreferences sharedPref;
 	public Editor myEditor ;
 	public SharedPreferences artist_l_Pref;				//アーティストリストファイル
 	public Editor alEditor;
@@ -54,6 +54,21 @@ public class CreditNameHensyuu extends Activity {
 
 	public List<String> artistList = null;		//アルバムアーティスト
 
+	public void readPref () {        //プリファレンスの読込み
+		final String TAG = "readPref";
+		String dbMsg = "[MuList]";
+		try {
+			MyPreferences myPreferences = new MyPreferences();
+			dbMsg += "MyPreferencesy読込み";
+			myPreferences.readPrif(this);
+			sharedPref =myPreferences.sharedPref;
+			myEditor =myPreferences.myEditor;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}																	//設定読込・旧バージョン設定の消去
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,9 +86,9 @@ public class CreditNameHensyuu extends Activity {
 			String albamN = extras.getString("albamN");
 			String sakiN = extras.getString("sakiN");
 			myFolder = extras.getString("myFolder");
-
-			myNFV_S_Pref = getSharedPreferences(getResources().getString(R.string.pref_main_file),MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			file_ex = myNFV_S_Pref.getString("pref_file_ex", getApplicationContext().getPackageResourcePath());	//メモリーカードの音楽ファイルフォルダ
+			readPref();
+//			sharedPref = getSharedPreferences(getResources().getString(R.string.pref_main_file),MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			file_ex = sharedPref.getString("pref_file_ex", getApplicationContext().getPackageResourcePath());	//メモリーカードの音楽ファイルフォルダ
 			if(file_ex.endsWith("\n")){
 				file_ex = file_ex.substring(0, file_ex.length()-3);
 			}

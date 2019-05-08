@@ -430,16 +430,13 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 	//設定変更反映//////////////////////////////////////////////////////////////////////////////////////////////////////////////起動項目////
 
-	public void readPref () {        //プリファレンスの読込み
+	public void readPref() {        //プリファレンスの読込み
 		final String TAG = "readPref";
 		String dbMsg = "[MuList]";
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
-			dbMsg += "完了";
-
-//			sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());			//	this.getSharedPreferences(this, MODE_PRIVATE);		//
 			sharedPref =myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 //			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
@@ -4129,8 +4126,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		final String TAG = "sousinnMaeSyori[MuList]";
 		String dbMsg = "[MuList]";
 		try{
-			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			myEditor = sharedPref.edit();
+//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			myEditor = sharedPref.edit();
 			dbMsg +=  "nowList[" + nowList_id + "]" + nowList +"→操作中のリスト[" + sousalistID + "]" + sousalistName ;	////////////////
 			boolean listHenkou = false;
 			if( ! nowList.equals(sousalistName)){
@@ -5441,6 +5438,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 			pl_sp.setAdapter(sAdapter);	// spinner に adapter をセット
 			if(0< plNameSL.size()){
+				dbMsg += ",sousalistName=" + sousalistName;
 				int ePosition = plNameSL.indexOf(sousalistName);
 				dbMsg += ",zenkyokuAri=" + zenkyokuAri;
 				dbMsg += ",ePosition=" + ePosition;
@@ -8451,8 +8449,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 						dbMsg += "、すでにリクエスト実行中="+ MuList.this.requestJikkoucyuu;/////////////////////////////////////
 						if( ! MuList.this.requestJikkoucyuu){					// && ! nowList.equals(getResources().getString(R.string.playlist_namae_request))
 							dbMsg += ",保留["+ nowList_id + "]"+ nowList + ",dataFN= "+ dataFN ;////////
-							sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-							myEditor = sharedPref.edit();
+//							sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//							myEditor = sharedPref.edit();
 							myEditor.putString( "maeList", String.valueOf(MuList.this.nowList));
 							myEditor.putString( "maeList_id", String.valueOf(MuList.this.nowList_id));		//☆intで書き込むとcannot be cast
 

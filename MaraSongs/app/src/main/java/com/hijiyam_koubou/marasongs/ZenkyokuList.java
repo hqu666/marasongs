@@ -28,6 +28,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -160,7 +161,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public int comCount;			//コンピレーションなど末尾につける匿名
 
 
-	public void readPref () {        //プリファレンスの読込み
+	public void readPref() {        //プリファレンスの読込み
 		final String TAG = "readPref";
 		String dbMsg = "[ZenkyokuList]";
 		try {
@@ -212,6 +213,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				reqCode = pt_start;
 				dbMsg=dbMsg + ">> " +reqCode;/////////////////////////////////////
 			}
+			readPref();
 			//		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT);			//これを入れるとダイアログが最大化される。
 			setContentView(R.layout.pd_log);
 			pdg_scroll = (ScrollView) findViewById(R.id.pdg_scroll);		//スクロール
@@ -340,7 +342,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			rDir = saveDir.split(File.separator);
 			inDrive = rDir[0] + File.separator+ rDir[1] + File.separator+ rDir[2];
 			dbMsg=dbMsg +"、(do前)内蔵メモリ="+ inDrive + ",メモリカード="+ exDrive;
-			sharedPref = this.cContext.getSharedPreferences( this.cContext.getResources().getString(R.string.pref_main_file) , this.cContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			sharedPref = this.cContext.getSharedPreferences( this.cContext.getResources().getString(R.string.pref_main_file) , this.cContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			pNFVeditor = sharedPref.edit();
 			Map<String, ?> keys = sharedPref.getAll();
 			dbMsg=dbMsg +",keys="+ keys.size() +"件" ;
@@ -677,29 +679,29 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		final String TAG = "preReadEnd[ZenkyokuList]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
-//			pNFVeditor = sharedPref.edit();
-//			dbMsg=kyoku+"曲";
-//			pNFVeditor.putString( "pref_file_kyoku", String.valueOf(kyoku));		//総曲数
-//			dbMsg= dbMsg + "、更新日="+ ZenkyokuList.this.saisinnbi;
-//			pNFVeditor.putString( "pref_file_saisinn", ZenkyokuList.this.saisinnbi);					//最新更新日
-//			dbMsg= dbMsg +",メモリーカード="+ZenkyokuList.this.exDir;
-//			if(! ZenkyokuList.this.exDir.equals("")){
-//				pNFVeditor.putString( "pref_file_ex", File.separator + ZenkyokuList.this.exDir);								//メモリーカード
-//			}
-//			dbMsg= dbMsg +",内蔵メモリ="+ ZenkyokuList.this.inDir;		//+"（合計；"+mDir.size();
-//			if(! ZenkyokuList.this.inDir.equals("")){
-//				pNFVeditor.putString( "pref_file_in", File.separator + ZenkyokuList.this.inDir);								//内蔵メモリ
-//			}
-////			if(Integer.parseInt(Build.VERSION.SDK) < 19){								//kitcut以前なら
-////				file_wr = File.separator + exDir + this.cContext.getString(R.string.app_name) +File.separator ;
-////			}else{
-////				file_wr = File.separator + this.cContext.getFilesDir().toString();
-////			}
-////			dbMsg= dbMsg +",設定保存フォルダ?"+file_wr;
-////			pNFVeditor.putString( "pref_file_wr", file_wr);
-//			boolean kakikomi = pNFVeditor.commit();	// データの保存
-//			dbMsg= dbMsg+ "、書き込み" + kakikomi;
-//	//		myLog(TAG,dbMsg);
+			pNFVeditor = sharedPref.edit();
+			dbMsg=kyoku+"曲";
+			pNFVeditor.putString( "pref_file_kyoku", String.valueOf(kyoku));		//総曲数
+			dbMsg= dbMsg + "、更新日="+ ZenkyokuList.this.saisinnbi;
+			pNFVeditor.putString( "pref_file_saisinn", ZenkyokuList.this.saisinnbi);					//最新更新日
+			dbMsg= dbMsg +",メモリーカード="+ZenkyokuList.this.exDir;
+			if(! ZenkyokuList.this.exDir.equals("")){
+				pNFVeditor.putString( "pref_file_ex", File.separator + ZenkyokuList.this.exDir);								//メモリーカード
+			}
+			dbMsg= dbMsg +",内蔵メモリ="+ ZenkyokuList.this.inDir;		//+"（合計；"+mDir.size();
+			if(! ZenkyokuList.this.inDir.equals("")){
+				pNFVeditor.putString( "pref_file_in", File.separator + ZenkyokuList.this.inDir);								//内蔵メモリ
+			}
+			String file_wr;
+			if(Integer.parseInt(Build.VERSION.SDK) < 19){								//kitcut以前なら
+				file_wr = File.separator + exDir + this.cContext.getString(R.string.app_name) +File.separator ;
+			}else{
+				file_wr = File.separator + this.cContext.getFilesDir().toString();
+			}
+			dbMsg= dbMsg +",設定保存フォルダ?"+file_wr;
+			pNFVeditor.putString( "pref_file_wr", file_wr);
+			boolean kakikomi = pNFVeditor.commit();	// データの保存
+			dbMsg= dbMsg+ "、書き込み" + kakikomi;
 
 			int nextCount = cursor.getCount();			//3.次のステップ数
 			cursor.close();
@@ -725,6 +727,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				pdMes = pdMessage_stok +"["+dousaJikann + "mS]";		//	<string name="">所要時間</string>
 				kaliAartistList();				//アルバムアーティストリストアップ
 	//		}
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -1435,9 +1438,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	//				 +	";"+ this.cContext.getString(R.string.comon_album)+ albumCount +this.cContext.getString(R.string.pp_mai); 			//アルバム○">枚</string>
 			pdMessage_stok = pdMessage_stok + "\n" +"[" +dousaJikann + "mS]";		//所要時間
 			dbMsg= dbMsg + ";; " +pdMessage_stok;//////
-	//		myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 			jyuufukuSakujyo();				//コンピレーション抽出；アルバムアーティスト名の重複
-		//	CreateZenkyokuList();				//全曲リスト作成
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -1488,7 +1490,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 /*http://www.shift-the-oracle.com/sql/group-by-having.html
  * http://www.atmarkit.co.jp/ait/articles/0706/21/news128.html
  * */
-		//		myLog(TAG,dbMsg);
+//				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
 			}				//if( cursor.moveToFirst()){
 	//		myLog(TAG,dbMsg);
@@ -1566,9 +1568,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							return ((Integer)entry2.getValue()).compareTo((Integer)entry1.getValue());
 						}
 					});
-//					for (Entry<String,Integer> s : entries) {
-//						dbMsg +="," + s.getKey() +"=" + s.getValue() +"曲";
-//					}
 					String rArtistName = entries.get(0).getKey();				//.get("ALBUM_ARTIST"):
 					int saidai = entries.get(0).getValue();
 					dbMsg +=",最多=" + rArtistName +"=" + saidai +"曲";
@@ -1952,19 +1951,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 						albumName = String.valueOf(cVal);
 					}
 				}
-
-//				if( cName.equals("ARTIST") || cName.equals("ALBUM_ARTIST") ){
-//					if(cVal.equals(getApplicationContext().getResources().getString(R.string.comon_nuKnow_artist))){
-//						myLog(TAG,dbMsg);
-//					}
-//				}else if( cName.equals("ALBUM") ){
-//					if(cVal.equals(getApplicationContext().getResources().getString(R.string.comon_nuKnow_album))){
-//						myLog(TAG,dbMsg);
-//					}
-//				}
 			}
 //			if( ! artist_name.equals(albumName) ){
-		//		myLog(TAG,dbMsg );
+//				myLog(TAG,dbMsg );
 //			}
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());

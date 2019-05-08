@@ -25,8 +25,8 @@ import android.util.Log;
 public class Item implements Comparable<Object> {	// 外部ストレージ上の音楽をあらわすクラス。
 
 	//プリファレンス
-	public static SharedPreferences main_pref;
-	public static Editor pNFVeditor ;
+	public static SharedPreferences sharedPref;
+	public Editor myEditor ;
 //	public static int nowList_id;
 	private static List<Item> items;
 	private static final String TAG = "Item";
@@ -64,8 +64,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 
 
 //			String[] c_selectionArgs= { String.valueOf(id) };   			//⑥引数groupByには、groupBy句を指定します。
-//			main_pref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			Map<String, ?> keys = main_pref.getAll();
+//			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			Map<String, ?> keys = sharedPref.getAll();
 //			int nowList_id = Integer.valueOf(keys.get("nowList_id").toString());	//
 //			dbMsg +=  ">再生中のプレイリストID=" +  String.valueOf(nowList_id)  ;
 //			if(0 < nowList_id){
@@ -192,13 +192,13 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			Cursor cursor = null;
 			int nowList_id = 0;
 		//	dbMsg = "context=" + context ;
-			main_pref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-		//	dbMsg +=  ",main_pref=" + main_pref  ;
-			Map<String, ?> keys = main_pref.getAll();
-//			boolean kAri = main_pref.contains("nowList_id");
+			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+		//	dbMsg +=  ",sharedPref=" + sharedPref  ;
+			Map<String, ?> keys = sharedPref.getAll();
+//			boolean kAri = sharedPref.contains("nowList_id");
 //		//	dbMsg = ",nowList_id有り=" + kAri  ;
 //			if(kAri){
-				String rVal = main_pref.getString("nowList_id", "-1");
+				String rVal = sharedPref.getString("nowList_id", "-1");
 				dbMsg += ",prefのプレイリスト[" + rVal ;				//in16.pla=29236
 				nowList_id = Integer.valueOf(rVal);			//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
 	//		}
@@ -235,7 +235,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					String ieKubunn = "internal";
 //					String extV = Environment.getExternalStorageDirectory().toString() ;
 ////					dbMsg +=",nowList_data＝" + nowList_data  ;
-//					String nowList_data = String.valueOf(main_pref.getString("nowList_data","").toString());
+//					String nowList_data = String.valueOf(sharedPref.getString("nowList_data","").toString());
 //					dbMsg +=  ">保存場所=" +  String.valueOf(nowList_data)  ;
 //					if(nowList_data.contains(extV)){
 						ieKubunn = "external";
@@ -286,7 +286,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 						}while(cursor.moveToNext());
 					}
 				}else{
-					main_pref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file),android.content.Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+					sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file),android.content.Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 					String fn = context.getResources().getString(R.string.zenkyoku_file);			//全曲リスト
 					File dbF = context.getDatabasePath(fn);			//☆初回時は未だDBが作られていないのでgetApplicationContext()
 					fn = dbF.getPath();

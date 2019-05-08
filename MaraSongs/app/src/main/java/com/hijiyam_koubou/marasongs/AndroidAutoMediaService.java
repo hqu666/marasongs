@@ -53,7 +53,7 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 			if( ORGUT == null ) {
 				ORGUT = new OrgUtil();	//自作関数集
 			}
-
+			readPref();
 			mPlayingQueue = new ArrayList<MediaSession.QueueItem>();		// 再生リストのオブジェクトを作る
 			mMediaSession = new MediaSession(this, "MyMediaSession");		// MediaSessionを生成
 			setSessionToken(mMediaSession.getSessionToken());
@@ -67,8 +67,7 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 	
 //データ送受信/////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	//プリファレンス
-	public SharedPreferences main_pref;
-	public Editor mainEditor ;
+	public SharedPreferences sharedPref;
 	public Editor myEditor ;
 	public String nowList;				//再生中のプレイリスト名
 	public int nowList_id = 0;			//再生中のプレイリストID
@@ -107,158 +106,203 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 	public List<String> pref_toneList;		//プリファレンス保存用トーンリスト
 	public boolean bBoot = false;					//バスブート
 
-	@SuppressWarnings("unchecked")
-	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み
-		//http://d.hatena.ne.jp/Kazzz/20100715/p1
-		final String TAG = "setteriYomikomi[AndroidAutoMediaService]";
-		String dbMsg="開始";/////////////////////////////////////
-		long start = System.currentTimeMillis();		// 開始時刻の取得
-		try{
-			if( ORGUT == null ) {
-				ORGUT = new OrgUtil();	//自作関数集
-			}
-		String fName =  "/data/data/" +getPackageName()+"/shared_prefs/" + getString(R.string.pref_main_file) +".xml";
-			dbMsg="fName = " + fName;/////////////////////////////////////
-			File tFile = new File(fName);
-			dbMsg= dbMsg +">>有無 = " + tFile.exists();/////////////////////////////////////
-			main_pref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			mainEditor = main_pref.edit();
-			dbMsg= dbMsg +">>" + tFile.exists();/////////////////////////////////////
-			if( ! tFile.exists()){
-				dbMsg="shared_prefs無し";/////////////////////////////////////
-			}
-			Map<String, ?> keys = main_pref.getAll();
-			if( keys.size() > 0 ){			//プリファレンスが出来ている
-				int i=0;
-				i=0;
-				for (String key : keys.keySet()) {
-					i++;
-					dbMsg =  i+"/"+keys.size()+")　"+key;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-					if( keys.get(key) != null){			//if( readStr != null || ! readStr.equals("")){
-						dbMsg +="は "+String.valueOf(keys.get(key));///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-						try{
-							if(key.equals("pref_gyapless")){					//クロスフェード時間
-								dbMsg +=  "クロスフェード時間"+crossFeadTime ;////////////////////////////////////////////////////////////////////////////
-								crossFeadTime = Integer.valueOf(keys.get(key).toString());
-							}else if(key.equals("pref_list_simple")){
-								dbMsg += "は"+(keys.get(key)).toString()+ ">>シンプルなリスト表示（サムネールなど省略）"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
-								pref_list_simple = Boolean.valueOf((String) keys.get(key)) ;
-								dbMsg +=  ">>"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
-							}else if(key.equals("pref_saisei_fname")){
-								dbMsg +=  ">>再生中のファイル名" ;////////////////////////////////////////////////////////////////////////////
-								dataFN = String.valueOf(keys.get(key));							//再生中のファイル名//DATA;The data stream for the file ;Type: DATA STREAM
-								dbMsg =">>再生中のファイル名" + dataFN ;//// pref_saisei_fname //////
-								File chFile = new File(dataFN);
-								dbMsg += " , " + dataFN +"="+chFile.exists();//////////////////
-								if(! chFile.exists() ){
-									mainEditor.remove("dataFN");
-									dataFN = null;
-									String  pdMes = getResources().getString(R.string.setteriYomikomi_data_meg) ;		//前回再生していた音楽ファイルが見つかりません。\n再生する曲を選択して下さい。</string>
-									dbMsg=dbMsg  + pdMes;
-									Toast.makeText(this, (CharSequence) pdMes, Toast.LENGTH_SHORT).show();
-								}
-							}else if(key.equals("pref_saisei_jikan")){
-								dbMsg += ">>再生中音楽ファイルの再開時間" ;//////////////////
-								mcPosition = Integer.valueOf(String.valueOf(keys.get(key)));				//選択中選択ポジション
-								dbMsg += "["+ORGUT.sdf_mss.format(mcPosition) + "/";////////////////////////////////////////////////////////////////////////////
-							}else if(key.equals("pref_saisei_nagasa")){
-								dbMsg += ">>再生中音楽ファイルの長さ";//////////////////
-								saiseiJikan = Integer.valueOf(String.valueOf(keys.get(key)));				//再生時間
-							}else if(key.equals("pref_cyakusinn_fukki")){			//着信後の復帰
-								pref_cyakusinn_fukki = Boolean.valueOf(keys.get(key).toString());
-									dbMsg +=  "着信後の復帰=" + pref_cyakusinn_fukki;////////////////////////////////////////////////////////////////////////////
-							}else if(key.equals("pref_compBunki")){
-								dbMsg += ">>コンピレーション分岐点" ;//////////////////
-								pref_compBunki = String.valueOf(keys.get(key));			//コンピレーション分岐点
-							}else if(key.equals("nowList")){			//");
-								dbMsg +=  ">再生中のプレイリスト名=" ;
-								nowList = String.valueOf(keys.get(key).toString());
-								dbMsg +=   String.valueOf(nowList)  ;
-							}else if(key.equals("nowList_id")){			//");
-								dbMsg +=  ">再生中のプレイリストID=" ;
-								nowList_id = Integer.valueOf(keys.get(key).toString());	//
-								dbMsg +=   String.valueOf(nowList_id)  ;
-							}else if(key.equals("repeatType")){			//");;			//
-								dbMsg +=  ">リピート再生の種類=" ;
-								repeatType = Integer.valueOf(String.valueOf(keys.get(key)));	//
-								if(repeatType != MaraSonActivity.rp_point){
-									pp_start = 0;
-								}
-								dbMsg +=   String.valueOf(repeatType)  ;
-							}else if(key.equals("repeatArtist")){			//");;			//
-								dbMsg +=  ">リピートさせるアーティスト名=" ;
-								repeatArtist = String.valueOf(keys.get(key).toString());	//
-								dbMsg +=   String.valueOf(repeatType)  ;
-							}else if(key.equals("pref_nitenkan")){			//");
-								rp_pp = Boolean.valueOf(keys.get(key).toString());	//
-								dbMsg +=  "二点間再生中=" + rp_pp;	//
-							}else if(key.equals("pref_nitenkan_start")){			//");
-								pp_start = Integer.valueOf(keys.get(key).toString());	//
-								dbMsg +=  "二点間再生開始点=" + pp_start ;////////pref_nitenkan_start//////////
-							}else if(key.equals("pref_nitenkan_end")){			//");
-								pp_end = Integer.valueOf(keys.get(key).toString());	//
-								dbMsg +=  "二点間再生終了点=" + pp_end ;/////pref_nitenkan_end////////////////////////////
-							}else if(key.equals("mIndex")){			//");
-								dbMsg +=  ",play_order=ID=" ;
-								mIndex = Integer.valueOf(keys.get(key).toString());	//
-								dbMsg +=   String.valueOf(mIndex)  ;
-							}else if(key.equals("nowList_data")){			//");
-								dbMsg +=  ",プレイリストの保存場所=" ;
-								nowList_data = String.valueOf(keys.get(key).toString());
-								dbMsg +=   String.valueOf(nowList_data)  ;
-							}else if(key.equals("pref_bt_renkei")){			//");
-								dbMsg +=  ">>Bluetoothの接続に連携=" ;
-								pref_bt_renkei = Boolean.valueOf(keys.get(key).toString());
-								dbMsg +=   String.valueOf(pref_bt_renkei)  ;////////////////	 Bluetoothの接続に連携して一時停止/再開////////////////////////////////////////////////////////////
+	public void readPref() {        //プリファレンスの読込み
+		final String TAG = "readPref";
+		String dbMsg = "[MuList]";
+		try {
+			MyPreferences myPreferences = new MyPreferences();
+			dbMsg += "MyPreferencesy読込み";
+			myPreferences.readPrif(this);
+			sharedPref =myPreferences.sharedPref;
+			myEditor =myPreferences.myEditor;
 
-							}else if(key.equals("tone_name")){
-								tone_name = String.valueOf(keys.get(key).toString());	//
-								dbMsg +=  "トーン名称=" + tone_name ;
-				//				myLog(TAG, dbMsg);
-							}else if(key.equals("pref_toneList")){				//http://qiita.com/tomoima525/items/f8cf688ad9571d17df41
-								String stringList = String.valueOf(keys.get(key));											//bundle.getString("list");  //key名が"list"のものを取り出す
-								dbMsg +=  ",stringList= " + stringList;
-								try {
-									JSONArray array = new JSONArray(stringList);
-									dbMsg +=  ",array= " + array;
-									int length = array.length();
-									dbMsg +=  "= " + length +"件";
-									pref_toneList =  new ArrayList<String>();				//トーンリストの初期化
-									for(int j = 0; j < length; j++){
-										dbMsg +=  "(" + j + "/" + length  + ")" + array.optString(j);
-										pref_toneList.add(array.optString(j));
-									}
-								} catch (JSONException e1) {
-									e1.printStackTrace();
-								}
-								dbMsg +=  ",トーン配列=" + pref_toneList ;
-				//				myLog(TAG, dbMsg);
-							}else if(key.equals("bBoot")){
-								bBoot = Boolean.valueOf(keys.get(key).toString());	//
-								dbMsg +=  "バスブート=" + bBoot ;
-							}else if(key.equals("reverbBangou")){
-								reverbBangou = Short.valueOf(keys.get(key).toString());	//
-								dbMsg +=  "リバーブ効果番号=" + reverbBangou ;
+			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
+			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
 
-							}
-		//					myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							Log.e(TAG,dbMsg+"；"+e);
-						}
-					}
-				}			//for (String key : keys.keySet())
-				//読み込み/////////////////////////////////////////////////////
-				long end=System.currentTimeMillis();		// 終了時刻の取得
-				dbMsg=(int)((end - start)) + "mS";		//	<string name="">所要時間</string>
-		//		myLog(TAG, dbMsg);
-			}
-			long end=System.currentTimeMillis();		// 終了時刻の取得
-			dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
-//			myLog(TAG, dbMsg);
-		}catch (Exception e) {
-			Log.e(TAG,dbMsg +"で"+e.toString());
+			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
+			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
+			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
+			repeatType = myPreferences.repeatType;							//リピート再生の種類
+			rp_pp = myPreferences.rp_pp;							//2点間リピート中
+			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
+			pp_end = Integer.parseInt(myPreferences.pp_end);								//リピート区間終了点
+
+			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
+			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
+			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
+			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
+			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
+			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
+			play_order = myPreferences.play_order;
+			//アーティストごとの情報
+			artistID = myPreferences.artistID;
+			//アルバムごとの情報
+			albumID = myPreferences.albumID;
+			//曲ごとの情報
+			audioID = myPreferences.audioID;
+			dataURL = myPreferences.dataURL;
+			pref_toneList = myPreferences.pref_toneList;		//プリファレンス保存用トーンリスト
+			tone_name = myPreferences.tone_name;				//トーン名称
+			bBoot = myPreferences.bBoot;					//バスブート
+			reverbBangou = myPreferences.reverbBangou;				//リバーブ効果番号
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
-	}
+	}																	//設定読込・旧バージョン設定の消去
+
+
+	@SuppressWarnings("unchecked")
+//	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み
+//		final String TAG = "setteriYomikomi[AndroidAutoMediaService]";
+//		String dbMsg="開始";/////////////////////////////////////
+//		long start = System.currentTimeMillis();		// 開始時刻の取得
+//		try{
+//			if( ORGUT == null ) {
+//				ORGUT = new OrgUtil();	//自作関数集
+//			}
+//		String fName =  "/data/data/" +getPackageName()+"/shared_prefs/" + getString(R.string.pref_main_file) +".xml";
+//			dbMsg="fName = " + fName;/////////////////////////////////////
+//			File tFile = new File(fName);
+//			dbMsg= dbMsg +">>有無 = " + tFile.exists();/////////////////////////////////////
+//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			mainEditor = sharedPref.edit();
+//			dbMsg= dbMsg +">>" + tFile.exists();/////////////////////////////////////
+//			if( ! tFile.exists()){
+//				dbMsg="shared_prefs無し";/////////////////////////////////////
+//			}
+//			Map<String, ?> keys = sharedPref.getAll();
+//			if( keys.size() > 0 ){			//プリファレンスが出来ている
+//				int i=0;
+//				i=0;
+//				for (String key : keys.keySet()) {
+//					i++;
+//					dbMsg =  i+"/"+keys.size()+")　"+key;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
+//					if( keys.get(key) != null){			//if( readStr != null || ! readStr.equals("")){
+//						dbMsg +="は "+String.valueOf(keys.get(key));///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
+//						try{
+//							if(key.equals("pref_gyapless")){					//クロスフェード時間
+//								dbMsg +=  "クロスフェード時間"+crossFeadTime ;////////////////////////////////////////////////////////////////////////////
+//								crossFeadTime = Integer.valueOf(keys.get(key).toString());
+//							}else if(key.equals("pref_list_simple")){
+//								dbMsg += "は"+(keys.get(key)).toString()+ ">>シンプルなリスト表示（サムネールなど省略）"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
+//								pref_list_simple = Boolean.valueOf((String) keys.get(key)) ;
+//								dbMsg +=  ">>"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
+//							}else if(key.equals("pref_saisei_fname")){
+//								dbMsg +=  ">>再生中のファイル名" ;////////////////////////////////////////////////////////////////////////////
+//								dataFN = String.valueOf(keys.get(key));							//再生中のファイル名//DATA;The data stream for the file ;Type: DATA STREAM
+//								dbMsg =">>再生中のファイル名" + dataFN ;//// pref_saisei_fname //////
+//								File chFile = new File(dataFN);
+//								dbMsg += " , " + dataFN +"="+chFile.exists();//////////////////
+//								if(! chFile.exists() ){
+//									mainEditor.remove("dataFN");
+//									dataFN = null;
+//									String  pdMes = getResources().getString(R.string.setteriYomikomi_data_meg) ;		//前回再生していた音楽ファイルが見つかりません。\n再生する曲を選択して下さい。</string>
+//									dbMsg=dbMsg  + pdMes;
+//									Toast.makeText(this, (CharSequence) pdMes, Toast.LENGTH_SHORT).show();
+//								}
+//							}else if(key.equals("pref_saisei_jikan")){
+//								dbMsg += ">>再生中音楽ファイルの再開時間" ;//////////////////
+//								mcPosition = Integer.valueOf(String.valueOf(keys.get(key)));				//選択中選択ポジション
+//								dbMsg += "["+ORGUT.sdf_mss.format(mcPosition) + "/";////////////////////////////////////////////////////////////////////////////
+//							}else if(key.equals("pref_saisei_nagasa")){
+//								dbMsg += ">>再生中音楽ファイルの長さ";//////////////////
+//								saiseiJikan = Integer.valueOf(String.valueOf(keys.get(key)));				//再生時間
+//							}else if(key.equals("pref_cyakusinn_fukki")){			//着信後の復帰
+//								pref_cyakusinn_fukki = Boolean.valueOf(keys.get(key).toString());
+//									dbMsg +=  "着信後の復帰=" + pref_cyakusinn_fukki;////////////////////////////////////////////////////////////////////////////
+//							}else if(key.equals("pref_compBunki")){
+//								dbMsg += ">>コンピレーション分岐点" ;//////////////////
+//								pref_compBunki = String.valueOf(keys.get(key));			//コンピレーション分岐点
+//							}else if(key.equals("nowList")){			//");
+//								dbMsg +=  ">再生中のプレイリスト名=" ;
+//								nowList = String.valueOf(keys.get(key).toString());
+//								dbMsg +=   String.valueOf(nowList)  ;
+//							}else if(key.equals("nowList_id")){			//");
+//								dbMsg +=  ">再生中のプレイリストID=" ;
+//								nowList_id = Integer.valueOf(keys.get(key).toString());	//
+//								dbMsg +=   String.valueOf(nowList_id)  ;
+//							}else if(key.equals("repeatType")){			//");;			//
+//								dbMsg +=  ">リピート再生の種類=" ;
+//								repeatType = Integer.valueOf(String.valueOf(keys.get(key)));	//
+//								if(repeatType != MaraSonActivity.rp_point){
+//									pp_start = 0;
+//								}
+//								dbMsg +=   String.valueOf(repeatType)  ;
+//							}else if(key.equals("repeatArtist")){			//");;			//
+//								dbMsg +=  ">リピートさせるアーティスト名=" ;
+//								repeatArtist = String.valueOf(keys.get(key).toString());	//
+//								dbMsg +=   String.valueOf(repeatType)  ;
+//							}else if(key.equals("pref_nitenkan")){			//");
+//								rp_pp = Boolean.valueOf(keys.get(key).toString());	//
+//								dbMsg +=  "二点間再生中=" + rp_pp;	//
+//							}else if(key.equals("pref_nitenkan_start")){			//");
+//								pp_start = Integer.valueOf(keys.get(key).toString());	//
+//								dbMsg +=  "二点間再生開始点=" + pp_start ;////////pref_nitenkan_start//////////
+//							}else if(key.equals("pref_nitenkan_end")){			//");
+//								pp_end = Integer.valueOf(keys.get(key).toString());	//
+//								dbMsg +=  "二点間再生終了点=" + pp_end ;/////pref_nitenkan_end////////////////////////////
+//							}else if(key.equals("mIndex")){			//");
+//								dbMsg +=  ",play_order=ID=" ;
+//								mIndex = Integer.valueOf(keys.get(key).toString());	//
+//								dbMsg +=   String.valueOf(mIndex)  ;
+//							}else if(key.equals("nowList_data")){			//");
+//								dbMsg +=  ",プレイリストの保存場所=" ;
+//								nowList_data = String.valueOf(keys.get(key).toString());
+//								dbMsg +=   String.valueOf(nowList_data)  ;
+//							}else if(key.equals("pref_bt_renkei")){			//");
+//								dbMsg +=  ">>Bluetoothの接続に連携=" ;
+//								pref_bt_renkei = Boolean.valueOf(keys.get(key).toString());
+//								dbMsg +=   String.valueOf(pref_bt_renkei)  ;////////////////	 Bluetoothの接続に連携して一時停止/再開////////////////////////////////////////////////////////////
+//
+//							}else if(key.equals("tone_name")){
+//								tone_name = String.valueOf(keys.get(key).toString());	//
+//								dbMsg +=  "トーン名称=" + tone_name ;
+//				//				myLog(TAG, dbMsg);
+//							}else if(key.equals("pref_toneList")){				//http://qiita.com/tomoima525/items/f8cf688ad9571d17df41
+//								String stringList = String.valueOf(keys.get(key));											//bundle.getString("list");  //key名が"list"のものを取り出す
+//								dbMsg +=  ",stringList= " + stringList;
+//								try {
+//									JSONArray array = new JSONArray(stringList);
+//									dbMsg +=  ",array= " + array;
+//									int length = array.length();
+//									dbMsg +=  "= " + length +"件";
+//									pref_toneList =  new ArrayList<String>();				//トーンリストの初期化
+//									for(int j = 0; j < length; j++){
+//										dbMsg +=  "(" + j + "/" + length  + ")" + array.optString(j);
+//										pref_toneList.add(array.optString(j));
+//									}
+//								} catch (JSONException e1) {
+//									e1.printStackTrace();
+//								}
+//								dbMsg +=  ",トーン配列=" + pref_toneList ;
+//				//				myLog(TAG, dbMsg);
+//							}else if(key.equals("bBoot")){
+//								bBoot = Boolean.valueOf(keys.get(key).toString());	//
+//								dbMsg +=  "バスブート=" + bBoot ;
+//							}else if(key.equals("reverbBangou")){
+//								reverbBangou = Short.valueOf(keys.get(key).toString());	//
+//								dbMsg +=  "リバーブ効果番号=" + reverbBangou ;
+//
+//							}
+//		//					myLog(TAG, dbMsg);
+//						} catch (Exception e) {
+//							Log.e(TAG,dbMsg+"；"+e);
+//						}
+//					}
+//				}			//for (String key : keys.keySet())
+//				//読み込み/////////////////////////////////////////////////////
+//				long end=System.currentTimeMillis();		// 終了時刻の取得
+//				dbMsg=(int)((end - start)) + "mS";		//	<string name="">所要時間</string>
+//		//		myLog(TAG, dbMsg);
+//			}
+//			long end=System.currentTimeMillis();		// 終了時刻の取得
+//			dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
+////			myLog(TAG, dbMsg);
+//		}catch (Exception e) {
+//			Log.e(TAG,dbMsg +"で"+e.toString());
+//		}
+//	}
 
 	
 	
@@ -271,6 +315,7 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 			dbMsg = "intent = " + intent;
 			dbMsg +=",flags = " + flags;
 			dbMsg +=",startId = " + startId;
+			readPref();
 				myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -415,49 +460,6 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 		return false;
 	}
 
-//	
-//	
-//	public void makeMediaNotification() {
-//		final String TAG = "makeMediaNotification[MusicPlayerService]";
-//		String dbMsg="開始";/////////////////////////////////////
-//		try{
-//			PendingIntent prevPendingIntent;
-//			PendingIntent pausePendingIntent;
-//			PendingIntent nextPendingIntent;
-//			
-//			mPlayingQueue = new ArrayList<MediaSession.QueueItem>();		// 再生リストのオブジェクトを作る
-//			mMediaSession = new MediaSession(this, "MyMediaSession");		// MediaSessionを生成
-//			setSessionToken(mMediaSession.getSessionToken());
-//			mMediaSession.setCallback(new MyMediaSessionCallback());		// コールバックを設定
-//			mCurrentQueueIndex = 0;		// 再生キューの位置を初期化
-//			
-//			String albumArt =MusicPlayerService.this.album_art;
-//			dbMsg +=",albumArt="+ albumArt;
-//			notifAlbumArt = ORGUT.retBitMap( albumArt  , 112 , 112 ,  getResources() );		//指定したURiのBitmapを返す	 , dHighet , dWith ,
-//			dbMsg= dbMsg + ",art=" + album_art ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
-//
-//			Notification notification = new Notification.Builder(getApplicationContext())
-//			.setVisibility(Notification.VISIBILITY_PUBLIC)
-//			.setSmallIcon(R.drawable.play40)									//ic_stat_player; Show controls on lock screen even when user hides sensitive content.
-//			.addAction(R.drawable.play_notif, "Previous", prevPendingIntent)	//ic_prev		 #0	// Add media control buttons that invoke intents in your media service
-//			.addAction(R.drawable.pouse40, "Pause", pausePendingIntent)			//ic_pause		 #1
-//			.addAction(R.drawable.ffbtn, "Next", nextPendingIntent)				//ic_next		 #2
-//			.setStyle(new Notification.MediaStyle()								// Apply the media style template
-//			.setShowActionsInCompactView(1)										 /* #1: pause button */
-//			.setMediaSession(mMediaSession.getSessionToken())
-//			.setContentTitle(playingItem.title)
-//			.setContentText(playingItem.artist)
-//			.setLargeIcon(album_art)
-//			.build());
-//			
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-//
-//	
-	
-	
 
 	private final class MyMediaSessionCallback extends MediaSession.Callback {
 

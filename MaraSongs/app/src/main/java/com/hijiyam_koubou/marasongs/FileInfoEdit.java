@@ -44,10 +44,8 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 	private AlertDialog alertDialog;
 	private Context ｒContext;		//呼出し元のコンテキスト
 	private long start=0;
-	public SharedPreferences myNFV_S_Pref;
+	public SharedPreferences sharedPref;
 	public Editor myEditor ;
-//	public SharedPreferences artist_l_Pref;				//アーティストリストファイル
-//	public Editor alEditor;
 //	public String alPFN = "al_pref";
 	public ArtistRwHelper arhelper;		//アーティスト名の置き換えリストの定義ファイル
 	public SQLiteDatabase ar_db;	//アーティスト名の置き換えリストファイル
@@ -107,6 +105,23 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //	private static String accType = null;				//登録先タイプ
 //	private static String gID = null;				//書き込み先のグループID
 	private int retInt;
+
+
+	public void readPref() {        //プリファレンスの読込み
+		final String TAG = "readPref";
+		String dbMsg = "[MuList]";
+		try {
+			MyPreferences myPreferences = new MyPreferences();
+			dbMsg += "MyPreferencesy読込み";
+			myPreferences.readPrif(ｒContext);
+			sharedPref =myPreferences.sharedPref;
+			myEditor =myPreferences.myEditor;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}																	//設定読込・旧バージョン設定の消去
+
 
 	protected FileInfoEdit(Context context , int taisyou , String data , String cAName , String AName , String album , String rYear, String titol) {
 		//呼出し元のコンテキスト、クレジットされているアーティスト名,クレジットされているアーティスト名,
@@ -305,10 +320,11 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //			//		accName = extras.getString("accName");	//登録先名
 //			//		accType = extras.getString("accType");	//登録先タイプ
 //			//		gID = extras.getString("gID");			//書き込み先のグループID
-			String pefName = ｒContext.getResources().getString(R.string.pref_main_file);
-			myNFV_S_Pref = ｒContext.getSharedPreferences(pefName,ｒContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			file_ex = myNFV_S_Pref.getString("pref_file_ex", ｒContext.getPackageResourcePath());	//メモリーカードの音楽ファイルフォルダ
-			Map<String, ?> keys = myNFV_S_Pref.getAll();
+			readPref();
+//			String pefName = ｒContext.getResources().getString(R.string.pref_main_file);
+//			sharedPref = ｒContext.getSharedPreferences(pefName,ｒContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			file_ex = sharedPref.getString("pref_file_ex", ｒContext.getPackageResourcePath());	//メモリーカードの音楽ファイルフォルダ
+			Map<String, ?> keys = sharedPref.getAll();
 			file_ex = String.valueOf(keys.get("pref_file_ex"));	//メモリーカードの音楽ファイルフォルダ
 //			String fName = null;
 //			file_ex = "";
