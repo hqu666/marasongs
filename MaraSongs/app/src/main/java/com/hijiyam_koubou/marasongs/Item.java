@@ -402,7 +402,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		String dbMsg= "開始;";/////////////////////////////////////
 		try{
 			dbMsg=  "data=" + data ;/////////////////////////////////////
-			dbMsg= dbMsg + "を" + items.size() +"件から検索";/////////////////////////////////////
+			dbMsg +="を" + items.size() +"件から検索";/////////////////////////////////////
 			for( int i = 0 ;i< items.size() ; i++){
 	//	イテレータ	for( Item i : items){はjava.util.ConcurrentModificationException発生
 				String rStr = items.get(i).data;
@@ -412,7 +412,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					break;
 				}
 			}
-			dbMsg= dbMsg + ",retInt=" + retInt ;/////////////////////////////////////
+			dbMsg +=",retInt=" + retInt ;/////////////////////////////////////
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());

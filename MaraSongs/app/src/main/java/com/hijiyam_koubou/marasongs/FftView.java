@@ -135,7 +135,7 @@ public class FftView extends View {
 			dbMsg="currentHeight_=" + currentHeight_;/////////////////////////////////////
 			if(0< currentHeight_){
 				currentWidth_ = getWidth();
-				dbMsg= dbMsg + "/" + currentWidth_;/////////////////////////////////////
+				dbMsg +="/" + currentWidth_;/////////////////////////////////////
 				if(0< currentWidth_){
 					calculateViewSizeDependedData();
 				}
@@ -154,11 +154,11 @@ public class FftView extends View {
 			dbMsg= "[DISPLAY;" + DISPLAY_MINIMUM_HZ +"/" + DISPLAY_MAXIMUM_HZ + " HZ]";/////////////////////////////////////
 			minLogarithm_ = (int) Math.floor(Math.log10(DISPLAY_MINIMUM_HZ));		// 対数の範囲を計算
 			maxLogarithm_ = (int) Math.ceil(Math.log10(DISPLAY_MAXIMUM_HZ));		
-			dbMsg= dbMsg + "[" + minLogarithm_ +"/" + maxLogarithm_ + "]";/////////////////////////////////////
+			dbMsg +="[" + minLogarithm_ +"/" + maxLogarithm_ + "]";/////////////////////////////////////
 			logBlockWidth_ = (float) (getWidth() / (Math.log10(DISPLAY_MAXIMUM_HZ) - Math.log10(DISPLAY_MINIMUM_HZ)));		// 対数の区間あたりの幅
-			dbMsg= dbMsg + ",logBlockWidth_" + logBlockWidth_;/////////////////////////////////////
+			dbMsg +=",logBlockWidth_" + logBlockWidth_;/////////////////////////////////////
 			logOffsetX_ = (float) (Math.log10(DISPLAY_MINIMUM_HZ) * logBlockWidth_);		// X方向の表示オフセット
-			dbMsg= dbMsg + ",logOffsetX_" + logOffsetX_;/////////////////////////////////////
+			dbMsg +=",logOffsetX_" + logOffsetX_;/////////////////////////////////////
 			// グリッドの線の数を数えて領域を確保，座標を計算して格納
 			// 縦
 			int lineNumberX = 10 - (int) (DISPLAY_MINIMUM_HZ / Math.pow(10, minLogarithm_));
@@ -199,7 +199,7 @@ public class FftView extends View {
 				bandRects_[i].left = bandRegionMinX_ + (bandWidth_ * i) + BAND_INNER_OFFSET;
 				bandRects_[i].right = bandRects_[i].left + bandWidth_ - BAND_INNER_OFFSET;
 			}
-			dbMsg= dbMsg + ",bandRects_=" + bandRects_.length +"件";/////////////////////////////////////
+			dbMsg +=",bandRects_=" + bandRects_.length +"件";/////////////////////////////////////
 			
 			// シェーダーを設定
 			int color0 = getResources().getColor(FFT_DATA_SHADER_START_COLOR_ID);
@@ -263,7 +263,7 @@ public class FftView extends View {
 				calculateViewSizeDependedData();
 			}
 			drawLogGrid(canvas);		// グリッド描画
-			dbMsg= dbMsg + "、fftData_=" + fftData_ ;/////////////////////////////////////
+			dbMsg +="、fftData_=" + fftData_ ;/////////////////////////////////////
 			if (fftData_ == null){		// 波形データがない場合には処理を行わない
 				return;
 			}
@@ -287,7 +287,7 @@ public class FftView extends View {
 				for(int i = 0; i < bandNumber_; ++i){			// データの初期化
 					bandFftData_[i] = 0;
 				}
-				dbMsg= dbMsg + ",bandFftData_=" + bandFftData_.length + "件" ;/////////////////////////////////////
+				dbMsg +=",bandFftData_=" + bandFftData_.length + "件" ;/////////////////////////////////////
 				for(int i = 1; i < fftNum; ++i){												// データを順に見ていく
 					float frequency = (float) (i * samplingRate_ / 2) / fftNum;				// 注目しているデータの周波数
 					float x = (float) (Math.log10(frequency) * logBlockWidth_) - logOffsetX_;				// 表示位置から対応するバンドのインデックスを計算
@@ -301,28 +301,28 @@ public class FftView extends View {
 						}
 					}
 				}
-				dbMsg= dbMsg + ",bandFftData_=" + bandFftData_.length + "件" ;/////////////////////////////////////
+				dbMsg +=",bandFftData_=" + bandFftData_.length + "件" ;/////////////////////////////////////
 				for(int i = 0; i < bandNumber_; ++i){												// バーの高さを計算して描画
 					float db = (float) (20.0f * Math.log10(bandFftData_[i]/FFT_PEAK_VALUE));
 					float y = (float) (top - db / -DISPLAY_MINIMUM_DB * height );
 					bandRects_[i].top = y;
 					canvas.drawRect(bandRects_[i], fftDataPaint_);
 				}
-				dbMsg= dbMsg + ",bandRects_=" + bandRects_.length + "件" ;/////////////////////////////////////
+				dbMsg +=",bandRects_=" + bandRects_.length + "件" ;/////////////////////////////////////
 			}else{																				// データをそのまま線分で表示
 				int bottom = getBottom();
 				int right = getRight();
 				int left = getLeft();
-				dbMsg= dbMsg + ",bottom=" + bottom + ",right=" + right + ",left=" + left ;/////////////////////////////////////
+				dbMsg +=",bottom=" + bottom + ",right=" + right + ",left=" + left ;/////////////////////////////////////
 				float frequency = 0;
 				float x = 0;
 				for(int i = 1; i < fftNum; ++i){												// 直流成分(0番目)は計算しない
-					dbMsg= dbMsg + "[" + i + "/" + fftNum + "]";/////////////////////////////////////
+					dbMsg +="[" + i + "/" + fftNum + "]";/////////////////////////////////////
 					frequency = (float) (i * samplingRate_ / 2) / fftNum;				// 注目しているデータの周波数
-					dbMsg= dbMsg + frequency + "Hz";/////////////////////////////////////
+					dbMsg +=frequency + "Hz";/////////////////////////////////////
 					float amplitude = (float) Math.sqrt(Math.pow((float)fftData_[i * 2], 2) + Math.pow((float)fftData_[i * 2 + 1], 2));	// 振幅スペクトルからデシベル数を計算	fftData_はupdateで渡されるbyte[] bytes
 					float db = (float) (20.0f * Math.log10(amplitude / FFT_PEAK_VALUE));													//ピーク値；FFT_PEAK_VALUEは初期設定で(float) (128 * Math.sqrt(2));
-					dbMsg= dbMsg + db + "db";/////////////////////////////////////
+					dbMsg +=db + "db";/////////////////////////////////////
 					x = (float) (Math.log10(frequency) * logBlockWidth_) - logOffsetX_;				// 描画
 					if(x >= left && x <= right){
 						float y = (float) (top - db / -DISPLAY_MINIMUM_DB * height );

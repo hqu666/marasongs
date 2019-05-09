@@ -316,11 +316,11 @@ public class TagBrows  extends Activity implements plogTaskCallback{
 //			mp3file = new File(copyObject.mp3file.getAbsolutePath());
 //			filenameTag = new FilenameTag(copyObject.filenameTag);
 //			id3v2tag = (AbstractID3v2) TagUtility.copyObject(copyObject.id3v2tag);
-//			dbMsg= dbMsg + "id3v2tag=" + id3v2tag.toString();
+//			dbMsg +="id3v2tag=" + id3v2tag.toString();
 //			lyrics3tag = (AbstractLyrics3) TagUtility.copyObject(copyObject.lyrics3tag);
-//			dbMsg= dbMsg + "lyrics3tag=" + lyrics3tag.toString();
+//			dbMsg +="lyrics3tag=" + lyrics3tag.toString();
 //			id3v1tag = (ID3v1) TagUtility.copyObject(copyObject.id3v1tag);
-//			dbMsg= dbMsg + "id3v1tag=" + id3v1tag.toString();
+//			dbMsg +="id3v1tag=" + id3v1tag.toString();
 //			myLog(TAG,dbMsg);
 //		}catch (Exception e) {
 //			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -342,8 +342,8 @@ public class TagBrows  extends Activity implements plogTaskCallback{
 //			this.rContext = rContext;
 //			if( ! filename.equals(b_filePath) ){				//読み込み済みのファイルでなければ
 //				//		mp3file = new File(filename);
-//						dbMsg= dbMsg + "(SDK=" + String.valueOf(Build.VERSION.SDK) + ":";
-//						dbMsg= dbMsg + ",mp3file=" + mp3file  + ")";		//(SDK=19:,exists=false.WRITE_0.READ_0)
+//						dbMsg +="(SDK=" + String.valueOf(Build.VERSION.SDK) + ":";
+//						dbMsg +=",mp3file=" + mp3file  + ")";		//(SDK=19:,exists=false.WRITE_0.READ_0)
 //				//		myLog(TAG,dbMsg);
 //						b_filePath = filename;
 //			}
@@ -364,8 +364,8 @@ public class TagBrows  extends Activity implements plogTaskCallback{
 //		final String TAG = "TagBrows(file)[TagBrows]";
 //		String dbMsg= "開始";/////////////////////////////////////
 //		try{
-//			dbMsg= dbMsg + "(SDK=" + String.valueOf(Build.VERSION.SDK) + ":";
-//			dbMsg= dbMsg + ",exists=" + file.exists()  + ")";		//(SDK=19:,exists=true)
+//			dbMsg +="(SDK=" + String.valueOf(Build.VERSION.SDK) + ":";
+//			dbMsg +=",exists=" + file.exists()  + ")";		//(SDK=19:,exists=true)
 //			myLog(TAG,dbMsg);
 //		}catch (Exception e) {
 //			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -386,11 +386,11 @@ public class TagBrows  extends Activity implements plogTaskCallback{
 //		try{
 //			createBody();
 //			dbMsg= "File=" + file;													// File=/storage/sdcard1/Music/10cc/ORIGNAL SOUNDTRAK/01 Une Nuit A Paris.MP3
-//			dbMsg= dbMsg + ",writeable=" + writeable;								//writeable=true
-//			dbMsg= dbMsg + "(SDK=" + String.valueOf(Build.VERSION.SDK) + ":";
-//			dbMsg= dbMsg + ",exists=" + file.exists()  + ")";						//(SDK=19:,exists=true)
+//			dbMsg +=",writeable=" + writeable;								//writeable=true
+//			dbMsg +="(SDK=" + String.valueOf(Build.VERSION.SDK) + ":";
+//			dbMsg +=",exists=" + file.exists()  + ")";						//(SDK=19:,exists=true)
 //			mp3file = file;
-//			dbMsg= dbMsg + ",mp3file.exists=" + mp3file.exists();						//mp3file.exists=true
+//			dbMsg +=",mp3file.exists=" + mp3file.exists();						//mp3file.exists=true
 //			file2Tag( file);		//RandomAccessFileをString変換
 //			myLog(TAG,dbMsg);
 //		}catch (Exception e) {
@@ -458,7 +458,7 @@ private byte majorVersion = (byte) 0;
 				dbMsg="rContext=" + this.rContext;/////////////////////////////////////
 				if(this.rContext == null){
 					this.rContext = TagBrows.this;
-					dbMsg=dbMsg + ">>" + this.rContext;/////////////////////////////////////
+					dbMsg +=">>" + this.rContext;/////////////////////////////////////
 				}
 				getWindow().setFormat(PixelFormat.TRANSLUCENT);	//利かず
 				setContentView(R.layout.trance);					//透明設定したActivty
@@ -467,7 +467,7 @@ private byte majorVersion = (byte) 0;
 				switch (reqCode) {
 				case read_USLT:					//歌詞を読み込み
 					filePath = extras.getString("filePath");					//渡されたファイル
-					dbMsg=dbMsg + ",filePath=" + filePath;/////////////////////////////////////
+					dbMsg +=",filePath=" + filePath;/////////////////////////////////////
 			//		fileExt = filePath.substring(filePath.length() - 4, filePath.length());					//渡されたファイルの拡張子
 					File file = new File(filePath);
 					if ( filePath.endsWith("m4a") ||
@@ -484,11 +484,11 @@ private byte majorVersion = (byte) 0;
 					break;
 				case SAI_ENCORD:				//歌詞の再エンコード
 					String songLyric = extras.getString("songLyric");					////歌詞の再エンコード
-					dbMsg=dbMsg + ",songLyric=" + songLyric.length() + "文字";/////////////////////////////////////
+					dbMsg +=",songLyric=" + songLyric.length() + "文字";/////////////////////////////////////
 					String motoEncrod = extras.getString("motoEncrod");					////元の文字コード
-					dbMsg=dbMsg + ",エンコード=" + motoEncrod;/////////////////////////////////////
+					dbMsg +=",エンコード=" + motoEncrod;/////////////////////////////////////
 					String saiEncrod = extras.getString("saiEncrod");					////再エンコードする文字コード
-					dbMsg=dbMsg + ",saiEncrod=" + saiEncrod;
+					dbMsg +=",saiEncrod=" + saiEncrod;
 					saiEncord(songLyric , motoEncrod , saiEncrod);										//再エンコードして呼出し元のActivtyに返す
 					break;
 				}
@@ -510,17 +510,17 @@ private byte majorVersion = (byte) 0;
 			try{
 				dbMsg= "file=" + file;
 				filePath = file.getPath();
-				dbMsg= dbMsg + ",filename=" + filePath ;				//this.fileObj.getPath()
+				dbMsg +=",filename=" + filePath ;				//this.fileObj.getPath()
 				initResult();								//戻り値の初期化
 				lyricAri = false;				//歌詞が取得できた
 ////				result = file2Str( file.getPath() );
 ////				if(result.length() < 2){
 //				reqCode = read_FILE;						//ファイル読込
-//				dbMsg=dbMsg + ",reqCode="+reqCode;
+//				dbMsg +=",reqCode="+reqCode;
 //				String pdTitol = getApplicationContext().getString(R.string.comon_file) +"" + getResources().getString(R.string.common_yomitori);				//ファイル+ 読み込み</string>
-//				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+//				dbMsg +=",pdTitol="+pdTitol;
 //				String pdMessage =filePath;																			//歌詞を探しています。</string>
-//				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+//				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , 0 ).execute(reqCode,  pdMessage , file , null );		//,jikkouStep,totalStep,calumnInfo
 				raf2Str(file, true);			//RandomAccessFileをString変換
 //				}
@@ -855,13 +855,13 @@ private byte majorVersion = (byte) 0;
 		String dbMsg= "開始";//	http://tomorrowscode.blogspot.jp/2010/02/javaiorandomaccessfilereadlineutf-8.html
 		try{
 			String mojiCord  = "ISO-8859-1";
-			dbMsg= dbMsg + ",filename=" + filename + ",mojiCord=" + mojiCord;				//this.fileObj.getPath()
+			dbMsg +=",filename=" + filename + ",mojiCord=" + mojiCord;				//this.fileObj.getPath()
 			FileInputStream fis = new FileInputStream(filename);
-			dbMsg= dbMsg + ",FileInputStream=" + fis.toString();						//this.fileObj.getPath()
+			dbMsg +=",FileInputStream=" + fis.toString();						//this.fileObj.getPath()
 			InputStreamReader iS_reader = new InputStreamReader(fis,mojiCord);			//☆mojiCordはnull不可
-			dbMsg= dbMsg + ",InputStreamReader=" + iS_reader.toString();				//this.fileObj.getPath()
+			dbMsg +=",InputStreamReader=" + iS_reader.toString();				//this.fileObj.getPath()
 			BufferedReader b_reader = new BufferedReader(iS_reader);					//ファイルを 1行ずつ読み込む
-			dbMsg= dbMsg + ",BufferedReader=" + b_reader.toString();				//this.fileObj.getPath()
+			dbMsg +=",BufferedReader=" + b_reader.toString();				//this.fileObj.getPath()
 			StringBuffer strBuffer = new StringBuffer(2048);
 //☆Android4.4から出力側が使えない
 	//		OutputStreamWriter  OS_writer = new OutputStreamWriter(new FileOutputStream(this.fileObj),mojiCord);
@@ -922,10 +922,10 @@ private byte majorVersion = (byte) 0;
 			}else{
 				newFile = new RandomAccessFile(file, writeable ? "rw" : "r");
 			}
-			dbMsg= dbMsg + ",newFile.length=" + newFile.length() + "バイト";					//newFile.length=11897286
+			dbMsg +=",newFile.length=" + newFile.length() + "バイト";					//newFile.length=11897286
 			int size = 0;
 			byte[] buffer = new byte[10];									//タグヘッダ読込開始
-			dbMsg= dbMsg + ",file=" + file;
+			dbMsg +=",file=" + file;
 			newFile.seek(0);
 			newFile.read(buffer, 0, 10);							// read the tag if it exists
 			//	newFile.seek(0);
@@ -941,7 +941,7 @@ private byte majorVersion = (byte) 0;
 				dbMsg= dbMsg +",[8]=" + buffer[8];		//
 				dbMsg= dbMsg +",[9]=" + buffer[9];		//
 			final String tag = new String(buffer, 0, 9);		//参照ID3v2_3.seek
-			dbMsg= dbMsg + ",tag=" + tag;
+			dbMsg +=",tag=" + tag;
 			if (tag.startsWith("ID3")) {
 				result_Tag ="ID3v2";			//	タグ名
 //				if ((buffer[0] != 3) || (buffer[1] != 0)) {		//
@@ -968,7 +968,7 @@ private byte majorVersion = (byte) 0;
 				this.majorVersion = buffer[3];	//AbstractID3v2.setMajorVersion(buffer[0]);
 				this.revision = buffer[4];		//AbstractID3v2.setRevision(buffer[1]);
 				result_Tag =result_Tag + "." + this.majorVersion + "." + this.revision ;			//	タグ名
-				dbMsg= dbMsg + ",result_Tag=" + result_Tag;				//+ ",info_TagT=" + info_TagT;
+				dbMsg +=",result_Tag=" + result_Tag;				//+ ",info_TagT=" + info_TagT;
 	/* ID3v2 バージョン			$03 00			Hex	2バイト				はじめの１バイトは、メジャーバージョンを示し、２バイト目は改訂番号
 	 * 01 Une Nuit A Paris.mp3,tag=ID3����,								buffer[3]=3,[4]=0,
 	 * 02 I'm not in Love.mp3,tag=ID3����,								buffer[3]=3,[4]=0,
@@ -1087,21 +1087,21 @@ private byte majorVersion = (byte) 0;
 				/////////////////////////////////////////////////////////////////////////////////////////ID3v2_3.read////
 				buffer = new byte[ (int)( newFile.length() ) ];    // 読み込む量		head_pos -RT -readPos
 				int readEnd = newFile.read(buffer);
-				dbMsg= dbMsg + "," + readEnd + "文字";
+				dbMsg +="," + readEnd + "文字";
 				if ( -1 != readEnd ){
 					result = new String( buffer, "ISO-8859-1" );						////×UTF-8	Shift_JIS	SJIS	EUC_JP	ISO-8859-1
-					dbMsg= dbMsg + ">>" + result.length() + "文字";
+					dbMsg +=">>" + result.length() + "文字";
 					switch (this.majorVersion) {
 					case 2:
 		//				freamReadID3v2(newFile);		//RandomAccessFileを'0'で区切ってフレームを読み込む
-				//		dbMsg= dbMsg + ">>" + result;
+				//		dbMsg +=">>" + result;
 						break;
 					case 3:
 					case 4:
 						break;
 					}
 					result = result.substring(0, size);
-					dbMsg= dbMsg + ">ID3v2のサイズフラグでカット>" + result.length() + "文字";
+					dbMsg +=">ID3v2のサイズフラグでカット>" + result.length() + "文字";
 					newFile.close();
 					buffer = null;
 					file2Tag2(result);			//文字列からフィールドを抽出				break;
@@ -1121,7 +1121,7 @@ private byte majorVersion = (byte) 0;
 					newFile.seek(0);
 					newFile.read(buffer, 0, 99);							// read the tag if it exists
 					final String tag2 = new String(buffer, 0, 99) + "......";		//参照ID3v2_3.seek
-					dbMsg= dbMsg + ",tag2=" + tag2;
+					dbMsg +=",tag2=" + tag2;
 					String tag3 = null;
 					if(tag2.contains("ftyp")){
 						tag3 = tag2 + "AAC ?";
@@ -1208,7 +1208,7 @@ private byte majorVersion = (byte) 0;
 				newFile = new RandomAccessFile(file,  "rw");					//(file, writeable ? "rw" : "r");
 			}
 			long fileLen = newFile.length();
-			dbMsg= dbMsg + ",newFile.length=" + fileLen + "バイト";					//newFile.length=11897286
+			dbMsg +=",newFile.length=" + fileLen + "バイト";					//newFile.length=11897286
 /*
 Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
  * */
@@ -1219,9 +1219,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			newFile.close();
 			int readInt = result.length();
 			if(20 < readInt){
-				dbMsg= dbMsg + result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
+				dbMsg +=result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
 			}else{
-				dbMsg= dbMsg + result;
+				dbMsg +=result;
 			}
 			initAccResult();								//ACC戻り値の初期化
 	//		makAACList( read_AAC_HEAD);	//QuickTime TagsリストをList<String> syougouに作成
@@ -1229,11 +1229,11 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
  *04 One More Cup Of Coffee.m4a,newFile.length=4139400バイト������ ftypM4A ��������M4A ～R+Bä~]&1XË'>(4139400/4139400文字),4139400バイト,ftypは8～,buffer[0]=0,[1]=0,[2]=32,[3]=102,4198は4198,次は36～moov,4198=������ ftypM4A ��������M4A mp42isom����������moov������lmvhd��������～R+Bä~]&1XË'>(4139368/4139368文字),pdMaxVal=122項目,reqCode=1003,pdTitol=タグ情報読み込み,pdMessage=AAC ; @lyr
 */
 			dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
-			dbMsg= dbMsg + "," + readEnd + "バイト";
+			dbMsg +="," + readEnd + "バイト";
 			String target = "ftyp";
 			target = fremeMeiSyougouBody( result , target);	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
 			int startInt = fleamStart + target.length();						//開始値設定		target.getBytes("ISO-8859-1").length
-			dbMsg= dbMsg + "," + target + "は"+ startInt + "～";
+			dbMsg +="," + target + "は"+ startInt + "～";
 			int rEnd = result.length();
 			buffer = result.substring(startInt-7, startInt).getBytes();									//タグヘッダ読込開始			"ISO-8859-1"
 			dbMsg= dbMsg +",buffer[0]=" + buffer[0];//Atom Size
@@ -1241,11 +1241,11 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			dbMsg= dbMsg +",[2]=" + buffer[2];		//
 			dbMsg= dbMsg +",[3]=" + buffer[3];		//
 			rEnd = (buffer[0] << 21) + (buffer[1] << 14) + (buffer[2] << 7) + buffer[3];		//AbstractID3v2.byteArrayToSize(buffer); (buffer[0] << 21) + (buffer[1] << 14) + (buffer[2] << 7) + buffer[3];
-			dbMsg= dbMsg + "," + rEnd + "は"+ rEnd ;
+			dbMsg +="," + rEnd + "は"+ rEnd ;
 			String nexttarget = fremeMeiSyougouBody( result , "moov");	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
-			dbMsg= dbMsg + ",次は" + fleamStart + "～"+ nexttarget ;
+			dbMsg +=",次は" + fleamStart + "～"+ nexttarget ;
 			String readStr = result.substring(0,fleamStart-4);
-			dbMsg= dbMsg + "," + rEnd + "="+ readStr ;
+			dbMsg +="," + rEnd + "="+ readStr ;
 			headReadAacBody(readStr ,  "ftyp");		//AACのQuickTime Tags読取り
 			result = result.substring(readStr.length(), result.length());
 			resultStock = result;
@@ -1254,9 +1254,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 	//			result = new String( buffer, "ISO-8859-1" );						//ID3;ISO-8859-1
 				readInt = result.length();
 				if(20 < readInt){
-					dbMsg= dbMsg + result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
+					dbMsg +=result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + result;
+					dbMsg +=result;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				lyricReadAac();		//@lirの優先読込み
@@ -1264,12 +1264,12 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 //				makAACList( read_AAC_PRE);										//最小限の設定読取り
 //				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 //				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-//				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
+//				dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
 //				reqCode = read_AAC_PRE ;							//最小限の設定読取り
-//				dbMsg=dbMsg + ",reqCode="+reqCode;
-//				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+//				dbMsg +=",reqCode="+reqCode;
+//				dbMsg +=",pdTitol="+pdTitol;
 //				String pdMessage = "AAC ; Setting" ;																			//    <string name="common_yomitori">読み込み</string>
-//				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+//				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}
 			myLog(TAG,dbMsg);
@@ -1665,20 +1665,20 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			result = resultStock;
 			int readInt = result.length();
 			if(20 < readInt){
-				dbMsg= dbMsg + result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
+				dbMsg +=result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
 			}else{
-				dbMsg= dbMsg + result;
+				dbMsg +=result;
 			}
 			dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 			makAACList( read_AAC_LYRIC);										//@Lyrだけを読めるか試みる
 			String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 			pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-			dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
+			dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
 			reqCode = read_AAC_LYRIC ;							//@Lyrだけを読めるか試みる
-			dbMsg=dbMsg + ",reqCode="+reqCode;
-			dbMsg=dbMsg + ",pdTitol="+pdTitol;
+			dbMsg +=",reqCode="+reqCode;
+			dbMsg +=",pdTitol="+pdTitol;
 			String pdMessage = "AAC ; @lyr" ;																			//    <string name="common_yomitori">読み込み</string>
-			dbMsg=dbMsg + ",pdMessage="+pdMessage;
+			dbMsg +=",pdMessage="+pdMessage;
 			pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			myLog(TAG,dbMsg);
 			}catch (Exception e) {
@@ -1696,20 +1696,20 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if(result != null){
 				int readInt = result.length();
 				if(20 < readInt){
-					dbMsg= dbMsg + result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
+					dbMsg +=result.substring(0, 20) +  "～" + result.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + result;
+					dbMsg +=result;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				makAACList( read_AAC_HEAD);	//QuickTime TagsリストをList<String> syougouに作成
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
+				dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
 				reqCode = read_AAC_HEAD ;						//QuickTime Tagsの読取り
-				dbMsg=dbMsg + ",reqCode="+reqCode;
-				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+				dbMsg +=",reqCode="+reqCode;
+				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage = "AAC ; QuickTime Tags" ;																			//    <string name="common_yomitori">読み込み</string>
-				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+				dbMsg +=",pdMessage="+pdMessage;
 				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
@@ -1734,9 +1734,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				if ( ! readStr.equals("")){
 					int readInt = readStr.length();
 					if(50 < readInt){
-						dbMsg= dbMsg + readStr.substring(0, 50) +  "～" + readStr.substring(readInt-50, readInt);
+						dbMsg +=readStr.substring(0, 50) +  "～" + readStr.substring(readInt-50, readInt);
 					}else{
-						dbMsg= dbMsg + readStr;
+						dbMsg +=readStr;
 					}
 					dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 					result_Tag = result_Tag + "\n"+ target + ";" ;
@@ -1834,7 +1834,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 						stock_acc_moov =readStr;		//QuickTime Movie Tagsの一時保存
 //						result_Tag = result_Tag + readStr ;
 //						String moov  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",moov=" + moov;
+//						dbMsg +=",moov=" + moov;
 //						result_Tag = result_Tag + "\n moov;"+ moov.length() + "バイト;Movie resource metadata about the movie (number and type of tracks, location of sample data, and so on). Describes where the movie data can be found and how to interpret it." ;
 					}else if(target.equals("meta")){		//Meta							ID3ｖ2；CRM	ID3ｖ3；？	Encrypted meta frame?
 						stock_acc_meta =readStr;		//QuickTime Meta Tagsの一時保存
@@ -1844,7 +1844,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 					}else if(target.equals("mdat")){			//映画サンプルdata―メディア・サンプル（例えばビデオフレームと音声サンプルのグループ）。通常、このデータは、映画資源を用いてだけ解釈されることができます。
 						stock_acc_mdat = readStr ;
 //						String mdat  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",mdat=" + mdat;
+//						dbMsg +=",mdat=" + mdat;
 //						result_Tag = result_Tag + "\n mdat;"+ mdat + ";Movie sample data—media samples such as video frames and groups of audio samples. Usually this data can be interpreted only by using the movie resource." ;
 	/*
 	Music/Bob Dylan/Desire/01 Hurricane.m4a,	mdat!��@h!%!+ïÐÝ&Ë～|¦Èªhy$hÔ²HCÀ��������(8345509/8864034文字)
@@ -1853,7 +1853,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 						stock_acc_free =readStr;		//Kodak Free Tagsの一時保存
 //						result_Tag = result_Tag + readStr ;
 //						String free  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",free=" + free;
+//						dbMsg +=",free=" + free;
 //						result_Tag = result_Tag + "\n free;"+ free + ";Unused space available in file." ;
 						/*
 						Music/Bob Dylan/Desire/01 Hurricane.m4a,
@@ -1866,14 +1866,14 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 					}else if(target.equals("skip")){		//ファイルで利用できる使っていないスペース。
 						stock_acc_skip =readStr;		//Canon Skip Tagsの一時保存
 //						String skip  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",skip=" + skip;
+//						dbMsg +=",skip=" + skip;
 //						result_Tag = result_Tag + "\n skip;"+ skip + ";'Unused space available in file" ;
 						/*
 						Music/Bob Dylan/Desire/01 Hurricane.m4a,
 						 */
 					}else if(target.equals("wide")){		//以下の原子が2^32バイトを超えるならば、予約のspace―は拡張サイズ・フィールドによって上書きされることができます、以下の原子の内容を置き換えることなく。
 //						String wide  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",wide=" + wide;
+//						dbMsg +=",wide=" + wide;
 //						result_Tag = result_Tag + "\n wide;"+ wide + ";Reserved space—can be overwritten by an extended size field if the following atom exceeds 2^32 bytes, without displacing the contents of the following atom." ;
 		//
 //						startC = endC;
@@ -1885,7 +1885,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 						stock_acc_pnot =readStr;		//QuickTime Preview Tagsの一時保存
 //						endC = endC + 4+4+4+2+4+2;
 //						String pnot  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",pnot=" + pnot;
+//						dbMsg +=",pnot=" + pnot;
 //						result_Tag = result_Tag + "\n pnot;"+ pnot + ";'Reference to movie preview data." ;
 //			/*
 //			 * Size					: 4bite :	A 32-bit integer that specifies the number of bytes in this preview atom.
@@ -1901,7 +1901,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 					}else if(target.equals("mvhd")){			//映画（トラック、サンプル・データの位置、などの数とタイプ）についての映画資源メタデータ。映画データがどこで見つかるか、そして、どのようにそれを解釈するべきか述べます。
 						result_Tag = result_Tag + readStr ;
 //						String moov  = result.substring(startC, endC);
-//						dbMsg= dbMsg + ",moov=" + moov;
+//						dbMsg +=",moov=" + moov;
 //						result_Tag = result_Tag + "\n moov;"+ moov.length() + "バイト;Movie resource metadata about the movie (number and type of tracks, location of sample data, and so on). Describes where the movie data can be found and how to interpret it." ;
 					}else if(target.equals("mdat-offse")){		//Movie Data Offset				ID3ｖ2；--	ID3ｖ3；--
 						result_Tag = result_Tag + readStr ;
@@ -1986,13 +1986,13 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				dbMsg= "残り=" + resultLen + "文字";					//newFile.length=11897286
 				makAACList(read_AAC_HEAD_Movie);			//QuickTime ItemList TagsをList<String> syougouに作成
 				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
+				dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
 				reqCode = read_AAC_HEAD_Movie ;						//QuickTime Tagsの読取り
-				dbMsg=dbMsg + ",reqCode="+reqCode;
+				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
-				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage ="AAC ; QuickTime Movie Tags" ; ;																			//歌詞を探しています。</string>
-				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+				dbMsg +=",pdMessage="+pdMessage;
 				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_moov , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
@@ -2014,9 +2014,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if ( readStr != null){
 				int readInt = readStr.length();
 				if(50 < readInt){
-					dbMsg= dbMsg + readStr.substring(0, 50) +  "～" + readStr.substring(readInt-50, readInt);
+					dbMsg +=readStr.substring(0, 50) +  "～" + readStr.substring(readInt-50, readInt);
 				}else{
-					dbMsg= dbMsg + readStr;
+					dbMsg +=readStr;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				result_Tag = result_Tag + "\n"+ target + ";" ;
@@ -2064,13 +2064,13 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				dbMsg= "残り=" + resultLen + "文字";					//newFile.length=11897286
 				makAACList(read_AAC_Movie_Meta);						//QuickTime Tags.QuickTime Meta TagsをList<String> syougouに作成
 				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
+				dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
 				reqCode = read_AAC_Movie_Meta ;									//QuickTime Tags.QuickTime Meta Tagsの読取り
-				dbMsg=dbMsg + ",reqCode="+reqCode;
+				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
-				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage ="AAC ; QuickTime Movie >> Meta Tags" ; ;																			//歌詞を探しています。</string>
-				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+				dbMsg +=",pdMessage="+pdMessage;
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_movie_meta , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
@@ -2091,9 +2091,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if ( readStr != null){
 				int readInt = readStr.length();
 				if(50 < readInt){
-					dbMsg= dbMsg + readStr.substring(0, 50) +  "～" + readStr.substring(readInt-50, readInt);
+					dbMsg +=readStr.substring(0, 50) +  "～" + readStr.substring(readInt-50, readInt);
 				}else{
-					dbMsg= dbMsg + readStr;
+					dbMsg +=readStr;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				result_Tag = result_Tag + "\n"+ target + ";" ;
@@ -2153,13 +2153,13 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				dbMsg= "残り=" + resultLen + "文字";					//newFile.length=11897286
 				makAACList(read_AAC_ITEM);			//QuickTime ItemList TagsをList<String> syougouに作成
 				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
+				dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
 				reqCode = read_AAC_ITEM ;						//QuickTime Tagsの読取り
-				dbMsg=dbMsg + ",reqCode="+reqCode;
+				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
-				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage ="AAC ; QuickTime QuickTime Movie >> Meta Tags >> ItemList Tags" ; ;																			//歌詞を探しています。</string>
-				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+				dbMsg +=",pdMessage="+pdMessage;
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_meta_ilst , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
@@ -2185,9 +2185,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				}else{
 					int readInt = readStr.length();
 					if(60 < readInt){
-						dbMsg= dbMsg + readStr.substring(0, 40) +  "～" + readStr.substring(readInt-20, readInt);
+						dbMsg +=readStr.substring(0, 40) +  "～" + readStr.substring(readInt-20, readInt);
 					}else{
-						dbMsg= dbMsg + readStr;
+						dbMsg +=readStr;
 					}
 					dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				int endInt = readStr.lastIndexOf("data");
@@ -2231,9 +2231,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			//	}
 				readInt = readStr.length();
 				if(50 < readInt){
-					dbMsg= dbMsg + ">>" + readStr.substring(0, 20) +  "～" + readStr.substring(readInt-20, readInt);
+					dbMsg +=">>" + readStr.substring(0, 20) +  "～" + readStr.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + ">>" + readStr;
+					dbMsg +=">>" + readStr;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				}
@@ -2668,7 +2668,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				newFile = new RandomAccessFile(file,  "rw");					//(file, writeable ? "rw" : "r");
 			}
 			long fileLen = newFile.length();
-			dbMsg= dbMsg + ",newFile.length=" + fileLen + "バイト";					//newFile.length=11897286
+			dbMsg +=",newFile.length=" + fileLen + "バイト";					//newFile.length=11897286
 			int size = 0;
 			byte[] buffer = new byte[(int) fileLen];									//タグヘッダ読込開始	☆unsigned char同等？
 			int bufferSize = buffer.length;
@@ -2685,7 +2685,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 ////[0]=0=0x30,[1]=&=0x26,[2]=²=0xb2,[3]=u=0x75,[4]==0x8e,[5]=f=0x66,[6]=Ï=0xcf,[7]==0x11,[8]=¦=0xa6,[9]=Ù=0xd9,[10]=��=0x0,[11]=ª=0xaa,[12]=��=0x0,[13]=b=0x62,[14]=Î=0xce,[15]=l=0x6c,[16]=b=0x62,[17]=!=0x21,[18]=��=0x0,[19]=��=0x0,[20]=��=0x0,[21]=��=0x0,[22]=��=0x0,[23]=��=0x0,[24]==0x7,[25]=��=0x0,[26]=��=0x0,[27]=��=0x0,[28]==0x1,[29]==0x2,[30]=¡=0xa1,[31]=Ü=0xdc,[32]=«=0xab,[33]==0x8c,[34]=G=0x47,[35]=©=0xa9,[36]=Ï=0xcf,[37]==0x11,[38]==0x8e,[39]=ä=0xe4,[40]=��=0x0,[41]=À=0xc0,[42]==0xc,[43]= =0x20,[44]=S=0x53,[45]=e=0x65,[46]=h=0x68,[47]=��=0x0,[48]=��=0x0,[49]=��=0x0>>0&²ufÏ¦Ù��ª��bÎlb!������������������¡Ü«G©Ïä��À Seh�������������� ÈÔ°ðG¯J0îÛs89����������¶áÐv������������ ÛD����～X¡
 
 			motoEncrod = "ISO-8859-1";
-			dbMsg= dbMsg + ",Encrod=" + motoEncrod;
+			dbMsg +=",Encrod=" + motoEncrod;
 			result = new String( buffer, motoEncrod );
 			buffer = result.getBytes();									//タグヘッダ読込開始		result.substring(maeoki, startInt).getBytes()
 			bufferSize = buffer.length;
@@ -2721,14 +2721,14 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			}else{
 				dbMsg= dbMsg +">>" + result;
 			}
-			dbMsg= dbMsg + readInt + "文字";
-			dbMsg= dbMsg + ",WAVE.infoチャンク；RIFF=" + result.indexOf("RIFF") + "文字目";
-			dbMsg= dbMsg + ",DATA=" + result.indexOf("DATA") + "文字目";
-			dbMsg= dbMsg + ",fmt=" + result.indexOf("fmt") + "文字目";				//<fmt >: フォーマット定義(必須)\n"
-			dbMsg= dbMsg + ",data=" + result.indexOf("data") + "文字目";			// <data>: 波形データ(必須)\n"
-			dbMsg= dbMsg + ",fact=" + result.indexOf("fact") + "文字目";			//<fact>: 全サンプル数\n"
-			dbMsg= dbMsg + ",LIST=" + result.indexOf("LIST") + "文字目";			//<LIST>: 各種情報\n"
-			dbMsg= dbMsg + ",DISP=" + result.indexOf("DISP") + "文字目";			//<DISP>: 表\示情報\n"
+			dbMsg +=readInt + "文字";
+			dbMsg +=",WAVE.infoチャンク；RIFF=" + result.indexOf("RIFF") + "文字目";
+			dbMsg +=",DATA=" + result.indexOf("DATA") + "文字目";
+			dbMsg +=",fmt=" + result.indexOf("fmt") + "文字目";				//<fmt >: フォーマット定義(必須)\n"
+			dbMsg +=",data=" + result.indexOf("data") + "文字目";			// <data>: 波形データ(必須)\n"
+			dbMsg +=",fact=" + result.indexOf("fact") + "文字目";			//<fact>: 全サンプル数\n"
+			dbMsg +=",LIST=" + result.indexOf("LIST") + "文字目";			//<LIST>: 各種情報\n"
+			dbMsg +=",DISP=" + result.indexOf("DISP") + "文字目";			//<DISP>: 表\示情報\n"
 
 			if( result != null){
 				String pdMessage ="WMA ; Objects Reading..." ; ;																			//歌詞を探しています。</string>
@@ -2736,21 +2736,21 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				umekomiTag = null;
 				String target = "ULT";
 				String rTarget = fremeMeiSyougouBody( result , target);	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
-				dbMsg= dbMsg + ",target=" + target + ",rTarget=" + rTarget;
+				dbMsg +=",target=" + target + ",rTarget=" + rTarget;
 				if(target.equals(rTarget)){
 					umekomiTag = "ID3v2";						//埋め込まれたいる別のタグ
 					reqCode = read_WMA_ID32 ;					//WMAに埋め込まれたID3v2タグの読取り
 				} else {
 					target = "USLT";
 					rTarget = fremeMeiSyougouBody( result , target);	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
-					dbMsg= dbMsg + ",target=" + target + ",rTarget=" + rTarget;
+					dbMsg +=",target=" + target + ",rTarget=" + rTarget;
 					if(target.equals(rTarget)){
 						umekomiTag = "ID3v3";						//埋め込まれたいる別のタグ
 						reqCode = read_WMA_ID33 ;										//WMAに埋め込まれたID3v3タグの読取り
 					} else {
 						target = "©lyr";
 						rTarget = fremeMeiSyougouBody( result , target);	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
-						dbMsg= dbMsg + ",target=" + target + ",rTarget=" + rTarget;
+						dbMsg +=",target=" + target + ",rTarget=" + rTarget;
 						if(target.equals(rTarget)){
 							umekomiTag = "AAC";						//埋め込まれたいる別のタグ
 							reqCode = read_WMA_AAC ;					//WMAに埋め込まれたID3v2タグの読取り
@@ -2763,37 +2763,37 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				if( umekomiTag != null ){
 					pdMessage = umekomiTag +  getResources().getString(R.string.tag_wma_ume);			//が埋め込まれたwma</string>
 					result_Tag = pdMessage;
-					dbMsg= dbMsg + ",fleamStart=" + fleamStart + "/" + fileLen ;
+					dbMsg +=",fleamStart=" + fleamStart + "/" + fileLen ;
 					result = result.substring(fleamStart);
 //					newFile.seek(fleamStart);
-//					dbMsg= dbMsg + ",getFilePointer=" + newFile.getFilePointer();
+//					dbMsg +=",getFilePointer=" + newFile.getFilePointer();
 //					fileLen =  fileLen - fleamStart;
 //					buffer = new byte[(int) fileLen];
-//					dbMsg= dbMsg + ",サイズ=" + buffer.length + "バイト";
+//					dbMsg +=",サイズ=" + buffer.length + "バイト";
 //					readEnd = newFile.read(buffer , 0 , (int) fileLen );
-//					dbMsg= dbMsg + ">>" + readEnd+ "バイト";
+//					dbMsg +=">>" + readEnd+ "バイト";
 //			//		motoEncrod = "windows-1252";						//UTF-8
 //					result = new String( buffer, motoEncrod );
 					readInt = result.length();
-					dbMsg= dbMsg + ",再読取=" + readInt + "文字,";					//newFile.length=11897286
+					dbMsg +=",再読取=" + readInt + "文字,";					//newFile.length=11897286
 					if(200 < readInt){
-						dbMsg= dbMsg + result.substring(0, 100) +  "～" + result.substring(readInt-100, readInt);
+						dbMsg +=result.substring(0, 100) +  "～" + result.substring(readInt-100, readInt);
 					}else{
-						dbMsg= dbMsg + result;
+						dbMsg +=result;
 					}
-					dbMsg= dbMsg + readInt + "文字";
+					dbMsg +=readInt + "文字";
 				}
-				dbMsg= dbMsg + "," + readInt + ",reqCode=" + reqCode;
+				dbMsg +="," + readInt + ",reqCode=" + reqCode;
 		//		newFile.close();
 				initWmaResult(reqCode);								//Wma戻り値の初期化
 				makeWmaList(reqCode);								//WMAフィールド名リストをList<String> syougouに作成
 				int resultLen = result.length();
 				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"項目";
-				dbMsg=dbMsg + ",reqCode="+reqCode;
+				dbMsg +=",pdMaxVal=" + pdMaxVal +"項目";
+				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
-				dbMsg=dbMsg + ",pdTitol="+pdTitol;
-				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+				dbMsg +=",pdTitol="+pdTitol;
+				dbMsg +=",pdMessage="+pdMessage;
 				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			} else {
@@ -3372,12 +3372,12 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			dbMsg= "target = " + target ;
 			int readInt = readStr.length();
 			if(200 < readInt){
-				dbMsg= dbMsg + ";" + readStr.substring(0, 100) +  "～";			// + readStr.substring(readInt-100, readInt);
+				dbMsg +=";" + readStr.substring(0, 100) +  "～";			// + readStr.substring(readInt-100, readInt);
 			}else{
-				dbMsg= dbMsg + ";" + readStr;
+				dbMsg +=";" + readStr;
 			}
 /*			String henkann = "UTF-16LE";
-			dbMsg= dbMsg + ",henkann=" + henkann;
+			dbMsg +=",henkann=" + henkann;
 			int startInt = 	retNextNullPoint( readStr , 5 );					//渡された文字列にnullが発生するポイントを返す
 			dbMsg= dbMsg  + "," + startInt +"文字以降";
 			if( readInt <= startInt){
@@ -3405,9 +3405,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 
 //			readInt = readStr.length();
 //			if(200 < readInt){
-//				dbMsg= dbMsg + ">>" + readStr.substring(0, 100) +  "～";			// + readStr.substring(readInt-100, readInt);
+//				dbMsg +=">>" + readStr.substring(0, 100) +  "～";			// + readStr.substring(readInt-100, readInt);
 //			}else{
-//				dbMsg= dbMsg + ">>" + readStr;
+//				dbMsg +=">>" + readStr;
 //			}
 
 			if(target.equals("ULT")){
@@ -3434,12 +3434,12 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
  * */
 			readInt = readStr.length();
 			if(200 < readInt){
-				dbMsg= dbMsg + ">>" + readStr.substring(0, 100) +  "～" + readStr.substring(readInt-100, readInt);
+				dbMsg +=">>" + readStr.substring(0, 100) +  "～" + readStr.substring(readInt-100, readInt);
 			}else{
-				dbMsg= dbMsg + ">>" + readStr;
+				dbMsg +=">>" + readStr;
 			}
 
-			dbMsg= dbMsg + readInt + "文字";
+			dbMsg +=readInt + "文字";
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -3501,9 +3501,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			//	AbstractID3v2.decrementPaddingCounter();									//org.farng.mp3.id3.
 				file.read(bufferbIdentifier, 0, 3);								//４文字読んで read the 3 chracter identifier
 				final String identifier = new String(bufferbIdentifier, 0, 3);	//フレーム名として格納
-				dbMsg= dbMsg + identifier;
+				dbMsg +=identifier;
 				int kennsakuKekka = kensaku.indexOf(identifier);		//
-				dbMsg= dbMsg + "(" + kennsakuKekka + "番目)";
+				dbMsg +="(" + kennsakuKekka + "番目)";
 				myLog(TAG,dbMsg);
 				if( -1 < kennsakuKekka ){
 					final byte[] bufferbDatar = new byte[(int) (fLen- filePointer)];
@@ -3522,7 +3522,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 					}else{
 						dbMsg= result +  "～";
 					}
-					dbMsg= dbMsg + uketori + "文字" ;
+					dbMsg +=uketori + "文字" ;
 					myLog(TAG,dbMsg);
 				}
 				i = filePointer;
@@ -3547,22 +3547,22 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		String dbMsg= "開始";//	http://tomorrowscode.blogspot.jp/2010/02/javaiorandomaccessfilereadlineutf-8.html	////////////////////////////
 		try{
 			if( result != null){
-				dbMsg= dbMsg + ",result=" + result.length() +"文字";
+				dbMsg +=",result=" + result.length() +"文字";
 				makeSyougouList();	//フィールド名リストをList<String> syougouに作成
 				tagData = new ArrayList<Object>();
 				tagData.clear();
 				//		result =  file2TagLylic(result);			//歌詞の検索
 				pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
-				dbMsg= dbMsg + ",pdMaxVal=" + pdMaxVal +"文字";
+				dbMsg +=",pdMaxVal=" + pdMaxVal +"文字";
 				reqCode = read_USLT;										//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
-				dbMsg=dbMsg + ",reqCode="+reqCode;
+				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
-				dbMsg=dbMsg + ",pdTitol="+pdTitol;
+				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; USLT" ;																			//歌詞を探しています。</string>
-				dbMsg=dbMsg + ",pdMessage="+pdMessage;
+				dbMsg +=",pdMessage="+pdMessage;
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
-				dbMsg= dbMsg + ",result==null；ファイルから情報が取れなかかった";
+				dbMsg +=",result==null；ファイルから情報が取れなかかった";
 				result_Samary = result_Samary + "\n" + this.getApplicationContext().getResources().getString(R.string.yomikomi_hunou);				//	<string name="">この曲はタグ情報を読み込めませんでした。</string>
 				back2Activty(  );			//呼び出しの戻り処理
 			}
@@ -3593,7 +3593,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			}else{
 				dbMsg= result +  ";";
 			}
-			dbMsg= dbMsg + uketori + "文字から" + target +  "を検索;reqCode=" + reqCode;
+			dbMsg +=uketori + "文字から" + target +  "を検索;reqCode=" + reqCode;
 			int startInt = 0;
 			int maeoki= 0;
 			int backStart = 0;
@@ -3605,7 +3605,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			String maekNokoriStr = null;	//検索対象より前のフレーム,Atom
 			String backStr = null;			//検索対象より後の文字列
 			target = fremeMeiSyougouBody( result , target);	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
-	//		dbMsg= dbMsg + ",検出結果は "+ target;
+	//		dbMsg +=",検出結果は "+ target;
 			if(target == null){												//見つからなければ受け取った文字列をそのまま返して終了
 				return result;
 			}else{																//見つかれば
@@ -3627,7 +3627,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 						dbMsg= dbMsg +	",[" + i + "]=" + buffer[i];		//
 					}
 					rEnd = (buffer[0] << 22) + (buffer[1] << 15) + (buffer[2] << 8) + buffer[3];		// (buffer[0] << 21) + (buffer[1] << 14) + (buffer[2] << 7) + buffer[3];
-					dbMsg= dbMsg + ",startInt="+ startInt + "～計算="+ rEnd + "まで";
+					dbMsg +=",startInt="+ startInt + "～計算="+ rEnd + "まで";
 /*				この計算は失敗
  * maeoki = startInt - 8;
  * Bob Dylan/Desire/01 Hurricane.m4a,				[-2]=0,[-1]=49,	buffer[0]=0,[1]=0,	[2]=18,	[3]=59,[4]=-62,[5]=-87,[6]=108,startInt=94338～294971まで,startInt=94338～294971;8769696文字),fremeMei2=aARTまで419852文字;419852文字),fremeMei2=covrまで4663文字;4663文字)4663文字,次は99001から；covr��UÍdata��������������～8765033文字)、書込み=����3data��������������by Bob Dylan a～The champion of the world.��UÕ:4663文字、処理後=covr��UÍdata��������������～：8765033文字)
@@ -3651,23 +3651,23 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		//			maekNokoriStr = result.substring(0, startInt-1);	//検索対象より前のフレーム,Atom
 					break;
 				}
-				dbMsg= dbMsg + ">>～"+ rEnd;
+				dbMsg +=">>～"+ rEnd;
 				testStr = result.substring(startInt, uketori);		//検索対象の文字列を設定
 				int endC = testStr.length();
 				do{
 					uketori = String.valueOf(testStr).length();
-					dbMsg= dbMsg +  ";検索対象" + testStr.length() +  "文字)";
+					dbMsg += ";検索対象" + testStr.length() +  "文字)";
 					fremeMei2 = fremeMeiSyougou( testStr , reqCode);							//検索対象より後の文字列からフレーム名を検索し、該当するフレーム名を返す
 					if( fremeMei2 == null ){										//拾えなければ
 					}else{															//拾えれば
-						dbMsg= dbMsg +  ",fremeMei2=" + fremeMei2 +"まで";
+						dbMsg += ",fremeMei2=" + fremeMei2 +"まで";
 						endInt = fleamStart;										//終端をセットして
 						testStr = testStr.substring(0, endInt);
 						backStart = startInt + endInt;
 					}
-					dbMsg= dbMsg + endInt +  "文字";
+					dbMsg +=endInt +  "文字";
 				}while(fremeMei2 != null);
-		//		dbMsg= dbMsg + ">次のfleamStart>"+ endInt;
+		//		dbMsg +=">次のfleamStart>"+ endInt;
 				uketori = String.valueOf(testStr).length();
 				if(target.equals("covr")){
 				} else if(10000 < uketori){							//無関係な情報が混在している可能性がある場合
@@ -3676,7 +3676,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 //						ofsetrt = testStr.length()-2;
 //					}
 //					endInt = retNextNullPoint( testStr ,  ofsetrt );					//渡された文字列にnullが発生するポイントを返す
-					dbMsg= dbMsg +  ";;endInt=" + endInt+ "/" + testStr.length() + "文字)";
+					dbMsg += ";;endInt=" + endInt+ "/" + testStr.length() + "文字)";
 					if(endInt < testStr.length()){
 						testStr = testStr.substring(0, 1000);
 					} else{
@@ -3712,13 +3712,13 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				}
 		//		myLog(TAG,dbMsg);
 				uketori = String.valueOf(kakikomiStr).length();
-				dbMsg= dbMsg + "、書込み=" ;
+				dbMsg +="、書込み=" ;
 				if(60 < uketori){
-					dbMsg= dbMsg + kakikomiStr.substring(0, 30) +  "～" + kakikomiStr.substring(uketori- 30 , uketori);
+					dbMsg +=kakikomiStr.substring(0, 30) +  "～" + kakikomiStr.substring(uketori- 30 , uketori);
 				}else{
-					dbMsg= dbMsg + kakikomiStr;
+					dbMsg +=kakikomiStr;
 				}
-				dbMsg= dbMsg + ":" + uketori +  "文字";
+				dbMsg +=":" + uketori +  "文字";
 				switch(reqCode) {
 				case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
 					setTargetFream( kakikomiStr , target);			//指定されたフレームのデータをこのクラスのグローバル変数にセットする
@@ -3748,21 +3748,21 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 //					break;
 				}
 			}
-			dbMsg= dbMsg + ",次は" + backStart;
+			dbMsg +=",次は" + backStart;
 			backStr = result.substring(backStart , result.length());	//検索対象より後の文字列を更新
-			dbMsg= dbMsg + "から；" + backStr.substring(0, 20);
-			dbMsg= dbMsg +  "；" + backStr.length() +  "文字)";
+			dbMsg +="から；" + backStr.substring(0, 20);
+			dbMsg += "；" + backStr.length() +  "文字)";
 			if(maekNokoriStr != null){
-				dbMsg= dbMsg + ",前のAtom="+ maekNokoriStr.length() +  "文字";
+				dbMsg +=",前のAtom="+ maekNokoriStr.length() +  "文字";
 				result =maekNokoriStr;
 			}else{
 				result = "";
 			}
 //			if(maekStr == null){
-//				dbMsg= dbMsg + ",maekStr=null";
+//				dbMsg +=",maekStr=null";
 //				result = result +  backStr;
 //			} else {
-//				dbMsg= dbMsg + ",maekStr="+ maekStr.length() +  "文字";
+//				dbMsg +=",maekStr="+ maekStr.length() +  "文字";
 //				result = result + maekStr + backStr;
 //			}
 			if( backStr != null ){
@@ -3770,11 +3770,11 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			}
 			uketori = String.valueOf(result).length();
 			if(20 < uketori){
-				dbMsg= dbMsg +  "、処理後=" + result.substring(0, 20) +  "～"+ result.substring( result.length()-20, result.length());
+				dbMsg += "、処理後=" + result.substring(0, 20) +  "～"+ result.substring( result.length()-20, result.length());
 			}else{
-				dbMsg= dbMsg +  "、処理後=" + result;
+				dbMsg += "、処理後=" + result;
 			}
-			dbMsg= dbMsg +  "：" + uketori +  "文字)";
+			dbMsg += "：" + uketori +  "文字)";
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -3802,7 +3802,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			}
 			dbMsg= dbMsg +">encFlag>" + encFlag  ;		//フラグ？ここから文字？
 			if(encFlag != 0){	//Locale.getDefault().equals( Locale.getDefault().JAPAN)	アプリで使用されているロケール情報を取得し、日本語の場合のみconstant for ja_JP.
-//				dbMsg= dbMsg + ",dataBuffer= "+ dataBuffer.length + "バイト";
+//				dbMsg +=",dataBuffer= "+ dataBuffer.length + "バイト";
 				switch(encFlag) {
 				case 0:
 					saiEncrod = "ISO-8859-1";			//00h: ISO-8859-1
@@ -3854,17 +3854,17 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if ( bodyData != null ) {
 				int uketori = String.valueOf(bodyData).length();
 				if(20 < uketori){
-					dbMsg= dbMsg +  bodyData.substring(5, 20) +  "～";
+					dbMsg += bodyData.substring(5, 20) +  "～";
 				}else{
-					dbMsg= dbMsg +  bodyData +  "～";
+					dbMsg += bodyData +  "～";
 				}
 				dbMsg= dbMsg +uketori +  "文字)";
 				int retType = retFeldType(target);				//渡されたフィールドのタイプを返す
 				dbMsg=  dbMsg +".retType=" + retType;
 				int startInt = target.length() + 4;			//target.getBytes("ISO-8859-1").length;						//\0の検索開始点を設定
-				dbMsg= dbMsg + ",startInt= "+ startInt;
+				dbMsg +=",startInt= "+ startInt;
 				int endC = bodyData.length();
-				dbMsg= dbMsg + ",endC=" + endC;
+				dbMsg +=",endC=" + endC;
 				byte[] buffer = bodyData.substring(0, endC).getBytes();									//タグヘッダ読込開始			"ISO-8859-1"
 				dbMsg= dbMsg +",buffer[0]=" + buffer[0];//常に0
 				dbMsg= dbMsg +",[1]=" + buffer[1];		//常に0
@@ -4307,7 +4307,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 					}
 					dbMsg= dbMsg+ ";" + mojisuu + "文字";
 //					tagData.add(target + ";" + tuikaMoji);
-//					dbMsg= dbMsg + ",tagData"+ tagData.size() + "件";
+//					dbMsg +=",tagData"+ tagData.size() + "件";
 				}
 				buffer = null;
 			}
@@ -4325,7 +4325,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		try{
 			dbMsg= startInt + "/" ;
 			char str[] =  result.toCharArray();
-			dbMsg= dbMsg + str.length + "文字目から";
+			dbMsg +=str.length + "文字目から";
 			if( startInt < str.length ){
 				//		dbMsg=  dbMsg +"(検索対象" + str.length +"文字)" ;				//+ bodyStr;
 				for(nullPosition = startInt ; str[nullPosition] != '\0' ; nullPosition++ ) {
@@ -4340,7 +4340,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 						}
 					}
 				}
-				dbMsg= dbMsg + "retStr=" + retStr;
+				dbMsg +="retStr=" + retStr;
 			}
 			if(retStr != null){
 				dbMsg= dbMsg +"(" + retStr.length() +"文字)";
@@ -4358,14 +4358,14 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		String dbMsg= "開始";////////////////////////
 		try{
 			dbMsg=  result + "(";
-	//		dbMsg= dbMsg + result.length() + "文字)から";
-			dbMsg= dbMsg + taget + "を検索";
+	//		dbMsg +=result.length() + "文字)から";
+			dbMsg +=taget + "を検索";
 			int startP = result.indexOf(taget);
 			if( -1 < startP ){
-				dbMsg= dbMsg + "(" + startP + ")";			// + result.length() + ")";
+				dbMsg +="(" + startP + ")";			// + result.length() + ")";
 				this.fleamStart= startP ;
 				retStr = taget;
-				dbMsg= dbMsg + retStr;
+				dbMsg +=retStr;
 			}
 		//	myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -4390,9 +4390,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			//		retStr = fremeMeiSyougouBody( result, chStr);	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
 					startP = result.indexOf(chStr);
 					if( -1 < startP ){
-						dbMsg= dbMsg + "(" + i + "/" + syougouSize + ")";
+						dbMsg +="(" + i + "/" + syougouSize + ")";
 						retStr = chStr;
-						dbMsg= dbMsg + retStr;
+						dbMsg +=retStr;
 						switch(reqCode) {
 //						case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
 //							break;
@@ -4453,31 +4453,31 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			char character;
 			int endC = identifier.length();
 			for (int i = 0; i < endC; i++) {
-		//		dbMsg= dbMsg + "[" + i + "/" + endC + "]";
+		//		dbMsg +="[" + i + "/" + endC + "]";
 				character = identifier.charAt(i);
-		//		dbMsg= dbMsg + ",character=" + character;
+		//		dbMsg +=",character=" + character;
 				if ( 'A' <= character && character <= 'Z' || ( '0' <= character && character <= '9')) {		//アルファベットの大文字のみストック	//
 					stock = stock + String.valueOf(character);
-		//			dbMsg= dbMsg + i + ")" + stock;
+		//			dbMsg +=i + ")" + stock;
 					if( 4< stock.length()){								//大文字で４文字を超えたら
 						stock =stock.substring(1, stock.length());		//１文字目を消去
 					}
 					if( 3< stock.length()){								//大文字で４文字溜まっていたら
-						dbMsg= dbMsg + i + ")" + stock + ",fleamStart= " + this.fleamStart;
+						dbMsg +=i + ")" + stock + ",fleamStart= " + this.fleamStart;
 						retStr = fremeMeiSyougou( stock  , reqCode);			//渡された文字列を先頭からフレーム名を調合し、該当するフレーム名を返す
 //					} else if( 2< stock.length()){						//大文字で3文字溜まっていて
 //						if((character >= '0' && character <= '9')){		//4文字目が数字なら
 //							numCount = numCount+1;
 //							if(1 < numCount){
-//								dbMsg= dbMsg + i + ")" + stock + ",fleamStart= " + this.fleamStart;
+//								dbMsg +=i + ")" + stock + ",fleamStart= " + this.fleamStart;
 //								retStr = fremeMeiSyougou( stock);			//渡された文字列を先頭からフレーム名を調合し、該当するフレーム名を返す
 //							}
 //						}
 					}
 					if( retStr != null ){				//stock.equals(retStr)
 						this.fleamStart= i ;
-						dbMsg= dbMsg + ">>" + this.fleamStart;
-						dbMsg= dbMsg + ",retStr= " + retStr;
+						dbMsg +=">>" + this.fleamStart;
+						dbMsg +=",retStr= " + retStr;
 						i = identifier.length();
 		//				myLog(TAG,dbMsg);
 						return retStr;
@@ -4757,14 +4757,14 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if(readStr != null){
 				int readInt = readStr.length();
 				if(60 < readInt){
-					dbMsg= dbMsg + readStr.substring(offset, 40) +  "～" + readStr.substring(readInt-20, readInt);
+					dbMsg +=readStr.substring(offset, 40) +  "～" + readStr.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + readStr;
+					dbMsg +=readStr;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";
 				byte[] buffer = readStr.substring( 0, readInt ).getBytes();
 				readInt = buffer.length;
-				dbMsg= dbMsg + ">>" + readInt +",buffer" ;
+				dbMsg +=">>" + readInt +",buffer" ;
 				for(int i = offset ; i < readInt ; i++){
 					if(buffer[i] != 0 ){
 						dbMsg= dbMsg +	",[" + i + "]=" + buffer[i];
@@ -4795,14 +4795,14 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if(readStr != null){
 				int readInt = readStr.length();
 				if(60 < readInt){
-					dbMsg= dbMsg + readStr.substring(offset, offset + 40) +  "～" + readStr.substring(readInt-20, readInt);
+					dbMsg +=readStr.substring(offset, offset + 40) +  "～" + readStr.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + readStr;
+					dbMsg +=readStr;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";
 				byte[] buffer = readStr.substring( 0, readInt ).getBytes();
 				readInt = buffer.length;
-				dbMsg= dbMsg + ">>" + readInt +",buffer" ;
+				dbMsg +=">>" + readInt +",buffer" ;
 				for(int i = offset ; i < readInt ; i++){
 					if(buffer[i] == 0 ){
 						dbMsg= dbMsg +	",[" + i + "]=" + buffer[i];
@@ -4836,9 +4836,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if(readStr != null){
 				int readInt = readStr.length();
 				if(60 < readInt){
-					dbMsg= dbMsg + readStr.substring(0, 40) +  "～" + readStr.substring(readInt-20, readInt);
+					dbMsg +=readStr.substring(0, 40) +  "～" + readStr.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + readStr;
+					dbMsg +=readStr;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
 				byte[] buffer = readStr.substring( 0, readInt ).getBytes();
@@ -4868,9 +4868,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
 			dbMsg= "encordingSetName=" + encordingSetName;
-			dbMsg= dbMsg +  ",uketori=" + uketori.length() + "文字";
+			dbMsg += ",uketori=" + uketori.length() + "文字";
 			char[] chars = uketori.toCharArray();
-			dbMsg= dbMsg + ">>" + chars.length + "文字";
+			dbMsg +=">>" + chars.length + "文字";
 			Charset charset = Charset.forName(encordingSetName);
 			CharsetEncoder encoder = charset.newEncoder();						//char列から byte列への変換を行う
 			CharBuffer in = CharBuffer.wrap(chars);
@@ -4903,7 +4903,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		try{
 			dbMsg= "encordingSetName=" + encordingSetName +  ",chars=" + bytes.length + "文字";
 			Charset charset = Charset.forName(encordingSetName);
-			dbMsg= dbMsg +  ",Charset=" + charset.name();
+			dbMsg += ",Charset=" + charset.name();
 //java.nio.charset.MalformedInputException: Length: 1
 			CharsetDecoder decoder = charset.newDecoder();
 			ByteBuffer in = ByteBuffer.wrap(bytes);
@@ -4912,11 +4912,11 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			retStr = String.valueOf(outArray);
 			int mojisuu = retStr.length();
 			if(20 < mojisuu){
-				dbMsg= dbMsg +  ",retStr=" + retStr.substring(0, 20) + "～" + retStr.substring(mojisuu - 20, mojisuu);
+				dbMsg += ",retStr=" + retStr.substring(0, 20) + "～" + retStr.substring(mojisuu - 20, mojisuu);
 			}else{
-				dbMsg= dbMsg +  ",retStr=" + retStr;
+				dbMsg += ",retStr=" + retStr;
 			}
-			dbMsg= dbMsg +  "(" + mojisuu + "文字)";
+			dbMsg += "(" + mojisuu + "文字)";
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -4934,39 +4934,39 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 		try{
 			int uketori = String.valueOf(songLyric).length();
 			if(20 < uketori){
-				dbMsg= dbMsg +  songLyric.substring(0, 20) +  "～" +  songLyric.substring(uketori - 20, uketori);
+				dbMsg += songLyric.substring(0, 20) +  "～" +  songLyric.substring(uketori - 20, uketori);
 			}else{
-				dbMsg= dbMsg +  songLyric +  "～";
+				dbMsg += songLyric +  "～";
 			}
 			dbMsg= dbMsg +uketori +  "文字)";
-			dbMsg= dbMsg + "元エンコード=" + motoEncrod ;
+			dbMsg +="元エンコード=" + motoEncrod ;
 			if( motoEncrod == null ){
 				motoEncrod =  "ISO-8859-1";
-				dbMsg= dbMsg + ">>" + motoEncrod ;
+				dbMsg +=">>" + motoEncrod ;
 			}
-			dbMsg= dbMsg + "再エンコード=" + saiEncrod ;
+			dbMsg +="再エンコード=" + saiEncrod ;
 			if( saiEncrod == null ){
 				saiEncrod =  "EUC-16";
-				dbMsg= dbMsg + ">>" + saiEncrod ;
+				dbMsg +=">>" + saiEncrod ;
 			}
 			byte[] cByte = str2byteEncord(motoEncrod, songLyric);
 			if( cByte != null){
-				dbMsg= dbMsg + "(" + cByte.length +  "バイト)";
+				dbMsg +="(" + cByte.length +  "バイト)";
 				retStr = bytes2StrDecode( saiEncrod, cByte);
 				if(retStr != null){
 					uketori = retStr.length();
 					if(20 < uketori){
-						dbMsg= dbMsg + "," +  retStr.substring(0, 20) +  "～" +  retStr.substring(uketori - 20, uketori);
+						dbMsg +="," +  retStr.substring(0, 20) +  "～" +  retStr.substring(uketori - 20, uketori);
 					}else{
-						dbMsg= dbMsg + ","  +  retStr +  "～";
+						dbMsg +=","  +  retStr +  "～";
 					}
-					dbMsg= dbMsg + "(" + uketori +  "文字)";
+					dbMsg +="(" + uketori +  "文字)";
 				}else{
-					dbMsg= dbMsg + ",Decode失敗";
+					dbMsg +=",Decode失敗";
 					retStr = songLyric;
 				}
 			}else{
-				dbMsg= dbMsg + ",Encord失敗";
+				dbMsg +=",Encord失敗";
 				retStr = songLyric;
 			}
 			myLog(TAG,dbMsg);
@@ -4987,32 +4987,32 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			dbMsg= "受取り" + motoEncrod;
 			int uketori = String.valueOf(songLyric).length();
 			if(20 < uketori){
-				dbMsg= dbMsg + ";" + songLyric.substring(0, 20) +  "～" +  songLyric.substring(uketori - 20, uketori);
+				dbMsg +=";" + songLyric.substring(0, 20) +  "～" +  songLyric.substring(uketori - 20, uketori);
 			}else{
-				dbMsg= dbMsg + ";" +  songLyric +  ";";
+				dbMsg +=";" +  songLyric +  ";";
 			}
-			dbMsg= dbMsg + "," +uketori +  "文字)";
+			dbMsg +="," +uketori +  "文字)";
 			retStr = saiEncordBody( songLyric , motoEncrod , saiEncrod);										//再エンコードして呼出し元のActivtyに返す
 		//	if(Locale.getDefault().equals( Locale.getDefault().JAPAN)){										//アプリで使用されているロケール情報を取得し、日本語の場合のみconstant for ja_JP.
 //				byte[] dataBuffer = songLyric.getBytes(motoEncrod);			//songLyric.substring(0, songLyric.length()).getBytes(motoEncrod);									//データ部分を抜出			ISO-8859-1		"EUC_JP"
-//				dbMsg= dbMsg + ",dataBuffer= "+ dataBuffer.length + "バイト";
+//				dbMsg +=",dataBuffer= "+ dataBuffer.length + "バイト";
 //				songLyric = new String(dataBuffer, saiEncrod);
 		//	}
 //			uketori = String.valueOf(songLyric).length();
 //			if(20 < uketori){
-//				dbMsg= dbMsg + "," +  songLyric.substring(0, 20) +  "～" +  songLyric.substring(uketori - 20, uketori);
+//				dbMsg +="," +  songLyric.substring(0, 20) +  "～" +  songLyric.substring(uketori - 20, uketori);
 //			}else{
-//				dbMsg= dbMsg + ","  +  songLyric +  "～";
+//				dbMsg +=","  +  songLyric +  "～";
 //			}
-//			dbMsg= dbMsg + "(" + uketori +  "文字)";
-			dbMsg= dbMsg + "、結果=" + saiEncrod;
+//			dbMsg +="(" + uketori +  "文字)";
+			dbMsg +="、結果=" + saiEncrod;
 			uketori = String.valueOf(retStr).length();
 			if(20 < uketori){
-				dbMsg= dbMsg + ";" + retStr.substring(0, 20) +  "～" +  retStr.substring(uketori - 20, uketori);
+				dbMsg +=";" + retStr.substring(0, 20) +  "～" +  retStr.substring(uketori - 20, uketori);
 			}else{
-				dbMsg= dbMsg + ";" +  songLyric +  ";";
+				dbMsg +=";" +  songLyric +  ";";
 			}
-			dbMsg= dbMsg + "," +uketori +  "文字)";
+			dbMsg +="," +uketori +  "文字)";
 			Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
 			Bundle bundle = new Bundle();
 			bundle.putString("songLyric", retStr);
@@ -5431,7 +5431,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			}else{
 				retStr = this.getApplicationContext().getResources().getString(R.string.lyric_nasi);				//me="">この曲は歌詞が設定されていないか、読み込めませんでした。</string>
 			}
-			dbMsg= dbMsg + ",retStr=" + retStr;
+			dbMsg +=",retStr=" + retStr;
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -5454,9 +5454,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if( this.result_USLT != null){
 				int readInt = this.result_USLT.length();
 				if(60 < readInt){
-					dbMsg= dbMsg + this.result_USLT.substring(0, 40) +  "～" + this.result_USLT.substring(readInt-20, readInt);
+					dbMsg +=this.result_USLT.substring(0, 40) +  "～" + this.result_USLT.substring(readInt-20, readInt);
 				}else{
-					dbMsg= dbMsg + this.result_USLT;
+					dbMsg +=this.result_USLT;
 				}
 				dbMsg= dbMsg +"(" + readInt + "/" + this.result_USLT.length() +"文字)";
 				dbMsg= dbMsg +",unix;n" +  this.result_USLT.indexOf("\n") +"文字目)";
@@ -5512,7 +5512,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			if(30 < uketori){
 				dbMsg= dbMsg+ songLyric.substring(0, 30) +"～" + songLyric.substring(songLyric.length()-30, songLyric.length());
 			}else{
-				dbMsg= dbMsg +  songLyric +  "～";
+				dbMsg += songLyric +  "～";
 			}
 			dbMsg= dbMsg +uketori +  "文字)";
 			String eucjpStr;
@@ -5717,14 +5717,14 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				dbMsg="reqCode = " + reqCode;
 
 //				pdTitol=(CharSequence) params[2] ;
-//				dbMsg= dbMsg + ", pdTitol = " + pdTitol ;
+//				dbMsg +=", pdTitol = " + pdTitol ;
 
 				CharSequence setStr=(CharSequence) params[1];	//1.次の処理に渡すメッセージ;pdMessage
 				if(setStr !=null ){
 					if(! setStr.equals(pdMessage)){
 						pdMessage = (String) setStr;
 						this.pdMessage = (String) setStr;
-						dbMsg= dbMsg + ",Message = " + pdMessage;
+						dbMsg +=",Message = " + pdMessage;
 		//				change2ndText () ;			//ProgBar2の表示値設定
 					}
 				}
@@ -5737,7 +5737,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 //						vtWidth = 20;
 //					}
 //				}
-//				dbMsg= dbMsg + ", 更新間隔 = " + vtWidth  ;
+//				dbMsg +=", 更新間隔 = " + vtWidth  ;
 //				System.currentTimeMillis();
 				String result2 = null;
 				switch(reqCode) {
@@ -5747,7 +5747,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 						result2 = raf2Str(file, true);			//RandomAccessFileをString変換
 					}while( result2 == null );
 					TagBrows.this.result = result2;
-					dbMsg= dbMsg + ", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+					dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
 					break;
 				default:
 //					break;
@@ -5758,17 +5758,17 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 //				case read_AAC_Movie_Meta:		//QuickTime Tags.QuickTime Meta Tagsの読取り
 //				case read_AAC_ITEM:				//QuickTime Tagsの読取り
 					TagBrows.this.result=(String) params[2] ;																//2.result
-					dbMsg= dbMsg + ", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+					dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
 				//	result2 = result;
 					List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
 					pdMaxVal = kensaku.size();
-					dbMsg= dbMsg + ", kensaku = " + pdMaxVal + "項目" ;
+					dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
 					for(int i = 0; i < pdMaxVal ; i++){
 						dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
 						String freamName = kensaku.get(i);
-						dbMsg= dbMsg + freamName + ";";
+						dbMsg +=freamName + ";";
 						int sInt = TagBrows.this.result.length();
-						dbMsg= dbMsg + "残り" + sInt + "文字";
+						dbMsg +="残り" + sInt + "文字";
 						if(freamName.equals("USLT") || freamName.equals("USLT")){
 							pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
 						} else {
@@ -5782,7 +5782,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 							i = pdMaxVal;
 						}
 						int eInt = TagBrows.this.result.length();
-						dbMsg= dbMsg +  ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+						dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
 						myLog(TAG,dbMsg);
 						publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
 					}
@@ -5812,8 +5812,8 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			try{
 				dbMsg= this.reqCode +")progress= " + progress;
 				progressDialog.setProgress(progress);
-				dbMsg= dbMsg + ">> " + progressDialog.getProgress();
-				dbMsg= dbMsg + "/" + progressDialog.getMax();///////////////////////////////////
+				dbMsg +=">> " + progressDialog.getProgress();
+				dbMsg +="/" + progressDialog.getMax();///////////////////////////////////
 		//		myLog(TAG,dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG,dbMsg+"；"+e.toString());
@@ -5835,9 +5835,9 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				try{
 					Thread.sleep(100);			//書ききる為の時間（100msでは不足）
 					reqCode = ret.getReqCode();
-					dbMsg= dbMsg + "終了；reqCode=" + reqCode +"(終端"+ pdCoundtVal +")";
-					dbMsg=dbMsg + ",callback = " + callback;	/////http://techbooster.org/android/ui/1282/
-					dbMsg=dbMsg + "[ " + pdCoundtVal +  "/ " + pdMaxVal +"]";	/////http://techbooster.org/android/ui/1282/
+					dbMsg +="終了；reqCode=" + reqCode +"(終端"+ pdCoundtVal +")";
+					dbMsg +=",callback = " + callback;	/////http://techbooster.org/android/ui/1282/
+					dbMsg +="[ " + pdCoundtVal +  "/ " + pdMaxVal +"]";	/////http://techbooster.org/android/ui/1282/
 	//				myLog(TAG, dbMsg);
 			//		if( pdCoundtVal  >= pdMaxVal){
 						callback.onSuccessplogTask(reqCode );		//1.次の処理;2.次の処理に渡すメッセージ
@@ -5858,7 +5858,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			dbMsg= "reqCode=" + reqCode;/////////////////////////////////////
 			switch(reqCode) {
 			case read_FILE:				//ファイル読込
-				dbMsg= dbMsg + ", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+				dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
 				file2Tag2(TagBrows.this.result);			//文字列からフィールドを抽出				break;
 			case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
 				back2Activty(  );			//呼び出しの戻り処理
@@ -5923,7 +5923,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
  *03-06 00:25:18.113: E/JavaBinder(21029): !!! FAILED BINDER TRANSACTION !!!
 
 						result = result.substring(0, size);
-						dbMsg= dbMsg + ">ID3v2のサイズフラグでカット>" + result.length() + "文字";
+						dbMsg +=">ID3v2のサイズフラグでカット>" + result.length() + "文字";
 	public String addTagList(String result){			//渡された文字列からフレームを切り分けList<String> tagDataに格納する
 		String retFNleam = null;
 		final String TAG = "addTagList[TagBrows]";
@@ -5936,12 +5936,12 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			String fremeMei = null;
 			dbMsg= "開始= "+ nokori + "文字";
 			do{
-				dbMsg= dbMsg + "\n"+ result.substring(0, 20) + "～" + result.length() + "文字から" ;
+				dbMsg +="\n"+ result.substring(0, 20) + "～" + result.length() + "文字から" ;
 				fremeMei = fremeMeiSyougou( result.substring(0, 40));				//先頭に絞ってフレーム名検索
-				dbMsg= dbMsg +  fremeMei;
+				dbMsg += fremeMei;
 				if(fremeMei == null){													//違えば
 					fremeMei = fremeMeiSyougou( result);								//フレーム名が見つかるまでループを進める
-					dbMsg= dbMsg + ">>"+ fleamStart + "に" + fremeMei;
+					dbMsg +=">>"+ fleamStart + "に" + fremeMei;
 					if(fremeMei == null){												//フレーム名が見つからなくなったら
 			//			myErrorLog(TAG,dbMsg + "で終了");
 						nokori = 0;
@@ -5951,13 +5951,13 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 				}
 				if(0< nokori){
 					startInt = fleamStart ;										////+ fremeMei.getBytes("ISO-8859-1").length;		//fremeMei.length() ;					//\0の検索開始点を設定
-					dbMsg= dbMsg + ",startInt= "+ startInt;
+					dbMsg +=",startInt= "+ startInt;
 					result = result.substring(startInt, result.length());					//
 					int b_nokori  = result.length();
-					dbMsg= dbMsg + ",格納前="+ b_nokori;
+					dbMsg +=",格納前="+ b_nokori;
 					result = getTargetFream( result , fremeMei );			//先端のフレームデータを格納
 					nokori = result.length();
-					dbMsg= dbMsg + ">残り>"+ nokori + "文字";
+					dbMsg +=">残り>"+ nokori + "文字";
 					if( nokori == b_nokori ){				//最後の残りなど処理できないデータがあった
 						nokori = 0;
 					}else{
@@ -5969,7 +5969,7 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 			myLog(TAG,dbMsg);
 			int arrayEnd = tagData.size();
 			for(int i= 0 ; i < arrayEnd ; i++){
-				dbMsg= dbMsg +  "\n(読取り確認" + i + ")";
+				dbMsg += "\n(読取り確認" + i + ")";
 				result= String.valueOf(tagData.get(i));
 				dbMsg= dbMsg  + result;			//.substring(0, 10) + "～" + result.substring(result.length()-20, result.length())
 				result_Samary = result_Samary + "\n" + result;

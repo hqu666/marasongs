@@ -69,7 +69,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 			progressDialog = HPDialog.newInstance("処理中", "しばらくお待ちください",100,10, cContext  );					//true, Cancel_Listener
 			dbMsg="progressDialog=" + progressDialog ;/////////////////////////////////////
 //			progressDialog.show((( Activity ) cContext).getFragmentManager(), "progress");                          //参照できなかった
-			dbMsg= dbMsg + ",isPShow=" + progressDialog.isPShow() ;/////////////////////////////////////
+			dbMsg +=",isPShow=" + progressDialog.isPShow() ;/////////////////////////////////////
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -89,30 +89,30 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 			dbMsg="ループ前：reqCode = " + reqCode;
 	//		this.pd2CoundtVal=(Integer) params[4] ;			//4.処理カウント
 			this.pd2MaxVal=(Integer) params[4] ;			// 4;pd2MaxVal
-			dbMsg= dbMsg + ">>" + this.pd2CoundtVal + "/" + this.pd2MaxVal;
+			dbMsg +=">>" + this.pd2CoundtVal + "/" + this.pd2MaxVal;
 			progressDialog.ProgBar2.setMax(this.pd2MaxVal);
 	//		progressDialog.ProgBar2.setProgress(this.pd2CoundtVal);
-			dbMsg= dbMsg + ">>" + progressDialog.ProgBar2.getProgress() + "/" + progressDialog.ProgBar2.getMax();
+			dbMsg +=">>" + progressDialog.ProgBar2.getProgress() + "/" + progressDialog.ProgBar2.getMax();
 			Integer setInt=(Integer) params[3] ;			//3;pdMaxVal;3.次のステップ数
 			if( setInt != pdMaxVal ){
 				pdMaxVal = setInt;
 				progressDialog.progBar1.setMax(pdMaxVal);
-				dbMsg= dbMsg + ")" +progressDialog. progBar1.getMax();
+				dbMsg +=")" +progressDialog. progBar1.getMax();
 			}
 			CharSequence setStr =(CharSequence) params[1];		//1;pdTitol;1.次の処理のタイトル
-			dbMsg=dbMsg + " , setStr = " + setStr;
+			dbMsg +=" , setStr = " + setStr;
 			if(setStr != null ){
 				if(! setStr.equals(pdTitol)){
 					pdTitol = setStr;
 					pdCoundtVal = 0;
 				}
 			}
-			dbMsg=dbMsg + " , Titol = " + pdTitol;
+			dbMsg +=" , Titol = " + pdTitol;
 			setStr=(CharSequence) params[2];				//2;pdMessage;2.次の処理に渡すメッセージ
 			if(setStr !=null ){
 				if(! setStr.equals(pdMessage)){
 					pdMessage = setStr;
-					dbMsg= dbMsg + ",Message = " + pdMessage;
+					dbMsg +=",Message = " + pdMessage;
 				}
 			}
 			this.pd2CoundtVal = 0;
@@ -167,7 +167,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 				Thread.sleep(wTime);
 				retBool = progressDialog.isPShow();
 			}while(! retBool && eCount< eStrp);
-			dbMsg= dbMsg + "eCount =  " + eCount + "/" + eStrp + ";"+ retBool ;	/////////////////////////////////////////////////////////////
+			dbMsg +="eCount =  " + eCount + "/" + eStrp + ";"+ retBool ;	/////////////////////////////////////////////////////////////
 			myLog(TAG,dbMsg);
 			dbMsg=dbMsg +",progressDialog=" + progressDialog;/////////////////////////////////////
 			if( progressDialog !=null){
@@ -192,7 +192,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 			String dbMsg="開始";/////////////////////////////////////
 			try{
 				dbMsg="msg=" + msg ;/////////////////////////////////////
-				dbMsg= dbMsg + ",cContext=" + HPDAsyncTask.this.cContext ;/////////////////////////////////////
+				dbMsg +=",cContext=" + HPDAsyncTask.this.cContext ;/////////////////////////////////////
 		//		myLog(TAG,dbMsg);
 		//		preReadLoop( HPDAsyncTask.this.cContext ) ;		//dataURIを読み込みながら欠けデータ確認		 getApplicationContext()
 			}catch (Exception e) {
@@ -219,7 +219,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 				int progress = (int)values[0] ;
 				dbMsg= "progress= " + progress;
 				progressDialog.progBar1.setProgress(progress);
-				dbMsg= dbMsg + ">> " +progressDialog. progBar1.getProgress();
+				dbMsg +=">> " +progressDialog. progBar1.getProgress();
 				change1stText ();			//外部スレッドからprogBar1のUI操作
 	//			myLog(TAG,dbMsg);
 			}
@@ -247,7 +247,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 				progressDialog.pgd_val_tv.setText(String.valueOf(progress));
 				//	pgd_val_tv.setText(String.format(_numberFormat, progress, max));
 				SpannableString tmp = new SpannableString(_percentFormat.format(parcent));
-				dbMsg= dbMsg + ">>" + tmp;
+				dbMsg +=">>" + tmp;
 		//		myLog(TAG,dbMsg);
 				progressDialog.pgd_par_tv.setText(tmp);
 				if(progress == 0){
@@ -264,15 +264,15 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 		final String TAG = "change2ndText[HPDAsyncTask]";
 		String dbMsg="";
 		int progress = progressDialog.ProgBar2.getProgress()  + 1 ;
-		dbMsg= dbMsg + "progress= " + progress;
+		dbMsg +="progress= " + progress;
 		progressDialog.ProgBar2.setProgress(progress);
 		int max   = progressDialog.ProgBar2.getMax();
-		dbMsg= dbMsg + " / " + max;
+		dbMsg +=" / " + max;
 		
 		int pEnd = HPDAsyncTask.this.pdMaxVal ;
 		progressDialog.progBar1.setMax(pEnd);
 		progressDialog.progBar1.setProgress(0);
-		dbMsg =dbMsg + "[" + progressDialog.progBar1.getProgress() + "/" + progressDialog.progBar1.getMax() + "]" ;
+		dbMsg += "[" + progressDialog.progBar1.getProgress() + "/" + progressDialog.progBar1.getMax() + "]" ;
 		myLog(TAG,dbMsg);
 		if(handler == null){
 			handler = new Handler();
@@ -285,7 +285,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 					int progress = progressDialog.ProgBar2.getProgress();
 					dbMsg= "[" + progress;
 					int max   = progressDialog.ProgBar2.getMax();
-					dbMsg= dbMsg + "/" + max + "]";
+					dbMsg +="/" + max + "]";
 					progressDialog.pgd_val2_tv.setText(String.valueOf( progress));
 					progressDialog.pgd_max2_tv.setText(String.valueOf( max));
 					double parcent = (double) progress / (double) max;
@@ -312,7 +312,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 			dbMsg=  "isPShow=" + progressDialog.isPShow() ;/////////////////////////////////////
 			if (progressDialog.getShowsDialog())
 				progressDialog.dismiss();
-			dbMsg= dbMsg + ">>" + progressDialog.isPShow() ;/////////////////////////////////////
+			dbMsg +=">>" + progressDialog.isPShow() ;/////////////////////////////////////
 
 			if (result != null){
 				Toast.makeText(cContext, result.toString(), Toast.LENGTH_SHORT).show();
@@ -337,7 +337,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 			if (progressDialog.getShowsDialog()){
 				progressDialog.dismiss();
 			}
-			dbMsg= dbMsg + ">>" + progressDialog.isPShow() ;/////////////////////////////////////
+			dbMsg +=">>" + progressDialog.isPShow() ;/////////////////////////////////////
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());

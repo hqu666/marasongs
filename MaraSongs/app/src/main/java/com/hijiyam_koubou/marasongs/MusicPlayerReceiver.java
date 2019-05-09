@@ -18,24 +18,24 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 			dbMsg="context="+context;				
 //				//ロックスクリーン；	android.app.ReceiverRestrictedContext@419e37f8
 //				//プレイヤー；			android.app.ReceiverRestrictedContext@419e37f8,
-			dbMsg=dbMsg + ",intent= " + intent;	
+			dbMsg +=",intent= " + intent;
 				//ロックスクリーン； 	{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver (has extras) }:
 				//プレイヤー； 			{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver }:
 			dbMsg= dbMsg +",getAction=" + intent.getAction();
 			Intent MPSIntent = new Intent(context, MusicPlayerService.class);
-			dbMsg= dbMsg + ":" + (
+			dbMsg +=":" + (
 				intent.getAction() == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY? "ACTION_AUDIO_BECOMING_NOISY" :
 				intent.getAction() == Intent.ACTION_MEDIA_BUTTON ? "ボタン" : "不明");
 				if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
-					dbMsg= dbMsg + ",Headphonesが外された" ;															//offしか発生しない
+					dbMsg +=",Headphonesが外された" ;															//offしか発生しない
 					Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
 //					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
-//					dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
+//					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 				}else if (intent.getAction().equals(android.media.AudioManager.ACTION_HEADSET_PLUG)) {		
-					dbMsg= dbMsg + ",Headphonessoucy装着" ;															
+					dbMsg +=",Headphonessoucy装着" ;
 //					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
-//					dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
+//					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 				} else if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
 					dbMsg= dbMsg +",getExtras=" + intent.getExtras();
@@ -44,7 +44,7 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 						if (keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
 							return;
 						}
-					dbMsg= dbMsg + ":" + (
+					dbMsg +=":" + (
 						keyEvent.getKeyCode() == KeyEvent.KEYCODE_HEADSETHOOK ? "PLAY/PAUSE" :
 						keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ? "PLAY/PAUSE" :
 						keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_STOP ? "STOP" :
@@ -56,7 +56,7 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 						keyEvent.getAction() == KeyEvent.ACTION_UP ? "UP" :
 						keyEvent.getAction() == KeyEvent.ACTION_MULTIPLE ? "MULTIPLE" : "Unknown");			//ロックスクリーン以外はここでエラーで止まる
 					}
-					dbMsg= dbMsg + ",getKeyCode=" + keyEvent.getKeyCode();
+					dbMsg +=",getKeyCode=" + keyEvent.getKeyCode();
 					myLog(TAG,dbMsg);
 					switch (keyEvent.getKeyCode()) {
 					case KeyEvent.KEYCODE_HEADSETHOOK:
@@ -81,9 +81,9 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 						MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);			//	context.startService(new Intent(MusicPlayerService.ACTION_REWIND));					// plays the previous song
 						break;
 					}
-					dbMsg= dbMsg + " ,ロックスクリーンから" + MPSIntent.getAction();/////////////////////////////////////
+					dbMsg +=" ,ロックスクリーンから" + MPSIntent.getAction();/////////////////////////////////////
 					ComponentName MPSName = context.startService(MPSIntent);
-					dbMsg= dbMsg + " ,ComponentName=" + MPSName;/////////////////////////////////////
+					dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
 				} else {
 						dbMsg=dbMsg+ ",ロックスクリーンではない";/////////////////////////////////////
 				}						//if(  intent.getExtras() != null ){

@@ -141,7 +141,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 			if(AName != null){
 				artistName =AName;		//リストアップしたアルバムアーティスト名
 			}
-			dbMsg=dbMsg + ";;" + artistName;
+			dbMsg +=";;" + artistName;
 			if(album != null){
 				albumName =album;		//アルバム名
 			}
@@ -152,7 +152,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 					releaceYear = null;
 				}
 			}
-			dbMsg= dbMsg + " , 制作年= " + releaceYear + ",アルバム= " + albumName;
+			dbMsg +=" , 制作年= " + releaceYear + ",アルバム= " + albumName;
 			if(titol != null){
 				titolName =titol;		//"制作年= " + rYear
 			}
@@ -183,14 +183,14 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 						albumName = val;
 					}
 				}
-				dbMsg= dbMsg + ",アルバム名= " + albumName;
+				dbMsg +=",アルバム名= " + albumName;
 				val = map.get( "trackNo" );
 				if(trackNo == null){
 					if(val != null){
 						trackNo = val;
 					}
 				}
-				dbMsg=dbMsg + "[" + trackNo + "]";
+				dbMsg +="[" + trackNo + "]";
 				val = map.get( "titolName" );
 				if(titolName == null){
 					if(val != null){
@@ -200,11 +200,11 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 				dbMsg=dbMsg  + titolName;
 				val = map.get( "kakucyousi" );
 				if(val != null){
-					dbMsg=dbMsg + " , 拡張子="  + val;
+					dbMsg +=" , 拡張子="  + val;
 				}
 				val = map.get( "mPass" );
 				if(val != null){
-					dbMsg=dbMsg + " , 残りパス="  + val;
+					dbMsg +=" , 残りパス="  + val;
 				}
 			}
 			myLog(TAG,dbMsg);
@@ -332,7 +332,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //				String fN = (ｒContext.getApplicationContext().getFilesDir()).toString();
 //				String[] wStrs = fN.split(File.separator);
 //				file_ex = fN.substring(0, (fN.length() - wStrs[ wStrs.length-1 ].length()));				//.substring(0, );
-//				dbMsg=dbMsg + " >> " + file_ex;			//"/data/data/" +  getResources().getString(R.string.content_str)
+//				dbMsg +=" >> " + file_ex;			//"/data/data/" +  getResources().getString(R.string.content_str)
 //		//		myLog(TAG,dbMsg);
 //				fName = file_ex + "/shared_prefs/" + ｒContext.getResources().getString(R.string.pref_main_file) +".xml";
 //				dbMsg="プリファレンス= " + fName;
@@ -466,7 +466,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 
 							switch(sousa_taisyou) {							//操作対象
 							case 0:			//アーティスト
-								dbMsg= dbMsg + ",アーティスト=" + creditArtistName+";;" + artistName;
+								dbMsg +=",アーティスト=" + creditArtistName+";;" + artistName;
 								reigaiListKakikomi( rDate , creditArtistName, artistName ,null , null , null , null);			//クレジットアーティスト名のリスト表示名反映リストの書き込み	creditNameKakikomi、creditNameTouroku
 								break;
 							case 1:			//アルバム
@@ -474,13 +474,13 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 								reigaiListKakikomi( rDate , creditArtistName, artistName ,albumName , releaceYear , null , null);			//クレジットアーティスト名のリスト表示名反映リストの書き込み	creditNameKakikomi、creditNameTouroku
 								break;
 							case 2:			//タイトル
-								dbMsg= dbMsg + ",タイトル（" + trackNo+"）" + titolName+"、、" ;
+								dbMsg +=",タイトル（" + trackNo+"）" + titolName+"、、" ;
 								reigaiListKakikomi( rDate , creditArtistName, artistName ,albumName , releaceYear , trackNo , titolName);			//クレジットアーティスト名のリスト表示名反映リストの書き込み	creditNameKakikomi、creditNameTouroku
 								break;
 //							default:
 //								break;
 							}
-							dbMsg= dbMsg + ">>" +rDate ;
+							dbMsg +=">>" +rDate ;
 							myLog(TAG,dbMsg );
 			                dismiss();
 			        //        quitMe();				//ダイアログとこのクラスを破棄
@@ -524,7 +524,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 			if (-1 == checkedId) {        // どれも選択されていなければidには-1が入ってくる
 				dbMsg= "クリアされました";
 			} else {
-				dbMsg= dbMsg + ((RadioButton)findViewById(checkedId)).getText() + "が選択されました";
+				dbMsg +=((RadioButton)findViewById(checkedId)).getText() + "が選択されました";
 				fie_albam_tv.setVisibility(View.GONE);						//アルバム
 				fie_year_tv.setVisibility(View.GONE);						//制作もしくは録音年
 				fie_nen_tv.setVisibility(View.GONE);							//年
@@ -579,11 +579,11 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 				listItems = new String[cCount];
 				int i = 0;
 				do{
-					dbMsg= dbMsg + i + "/" + cCount + ")" ;/////////////////////////////////////
+					dbMsg +=i + "/" + cCount + ")" ;/////////////////////////////////////
 					String rDate = awCursor.getString(awCursor.getColumnIndex("rDate"));		//データURL
-					dbMsg= dbMsg + rDate+">>";/////////////////////////////////////
+					dbMsg +=rDate+">>";/////////////////////////////////////
 					listItems[i] = rDate;
-					dbMsg= dbMsg + listItems[i];/////////////////////////////////////
+					dbMsg +=listItems[i];/////////////////////////////////////
 					i++;
 				}while(awCursor.moveToNext());
 	//			listItems = reNameList.toArray(new String[0]);
@@ -599,9 +599,9 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 					        	dbMsg="[" +which +"]";/////////////////////////////////////////////////////////////////////////////////////
 					        	awCursor.moveToPosition(which);
 					        	String idStr = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_id")));
-								dbMsg= dbMsg + idStr;/////////////////////////////////////////////////////////////////////////////////////
+								dbMsg +=idStr;/////////////////////////////////////////////////////////////////////////////////////
 								int syoukyoGyou = ar_db.delete(ｒContext.getResources().getString(R.string.artist_reW_table),"_id = '" + idStr +"'", null);		//			"_id = ?", new String[]{ idStr }
-								dbMsg= dbMsg + " , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
+								dbMsg +=" , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
 								myLog(TAG,dbMsg);
 //									creditNLSakujyo(  motS , albS , sakiN);								//クレジットアーティスト名変更リストから削除
 								dialog.dismiss();
@@ -645,7 +645,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 			if(awCursor.moveToFirst()){
 				dbMsg += "は書き換え除外リストに" + awCursor.getCount() +"件あり";/////////////////////////////////////////////////////////////	motName,albumName , sakiName
 				String reId = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_ID")));
-				dbMsg=dbMsg + "更新先=" + reId +")";/////////////////////////////////////
+				dbMsg +="更新先=" + reId +")";/////////////////////////////////////
 				ar_db.beginTransaction();
 				try {
 					SQLiteStatement stmt = ar_db.compileStatement("update " + awTname + " set rDate = ? , creditArtistName = ?, artistName = ? ,albumName = ? , releaceYear = ? , trackNo = ? , titolName = ? where _id = ?;");
@@ -672,7 +672,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 					stmt.bindString(8 , reId);
 
 					long id = stmt.executeInsert();
-					dbMsg=dbMsg + ">>" + id+")";/////////////////////////////////////
+					dbMsg +=">>" + id+")";/////////////////////////////////////
 					ar_db.setTransactionSuccessful();
 				} finally {
 					ar_db.endTransaction();
@@ -705,7 +705,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 					}
 					stmt.bindString(1, dStr);		//cv.put("rDate", rDate);					//データURL
 					long id = stmt.executeInsert();
-					dbMsg=dbMsg + ">>" +id+")";/////////////////////////////////////
+					dbMsg +=">>" +id+")";/////////////////////////////////////
 					ar_db.setTransactionSuccessful();
 				} finally {
 					ar_db.endTransaction();
@@ -794,7 +794,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 					try{
 						dbMsg=dbMsg +listItems[which];/////////////////////////////////////////////////////////////////////////////////////
 						artistName = (String) listItems[which];
-						dbMsg= dbMsg + artistName +"を選択";/////////////////////////////////////////////////////////////////////////////////////
+						dbMsg +=artistName +"を選択";/////////////////////////////////////////////////////////////////////////////////////
 						fie_albam_artist_name_et.setText(artistName);
 						dialog.dismiss();
 		//				creditNameTouroku_kakikomi( R.string.menu_funk_artistmei2 , MotoNa , albamNa ,sakiN);		//変更したアーティスト名をリスト登録 ；；元のアーティスト名 , 対象アルバム, 書き換え
@@ -842,11 +842,11 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //			Bundle bundle = new Bundle();
 //
 //			if(retInt > 0){
-//				dbMsg= dbMsg + "retInt=" + retInt + "件" ;/////////////////////////////////////
+//				dbMsg +="retInt=" + retInt + "件" ;/////////////////////////////////////
 //				bundle.putInt("key.retInt", retInt);			//切り替え先
 //			}
 //			if(retStr != null){
-//				dbMsg= dbMsg + "retStr=" + retStr  ;/////////////////////////////////////
+//				dbMsg +="retStr=" + retStr  ;/////////////////////////////////////
 //				bundle.putString("key.retStr", retStr);			//切り替え先
 //			}
 //			data.putExtras(bundle);
@@ -898,7 +898,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //
 //				switch(sousa_taisyou) {							//操作対象
 //				case 0:			//アーティスト
-//					dbMsg= dbMsg + ",アーティスト=" + creditArtistName+";;" + artistName;
+//					dbMsg +=",アーティスト=" + creditArtistName+";;" + artistName;
 //					reigaiListKakikomi( rDate , creditArtistName, artistName ,null , null , null , null);			//クレジットアーティスト名のリスト表示名反映リストの書き込み	creditNameKakikomi、creditNameTouroku
 //					break;
 //				case 1:			//アルバム
@@ -906,13 +906,13 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //					reigaiListKakikomi( rDate , creditArtistName, artistName ,albumName , releaceYear , null , null);			//クレジットアーティスト名のリスト表示名反映リストの書き込み	creditNameKakikomi、creditNameTouroku
 //					break;
 //				case 2:			//タイトル
-//					dbMsg= dbMsg + ",タイトル（" + trackNo+"）" + titolName+"、、" ;
+//					dbMsg +=",タイトル（" + trackNo+"）" + titolName+"、、" ;
 //					reigaiListKakikomi( rDate , creditArtistName, artistName ,albumName , releaceYear , trackNo , titolName);			//クレジットアーティスト名のリスト表示名反映リストの書き込み	creditNameKakikomi、creditNameTouroku
 //					break;
 ////				default:
 ////					break;
 //				}
-//				dbMsg= dbMsg + ">>" +rDate ;
+//				dbMsg +=">>" +rDate ;
 //				myLog(TAG,dbMsg );
 //                dismiss();
 //        //        quitMe();				//ダイアログとこのクラスを破棄

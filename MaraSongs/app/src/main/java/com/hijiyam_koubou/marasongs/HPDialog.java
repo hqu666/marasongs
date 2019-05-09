@@ -64,7 +64,7 @@ public class HPDialog extends DialogFragment {
 //			if( pDialog ==null ){
 //				pDialog = DualProgressDialog(this.cContext);
 //			}
-//			dbMsg= dbMsg +  ", pDialog = " + pDialog;
+//			dbMsg += ", pDialog = " + pDialog;
 //			myLog(TAG,dbMsg );
 //		}catch (Exception e) {
 //			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -80,7 +80,7 @@ public class HPDialog extends DialogFragment {
 //			HPDialog.this.cContext = cContext ;
 			dbMsg="context= " + cContext;
 //			LayoutInflater factory = LayoutInflater.from(cContext);
-//			dbMsg= dbMsg + ",factory=" + factory;
+//			dbMsg +=",factory=" + factory;
 //			view = factory.inflate(R.layout.pd_log, null);
 //			dbMsg= dbMsg  + ",view=" + view.getId();
 
@@ -110,7 +110,7 @@ public class HPDialog extends DialogFragment {
 		try {
 			dbMsg="context=" + cContext;
 			LayoutInflater factory = LayoutInflater.from(cContext);
-			dbMsg= dbMsg + ",factory=" + factory;
+			dbMsg +=",factory=" + factory;
 			view = factory.inflate(R.layout.pd_log, null);
 			dbMsg= dbMsg  + ",view=" + view.getId();
 			pgd_msg_tv = (TextView) view.findViewById(R.id.pgd_msg_tv);
@@ -129,11 +129,11 @@ public class HPDialog extends DialogFragment {
 			dbMsg= dbMsg  + ",pgd_par2_tv=" + pgd_par2_tv.getId();
 			_percentFormat.setMaximumFractionDigits(0);
 			prg = new AlertDialog.Builder(cContext);				//AlertDialog
-			dbMsg= dbMsg + " , prg=" + prg;
+			dbMsg +=" , prg=" + prg;
 			prg.setView(view);
-			dbMsg= dbMsg + " >>" + prg;
+			dbMsg +=" >>" + prg;
 			pDialog =  prg.create();			//(ProgressDialog)
-			dbMsg= dbMsg + " pDialog=" + pDialog;
+			dbMsg +=" pDialog=" + pDialog;
 	//		pd2CoundtVal = 0;
 //			myLog(TAG, dbMsg);
 			pDialog.show();				//plogTaskから呼ぶと通る
@@ -151,13 +151,13 @@ public class HPDialog extends DialogFragment {
 		try{
 			dbMsg="Bundle=" + safedInstanceState;
 			String title = getArguments().getString("title");
-			dbMsg= dbMsg + "title=" + title;
+			dbMsg +="title=" + title;
 			String message = getArguments().getString("message");
-			dbMsg= dbMsg + ",message=" + message;
+			dbMsg +=",message=" + message;
 			int max = getArguments().getInt("max");
-			dbMsg= dbMsg + ",max=" + max;
+			dbMsg +=",max=" + max;
 			int max2 = getArguments().getInt("max2");
-			dbMsg= dbMsg + ",max2=" + max2;
+			dbMsg +=",max2=" + max2;
 //			pgd_title_tv.setText(title);
 			pgd_msg_tv.setText(message);
 			progBar1.setMax(max);
@@ -186,7 +186,7 @@ public class HPDialog extends DialogFragment {
 			if( pDialog != null ){
 	//			retBool = progressDialog.isShowing();
 				retBool = pDialog.isShowing();
-				dbMsg= dbMsg + ",retBool=" + retBool;
+				dbMsg +=",retBool=" + retBool;
 			}
 	//		myLog(TAG,dbMsg );
 		}catch (Exception e) {
@@ -248,14 +248,14 @@ public class HPDialog extends DialogFragment {
 							String dbMsg="";
 							try{
 								int progress = progBar1.getProgress();
-								dbMsg= dbMsg + ";" + progress;
+								dbMsg +=";" + progress;
 								int max   = progBar1.getMax();
-								dbMsg= dbMsg + "/" + max;
+								dbMsg +="/" + max;
 								double parcent = (double) progress / (double) max;
-								dbMsg= dbMsg + "=" + parcent;
+								dbMsg +="=" + parcent;
 								pgd_val_tv.setText(String.valueOf(progress));
 								SpannableString tmp = new SpannableString(_percentFormat.format(parcent));
-								dbMsg= dbMsg + ";" + tmp;
+								dbMsg +=";" + tmp;
 								pgd_par_tv.setText(tmp);
 //								if(progress == 0){
 //										pgd_max_tv.setText(String.valueOf(max));
@@ -273,14 +273,14 @@ public class HPDialog extends DialogFragment {
 			}).start();
 
 //			int progress = progBar1.getProgress();
-//			dbMsg= dbMsg + ";" + progress;
+//			dbMsg +=";" + progress;
 //			int max   = progBar1.getMax();
-//			dbMsg= dbMsg + "/" + max;
+//			dbMsg +="/" + max;
 //			double parcent = (double) progress / (double) max;
-//			dbMsg= dbMsg + "=" + parcent;
+//			dbMsg +="=" + parcent;
 //			pgd_val_tv.setText(String.valueOf(progress));
 //			SpannableString tmp = new SpannableString(_percentFormat.format(parcent));
-//			dbMsg= dbMsg + ";" + tmp;
+//			dbMsg +=";" + tmp;
 //			pgd_par_tv.setText(tmp);
 
 		}catch (Exception e) {

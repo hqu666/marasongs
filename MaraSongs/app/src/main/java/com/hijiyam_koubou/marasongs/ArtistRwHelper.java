@@ -35,7 +35,7 @@ public class ArtistRwHelper extends SQLiteOpenHelper {
 //			}else{
 //				file.delete();
 //			}
-			dbMsg=dbMsg + ",バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
+			dbMsg +=",バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
 	//		myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -64,7 +64,7 @@ public class ArtistRwHelper extends SQLiteOpenHelper {
 			db.execSQL("insert into " + tName +"(rDate , creditArtistName , artistName , albumName , releaceYear) "
 						+ "values ('aa', 'bb', 'cc', 'dd', '19730200');");
 			int syoukyoGyou = db.delete(tName,"_id = '" + 1 +"'", null);		//			"_id = ?", new String[]{ idStr }
-			dbMsg= dbMsg + " , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +=" , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

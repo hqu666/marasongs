@@ -82,11 +82,11 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 					dbMsg= "action=" + action;////stop=com.example.android.remotecontrol.ACTION_STATE_CHANGED
 
 					Notification notification = intent.getParcelableExtra("notification");		// 【1】IntentからNotificationを取り出します。
-					dbMsg= dbMsg + ".notification=" + notification.toString();/////////////////////////////////////
+					dbMsg +=".notification=" + notification.toString();/////////////////////////////////////
 					boolean isPlaying = intent.getBooleanExtra("isPlaying", false);			// 【2】Serviceであれば、状態を保持できるため、現在再生中かどうかをIntentから取得します。
-					dbMsg= dbMsg + ".isPlaying=" + isPlaying;/////////////////////////////////////
+					dbMsg +=".isPlaying=" + isPlaying;/////////////////////////////////////
 					long baseTime = intent.getLongExtra("baseTime", 0);
-					dbMsg= dbMsg + ".baseTime=" + baseTime;/////////////////////////////////////
+					dbMsg +=".baseTime=" + baseTime;/////////////////////////////////////
 					NotificationManager manager =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 					// 【3】android.app.NotificationManagerを取得
 
@@ -125,9 +125,9 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 //						alubum_tv.setText(intent.getStringExtra("album"));
 //						titol_tv.setText(intent.getStringExtra("title"));
 						String state = intent.getStringExtra("state");
-						dbMsg= dbMsg + "state=" + state;/////////////////////////////////////
+						dbMsg +="state=" + state;/////////////////////////////////////
 						mCurrentPosition = intent.getIntExtra("mcPosition", 0);
-						dbMsg= dbMsg + ",mCurrentPosition=" + mCurrentPosition ;/////////////////////////////////////
+						dbMsg +=",mCurrentPosition=" + mCurrentPosition ;/////////////////////////////////////
 						myLog(TAG,dbMsg);
 //						mChronometer.setBase(SystemClock.elapsedRealtime() - mCurrentPosition);
 						if( state != null ){

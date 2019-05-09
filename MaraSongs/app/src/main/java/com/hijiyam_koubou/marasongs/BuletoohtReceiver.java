@@ -59,7 +59,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 //			if( dviceStyteStr == null ){
 //				dviceStyteStr = getPairedDevices( context , intent);								//ペアリング機器の検索※当面は上記未満の暫定対応
 //			}
-//			dbMsg= dbMsg + "デバイスの接続情報=" +dviceStyteStr;
+//			dbMsg +="デバイスの接続情報=" +dviceStyteStr;
 //			myLog(TAG, dbMsg);
 //		} catch (Exception e) {		//汎用
 //			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -91,54 +91,54 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 				try {
 					BuletoohtReceiver.this.rContext = context;
 //					dbMsg= "rContext=" + rContext;	///////rContext=com.hijiyam_koubou.marasongs.MusicPlayerService@428a7c60
-//					dbMsg= dbMsg + ",intent=" + intent;	//,intent=Intent { act=android.bluetooth.a2dp.profile.action.PLAYING_STATE_CHANGED flg=0x8000010 (has extras)
+//					dbMsg +=",intent=" + intent;	//,intent=Intent { act=android.bluetooth.a2dp.profile.action.PLAYING_STATE_CHANGED flg=0x8000010 (has extras)
 //					defaulthAdapter = BluetoothAdapter.getDefaultAdapter();
-//					dbMsg= dbMsg + ",defaulthAdapter=" + defaulthAdapter;	////////////////
-//					dbMsg= dbMsg + ",接続連携指定=" + pref_bt_renkei;	//////////////
+//					dbMsg +=",defaulthAdapter=" + defaulthAdapter;	////////////////
+//					dbMsg +=",接続連携指定=" + pref_bt_renkei;	//////////////
 					String action = intent.getAction();			//		String action = String.valueOf( intent.getAction() );
-					dbMsg= dbMsg + ",action=" + action;	///////////
+					dbMsg +=",action=" + action;	///////////
 //て一時停止/再開=true,action=android.bluetooth.adapter.action.DISCOVERY_STARTEDでjava.lang.NullPointerException: Attempt to invoke virtual method 'int android.os.Bundle.getInt(java.lang.String)' on a null object reference
 					Bundle extras  = intent.getExtras();
-					dbMsg= dbMsg + ",extras=" + extras;	////////////////
+					dbMsg +=",extras=" + extras;	////////////////
 					if( extras != null ){
 						int state = Integer.valueOf( extras.getInt(BluetoothProfile.EXTRA_STATE) );
 						dbMsg= "state=" + state;	////////////////
 						int prevState = extras.getInt(BluetoothProfile.EXTRA_PREVIOUS_STATE);
-						dbMsg= dbMsg + ",prevState=" + prevState;	////////////////
-//						dbMsg= dbMsg + ",service=" + service;	////////////////
+						dbMsg +=",prevState=" + prevState;	////////////////
+//						dbMsg +=",service=" + service;	////////////////
 //						if(service == null){
 //							service = MPS;
-//							dbMsg= dbMsg + ">>" + service;	////////////////
+//							dbMsg +=">>" + service;	////////////////
 //						}
 						if( dviceStyteStr == null ){
 							dviceStyteStr = getPairedDevices( context , intent);								//ペアリング機器の検索※当面は上記未満の暫定対応
 						}
-						dbMsg= dbMsg + "デバイスの接続情報=" +dviceStyteStr;
+						dbMsg +="デバイスの接続情報=" +dviceStyteStr;
 							stateBaseStr = stateBaseStr +dviceStyteStr;
 						BluetoothDevice device = extras.getParcelable(BluetoothDevice.EXTRA_DEVICE);
 						if( device != null ){
-							dbMsg= dbMsg + ","+ "Device名=" + device.getName()+";";	////////////////
+							dbMsg +=","+ "Device名=" + device.getName()+";";	////////////////
 							stateBaseStr  =  device.getName() +":";
 						}
 						Intent MPSIntent = new Intent(context, MusicPlayerService.class);
 						if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {				//API level 11
-							dbMsg= dbMsg +  "、action =BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED:state=" +state ;
+							dbMsg += "、action =BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED:state=" +state ;
 							switch(state) {
 							case BluetoothProfile.STATE_DISCONNECTED:																//0			getApplicationContext().
-								dbMsg= dbMsg +  "、STATE_DISCONNECTED;切断された" ;
+								dbMsg += "、STATE_DISCONNECTED;切断された" ;
 								stateBaseStr = stateBaseStr+ context.getResources().getString(R.string.bt_discnnected);				//切断
 								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
-								dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
+								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 								break;
 							case BluetoothProfile.STATE_CONNECTING:																	//1
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_connecting);				//接続処理中
 								break;
 							case BluetoothProfile.STATE_CONNECTED:																	//2
-								dbMsg= dbMsg +  "、接続された"  ;
+								dbMsg += "、接続された"  ;
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_connected);				//接続済み
 								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);						//		ACTION_PLAYPAUSE
-								dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
+								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 								break;
 							case BluetoothProfile.STATE_DISCONNECTING:																//3
@@ -149,21 +149,21 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 								break;
 							}
 						} else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
-							dbMsg= dbMsg +  "、action =BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED:state =" +state ;
+							dbMsg += "、action =BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED:state =" +state ;
 							switch(state) {
 							case BluetoothA2dp.STATE_PLAYING:																			//10
-								dbMsg= dbMsg +  "、aSTATE_PLAYING:";
+								dbMsg += "、aSTATE_PLAYING:";
 								stateBaseStr =  stateBaseStr+ context.getResources().getString(R.string.bt_playing);					//再生中
 //								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);		
-//								dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();
+//								dbMsg +=">指定するAction>" + MPSIntent.getAction();
 //								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 //			//					service.processPlayRequest();
 								break;
 							case BluetoothA2dp.STATE_NOT_PLAYING:																	//11
-								dbMsg= dbMsg +  "、STATE_NOT_PLAYING:";				//接続が切れた時に発生した
+								dbMsg += "、STATE_NOT_PLAYING:";				//接続が切れた時に発生した
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_not_playing);				//一時停止
 //								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
-//								dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
+//								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 ////								if( service.pref_bt_renkei ){	//終話後に自動再生
 ////									service.processPauseRequest();
@@ -177,49 +177,49 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 //								: prevState == BluetoothA2dp.STATE_PLAYING ?  getResources().getString(R.string.bt_unknown)
 //								: getResources().getString(R.string.bt_unknown);
 						} else if (action.equals(Intent.ACTION_MEDIA_BUTTON)) {
-							dbMsg= dbMsg +  "、ACTION_MEDIA_BUTTON:";
+							dbMsg += "、ACTION_MEDIA_BUTTON:";
 							AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 							KeyEvent event = (KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 							if (audioManager.isBluetoothA2dpOn()) {								// Bluetoothで再生中
-								dbMsg= dbMsg +  "、Bluetoothで再生中";
+								dbMsg += "、Bluetoothで再生中";
 								int keyCord = event.getKeyCode();
-								dbMsg= dbMsg +  "(" + keyCord;
+								dbMsg += "(" + keyCord;
 								switch(state) {
 								case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE :																//85
-									dbMsg= dbMsg +  ")PLAY_PAUSEボタン";
+									dbMsg += ")PLAY_PAUSEボタン";
 									MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);		
 									break;
 								case KeyEvent.KEYCODE_MEDIA_PLAY :																		//126
-									dbMsg= dbMsg +  ")再生ボタン";
+									dbMsg += ")再生ボタン";
 									MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 									break;
 								case KeyEvent.KEYCODE_MEDIA_PAUSE :																		//127
-									dbMsg= dbMsg +  ")PAUSEボタン";
+									dbMsg += ")PAUSEボタン";
 									MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 									break;
 								case KeyEvent.KEYCODE_MEDIA_NEXT :																		//87
-									dbMsg= dbMsg +  ")NEXTボタン";
+									dbMsg += ")NEXTボタン";
 									MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);	
 									break;
 								case KeyEvent.KEYCODE_MEDIA_PREVIOUS :																		//88
-									dbMsg= dbMsg +  ")PREVIOUSボタン";
+									dbMsg += ")PREVIOUSボタン";
 									MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);	
 									break;
 								default:
 									break;
 								}
-								dbMsg= dbMsg + ">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
+								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 							}
 						}
-						dbMsg= dbMsg +  "、stateBaseStr=" + stateBaseStr;	
+						dbMsg += "、stateBaseStr=" + stateBaseStr;
 						retBTinfo( stateBaseStr ,  context);							//情報を呼出し元に返す
 					}
 // Need BLUETOOTH permission: Neither user 10840 nor current process has android.permission.BLUETOOTH.
 // Dead object in registerRemoteControlClientandroid.os.DeadObjectException
 
 //					AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-//					dbMsg= dbMsg +  "、STATE_NOT_PLAYING:";
+//					dbMsg += "、STATE_NOT_PLAYING:";
 //					if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
 //						KeyEvent event = (KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 //						if (KeyEvent.KEYCODE_MEDIA_PLAY == event.getKeyCode()) {						// 再生ボタンを押したよ
@@ -244,17 +244,17 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 			final String TAG = "retBTinfo[BuletoohtReceiver]";
 			String dbMsg="開始";/////////////////////////////////////
 			try {
-				dbMsg= dbMsg + ",stateBaseStr=" +stateBaseStr;
+				dbMsg +=",stateBaseStr=" +stateBaseStr;
 	// message = extras.getString("message");	// そいつを表示する
 //				MaraSonActivity MSA = new MaraSonActivity();
 //				MSA.setBTinfo(stateBaseStr);
-				dbMsg= dbMsg + ",activity=" +activity;
+				dbMsg +=",activity=" +activity;
 				if (activity != null){
 //					TextView dviceStyte = (TextView) activity.findViewById(R.id.dviceStyte);
 //					dviceStyte.setText(stateBaseStr);
 					activity.setBTinfo(stateBaseStr);
 				}
-//				dbMsg= dbMsg + ",service=" +service;
+//				dbMsg +=",service=" +service;
 //				if (service != null){
 //					service.stateBaseStr = stateBaseStr;
 //					service.setBTinfo(stateBaseStr);
@@ -343,7 +343,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 //				} else {
 //					dviceStyte.setVisibility(View.GONE);
 				}
-				dbMsg= dbMsg + "wStr=" +wStr;
+				dbMsg +="wStr=" +wStr;
 				retBTinfo( wStr ,  context);							//情報を呼出し元に返す
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {		//汎用
@@ -456,7 +456,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 				dbMsg="serverSocket = " + serverSocket;
 				BluetoothSocket socket = serverSocket.accept();
 				if (socket != null) { // クライアントからの接続要求を受け付け接続が完了した状態
-						dbMsg= dbMsg + ",socket = " + socket;
+						dbMsg +=",socket = " + socket;
 				 // データの送受信処理などを行う
 						serverSocket.close();
 				 }	

@@ -50,8 +50,8 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
 			dbMsg= "position= " + position;
-		//	dbMsg= dbMsg + ",convertView= " + convertView;
-	//		dbMsg= dbMsg + ",parent= " + parent;
+		//	dbMsg +=",convertView= " + convertView;
+	//		dbMsg +=",parent= " + parent;
 			if(convertView == null) {
 				if(inflater == null) {
 					inflater = (LayoutInflater)parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -69,11 +69,11 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 //			TextView nomText = (TextView)convertView.findViewById(R.id.nol_tv);
 //			ImageView lrow_image = (ImageView)convertView.findViewById(R.id.lrow_image);
 			Object data = treeEntry.getData();
-			dbMsg= dbMsg + ",data= " + data;
+			dbMsg +=",data= " + data;
 			String str = (String)data;
 			mainText.setText(str);
 	//		int rowDepth = treeEntry.getDepth();
-	//		dbMsg= dbMsg + ",getDepth= " + rowDepth + "階層";
+	//		dbMsg +=",getDepth= " + rowDepth + "階層";
 			int leftPad = 0;
 			int pOrder = position + 1;
 			String pOrderStr = " " + String.valueOf(pOrder)+",";
@@ -82,9 +82,9 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 			}
 
 			int layerName = treeEntry.getLayerName();
-			dbMsg= dbMsg + ",layerName= " + layerName;
+			dbMsg +=",layerName= " + layerName;
 			int listType = treeEntry.getListType();
-			dbMsg= dbMsg + ",listType= " + listType;
+			dbMsg +=",listType= " + listType;
 			int albumID = -1;
 			switch (layerName) {					//rowDepth
 			case MuList.lyer_artist:			//rowDepth = 0; 最上位；アーティスト
@@ -176,7 +176,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					if(9 < pOrder ){
 						rStr =  String.valueOf(pOrder)+",";
 					}
-					dbMsg= dbMsg + "[" + rStr +"]";
+					dbMsg +="[" + rStr +"]";
 					nomText.setText(rStr);
 					if( artistInfo != null ){
 						rStr = artistInfo ;
@@ -190,10 +190,10 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					if(9 < pOrder ){
 						rStr =  String.valueOf(pOrder)+",";
 					}
-					dbMsg= dbMsg + "[" + rStr +"]";
+					dbMsg +="[" + rStr +"]";
 			//		nomText.setText(rStr);
 					rStr = rStr + ")"+treeEntry.getArtistName();
-					dbMsg= dbMsg + ",Artist=" + rStr ;
+					dbMsg +=",Artist=" + rStr ;
 					if(duration != null){
 						rStr = rStr + "  [ "+duration +" ]";
 					}
@@ -203,7 +203,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					setIMG(  parent ,  albumID , lrow_image);						//アルバムアート描画
 					break;
 				default:
-					dbMsg= dbMsg + ",albumPosition= " + albumPosition ;
+					dbMsg +=",albumPosition= " + albumPosition ;
 					int rInt = position - albumPosition;
 					String playlistNAME = treeEntry.getPlaylistNAME();
 					dbMsg=dbMsg+ ",playlistNAME="+playlistNAME;
@@ -257,18 +257,18 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 			String c_orderBy=null ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			;
 			Cursor cursor = parent.getContext().getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
-			dbMsg= dbMsg + ",該当="+ cursor.getCount() + "件";///////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +=",該当="+ cursor.getCount() + "件";///////////////////////////////////////////////////////////////////////////////////////////
 			String album_art = null;
 			;
 			if(cursor.moveToFirst()){
-				dbMsg= dbMsg + ",ALBUM="+ cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +=",ALBUM="+ cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));///////////////////////////////////////////////////////////////////////////////////////////
 				album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-				dbMsg= dbMsg + ",album_art="+ album_art;///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +=",album_art="+ album_art;///////////////////////////////////////////////////////////////////////////////////////////
 				String rPass = null;
 				if(album_art != null){
 					OrgUtil ORGUT = new OrgUtil();
 					rPass = ORGUT.setAlbumArt( album_art ,  lrow_image ,  45 , 45 , parent.getContext() , sucssesPass);		//指定したイメージビューに指定したURiのファイルを表示させる
-					dbMsg= dbMsg + ",rPass="+ rPass;///////////////////////////////////////////////////////////////////////////////////////////
+					dbMsg +=",rPass="+ rPass;///////////////////////////////////////////////////////////////////////////////////////////
 				}
 				if( rPass != null ){
 					File SPF = new File(rPass);

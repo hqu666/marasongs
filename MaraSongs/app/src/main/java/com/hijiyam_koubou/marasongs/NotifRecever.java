@@ -20,7 +20,7 @@ public class NotifRecever extends Service {
 		try{
 			dbMsg="intent=" + intent ;/////////////////////////////////////
 			String action = intent.getAction();
-			dbMsg= dbMsg + ",action= " + action;
+			dbMsg +=",action= " + action;
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -34,10 +34,10 @@ public class NotifRecever extends Service {
 		try{
 			dbMsg= dbMsg +";intent=" + intent ;/////////////////////////////////////
 			if( intent != null ){
-				dbMsg=dbMsg + ",flags=" + flags ;/////////////////////////////////////
-				dbMsg=dbMsg + ",startId=" + startId ;/////////////////////////////////////
+				dbMsg +=",flags=" + flags ;/////////////////////////////////////
+				dbMsg +=",startId=" + startId ;/////////////////////////////////////
 				String action = intent.getAction();
-				dbMsg=dbMsg + ",action=" + action ;/////////////////////////////////////
+				dbMsg +=",action=" + action ;/////////////////////////////////////
 				if( action.equals( MusicPlayerService.ACTION_SYUURYOU ) ){
 		//			stopSelf();																	//これが最後だと他のActiviｙから操作が完了できない
 					MaraSonActivity MUP = new MaraSonActivity();								//音楽プレイヤー
@@ -46,9 +46,9 @@ public class NotifRecever extends Service {
 				}else{
 					Intent MPSIntent = new Intent(getApplicationContext(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
 					MPSIntent.setAction(action);				//	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
-					dbMsg= dbMsg + " ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
+					dbMsg +=" ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
 					ComponentName MPSName = getApplicationContext().startService(MPSIntent);
-					dbMsg= dbMsg + " ,ComponentName=" + MPSName;/////////////////////////////////////
+					dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
 				}
 			}
 			myLog(TAG,dbMsg);

@@ -105,9 +105,9 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 							String TAG ="onClick[リスト]";
 							String dbMsg=motoN + "を";/////////////////////////////////////////////////////////////////////////////////////
 //							if(listIDs != null){
-//								dbMsg=dbMsg + "["+listIDs[which]+"]";/////////////////////////////////////////////////////////////////////////////////////
+//								dbMsg +="["+listIDs[which]+"]";/////////////////////////////////////////////////////////////////////////////////////
 //							}
-//							dbMsg= dbMsg + listItems[which];/////////////////////////////////////////////////////////////////////////////////////
+//							dbMsg +=listItems[which];/////////////////////////////////////////////////////////////////////////////////////
 							Log.i(TAG,dbMsg);
 //							rData.putExtra("retInt", which);
 //							if(motoN != null){
@@ -115,7 +115,7 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 //							}
 							dbMsg="[" +which +"]";/////////////////////////////////////////////////////////////////////////////////////
 							String sentakuItem = (String) listItems[which];
-							dbMsg= dbMsg + sentakuItem +"を選択";/////////////////////////////////////////////////////////////////////////////////////
+							dbMsg +=sentakuItem +"を選択";/////////////////////////////////////////////////////////////////////////////////////
 //							rData.putExtra("key.kekka", sentakuItem);	//選択されたアイテム
 //							setResult(RESULT_OK, rData);		//RESULT_OK=1 (0xffffffff)
 //							Alart3BT.this.finish();
@@ -226,11 +226,11 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 			Bundle bundle = new Bundle();
 			
 			if(retInt > 0){
-				dbMsg= dbMsg + "retInt=" + retInt + "件" ;/////////////////////////////////////
+				dbMsg +="retInt=" + retInt + "件" ;/////////////////////////////////////
 				bundle.putInt("key.retInt", retInt);			//切り替え先
 			}
 			if(retStr != null){
-				dbMsg= dbMsg + "retStr=" + retStr  ;/////////////////////////////////////
+				dbMsg +="retStr=" + retStr  ;/////////////////////////////////////
 				bundle.putString("key.retStr", retStr);			//切り替え先
 			}
 			data.putExtras(bundle);

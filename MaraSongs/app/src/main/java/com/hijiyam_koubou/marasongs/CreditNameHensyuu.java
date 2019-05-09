@@ -126,7 +126,7 @@ public class CreditNameHensyuu extends Activity {
 					reigaiListKakikomi( MotoN , albamN , sakiN);	//クレジットアーティスト名のリスト表示名反映リストの書き込み	//リスト表示する名称 = 元々クレジットされているアーティスト表記
 					break;
 				case R.string.menu_funk_artistmeiE:
-					dbMsg= dbMsg + getResources().getString(R.string.menu_funk_artistmeiE) + "を選択";	//指定変更
+					dbMsg +=getResources().getString(R.string.menu_funk_artistmeiE) + "を選択";	//指定変更
 					creditNLHensyuu( );								//クレジットアーティスト名変更リストの表示
 					break;
 				default:
@@ -220,13 +220,13 @@ public class CreditNameHensyuu extends Activity {
 				listItems = new String[cCount];
 				int i = 0;
 				do{
-					dbMsg= dbMsg + i + "/" + cCount + ")" ;/////////////////////////////////////
+					dbMsg +=i + "/" + cCount + ")" ;/////////////////////////////////////
 					String motName = awCursor.getString(awCursor.getColumnIndex("motName"));			//リストアップしたアルバムアーティスト名
 					String albumName = awCursor.getString(awCursor.getColumnIndex("albumName"));		//アルバム名
 					String sakiName = awCursor.getString(awCursor.getColumnIndex("sakiName"));	//クレジットされているアーティスト名
 					String wStr = motName + fSep + albumName + aSep + sakiName;
 					listItems[i] = wStr;
-					dbMsg= dbMsg + listItems[i];/////////////////////////////////////
+					dbMsg +=listItems[i];/////////////////////////////////////
 					i++;
 				}while(awCursor.moveToNext());
 	//			listItems = reNameList.toArray(new String[0]);
@@ -242,9 +242,9 @@ public class CreditNameHensyuu extends Activity {
 					        	dbMsg="[" +which +"]";/////////////////////////////////////////////////////////////////////////////////////
 					        	awCursor.moveToPosition(which);
 					        	String idStr = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_id")));
-								dbMsg= dbMsg + idStr;/////////////////////////////////////////////////////////////////////////////////////
+								dbMsg +=idStr;/////////////////////////////////////////////////////////////////////////////////////
 								int syoukyoGyou = ar_db.delete(getResources().getString(R.string.artist_reW_table),"_id = '" + idStr +"'", null);		//			"_id = ?", new String[]{ idStr }
-								dbMsg= dbMsg + " , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
+								dbMsg +=" , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
 								myLog(TAG, dbMsg);
 //								creditNLSakujyo(  motS , albS , sakiN);								//クレジットアーティスト名変更リストから削除
 								dialog.dismiss();
@@ -312,8 +312,8 @@ public class CreditNameHensyuu extends Activity {
 	// resultCode : 起動先のActivity.setResult の第一引数が渡される
 	// Intent data : 起動先Activityから送られてくる Intent
 		super.onActivityResult(requestCode, resultCode, intent);
-		final String TAG = "onActivityResult[CreditNameHensyuu]";
-		String dbMsg="開始";
+		final String TAG = "onActivityResult";
+		String dbMsg="[CreditNameHensyuu]";
 		try{
 			dbMsg += ",intent="+intent;////////////////////////////////////////////////////////////////////////////
 			if(intent != null){
@@ -333,15 +333,15 @@ public class CreditNameHensyuu extends Activity {
 				if(intent != null){
 					mainList = bundle.getStringArrayList("key.mainList");		//メインデータリスト
 					if(mainList != null){
-						dbMsg=dbMsg + ",main="+ mainList.size() +"件";		/////////////////////////////////////////////////////////////
+						dbMsg +=",main="+ mainList.size() +"件";		/////////////////////////////////////////////////////////////
 					}
 					subList = bundle.getStringArrayList("key.subList");	//付加情報リスト
 					if(subList != null){
-						dbMsg=dbMsg + ",sub="+ subList.size() +"件";		/////////////////////////////////////////////////////////////
+						dbMsg +=",sub="+ subList.size() +"件";		/////////////////////////////////////////////////////////////
 					}
 					imageList = bundle.getStringArrayList("key.imageList");		//イメージURLリスト
 					if(imageList != null){
-						dbMsg=dbMsg + ",image="+ imageList.size() +"件";		/////////////////////////////////////////////////////////////
+						dbMsg +=",image="+ imageList.size() +"件";		/////////////////////////////////////////////////////////////
 					}
 				}
 			//		myLog(TAG, dbMsg);
@@ -356,14 +356,14 @@ public class CreditNameHensyuu extends Activity {
 							bundle.putString("key.kekka", artistName);			//メインデータリスト
 						}
 						if(subList != null){
-							dbMsg= dbMsg + " , subList=" + subList.size() + "件、";/////////////////////////////////////
+							dbMsg +=" , subList=" + subList.size() + "件、";/////////////////////////////////////
 							bundle.putStringArrayList("key.subList", (ArrayList<String>) subList);				//付加情報リスト
 						}
 						if(imageList != null){
-							dbMsg= dbMsg + " , imageList=" + imageList.size() + "件、";/////////////////////////////////////
+							dbMsg +=" , imageList=" + imageList.size() + "件、";/////////////////////////////////////
 							bundle.putStringArrayList("key.imageList", (ArrayList<String>) imageList);			//("key.");		//イメージURLリスト
 						}
-						dbMsg= dbMsg + " , artist=" + artistName;/////////////////////////////////////
+						dbMsg +=" , artist=" + artistName;/////////////////////////////////////
 						bundle.putString("key.kekka", artistName);
 						data.putExtras(bundle);
 						myLog(TAG, dbMsg);

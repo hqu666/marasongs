@@ -1169,16 +1169,16 @@ public class OrgUtil  extends Activity{				//
 				aName = aName.replaceAll("THE ", "");	//aName = aName.substring(3, aName.length());
 			}
 			if(aName.contains("FEAT")){
-				dbMsg=dbMsg + ">" + aName;/////////////////////////////////////
+				dbMsg +=">" + aName;/////////////////////////////////////
 				aName = aName.substring(0, aName.indexOf("FEAT")-1);	//aName = aName.substring(3, aName.length());
-				dbMsg=dbMsg + ">" + aName;/////////////////////////////////////
+				dbMsg +=">" + aName;/////////////////////////////////////
 //				 myLog(TAG,dbMsg);
 			}
 			aName = aName.replace( "'", "%");				//	kensakuStr = ORGUT.checkRepChr( kensakuStr, "'", "%");			//誤動作する文字
 			aName = aName.replace(  ".", "%");
 			aName = aName.replace(  "(", "%");
 			aName = aName.replace(  ")", "%");
-			dbMsg=dbMsg + ">" + aName;/////////////////////////////////////
+			dbMsg +=">" + aName;/////////////////////////////////////
 	//		 myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -1196,7 +1196,7 @@ public class OrgUtil  extends Activity{				//
 				fName = fName.substring(0, fName.length()-1)+ wCard;
 			}
 			if(fName.contains(".")){
-				dbMsg=dbMsg + "; . 有り;" + fName;/////////////////////////////////////
+				dbMsg +="; . 有り;" + fName;/////////////////////////////////////
 				int po  = fName.indexOf(".");
 			//	fName = fName.substring(0, po)+ wCard;
 				fName = fName.replace(".", " ");
@@ -1205,7 +1205,7 @@ public class OrgUtil  extends Activity{				//
 //			if(fName.contains("\\")){
 //				fName = fName.replaceAll("\\", wCard);
 //			}
-			dbMsg=dbMsg + ">" + fName;/////////////////////////////////////
+			dbMsg +=">" + fName;/////////////////////////////////////
 	//		 myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -1227,7 +1227,7 @@ public class OrgUtil  extends Activity{				//
 					testName = String.valueOf(testName);
 					if(testName.contains(kesiStr.toString())){			// 渡された配列に確認する文字列を含むものが既に有れば
 						testName = kesiStr;						//その文字列を記録
-						dbMsg= dbMsg + "("+ fId + ")" + testName;/////////////////////////////////////
+						dbMsg +="("+ fId + ")" + testName;/////////////////////////////////////
 	//					myLog(TAG,dbMsg );
 						mituketa = true;
 					}
@@ -1236,7 +1236,7 @@ public class OrgUtil  extends Activity{				//
 			if(! mituketa){						//見つからなければ
 				testName = "";					//空白文字列を返す
 			}
-	//		dbMsg=dbMsg + ">" + testName;/////////////////////////////////////
+	//		dbMsg +=">" + testName;/////////////////////////////////////
 	//		 myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -1254,27 +1254,27 @@ public class OrgUtil  extends Activity{				//
 			dbMsg="ESD="+ ESD;
 			String[] sdStrs = ESD.split(File.separator);
 			int discVal = (sdStrs.length);
-			dbMsg= dbMsg + "(" + discVal + "デレクトリ)";/////////////////////////////////////
+			dbMsg +="(" + discVal + "デレクトリ)";/////////////////////////////////////
 
 			dbMsg= dbMsg+"data=" + data;/////////////////////////////////////
 			String rStr = null;
 			String[] rStrs = data.split(File.separator);
 			int sVal = (rStrs.length-1);
-			dbMsg= dbMsg + "(" + sVal + "デレクトリ)";/////////////////////////////////////
+			dbMsg +="(" + sVal + "デレクトリ)";/////////////////////////////////////
 			int musciPass = sVal - discVal;
-			dbMsg= dbMsg + ",音楽情報>" + musciPass + "デレクトリ,";/////////////////////////////////////
+			dbMsg +=",音楽情報>" + musciPass + "デレクトリ,";/////////////////////////////////////
 
 			int endInt = sVal-2;
 			int i=0;
 			if( sVal <= discVal ){				//
 				endInt = discVal-1;
 			}
-			dbMsg=dbMsg + ",endInt=" + endInt ;
+			dbMsg +=",endInt=" + endInt ;
 			for(i=0;i<endInt ;i++){
 				mPass = mPass+ rStrs[i]+ File.separator ;
 			}
 			map.put( "mPass", mPass );
-			dbMsg=dbMsg + ",mPass=" + map.get( "mPass" ) ;
+			dbMsg +=",mPass=" + map.get( "mPass" ) ;
 
 			for(i = sVal ; i >= endInt ;i--){
 				 dbMsg +="[" +i + "/" + sVal +"]";/////////////////////////////////////
@@ -1287,15 +1287,15 @@ public class OrgUtil  extends Activity{				//
 					String[] tStrs = rStr.split("\\.");
 					if(tStrs.length >0){
 						map.put( "kakucyousi", tStrs[1]);
-						dbMsg= dbMsg + ",拡張子⁼" +map.get( "kakucyousi" );/////////////////////////////////////
+						dbMsg +=",拡張子⁼" +map.get( "kakucyousi" );/////////////////////////////////////
 						rStr = rStr.substring(0, rStr.length()-map.get( "kakucyousi" ).length());
 						tStrs = rStr.split(" ");
 						String trackNo = tStrs[0];		//アルバム内の曲順
-						dbMsg=dbMsg + ",trackNo= " + trackNo;
+						dbMsg +=",trackNo= " + trackNo;
 						if(isNum(trackNo)){		//数字ならtrue
 							map.put( "trackNo", trackNo);	//曲順
 							map.put( "titolName", rStr.substring(map.get( "trackNo" ).length() , rStr.length()));	//曲名
-							dbMsg=dbMsg + ">>>[" + map.get( "trackNo" ) + "]";
+							dbMsg +=">>>[" + map.get( "trackNo" ) + "]";
 						}else{
 							map.put( "trackNo", null);	//曲順
 							map.put( "titolName", rStr);	//曲名
@@ -1304,33 +1304,33 @@ public class OrgUtil  extends Activity{				//
 						map.put( "trackNo", null);	//曲順
 						map.put( "titolName", rStr);	//曲名
 					}
-					dbMsg=dbMsg + ",タイトル=" + map.get( "titolName" );
+					dbMsg +=",タイトル=" + map.get( "titolName" );
 				}else if( i == (sVal-1)){
-					dbMsg= dbMsg + ",rStr" + rStr;/////////////////////////////////////
+					dbMsg +=",rStr" + rStr;/////////////////////////////////////
 					if(! ESD.contains(rStr)){
 						map.put( "Alnbum", rStr);
 					}
-					dbMsg=dbMsg + ",Alnbum=" + map.get( "Alnbum" ) ;
+					dbMsg +=",Alnbum=" + map.get( "Alnbum" ) ;
 				}else if( i == (sVal-2)){
 					if(! ESD.contains(rStr)){
 						map.put( "cArtistName", rStr);
 					}
-					dbMsg=dbMsg + ",Alnbum=" + map.get( "cArtistName" ) ;
+					dbMsg +=",Alnbum=" + map.get( "cArtistName" ) ;
 				}
 			}
-			dbMsg=dbMsg + ",Alnbum=" + map.get( "Alnbum" ) ;
+			dbMsg +=",Alnbum=" + map.get( "Alnbum" ) ;
 			if(map.get( "Alnbum" ) == null ){
 				rStr = context.getResources().getString(R.string.comon_nuKnow_album) ;
-				dbMsg=dbMsg + ">>" + rStr ;
+				dbMsg +=">>" + rStr ;
 				map.put( "Alnbum", rStr );		//アルバム情報なし
-				dbMsg=dbMsg + ">>" + map.get( "Alnbum" ) ;
+				dbMsg +=">>" + map.get( "Alnbum" ) ;
 			}
-			dbMsg=dbMsg + ",cArtistName=" + map.get( "cArtistName" ) ;
+			dbMsg +=",cArtistName=" + map.get( "cArtistName" ) ;
 			if(map.get( "cArtistName" ) == null ){
 				rStr = context.getResources().getString(R.string.comon_nuKnow_artist) ;
-				dbMsg=dbMsg + ">>" + rStr ;
+				dbMsg +=">>" + rStr ;
 				map.put( "cArtistName", rStr);		// アーティスト情報なし</string>
-				dbMsg=dbMsg + ">>" + map.get( "cArtistName" ) ;
+				dbMsg +=">>" + map.get( "cArtistName" ) ;
 			}
 			if( map.get( "cArtistName" ).equals(context.getResources().getString(R.string.comon_nuKnow_artist)) ||
 				 map.get( "Alnbum" ).equals(context.getResources().getString(R.string.comon_nuKnow_album)) ){
@@ -1431,7 +1431,7 @@ public class OrgUtil  extends Activity{				//
 			if( cursor.moveToFirst() ){
 				retStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 			}
-			dbMsg= dbMsg + ",ALBUM_ART=" +retStr ;/////////////////////////////////////
+			dbMsg +=",ALBUM_ART=" +retStr ;/////////////////////////////////////
 			cursor.close();
 	//			myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
@@ -1495,7 +1495,7 @@ public class OrgUtil  extends Activity{				//
 		float scale = 1;
 		try{
 			dbMsg = "album_art=" + album_art ;////		http://dorodoro.info/tip/bitmap%E3%81%AB%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E6%99%82%E3%81%AEoptions%E3%81%AE%E8%A8%AD%E5%AE%9A/
-			dbMsg= dbMsg + ",引数[表示枠；"+ dWith+ "×"+ dHighet+ "]";///////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +=",引数[表示枠；"+ dWith+ "×"+ dHighet+ "]";///////////////////////////////////////////////////////////////////////////////////////////
 			BitmapFactory.Options options = new BitmapFactory.Options();			// デコード時のオプション
 			options.inJustDecodeBounds = true;				// 画像のサイズだけを取得するようにする
 			if( album_art == null ){
@@ -1512,25 +1512,25 @@ public class OrgUtil  extends Activity{				//
 				}
 			}
 			int _oDpi = options.inDensity;
-			dbMsg= dbMsg + ",_oDpi="+ _oDpi;//////////////////////////////
+			dbMsg +=",_oDpi="+ _oDpi;//////////////////////////////
 			int orgH = options.outHeight;
 			int orgW = options.outWidth;
 			float hHiritu = 1;
 			float wHiritu = 1;
 			if( dHighet !=0 && dWith !=0 ){
-				dbMsg= dbMsg + ",options.out[ファイルのサイズ；"+ orgW+ "×"+ orgH + "]";///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +=",options.out[ファイルのサイズ；"+ orgW+ "×"+ orgH + "]";///////////////////////////////////////////////////////////////////////////////////////////
 				if( orgW < dWith ){				//	dWith < orgW 			orgW < dWith
 					wHiritu = orgW / dWith;
 				} else {
 					wHiritu = dWith/orgW;
 				}
-				dbMsg= dbMsg + "→[幅"+ wHiritu;///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +="→[幅"+ wHiritu;///////////////////////////////////////////////////////////////////////////////////////////
 				if( orgH < dHighet ){						// dHighet < orgH 		 orgH < dHighet
 					hHiritu = orgH / dHighet;
 				} else {
 					hHiritu = dHighet/orgH;
 				}
-				dbMsg= dbMsg + "×高さ"+ hHiritu + "]";///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +="×高さ"+ hHiritu + "]";///////////////////////////////////////////////////////////////////////////////////////////
 				float max = Math.max((float)hHiritu, (float)wHiritu);
 				scale = (float) Math.floor(max);
 
@@ -1539,14 +1539,14 @@ public class OrgUtil  extends Activity{				//
 //				} else {
 //					scale = (int)  hHiritu ;
 //				}
-				dbMsg= dbMsg + "⇒"+ scale ;///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +="⇒"+ scale ;///////////////////////////////////////////////////////////////////////////////////////////
 			}
-			dbMsg= dbMsg + ",scale="+ scale;//////////////////////////////
+			dbMsg +=",scale="+ scale;//////////////////////////////
 			if(1 < scale ){												//縮小する場合だけ
 				options.inSampleSize = (int)scale;				//分母を指定して画像の縮小をしてくれます。
 			}else if(scale <= 0){
 				options.inSampleSize = 1;
-				dbMsg= dbMsg + ",low Size";//////////////////////////////
+				dbMsg +=",low Size";//////////////////////////////
 //				myErrorLog(TAG,dbMsg);
 			}
 			options.inJustDecodeBounds = false;			// 画像の中身もデコードできるようにする
@@ -1556,7 +1556,7 @@ public class OrgUtil  extends Activity{				//
 			} else{
 				retBM = BitmapFactory.decodeFile(album_art,options);
 			}
-			dbMsg= dbMsg + ",retBM="+ retBM;///////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +=",retBM="+ retBM;///////////////////////////////////////////////////////////////////////////////////////////
 	//		myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG, dbMsg +"で"+e.toString());

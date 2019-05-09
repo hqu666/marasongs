@@ -57,11 +57,11 @@ public class ItemLayout extends LinearLayout {							//Custom View
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
 			mIconView.setImageResource(R.drawable.no_image);					//eListItem.icon		android.R.drawable.ic_dialog_alert
-			dbMsg= dbMsg + ",title =" + item.textData_;
+			dbMsg +=",title =" + item.textData_;
 			mTitleView.setText(item.textData_);
-			dbMsg= dbMsg + ",description =" + item.subData_;
+			dbMsg +=",description =" + item.subData_;
 			mDescriptionView.setText(item.subData_);
-			dbMsg= dbMsg + ",reqCode =" + reqCode;
+			dbMsg +=",reqCode =" + reqCode;
 			switch(reqCode) {
 			case MaraSonActivity.v_titol:
 				mIconView.setVisibility(View.GONE);
@@ -73,7 +73,7 @@ public class ItemLayout extends LinearLayout {							//Custom View
 //			case MaraSonActivity.v_alubum:												//...340
 				noView.setVisibility(View.GONE);
 				mIconView.setVisibility(View.VISIBLE);
-				dbMsg= dbMsg + ",imageUrl_ =" + item.imageUrl_;
+				dbMsg +=",imageUrl_ =" + item.imageUrl_;
 				if( item.imageUrl_ != null ){
 					ImageGetTask task = new ImageGetTask(mIconView);				//画像取得スレッド起動
 					task.execute(item.imageUrl_ );

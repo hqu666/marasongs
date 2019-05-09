@@ -37,7 +37,7 @@ public class NumberPickerPreference extends DialogPreference {
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg="context=" + context;
-			dbMsg= dbMsg + ",attrs=" + attrs;
+			dbMsg +=",attrs=" + attrs;
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -50,7 +50,7 @@ public class NumberPickerPreference extends DialogPreference {
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg="context=" + context;
-			dbMsg= dbMsg + ",attrs=" + attrs;
+			dbMsg +=",attrs=" + attrs;
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
@@ -89,28 +89,28 @@ public class NumberPickerPreference extends DialogPreference {
 			if( maxValue == -1 ){
 				maxValue = DEFAULT_MAX;
 			}
-			dbMsg= dbMsg + ">>" + minValue + "～" + maxValue;
+			dbMsg +=">>" + minValue + "～" + maxValue;
 			picker.setMinValue(minValue);
 			picker.setWrapSelectorWheel(WRAP_SELECTOR_WHEEL);
 			dbMsg= dbMsg +";defaultValue=" + defaultValue;									// ";getValue=" + getValue();
 	//		picker.setValue(defaultValue);
-			dbMsg= dbMsg + ";step=" + step;
+			dbMsg +=";step=" + step;
 			valueSet = new String[step + 1];
 			int haba = (maxValue - minValue) / step;
 			dbMsg= dbMsg +";haba=" + haba;									// ";getValue=" + getValue();
 			valueSet[0] = String.valueOf(minValue);
 			int selCount= 0;
 			for (int i = 1; i <= step; i ++) {
-				dbMsg= dbMsg + "," + i;
+				dbMsg +="," + i;
 				int iVar = haba * i;
 				valueSet[i] = String.valueOf(iVar);			//getString(format, i);
-				dbMsg= dbMsg + "=" + valueSet[i];
+				dbMsg +="=" + valueSet[i];
 				if(iVar <= defaultValue){
 					selCount = i;
 				}
 			}
 	//		valueSet[valueSet.length] = String.valueOf(maxValue);
-			dbMsg= dbMsg + ">>valueSet=" + valueSet.length + "個";
+			dbMsg +=">>valueSet=" + valueSet.length + "個";
 			picker.setMaxValue(valueSet.length - 1);
 			picker.setDisplayedValues(valueSet);
 			picker.setValue(selCount);									//☆値ではなくインデックスでセレクトされる
@@ -131,7 +131,7 @@ public class NumberPickerPreference extends DialogPreference {
 			if (positiveResult) {
 				picker.clearFocus();
 				int newValue = picker.getValue();
-				dbMsg= dbMsg + ",newValue=" + newValue;
+				dbMsg +=",newValue=" + newValue;
 				if (callChangeListener(newValue)) {
 					setValue(retValue(newValue));
 				}
@@ -148,7 +148,7 @@ public class NumberPickerPreference extends DialogPreference {
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg="TypedArray=" + a;
-			dbMsg= dbMsg + ",index=" + index;
+			dbMsg +=",index=" + index;
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -162,7 +162,7 @@ public class NumberPickerPreference extends DialogPreference {
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg="restorePersistedValue=" + restorePersistedValue;
-			dbMsg= dbMsg + ",defaultValue=" + defaultValue;
+			dbMsg +=",defaultValue=" + defaultValue;
 			if( defaultValue == null ){
 				defaultValue = String.valueOf(this.defaultValue);
 			} else{
@@ -226,7 +226,7 @@ public class NumberPickerPreference extends DialogPreference {
 		try{
 			dbMsg="index=" + index;
 			retInt = Integer.valueOf(valueSet[index]);
-			dbMsg= dbMsg + "=" + index;
+			dbMsg +="=" + index;
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());

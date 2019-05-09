@@ -568,6 +568,8 @@ public class OrgUtilFile extends Activity {
 	 // resultCode : 起動先のActivity.setResult の第一引数が渡される
 	 // Intent data : 起動先Activityから送られてくる Intent
 		super.onActivityResult(requestCode, resultCode, rData);
+		final String TAG = "onActivityResult";
+		String dbMsg = "[OrgUtilFile]";
 	//	Log.d("onActivityResult","requestCode="+requestCode+",resultCode="+resultCode+",rData="+rData);
 		try{
 			switch(requestCode) {
@@ -579,8 +581,9 @@ public class OrgUtilFile extends Activity {
 				findMuAll_a();									//リスト配列の処理();
 				break;
 			}
+			myLog( TAG ,  dbMsg);
 		}catch (Exception e) {
-			myErrorLog("onActivityResult","で"+e.toString());
+			myErrorLog(TAG,dbMsg+"で"+e.toString());
 		}
 	}		//http://fernweh.jp/b/startactivityforresult/
 	///////////////////////////////////////////////////////////////////////////////////

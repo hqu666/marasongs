@@ -136,9 +136,9 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 					dbMsg= "depth=" + depth;
 				}
 //				this.key = key;
-//				dbMsg= dbMsg +  key;
+//				dbMsg += key;
 				this.data = data;
-				dbMsg= dbMsg + "=" + data;
+				dbMsg +="=" + data;
 		//		myLog(TAG, dbMsg);
 			} catch (Exception e) {		//汎用
 				myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -160,8 +160,8 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 				dbMsg= "treeEntry=" + treeEntry.data;
 				treeEntries.add(treeEntry);
 				tEntry = treeEntry;
-				dbMsg= dbMsg + ",戻り値=" + tEntry.data;
-				dbMsg= dbMsg + ",treeEntries=" + treeEntries.size() + "件";
+				dbMsg +=",戻り値=" + tEntry.data;
+				dbMsg +=",treeEntries=" + treeEntries.size() + "件";
 		//		myLog(TAG, dbMsg);
 			} catch (Exception e) {		//汎用
 				myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -195,11 +195,11 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 			final String TAG = "addAlbumOther[TreeEntry.BaseTreeAdapter]";
 			String dbMsg= "開始";/////////////////////////////////////
 			try{
-				dbMsg= dbMsg + ",albumID=" + albumID;
+				dbMsg +=",albumID=" + albumID;
 				this.albumID = albumID;
-				dbMsg= dbMsg + ",albumYear=" + albumYear;
+				dbMsg +=",albumYear=" + albumYear;
 				this.albumYear = albumYear;
-				dbMsg= dbMsg + ",date_modified=" + date_modified;
+				dbMsg +=",date_modified=" + date_modified;
 				this.date_modified = date_modified;
 				dbMsg= ",layerName=" + layerName;
 				this.layerName = layerName;
@@ -225,23 +225,23 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 				this.playListID = playListID;
 				dbMsg= "]playlistNAME=" + playlistNAME;
 				this.playlistNAME = playlistNAME;
-				dbMsg= dbMsg + ",playOrder=" + playOrder;
+				dbMsg +=",playOrder=" + playOrder;
 				this.playOrder = playOrder;
 				dbMsg= "artistID=" + artistID;
 				this.artistID = artistID;
-				dbMsg= dbMsg + ",albumID=" + albumID;
+				dbMsg +=",albumID=" + albumID;
 				this.albumID = albumID;
-				dbMsg= dbMsg + ",audioID=" + audioID;
+				dbMsg +=",audioID=" + audioID;
 				this.audioID = audioID;
-				dbMsg= dbMsg + ",duration=" + duration;
+				dbMsg +=",duration=" + duration;
 				this.duration = duration;
-				dbMsg= dbMsg + ",track=" + track;
+				dbMsg +=",track=" + track;
 				this.track = track;
-				dbMsg= dbMsg + ",dataUR=" + dataURL;
+				dbMsg +=",dataUR=" + dataURL;
 				this.dataURL = dataURL;
-				dbMsg= dbMsg + ",albumArtistName=" + albumArtistName;
+				dbMsg +=",albumArtistName=" + albumArtistName;
 				this.albumArtistName = albumArtistName;
-				dbMsg= dbMsg + ",artistName=" + artistName;
+				dbMsg +=",artistName=" + artistName;
 				this.artistName = artistName;
 				dbMsg= "layerName=" + layerName;
 				this.layerName = layerName;
@@ -445,15 +445,15 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 			String dbMsg= "開始";/////////////////////////////////////
 			try{
 				dbMsg= "treeEntries=" + treeEntries;
-				dbMsg= dbMsg + ",isExpanded=" + isExpanded;
+				dbMsg +=",isExpanded=" + isExpanded;
 				if(treeEntries == null || !isExpanded) return 0;
 				// 自分の持っているエントリの内、開いている数を返す
 				count = treeEntries.size();
 				for(TreeEntry entry : treeEntries){
 					count += entry.getCount();
-					dbMsg= dbMsg + ">>" + count;
+					dbMsg +=">>" + count;
 				}
-				dbMsg= dbMsg + ",count=" + count;
+				dbMsg +=",count=" + count;
 		//		myLog(TAG, dbMsg);
 			} catch (Exception e) {		//汎用
 				myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -482,7 +482,7 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 					}
 					position -= count;
 				}
-				dbMsg= dbMsg + ",position=" + position;
+				dbMsg +=",position=" + position;
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {		//汎用
 				myErrorLog(TAG ,  dbMsg + "で" + e);

@@ -48,7 +48,7 @@ public class VisualizerView  extends View {
 		try{
 			dbMsg=  "mBytes = " + mBytes;
 			mBytes = bytes;
-			dbMsg= dbMsg + ">>" + mBytes;
+			dbMsg +=">>" + mBytes;
 			invalidate();
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -69,7 +69,7 @@ public class VisualizerView  extends View {
 			if (mPoints == null || mPoints.length < mBytes.length * 4) {
 				mPoints = new float[mBytes.length * 4];
 			}
-			dbMsg= dbMsg + ",mPoints = " + mPoints;
+			dbMsg +=",mPoints = " + mPoints;
 			mRect.set(0, 0, getWidth(), getHeight());
 			for (int i = 0; i < mBytes.length - 1; i++) {
 				mPoints[i * 4] = mRect.width() * i / (mBytes.length - 1);
@@ -77,7 +77,7 @@ public class VisualizerView  extends View {
 				mPoints[i * 4 + 2] = mRect.width() * (i + 1) / (mBytes.length - 1);
 				mPoints[i * 4 + 3] = mRect.height() / 2 + ((byte) (mBytes[i + 1] + 128)) * (mRect.height() / 2) / 128;
 			}
-			dbMsg= dbMsg + ">> " + mPoints;
+			dbMsg +=">> " + mPoints;
 			canvas.drawLines(mPoints, mForePaint);
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {

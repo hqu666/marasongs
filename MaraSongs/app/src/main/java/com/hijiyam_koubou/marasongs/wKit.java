@@ -135,7 +135,7 @@ public class wKit extends Activity {
 			Display disp = wm.getDefaultDisplay();										// ディスプレイのインスタンス生成
 			dWidth = disp.getWidth();								//ディスプレイ幅
 			dHeigh = disp.getHeight();							//ディスプレイ高
-			dbMsg= dbMsg + "ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +="ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			setContentView(R.layout.wk_view);
 
 			toolbar = (Toolbar) findViewById(R.id.wk_tool_bar);						//このアクティビティのtoolBar
@@ -212,7 +212,7 @@ public class wKit extends Activity {
 					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
 					mReceiver = new MusicReceiver();
 					registerReceiver(mReceiver, mFilter);
-					dbMsg= dbMsg + ">生成>=" + mReceiver;////////////////////////
+					dbMsg +=">生成>=" + mReceiver;////////////////////////
 				}
 				if( MPSIntent == null ){
 					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
@@ -221,7 +221,7 @@ public class wKit extends Activity {
 				}
 				MPSIntent.setAction(MusicPlayerService.ACTION_DATA_OKURI);				//データ送りのみ
 				MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
-				dbMsg= dbMsg + " ,ComponentName=" + MPSName + "";/////////////////////////////////////
+				dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				wk_rew_bt.setOnClickListener(new View.OnClickListener() {			//戻しボタン
 					public void onClick(View v) {
 						final String TAG = "wk_rew_bt[wKit]";
@@ -230,7 +230,7 @@ public class wKit extends Activity {
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 							MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
 							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_REWIND));
-							dbMsg= dbMsg + " ,ComponentName=" + MPSName + "";/////////////////////////////////////
+							dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				//			myLog(TAG,dbMsg);
 						}catch (Exception e) {
 							myErrorLog(TAG,dbMsg + "で"+e + "");
@@ -251,13 +251,13 @@ public class wKit extends Activity {
 								wk_pp_bt.setImageResource(R.drawable.play40);
 								wk_pp_bt.setContentDescription(getResources().getText(R.string.pause));			//play
 							}
-							dbMsg= dbMsg + ">>" +  btStre;
+							dbMsg +=">>" +  btStre;
 							dbMsg=  "MPSIntent=" + MPSIntent;/////////////////////////////////////
-							dbMsg= dbMsg + ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
+							dbMsg +=".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 							MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);
-							dbMsg= dbMsg + ">>" + MPSIntent.getAction();/////////////////////////////////////
+							dbMsg +=">>" + MPSIntent.getAction();/////////////////////////////////////
 							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
-							dbMsg= dbMsg + " ,ComponentName=" + MPSName;/////////////////////////////////////
+							dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
 		//					myLog(TAG,dbMsg);
 						}catch (Exception e) {
 							myErrorLog(TAG,dbMsg + "で"+e + "");
@@ -272,7 +272,7 @@ public class wKit extends Activity {
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 							MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);
 							MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
-							dbMsg= dbMsg + " ,ComponentName=" + MPSName + "";/////////////////////////////////////
+							dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				//			myLog(TAG,dbMsg);
 						}catch (Exception e) {
 							myErrorLog(TAG,dbMsg + "で"+e + "");
@@ -305,11 +305,11 @@ public class wKit extends Activity {
 			String dbMsg= "開始;";/////////////////////////////////////
 			try{
 				dbMsg= "fType=" + fType;/////////////////////////////////////
-				dbMsg= dbMsg + "ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +="ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if(fType.equals("lyric") ){
-					dbMsg= dbMsg + ",wk_ff_bt.isShown" + wk_ff_bt.isShown();/////////////////////////////////////
+					dbMsg +=",wk_ff_bt.isShown" + wk_ff_bt.isShown();/////////////////////////////////////
 					int bHight = wk_bottm_ll.getHeight();
-					dbMsg= dbMsg + ",bHight=" + bHight;						//206SH/bHight=150
+					dbMsg +=",bHight=" + bHight;						//206SH/bHight=150
 					if(50 < bHight){
 					}
 					CharSequence btStre = wk_pp_bt.getContentDescription();
@@ -330,22 +330,22 @@ public class wKit extends Activity {
 				dbMsg += ",statusBarHeight=" + statusBarHeight;
 				int motoHaba = wk_koukoku_ll.getWidth();
 				int motoTakasa = wk_koukoku_ll.getHeight();
-				dbMsg= dbMsg + "motoHaba["+ motoHaba +" × "+ motoTakasa + "]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +="motoHaba["+ motoHaba +" × "+ motoTakasa + "]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 				int[] location = new int[2];
 				wk_koukoku_ll.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
 				koukokuL = location[0];			//広告表示枠幅
 				koukokuT = location[1];			//広告表示枠高さ
-				dbMsg= dbMsg + ",広告表示枠("+ koukokuL +","+ koukokuT +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+				dbMsg +=",広告表示枠("+ koukokuL +","+ koukokuT +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 				koukokuW= dWidth - location[0] - wk_ff_bt.getWidth();			//広告表示枠
 				koukokuh = wk_koukoku_ll.getHeight();			//広告表示枠高さ
-				dbMsg= dbMsg + "["+ koukokuW +" × "+ koukokuh + "]";/////////////////////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +="["+ koukokuW +" × "+ koukokuh + "]";/////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if( ! nenvNow){
 					layout_ad.setVisibility(View.GONE);
 					nendAdView.setVisibility(View.VISIBLE);
 					nendLoad();		//nendの広告設定
 				}
-				dbMsg= dbMsg + "nenvNow=" + nenvNow;/////////////////////////////////////
-				dbMsg= dbMsg + ",adMobNow=" + adMobNow;/////////////////////////////////////
+				dbMsg +="nenvNow=" + nenvNow;/////////////////////////////////////
+				dbMsg +=",adMobNow=" + adMobNow;/////////////////////////////////////
 //				if(! adMobNow){
 //					nendAdView.setVisibility(View.GONE);
 //					layout_ad.setVisibility(View.VISIBLE);
@@ -392,12 +392,12 @@ public class wKit extends Activity {
 				nendWith = koukokuW;					// koukokuW / 2
 				dbMsg += ",nendWith=" + nendWith;
 				scaleXY = nendWith * 1.0f/ dWidth;						//設定したサイズが読み込みリアを超えない様に320に対してマージンを設定		//kariHaba * 1.0f / tWith ; = 0.37
-				dbMsg= dbMsg + ",scaleXY=" + scaleXY;						//scaleXY=0.36944443
+				dbMsg +=",scaleXY=" + scaleXY;						//scaleXY=0.36944443
 				nendAdView.setScaleX(scaleXY);
 				nendAdView.setScaleY(scaleXY);
 				dbMsg += ",リサイズ[" + nendWith + "(" + (320 * scaleXY)  + "×" + (50 * scaleXY) + ")]";		//利かない		nendAdView.setGravity(Gravity.CENTER);
 				nendAdView.getLocationOnScreen(location);
-				dbMsg= dbMsg + ",ズレ("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+				dbMsg +=",ズレ("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 				int zureX = (int) -( ((koukokuW - (koukokuW * scaleXY))/2) * dispScaleX -wk_ff_bt.getWidth()/dispScaleX);				//(int) ((motoX - location[0]) * 1/scaleXY)	motoX - location[0];
 				int zureY = (int) - ( ((koukokuh - (koukokuh * scaleXY))/2) );		// * dispScaleX		//(int) ((motoY - location[1]) * 1/scaleXY);						//	((motoY - location[1]) * 1/scaleXY)
 		//		int zureY = (int) ((koukokuT - motoY) * dispScaleX * 1 / scaleXY );								//(wk_ff_bt.getWidth() - koukokuh) /2 ;			//(int) ((motoY - location[1]) * 1/scaleXY);						//	((motoY - location[1]) * 1/scaleXY)
@@ -405,7 +405,7 @@ public class wKit extends Activity {
 //				nendAdView.setX( zureX);							//(282,1642)>(564,3209)< * scaleXY=0.36=(386,2221)			 -(motoHaba-nendWith)
 				nendAdView.setY( zureY); 				//(motoTakasa- (50 * scaleXY)) ///☆利かない	nendAdView.setX( dWidth - nendWith);		nendAdView.setGravity(Gravity.RIGHT | Gravity.TOP);
 				nendAdView.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-				dbMsg= dbMsg + ",移動先("+ location[0] +","+ location[1] +")]" ;	//正解[0 × ?]拾えずgetWidthetPaddingLeft、、
+				dbMsg +=",移動先("+ location[0] +","+ location[1] +")]" ;	//正解[0 × ?]拾えずgetWidthetPaddingLeft、、
 
 				nendAdView.setListener(new NendAdListener() {
 			//	    @Override
@@ -554,12 +554,12 @@ public class wKit extends Activity {
 			dbMsg +=",adWidth=" + adWidth;
 			if( adWidth == 0 ){
 				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-				dbMsg= dbMsg + ",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+				dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 				adWidth = koukokuW;				// ( dWidth-276) / 2 ;			// dWidth-location[0] ;//			//画面幅-ボタン幅 / 2		dWidth / 2 - dWidth / 20
 				dbMsg +=">adWidth>" + adWidth;
 			//	layout_ad.setX(dWidth - adWidth);
 				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-				dbMsg= dbMsg + ">>layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+				dbMsg +=">>layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 			}
 			float scaleXY =adWidth * 1.0f / dWidth;						/// = 0.3		( koukokuW * koukokuW / dWidth)	☆設定したサイズが読み込みリアを超えない様に320に対してマージンを設定	288.0f/45		256/40
 			dbMsg +=",scaleXY=" + scaleXY;
@@ -569,7 +569,7 @@ public class wKit extends Activity {
 			dbMsg += ",adHight=" + adHight;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
 	//		if( mAdView == null ){
 				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
-				dbMsg= dbMsg + ",layout_ad("+ location[0] +","+ location[1] +")]" ;	//正解[0 × ?]
+				dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;	//正解[0 × ?]
 				mAdView = new AdView(this);
 		//		LayoutParams lp = new LayoutParams(adWidth , LayoutParams.WRAP_CONTENT);
 				mAdView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id2));
@@ -700,15 +700,15 @@ public class wKit extends Activity {
 					}
 				});
 			dbMsg += "[" + mAdView.getHeight() + "×" + mAdView.getWidth() + "]";///is15[75×480]
-			dbMsg= dbMsg + "ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +="ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" + layout_ad.getHeight() + "]";
 //			layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-//			dbMsg= dbMsg + "("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+//			dbMsg +="("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 			dbMsg += ",最終；getAdSize[" + mAdView.getAdSize() + "]";
 			mAdView.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-			dbMsg= dbMsg + ",("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+			dbMsg +=",("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 			layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-			dbMsg= dbMsg + ",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+			dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 			adMobNow = true;
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -1084,7 +1084,7 @@ public class wKit extends Activity {
 //								myLog(TAG, dbMsg);
 //							}
 //							String state = intent.getStringExtra("state");
-//							dbMsg= dbMsg + ",state=" + state;
+//							dbMsg +=",state=" + state;
 							IsSeisei = intent.getBooleanExtra("IsSeisei", false);			//生成中
 							dbMsg= dbMsg  + ",生成中= "+ IsSeisei;/////////////////////////////////////
 							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
@@ -1103,7 +1103,7 @@ public class wKit extends Activity {
 							if(b_dataFN == null){
 								b_dataFN = dataFN;
 							}
-					//		dbMsg= dbMsg + dataFN + "に変更";
+					//		dbMsg +=dataFN + "に変更";
 							if(! dataFN.equals(b_dataFN)){			// || nowList_id != b_List_id
 								dbMsg= dbMsg +"、前の曲；"+ b_dataFN + " を　"+ dataFN +"に更新";
 								readLyric( dataFN );					//歌詞の読出し
@@ -1112,7 +1112,7 @@ public class wKit extends Activity {
 
 //								dbMsg= dbMsg +"、motoFName；"+ motoFName;
 //								File dFile = new File(motoFName);
-//								dbMsg= dbMsg + ",exists=" + dFile.exists() ;
+//								dbMsg +=",exists=" + dFile.exists() ;
 //								long nModified = dFile.lastModified();
 //								if( bModified == 0 ){
 //									bModified = nModified;
