@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 		  xmlns:tools="http://schemas.android.com/tools"
-		  package="com.hijiyam_koubou.marasongs"
-    android:versionCode="9341247"
-    android:versionName="1.2.47" >
+		  package="com.hijiyam_koubou.marasongs">
 
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -13,13 +11,12 @@
 	<uses-permission android:name="android.permission.BLUETOOTH"/>
 	<uses-feature android:name="android.hardware.bluetooth"
 				  android:required="true" /><!-- リモコン操作 -->
-	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<!--<uses-permission android:name="android.permission.READ_PHONE_STATE"/>-->
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 	<!-- ビジュアライザー -->
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/><!-- BluetoothA2dpの取得も兼ねる -->
 	<!-- 未使用 -->
-<!-- 		<uses-permission android:name="android.permission.GET_TASKS" /> -->
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<!--20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt;-->
 	<permission android:name="android.permission.MEDIA_CONTENT_CONTROL" /><!-- ノティフィケーションプレイヤー -->

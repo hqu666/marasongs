@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hijiyam_koubou.marasongs"
-    android:versionCode="9341247"
-    android:versionName="1.2.47" >
+    android:versionCode="9341248"
+    android:versionName="1.2.48" >
 
     <uses-sdk
         android:minSdkVersion="23"
@@ -17,13 +17,12 @@
     <uses-feature
         android:name="android.hardware.bluetooth"
         android:required="true" /> <!-- リモコン操作 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE"/> -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- ビジュアライザー -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- BluetoothA2dpの取得も兼ねる -->
     <!-- 未使用 -->
-    <!-- <uses-permission android:name="android.permission.GET_TASKS" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
@@ -152,34 +151,6 @@
             android:authorities="com.hijiyam_koubou.marasongs.mobileadsinitprovider"
             android:exported="false"
             android:initOrder="100" />
-
-        <activity
-            android:name="net.nend.android.internal.ui.activities.fullboard.NendAdFullBoardActivity"
-            android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="net.nend.android.internal.ui.activities.interstitial.NendAdInterstitialActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="behind"
-            android:theme="@style/Theme.NendAd.Interstitial" />
-        <activity
-            android:name="net.nend.android.internal.ui.activities.video.NendAdInterstitialVideoActivity"
-            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="behind"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="net.nend.android.internal.ui.activities.video.NendAdRewardedVideoActivity"
-            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="behind"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="net.nend.android.internal.ui.activities.formats.FullscreenVideoPlayingActivity"
-            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="user"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
     </application>
 
 </manifest>

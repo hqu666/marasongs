@@ -1,35 +1,11 @@
 #Internal package file, do not edit.
-#Mon May 06 15:18:31 JST 2019
-7.path=nend_button_cancel.png
-2.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
-5.set=ASSET
-0.path=classes.dex
-2.baseType=DIRECTORY
-3.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
-7.baseType=DIRECTORY
-2.set=DEX
-1.path=classes.dex
-4.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
-7.set=ASSET
-count=8
-5.baseType=DIRECTORY
-2.path=classes.dex
-5.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\merged_assets\\debug\\out
-4.set=DEX
-3.path=classes.dex
-6.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
-3.baseType=DIRECTORY
-1.set=DEX
-4.path=classes.dex
-7.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\merged_assets\\debug\\out
-6.set=DEX
-1.baseType=DIRECTORY
-6.baseType=DIRECTORY
-5.path=nend_information_icon.png
-0.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
+#Sun May 12 22:50:42 JST 2019
+1.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
 0.baseType=DIRECTORY
-3.set=DEX
-6.path=classes.dex
-1.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-4.baseType=DIRECTORY
+1.baseType=DIRECTORY
+count=2
+1.set=DEX
+0.path=classes.dex
 0.set=DEX
+0.base=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+1.path=classes.dex

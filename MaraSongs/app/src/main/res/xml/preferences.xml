@@ -19,10 +19,10 @@
 		<SwitchPreference
 		    android:key="pref_pb_bgc"
 		    android:summary="Summary"
-		     android:summaryOn="@string/pref_pb_bgc_wh"
-		      android:summaryOff="@string/pref_pb_bgc_bk"
-		      android:switchTextOff="@string/pref_pb_bgc_bk"
-		      android:switchTextOn="@string/pref_pb_bgc_wh"
+		     android:summaryOn="@string/pref_pb_bgc_bk"
+		      android:summaryOff="@string/pref_pb_bgc_wh"
+		      android:switchTextOff="@string/pref_pb_bgc_wh"
+		      android:switchTextOn="@string/pref_pb_bgc_bk"
 		      android:title="@string/pref_pb_bgc_titol"
 		      android:enabled="true" />
 
@@ -83,6 +83,13 @@
 			android:key="pref_nitenka_memo"
 			android:title="@string/pref_nitenkan"
 			android:layout="@layout/sc_text"/>
+
+		<EditTextPreference
+			android:selectable="false"
+			android:key="pref_filse"
+			android:title="@string/common_sansyou"
+			android:layout="@layout/sc_text"/>
+
 	</PreferenceScreen>
 
 	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
@@ -175,11 +182,11 @@
 			android:switchTextOn="@string/comon_suru"
 			android:title="@string/pref_listup_reset"
 			android:enabled="true"/>
+		<EditTextPreference
+			android:selectable="false"
+			android:key="pref_memo"
+			android:title="@string/common_sansyou"
+			android:layout="@layout/sc_text"/>
 	</PreferenceScreen>
-	<EditTextPreference
-		android:selectable="false"
-		android:key="pref_memo"
-		android:title="@string/common_sansyou"
-		android:layout="@layout/sc_text"/>
 
 </PreferenceScreen>

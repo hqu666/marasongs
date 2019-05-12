@@ -196,7 +196,8 @@
     <string name="pref_file_music">音楽ファイルの格納状況</string>
     <string name="pref_file_in">内蔵メモリ</string>
     <string name="pref_file_ex">メモリーカード</string>
-    <string name="pref_file_saisinn">最新更新日</string>
+	<string name="pref_commmn_music">共通音楽フォルダ</string>
+	<string name="pref_file_saisinn">最新更新日</string>
     <string name="pref_file_kyoku">総曲数</string>
     <string name="pref_file_album">総アルバム数</string>
     <string name="pref_music_dir">再生する音楽ファイルがあるフォルダ</string>
