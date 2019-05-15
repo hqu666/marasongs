@@ -478,7 +478,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * preReadEndへ
 	 * */
 	public void preReadBody(Cursor cursor , Uri cUri , String where) throws IOException {			//MediaStore.Audio.Mediaの欠けデータ確認
-		final String TAG = "preReadBody[ZenkyokuList]";
+		final String TAG = "preReadBody";
 		String dbMsg= "[ZenkyokuList]";
 		int pdCoundt = cursor.getPosition()+1;
 		dbMsg = pdCoundt +"/"+ cursor.getCount();
@@ -659,7 +659,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //				}
 //				dbMsg = dbMsg +">>inDir="+ ZenkyokuList.this.inDir;/////////////////////////////////////////////////////////////////////////////////////////////
 //			}
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
@@ -878,7 +878,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				String[] selectionArgs5 = {ｒID};
 				rows = context.getContentResolver().update(uri, cv , where, selectionArgs5);
 				dbMsg = dbMsg + "処理" + rows +"件";/////////////////////////////////////////////////////////////////////////////////////////////
-				myLog(TAG,dbMsg);
+//				myLog(TAG,dbMsg);
 			}
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg  +"(while)で"+e.toString());
@@ -1145,7 +1145,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				albumCount = 0;
 				album_art = null;
 				last_year = null;
-				myLog(TAG,dbMsg);
+//				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
 			}
 		}catch(IllegalArgumentException e){
@@ -2524,7 +2524,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}else{
 				stmt.bindString(rfNo ,  "");
 			}
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -2547,7 +2547,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}else{
 				stmt.bindString(rfNo ,  "");
 			}
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}

@@ -886,16 +886,16 @@ public class MaraSonActivity extends AppCompatActivity
 //				dbMsg= dbMsg +",mItems="+mItems;
 //			}
 			crossFeadTime= MLIST.crossFeadTime;					//再生終了時、何ms前に次の曲に切り替えるか
-			playerBGColor_w = MLIST.playerBGColor_w;				//プレイヤーの背景は白
+			playerBGColor_w = MLIST.pref_pb_bgc;				//プレイヤーの背景は白
 			dbMsg +=  ",プレイヤーの背景は白か="+playerBGColor_w;////////////////////////////////////////////////////////////////////////////
 			pref_cyakusinn_fukki=MLIST.pref_cyakusinn_fukki;		//終話後に自動再生
 			dbMsg +=  ",終話後に自動再生="+pref_cyakusinn_fukki;////////////////////////////////////////////////////////////////////////////
-			ruikei_titol = MLIST.ruikei_titol;								//曲累計
-			ruikei_album = MLIST.ruikei_album;							//アルバム累計
+			ruikei_titol =MLIST.pref_file_kyoku + "";								//曲累計
+			ruikei_album = MLIST.pref_file_album + "";							//アルバム累計
 			pref_compBunki = MLIST.pref_compBunki;				//コンピレーション分岐点
-			file_saisinn= MLIST.file_saisinn;								//最新更新日
-			file_ex = MLIST.file_ex ;										//メモリーカードの音楽ファイルフォルダ
-			file_wr =MLIST. file_wr;										//設定保存フォルダ
+			file_saisinn= MLIST.pref_file_saisinn;								//最新更新日
+			file_ex = MLIST.pref_file_ex ;										//メモリーカードの音楽ファイルフォルダ
+			file_wr =MLIST. pref_file_wr;										//設定保存フォルダ
 			prTT_dpad = MLIST.prTT_dpad;								//ダイヤルキー有り
 			dbMsg +=  ",ダイヤルキー有り="+prTT_dpad;////////////////////////////////////////////////////////////////////////////
 			dbMsg +=  ",サービス="+MPSIntent;////////////////////////////////////////////////////////////////////////////
@@ -1642,8 +1642,8 @@ public class MaraSonActivity extends AppCompatActivity
 			public void onReceive(final Context context, final Intent intent) {
 				mHandler.post(new Runnable() {
 					public void run() {
-						final String TAG = "MusicReceiver[MaraSonActivity]";
-						String dbMsg="起動";
+						final String TAG = "MusicReceiver";
+						String dbMsg="[MaraSonActivity]";
 						try{
 							String rStr = null;
 							boolean thisCont = true;
@@ -1841,7 +1841,7 @@ public class MaraSonActivity extends AppCompatActivity
 									lyric_tv.setText(songLyric);					//歌詞表示
 								}
 							}
-							myLog(TAG, dbMsg);
+//							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG ,  dbMsg + "で" + e);
 						}
@@ -4920,7 +4920,7 @@ public class MaraSonActivity extends AppCompatActivity
 						if( retBool != playerBGColor_w){		//プレイヤーの背景
 							dbMsg +="＞＞"+ retBool ;	////////////////
 							playerBGColor_w = retBool;
-							MLIST.playerBGColor_w = playerBGColor_w;				//プレイヤーの背景は白
+							MLIST.pref_pb_bgc = playerBGColor_w;				//プレイヤーの背景は白
 
 							sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//MODE_WORLD_WRITEABLE 	getSharedPreferences(prefFname,MODE_PRIVATE);
 							myEditor = sharedPref.edit();
