@@ -500,7 +500,6 @@ private byte majorVersion = (byte) 0;
 		/**
 		 * <code>RandomAccessFile.read</code>で読み込んだバイト配列をUTF-8エンコードした<code>String</code>で返します。
 		 * EOFに達するとnullを返します。
-		 * @param File file
 		 * @return
 		 */
 		public void file2Tag(final File file){			//RandomAccessFileをString変換
@@ -3579,13 +3578,11 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 	 * 渡された文字列から指定されたフレームを切り出す。
 	 * 残りは文字列で返す.
 	 * 文字情報はここで適切な長さに切ってsetTargetFreamに渡す
-	 * @param String result 検索する文字列
-	 * @param  String target　抽出するフレーム名
 	 * @return String result 抜き出した後の文字列文字列
 	 * **/
 	public String getTargetFream(String result , String target , int reqCode ){			//渡された文字列から指定されたフレームを切り出す
-		final String TAG = "getTargetFream[TagBrows]";
-		String dbMsg= "開始";//////////////////////////////
+		final String TAG = "getTargetFream";
+		String dbMsg= "[TagBrows]";//////////////////////////////
 		try{
 			int uketori = String.valueOf(result).length();
 			if(60 < uketori){

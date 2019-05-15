@@ -3539,7 +3539,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			String subTStr = "";
 			dbMsg +=  "artistMei=" + artistMei + ",albumMei=" + albumMei + "titolMei=" + titolMei ;
 			dbMsg +=  "reqC=" + reqC +")";					//";listItems = " + listItems.size();	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 			switch(reqC) {
 			case MaraSonActivity.v_artist:							//2131558436 :アーティスト
 //				backCode = quite_list;		//リストの終了
@@ -3578,10 +3578,13 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				mainHTF.setVisibility(View.VISIBLE);
 				mainHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);					//Toolbar を Action Bar のように使用する場合	//	toolbar.setTitle(artistMei);								//スタンドアローン Toolbar を使用する場合
 				MuList.this.albumAL = CreateAlbumList( artistMei , albumMei );		//リスト表示せずに曲リスト作成
+
 				if( artistMei == null){
 					artistMei = sousa_artist;
 				}
-				if ( ( imanoJyoutai == veiwPlayer  && saisei_fname !=null )  ){											//200;プレイヤーを表示;起動直後
+				dbMsg += ",imanoJyoutai= " + imanoJyoutai+ ",saisei_fname= " + saisei_fname;
+
+				if ( imanoJyoutai == veiwPlayer  && (saisei_fname ==null ||  saisei_fname.equals(""))  ){											//200;プレイヤーを表示;起動直後
 					if( playingItem != null ){
 						titolName =playingItem.title;		//曲名
 						dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
@@ -3595,6 +3598,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 						dbMsg += ";" + MuList.this.albumArt;////////////////////////
 					}
 //					}
+					reqCode = MaraSonActivity.v_titol;
+					dbMsg += ",reqCode=" + reqCode;///////////////////////
+					myLog(TAG, dbMsg);
 					sigotoFuriwake(reqCode, artistMei , MuList.this.albumName  , MuList.this.titolName , MuList.this.albumArt);		//表示するリストの振り分け		titolAL ,
 				} else {
 					if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
@@ -3609,6 +3615,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				}
 				dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
+				myLog(TAG, dbMsg);
+
 				break;
 			case MaraSonActivity.v_titol:						//2131558448 ;タイトル
 //				backCode = MaraSonActivity.v_alubum;		//上のリスト
@@ -3650,8 +3658,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					send2Player(saisei_fname);				//プレイヤーにuriを送る , albumMei
 				}
 				break;
-//			default:
-//				break;
+			default:
+				break;
 			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -3768,7 +3776,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 							MuList.this.albumAL.add( albumMap);			//アルバムリスト用ArrayList
 						}
 						dbMsg += " , " + MuList.this.albumAL.size() + "件";
-						myLog(TAG, dbMsg);
+//						myLog(TAG, dbMsg);
 					}catch(IllegalArgumentException e){
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}catch (Exception e) {
