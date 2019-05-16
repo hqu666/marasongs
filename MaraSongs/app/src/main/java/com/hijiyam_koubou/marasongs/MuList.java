@@ -359,16 +359,16 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {                //(初回起動で)全パーミッションの許諾を取る
 				dbMsg += "許諾確認";
 				String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE ,
-						Manifest.permission.WRITE_EXTERNAL_STORAGE ,
-						Manifest.permission.INTERNET ,
-						Manifest.permission.ACCESS_NETWORK_STATE,
-//						Manifest.permission.READ_PHONE_STATE,                //国の判断に使用
-						Manifest.permission.BLUETOOTH ,
-						Manifest.permission.BLUETOOTH_ADMIN ,
-						Manifest.permission.RECORD_AUDIO ,
-						Manifest.permission.MODIFY_AUDIO_SETTINGS ,
-						Manifest.permission.WAKE_LOCK ,
-						Manifest.permission.MEDIA_CONTENT_CONTROL
+					Manifest.permission.WRITE_EXTERNAL_STORAGE ,
+					Manifest.permission.INTERNET ,
+					Manifest.permission.ACCESS_NETWORK_STATE,
+//						Manifest.permission.READ_PHONE_STATE,                //プライバシー ポリシーの設定が必要;国の判断に使用
+					Manifest.permission.BLUETOOTH ,
+					Manifest.permission.BLUETOOTH_ADMIN ,
+					Manifest.permission.RECORD_AUDIO ,              		//プライバシー ポリシーの設定が必要
+					Manifest.permission.MODIFY_AUDIO_SETTINGS ,
+					Manifest.permission.WAKE_LOCK ,
+					Manifest.permission.MEDIA_CONTENT_CONTROL
 				};
 				//						Manifest.permission.GET_TASKS ,
 				boolean isNeedParmissionReqest = false;
@@ -1187,7 +1187,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	}
 
 	public void listSyuuseiJyunbi2Body(int i) {								//リストアップ準備;2階層リスト化
-		final String TAG = "listSyuuseiJyunbi";
+		final String TAG = "listSyuuseiJyunbi2Body";
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg += "[" + i + "/"+ artistHenkouSL.size() + "]";
@@ -2690,8 +2690,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 						alertDialog.show();				// アラートダイアログを表示します
 						break;
 					default:
-						dbMsg +=",oFRへ" ;
-						oFR();												 // onWindowFocusChanged , onResumeじの共通操作
+//						dbMsg +=",oFRへ" ;
+//						oFR();												 // onWindowFocusChanged , onResumeじの共通操作
 						break;
 				}
 				shigot_bangou = 0;
@@ -3496,6 +3496,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				}
 			}
 			sousalistName =getResources().getString(R.string.listmei_zemkyoku);
+			dbMsg += " , retInt=⁼" + retInt;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3538,14 +3539,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;		/////////////////////////////////////
 			String subTStr = "";
 			dbMsg +=  "artistMei=" + artistMei + ",albumMei=" + albumMei + "titolMei=" + titolMei ;
-			dbMsg +=  "reqC=" + reqC +")";					//";listItems = " + listItems.size();	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+			dbMsg +=  ",reqC=" + reqC +")";					//";listItems = " + listItems.size();	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 //			myLog(TAG, dbMsg);
 			switch(reqC) {
-			case MaraSonActivity.v_artist:							//2131558436 :アーティスト
-//				backCode = quite_list;		//リストの終了
-				dbMsg +=",artist_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-		//		toolbar.getNavigationIcon().setVisible(false, false);				//headImgIcon.setVisible(false,true);
-
+			case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
+				dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 				headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 				artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
 				mainHTF.setVisibility(View.GONE);
@@ -3562,14 +3560,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠				//toolbar.setSubtitle(subTStr);
 				int selPosition = artistAL.indexOf(artistMei);
 				dbMsg +=",selPosition= " + selPosition ;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-		//		myLog(TAG,dbMsg);				//
+				myLog(TAG,dbMsg);				//
 				lvID.setSelection(selPosition);
 				lvID.setFocusable(true);
 				lvID.setFocusableInTouchMode(true);
 				lvID.requestFocus();
 				break;
-			case MaraSonActivity.v_alubum:			//2131558442	アルバム
-				dbMsg +=",alubum_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+			case MaraSonActivity.v_alubum:			//196 ; 2131558442	アルバム
+				dbMsg +=",アーティストをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 				pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 				headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 				artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -3578,28 +3576,24 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				mainHTF.setVisibility(View.VISIBLE);
 				mainHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);					//Toolbar を Action Bar のように使用する場合	//	toolbar.setTitle(artistMei);								//スタンドアローン Toolbar を使用する場合
 				MuList.this.albumAL = CreateAlbumList( artistMei , albumMei );		//リスト表示せずに曲リスト作成
+				dbMsg += ",抽出できたアルバム=" + MuList.this.albumAL.size() + "枚 ";
 
 				if( artistMei == null){
 					artistMei = sousa_artist;
 				}
-				dbMsg += ",imanoJyoutai= " + imanoJyoutai+ ",saisei_fname= " + saisei_fname;
-
-				if ( imanoJyoutai == veiwPlayer  && (saisei_fname ==null ||  saisei_fname.equals(""))  ){											//200;プレイヤーを表示;起動直後
+				dbMsg += ",imanoJyoutai= " + imanoJyoutai+ ",saisei_fname= " + saisei_fname;         //200
+				if ( imanoJyoutai == veiwPlayer &&  saisei_fname.equals("")  ){
 					if( playingItem != null ){
 						titolName =playingItem.title;		//曲名
 						dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 					}
 					dbMsg += "(" + albumName;///////////////////////
-//					int position = albumAL.indexOf(albumName);
-//					dbMsg += "[ " + position;//////////////////////////
 //					if ( position  >= 0) {
 					if( albumMei != null){
 						MuList.this.albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,artistMei , albumMei );			//アルバムアートUriだけを返す	this ,
-						dbMsg += ";" + MuList.this.albumArt;////////////////////////
+						dbMsg += ",albumArt=" + MuList.this.albumArt;
 					}
 //					}
-					reqCode = MaraSonActivity.v_titol;
-					dbMsg += ",reqCode=" + reqCode;///////////////////////
 					myLog(TAG, dbMsg);
 					sigotoFuriwake(reqCode, artistMei , MuList.this.albumName  , MuList.this.titolName , MuList.this.albumArt);		//表示するリストの振り分け		titolAL ,
 				} else {
@@ -3618,7 +3612,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				myLog(TAG, dbMsg);
 
 				break;
-			case MaraSonActivity.v_titol:						//2131558448 ;タイトル
+			case MaraSonActivity.v_titol:						//197；2131558448 ;タイトル
 //				backCode = MaraSonActivity.v_alubum;		//上のリスト
 				dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 				dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
@@ -3695,10 +3689,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				}
 			}
 			String fn = getString(R.string.zenkyoku_file);			//全曲リスト名
-			dbMsg = "fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+			dbMsg += ",fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 			zenkyokuHelper = new ZenkyokuHelper(MuList.this , fn);		//全曲リストの定義ファイル		.
 			Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
-			dbMsg += ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+			dbMsg += ",isOpen=" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
 			String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 			boolean distinct = true;					//trueを指定すると検索結果から重複する行を削除します。
 			String c_selection = "ALBUM_ARTIST = ?";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
@@ -3792,7 +3786,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			Zenkyoku_db.close();
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			String toastStr = albumList.size() +getResources().getString(R.string.pp_mai)+"["+getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]";		//	<string name="">所要時間</string>
-			dbMsg += toastStr ;
+			dbMsg += "::" + toastStr ;
 			myLog(TAG, dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4061,7 +4055,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 	/** プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台*/
 	public void send2Player(String saisei_fname ) {																//プレイヤーにuriを送る   , String aName
-		final String TAG = "send2Player[MuList]";
+		final String TAG = "send2Player";
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg += ",saisei_fname=" + saisei_fname;/////////////////////////////////////
@@ -4070,7 +4064,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
 			intent.putExtra("reqCode",imanoJyoutai);
 			dbMsg += ",プレイリスト[ID=" + nowList_id;/////////////////////////////////////
-			if(-1 < nowList_id){
+			if(-1 <= nowList_id){
 				intent.putExtra("nowList_id",nowList_id);
 				dbMsg += "]" + nowList;/////////////////////////////////////
 				intent.putExtra("nowList",nowList);
@@ -4114,10 +4108,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //				dbMsg +=",aArtistList="+aArtistList;
 //			}
 				myLog(TAG,dbMsg);
-				startActivity(intent  );
-
+				startActivity(intent);
 				MuList.this.finish();
 			}
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -4438,8 +4432,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					final String TAG = "onItemClick";
 					String dbMsg = "[MuList.makePlainList]";
 					try{
-						listClick( parent, view, position, id);			//共有：クリックの処理
+						dbMsg += ",position=" + position + ",id=" + id;
 						myLog(TAG, dbMsg);
+						listClick( parent, view, position, id);			//共有：クリックの処理
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -4453,8 +4448,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					final String TAG = "onItemClick";
 					String dbMsg = "[MuList.makePlainList]"+ORGUT.nowTime(true,true,true);/////////////////////////////////////
 					try{
-						listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
+						dbMsg += ",position=" + position + ",id=" + id;
 						myLog(TAG, dbMsg);
+						listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -4520,7 +4516,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				dbMsg +=",全曲リストの";
 				switch(reqCode) {
-				case MaraSonActivity.v_artist:							//2131558436 アーティスト
+				case MaraSonActivity.v_artist:							//195 ;2131558436 アーティスト
 					dbMsg +=",アーティストから";
 					itemStr = String.valueOf(artistSL.get(position));		//クレジットされているアーティスト名
 					sousa_artist = itemStr;
@@ -4531,7 +4527,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					dbMsg +=",sousa_artist="+ sousa_artist +"のアルバムリスト作成"  ;////////////////////////////////////
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け	, albumAL
 					break;
-				case MaraSonActivity.v_alubum:							//2131558442 アルバム
+				case MaraSonActivity.v_alubum:							//196;2131558442 アルバム
 					dbMsg +=",アルバムから";
 					itemStr = albumList.get(position);		//アルバム名
 					sousa_alubm = itemStr;
@@ -4540,7 +4536,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm  +"のタイトルリスト作成" ;////////////////////////////////////
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け		, albumAL
 					break;
-				case MaraSonActivity.v_titol:						//2131558448 タイトル
+				case MaraSonActivity.v_titol:						//197 ; 2131558448 タイトル
 					dbMsg +=",タイトルから";
 					itemStr = titolList.get(position);		//曲名
 					dbMsg += ",itemStr=" + itemStr.toString();/////////////////////////////////////
@@ -4550,10 +4546,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					b_album = albumMei;				//それまで参照していたアルバム名
 					titolName =  itemStr;		//曲名	titolList.get(position)
 					saisei_fname = String.valueOf(titolAL.get(position).get("DATA"));
-					dbMsg += ",saisei_fname=" + saisei_fname;/////////////////////////////////////
+					dbMsg += ",再生するのは=" + saisei_fname;
 					mcPosition = 0;
-					dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
+					dbMsg += ",呼出し元=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 					if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
+						dbMsg += ">>プレイヤーへ";
 						send2Player(saisei_fname );												//プレイヤーにuriを送る
 					}else{
 						back2Player( saisei_fname);												//プレイヤーにuriを送る
@@ -5002,12 +4999,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 		lvID.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent,View view, int position, long id) {
-				final String TAG = "onItemClick[MuList・setHeadImgList]";
-				String dbMsg =  "開始";
+				final String TAG = "onItemClick";
+				String dbMsg =  "[MuList・setHeadImgList]";
 				try{
-					listClick( parent, view, position, id);			//共有：クリックの処理
-//					dbMsg += "[" +reqCode +"]["+ albumArtist +"/" + albumName +"/" + titolName +"]" ;/////////////////////////////////////
+					dbMsg =  ",position="+position + ",id="+id;
 					myLog(TAG, dbMsg);
+					listClick( parent, view, position, id);			//共有：クリックの処理
 				}catch (Exception e) {
 					myErrorLog(TAG ,  dbMsg + "で" + e);
 				}
@@ -5021,8 +5018,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				final String TAG = "onItemLongClick[setHeadImgList]";
 				String dbMsg = ORGUT.nowTime(true,true,true);
 				try{
-					listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
+					dbMsg += ",position=" + position + ",id=" + id;
 					myLog(TAG, dbMsg);
+					listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
 				}catch (Exception e) {
 					myErrorLog(TAG ,  dbMsg + "で" + e);
 				}
@@ -6330,11 +6328,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			MuList.this.lvID.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					final String TAG = "onItemClick[plWrightEnd]";
-					String dbMsg = "[MuList]";
+					final String TAG = "onItemClick";
+					String dbMsg = "[MuList.plWrightEnd]";
 					try{
-						listClick( parent, view, position, id);			//共有：クリックの処理
+						dbMsg =  ",position="+position + ",id="+id;
 						myLog(TAG, dbMsg);
+						listClick( parent, view, position, id);			//共有：クリックの処理
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -6348,8 +6347,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					final String TAG = "onItemLongClick[plWrightEnd]";
 					String dbMsg = ORGUT.nowTime(true,true,true);/////////////////////////////////////
 					try{
-						listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
+						dbMsg += ",position=" + position + ",id=" + id;
 						myLog(TAG, dbMsg);
+						listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -9465,7 +9465,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			case CONTEXT_dell_request:					//リクエスト解除
 				requestListResetEnd();
 				break;
-			case MaraSonActivity.v_artist:							//アーティスト
+			case MaraSonActivity.v_artist:			//アーティスト
 				artistList_yomikomiEnd();					//アーティストリストの終了処理
 				break;
 			case MaraSonActivity.v_alubum:							//アルバム
