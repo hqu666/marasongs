@@ -455,7 +455,7 @@ public class MaraSonActivity extends AppCompatActivity
 			myEditor =myPreferences.myEditor;
 			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
-			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
+//			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
 
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 //			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
@@ -478,8 +478,10 @@ public class MaraSonActivity extends AppCompatActivity
 //			pref_reset = myPreferences.pref_reset;					//設定を初期化
 //			pref_listup_reset = myPreferences.pref_listup_reset;			//調整リストを初期化
 
-//			saisei_fname =myPreferences.saisei_fname;				//再生中のファイル名
-//			pref_saisei_jikan =myPreferences.pref_saisei_jikan;			//再開時間		Integer
+			dataFN =myPreferences.saisei_fname;				//再生中のファイル名
+			dbMsg += "、再生中のファイル名=" + dataFN;
+			mcPosition =Integer.parseInt(myPreferences.pref_saisei_jikan);			//再開時間		Integer
+			dbMsg += "、mcPosition=" + mcPosition;
 //			pref_saisei_nagasa  =myPreferences.pref_saisei_nagasa;		//再生時間
 //			pref_zenkai_saiseKyoku =myPreferences.pref_zenkai_saiseKyoku;			//前回の連続再生曲数
 //			pref_zenkai_saiseijikann =myPreferences.pref_zenkai_saiseijikann;			//前回の連続再生時間
@@ -530,7 +532,6 @@ public class MaraSonActivity extends AppCompatActivity
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}																	//設定読込・旧バージョン設定の消去
-
 
 	//広告////////////////////////////////////////////////////////////////////////
 	private AdView mAdView = null;							//Google広告表示エリア
@@ -780,7 +781,7 @@ public class MaraSonActivity extends AppCompatActivity
 			ORGUT = new OrgUtil();		//自作関数集
 			OGFil = new OrgUtilFile();;	//ファイル関連関数
 			Bundle extras = getIntent().getExtras();				//起動されたアクティビティからデータを受け取る
-			dbMsg= "extras="+ extras ;/////////////////////////////////////
+			dbMsg += "extras="+ extras ;/////////////////////////////////////
 			NotificationManager mNotificationManager = (NotificationManager)this.getSystemService(Activity.NOTIFICATION_SERVICE);
 			dbMsg= dbMsg+",NotificationManager="+ mNotificationManager.toString() ;/////////////////////////////////////
 			//スレッド起動確認///////////////////////////////////
@@ -809,11 +810,10 @@ public class MaraSonActivity extends AppCompatActivity
 				}else{
 					Item.itemsClear();
 					mItems = null;
-					readPref();
-//					setteriYomikomi();		//<onCreate	プリファレンスに記録されているデータ読み込み
+					readPref();       //					setteriYomikomi();		//<onCreate	プリファレンスに記録されているデータ読み込み
 					receiverHaki();		//レシーバーを破棄
 					int reqCode = extras.getInt("reqCode");					//何のリストか
-					dbMsg +=",reqCode="+ reqCode ;/////////////////////////////////////
+					dbMsg +=",リストからの受取;reqCode="+ reqCode ;/////////////////////////////////////
 					if(reqCode == MuList.veiwPlayer  || reqCode == MuList.chyangeSong ){
 						mcPosition=extras.getInt("mcPosition");
 						dbMsg +="[mcPosition="+ mcPosition ;/////////////////////////////////////
@@ -1203,7 +1203,6 @@ public class MaraSonActivity extends AppCompatActivity
 		 super.onWindowFocusChanged(hasFocus);
 	 }
 
-
 	/**
 	 * 起動直後にonWindowFocusChangedが発生した時(フォーカスが当たった場合)
 	 * ノティフィケーションからの起動された場合はkeizoku2ServiceでMusicPlayerServiceのプロパティ取得
@@ -1322,212 +1321,6 @@ public class MaraSonActivity extends AppCompatActivity
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
-
-//	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
-//		final String TAG = "setteriYomikomi";
-//		String dbMsg="[MaraSonActivity]";
-//		long start = System.currentTimeMillis();		// 開始時刻の取得
-//		try{
-//			String fName =  "/data/data/" +getPackageName()+"/shared_prefs/" + getString(R.string.pref_main_file) +".xml";
-//			dbMsg="fName = " + fName;/////////////////////////////////////
-//			File tFile = new File(fName);
-//			dbMsg= dbMsg +">>有無 = " + tFile.exists();/////////////////////////////////////
-//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			myEditor = sharedPref.edit();
-//			dbMsg= dbMsg +">>" + tFile.exists();/////////////////////////////////////
-//			if( ! tFile.exists()){
-//				dbMsg="shared_prefs無し";/////////////////////////////////////
-//			}
-//			Map<String, ?> keys = sharedPref.getAll();
-//			MyPreferences MPRF = new MyPreferences();
-//			MPRF.syokiPrif( keys);		//プリファレンス未作成時の初期作成
-//			if( keys.size() > 0 ){			//プリファレンスが出来ている
-//				int i=0;
-//				i=0;
-//				for (String key : keys.keySet()) {
-//					i++;
-//					dbMsg =  i+"/"+keys.size()+")　"+key;///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//					if( keys.get(key) != null){			//if( readStr != null || ! readStr.equals("")){
-//						dbMsg +="は "+String.valueOf(keys.get(key));///////////////+","+(keys.get(key) instanceof String)+",instanceof Boolean="+(keys.get(key) instanceof Boolean);////////////////////////////////////////////////////////////////////////////
-//						try{
-//							if(key.equals("pref_gyapless")){					//クロスフェード時間
-//								dbMsg +=  "クロスフェード時間"+crossFeadTime ;////////////////////////////////////////////////////////////////////////////
-//								crossFeadTime = Long.valueOf(keys.get(key).toString());
-//							}else if(key.equals("pref_pb_bgc")){
-//								dbMsg += "は"+(keys.get(key)).toString()+ ">>プレイヤーの背景は白"+playerBGColor_w;////////////////////////////////////////////////////////////////////////////
-////								playerBGColor_w = (boolean) keys.get("pref_pb_bgc") ;		//プレイヤーの背景は白
-//								playerBGColor_w = Boolean.valueOf((String) keys.get(key)) ;		//プレイヤーの背景は白
-//								dbMsg +=  ">>"+playerBGColor_w;////////////////////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_list_simple")){
-//								dbMsg += "は"+(keys.get(key)).toString()+ ">>シンプルなリスト表示（サムネールなど省略）"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
-//								pref_list_simple = Boolean.valueOf(String.valueOf(keys.get(key)) ) ;
-//								dbMsg +=  ">>"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_saisei_fname")){
-//								dbMsg +=  ">>再生中のファイル名" ;////////////////////////////////////////////////////////////////////////////
-//								dataFN = String.valueOf(keys.get(key));							//再生中のファイル名//DATA;The data stream for the file ;Type: DATA STREAM
-//								dbMsg =">>再生中のファイル名" + dataFN ;//// pref_saisei_fname //////
-//								File chFile = new File(dataFN);
-//								dbMsg += " , " + dataFN +"="+chFile.exists();//////////////////
-//								if(! chFile.exists() ){
-//									myEditor.remove("dataFN");
-//									dataFN = null;
-//									String  pdMes = getResources().getString(R.string.setteriYomikomi_data_meg) ;		//前回再生していた音楽ファイルが見つかりません。\n再生する曲を選択して下さい。</string>
-//									dbMsg=dbMsg  + pdMes;
-//									Toast.makeText(this, (CharSequence) pdMes, Toast.LENGTH_SHORT).show();
-//								}
-//							}else if(key.equals("pref_saisei_jikan")){
-//								dbMsg += ">>再生中音楽ファイルの再開時間" ;//////////////////
-//								mcPosition = Integer.valueOf(String.valueOf(keys.get(key)));				//選択中選択ポジション
-//								dbMsg += "["+ORGUT.sdf_mss.format(mcPosition) + "/";////////////////////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_saisei_nagasa")){
-//								dbMsg += ">>再生中音楽ファイルの長さ";//////////////////
-//								saiseiJikan = Integer.valueOf(String.valueOf(keys.get(key)));				//再生時間
-//							}else if(key.equals("pref_zenkai_saiseKyoku")){
-//								dbMsg += ">>前回の連続再生曲数";//////////////////
-//								zenkai_saiseKyoku = Integer.valueOf(String.valueOf(keys.get(key)));
-//							}else if(key.equals("pref_zenkai_saiseijikann")){
-//								dbMsg += ">>前回の連続再生時間";//////////////////
-//								zenkai_saiseijikann =Long.valueOf( String.valueOf(keys.get(key)));
-//							}else if(key.equals("pref_cyakusinn_fukki")){			//着信後の復帰
-//								pref_cyakusinn_fukki = Boolean.valueOf(String.valueOf(keys.get(key)) ) ;
-//									dbMsg +=  "着信後の復帰=" + pref_cyakusinn_fukki;////////////////////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_file_kyoku")){
-//								dbMsg += ">>総曲数";//////////////////
-//								ruikei_titol = String.valueOf(keys.get(key));			//曲累計
-//							}else if(key.equals("pref_file_album")){
-//								dbMsg += ">>総アルバム数" ;//////////////////
-//								ruikei_album = String.valueOf(keys.get(key));			//アルバム累計
-//							}else if(key.equals("pref_compBunki")){
-//								dbMsg += ">>コンピレーション分岐点" ;//////////////////
-//								pref_compBunki = String.valueOf(keys.get(key));			//コンピレーション分岐点
-//							}else if(key.equals("pref_file_saisinn")){
-//								dbMsg += ">>最新更新日";//////////////////
-//								file_saisinn = String.valueOf(keys.get(key));	//最新更新日
-//							}else if(key.equals("pref_file_wr")){
-//								dbMsg += ">>	設定保存フォルダ";//////////////////
-//								file_wr = String.valueOf(keys.get("pref_file_wr"));	//内蔵メモリの音楽ファイルフォルダ
-//							}else if(key.equals("nowList")){			//");
-//								dbMsg +=  ">再生中のプレイリスト名=" ;
-//								nowList = String.valueOf(keys.get(key).toString());
-//								dbMsg +=   String.valueOf(nowList)  ;
-//							}else if(key.equals("nowList_id")){			//");
-//								dbMsg +=  ">再生中のプレイリストID=" ;
-//								nowList_id = Integer.valueOf(keys.get(key).toString());	//
-//								dbMsg +=   String.valueOf(nowList_id)  ;
-//							}else if(key.equals("repeatType")){			//");;			//
-//								dbMsg +=  ">リピート再生の種類=" ;
-//								repeatType = Integer.valueOf(keys.get(key).toString());	//
-//								if(repeatType != MaraSonActivity.rp_point){
-//									pp_start = 0;
-//								}
-//								dbMsg +=   String.valueOf(repeatType)  ;
-//							}else if(key.equals("repeatArtist")){			//");;			//
-//								dbMsg +=  ">リピートさせるアーティスト名=" ;
-//								repeatArtist = String.valueOf(keys.get(key).toString());	//
-//								dbMsg +=   String.valueOf(repeatType)  ;
-//							}else if(key.equals("pref_nitenkan")){			//");
-//								rp_pp = Boolean.valueOf(String.valueOf(keys.get(key)) ) ;
-//								dbMsg +=  "二点間再生中=" + rp_pp;	//
-//							}else if(key.equals("pref_nitenkan_start")){			//");
-//								pp_start = Integer.valueOf(keys.get(key).toString());	//
-//								dbMsg +=  "二点間再生開始点=" + pp_start ;////////pref_nitenkan_start//////////
-//							}else if(key.equals("pref_nitenkan_end")){
-//								pp_end = Integer.valueOf(keys.get(key).toString());
-//								dbMsg +=  "二点間再生終了点=" + pp_end ;
-//							}else if(key.equals("tone_name")){
-//								tone_name = String.valueOf(keys.get(key).toString());	//
-//								dbMsg +=  "トーン名称=" + tone_name ;
-//					//			myLog(TAG,dbMsg);
-//							}else if(key.equals("pref_toneList")){				//http://qiita.com/tomoima525/items/f8cf688ad9571d17df41
-//								String stringList = String.valueOf(keys.get(key));											//bundle.getString("list");  //key名が"list"のものを取り出す
-//								dbMsg +=  ",stringList= " + stringList;
-//								try {
-//									JSONArray array = new JSONArray(stringList);
-//									dbMsg +=  ",array= " + array;
-//									int length = array.length();
-//									dbMsg +=  "= " + length +"件";
-//									pref_toneList =  new ArrayList<String>();				//トーンリストの初期化
-//									for(int j = 0; j < length; j++){
-//										dbMsg +=  "(" + j + "/" + length  + ")" + array.optString(j);
-//										pref_toneList.add(array.optString(j));
-//									}
-//								} catch (JSONException e1) {
-//									e1.printStackTrace();
-//								}
-//								dbMsg +=  ",トーン配列=" + pref_toneList ;
-//					//			myLog(TAG,dbMsg);
-//							}else if(key.equals("bBoot")){
-//								bBoot = Boolean.valueOf(String.valueOf(keys.get(key)) ) ;
-//								dbMsg +=  "バスブート=" + bBoot ;
-//							}else if(key.equals("reverbBangou")){
-//								reverbBangou = Short.valueOf(keys.get(key).toString());	//
-//								dbMsg +=  "リバーブ効果番号=" + reverbBangou ;
-//							}else if(key.equals("visualizerType")){
-//								visualizerType = Integer.valueOf(keys.get(key).toString());	//
-//								dbMsg +=  "visualizerType=" + visualizerType ;
-//							}else if(key.equals("mIndex")){			//");
-//								dbMsg +=  ",play_order=ID=mIndex=" ;
-//								mIndex = Integer.valueOf(keys.get(key).toString());	//
-//								dbMsg +=   String.valueOf(mIndex)  ;
-//							}else if(key.equals("nowList_data")){			//");
-//								dbMsg +=  ",プレイリストの保存場所=" ;
-//								nowList_data = String.valueOf(keys.get(key).toString());
-//								dbMsg +=   String.valueOf(nowList_data)  ;
-//
-//							}else if(key.equals("b_List")){			//");
-//								dbMsg +=  ",前に再生していたプレイリスト=" ;
-//								b_List = String.valueOf(keys.get(key).toString());
-//								dbMsg +=   String.valueOf(b_List)  ;
-//							}else if(key.equals("b_List_id")){			//");
-//								dbMsg +=  ",前のプレイリストID=" ;
-//								b_List_id = Integer.valueOf(String.valueOf(keys.get(key).toString()));
-//								dbMsg +=   String.valueOf(b_List_id)  ;
-//							}else if(key.equals("b_index")){			//");
-//								dbMsg +=  ",前に再生していたプレイリスト中のID=" ;
-//								b_index = Integer.valueOf(String.valueOf(keys.get(key).toString()));
-//								dbMsg +=   String.valueOf(b_index)  ;
-//							}else if(key.equals("modori_List_id")){			//");
-//								dbMsg +=  ",リピート前に再生していたプレイリスト中のID=" ;
-//								modori_List_id = Integer.valueOf(String.valueOf(keys.get(key).toString()));
-//								dbMsg +=   String.valueOf(modori_List_id)  ;
-//
-//							}else if(key.equals("pref_bt_renkei")){			//");
-//								dbMsg +=  ">>Bluetoothの接続に連携=" ;
-//								pref_bt_renkei = Boolean.valueOf(String.valueOf(keys.get(key)) ) ;
-//								dbMsg +=   String.valueOf(pref_bt_renkei)  ;////////////////	 Bluetoothの接続に連携して一時停止/再開////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_sonota_dpad")){			//");		//ダイヤルキー
-//								prTT_dpad = Boolean.valueOf(String.valueOf(keys.get(key)) ) ;
-//								dbMsg +=  ">>ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
-//								if(prTT_dpad){
-//									setKeyAri();									//d-pad対応
-//								}
-//							}
-//							myLog(TAG,dbMsg);
-//						} catch (Exception e) {
-//							myErrorLog(TAG,dbMsg+"；"+e);
-//						}
-//					}
-//				}			//for (String key : keys.keySet())
-//				//読み込み/////////////////////////////////////////////////////
-//				long end=System.currentTimeMillis();		// 終了時刻の取得
-//				dbMsg=(int)((end - start)) + "mS";		//	<string name="">所要時間</string>
-//			}
-//			long end=System.currentTimeMillis();		// 終了時刻の取得
-//			dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
-//	//		myLog(TAG,dbMsg);
-//			//1.06ユーザーが居なくなったら消去
-//			String dName = "/data/data/" +getApplicationContext().getPackageName() + "/shared_prefs/" + getResources().getString(R.string.pref_artist_file) +".xml";
-//			dbMsg +=",artistList= " + dName;
-//			File chFile3 = new File(dName);
-//			dbMsg +=" = " +chFile3.exists();
-//			if(chFile3.exists()){
-//				chFile3.delete();
-//			}
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
 
 /**
  * サービスにプレイヤー画面のデータを送る
@@ -2014,8 +1807,8 @@ public class MaraSonActivity extends AppCompatActivity
 	 * 呼出し元は	onCreate ,quitMe	 rusekiKousin		//onActivityResult , onStartTrackingTouch
 	 * */
 	public void receiverHaki(){		//レシーバーを破棄
-		final String TAG = "receiverHaki[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "receiverHaki";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg= "mReceivert=" + mReceiver;////////////////////////
 			if( mReceiver != null ){
@@ -5087,8 +4880,8 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		final String TAG = "onDestroy[MaraSonActivity]";
-		String dbMsg= "←(onStop)";/////////////////////////////////////
+		final String TAG = "onDestro";
+		String dbMsg= "y[MaraSonActivity]";/////////////////////////////////////
 		try{
 //			dbMsg = "mVisualizer="+ mVisualizer;//////////////////
 //			if( mVisualizer != null ){
@@ -5344,52 +5137,53 @@ public class MaraSonActivity extends AppCompatActivity
 */
 
 	public void callListView(int reqCode ,String selName  ){								//リストビューを読出し
-		final String TAG = "callListView[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "callListView";
+		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			Intent intent = new Intent(MaraSonActivity.this, MuList.class);			//
-			dbMsg +="reqCode="+ reqCode;/////////////////////////////////////
+			dbMsg +="reqCode="+ reqCode;//;アルバム=195
 			intent.putExtra("reqCode",reqCode);
-			dbMsg +="[プレイリストID= " + nowList_id;//////////////////////////////////
+			dbMsg +="[プレイリストID= " + nowList_id;//全曲= -1]
 			intent.putExtra("nowList_id", nowList_id);
-			dbMsg +="]" + nowList;//////////////////////////////////
+			dbMsg +="]" + nowList;//			// 全曲リスト
 			intent.putExtra("nowList", nowList);
 			if( nowList_data != null ){
 				dbMsg +=",保存場所= " + nowList_data;//////////////////////////////////
 				intent.putExtra("nowList_data", nowList_data);
 			}
-			dbMsg +="mIndex="+ mIndex;/////////////////////////////////////
+			dbMsg +="mIndex="+ mIndex;			// リストの一曲目=0
 			intent.putExtra("mIndex",mIndex);
-			dbMsg +="]選択アイテム="+selName;
+			dbMsg +="]選択アイテム="+selName;	//			// ]選択アイテム=10cc
 			if( reqCode == MuList.MENU_MUSCK_PLIST ){
 				selName = titolName;
 				dbMsg +=">>="+selName;
 			}
 			intent.putExtra("senntakuItem",selName);
 			if( playingItem != null ){
-				dbMsg +=",アルバムアーティスト="+ playingItem.album_artist;			// + ",albumArtist="+albumArtist ;/////////////////////////////////////
-				intent.putExtra("albumArtist",playingItem.album_artist);								//アルバムアーティスト	albumArtist
+				dbMsg +=",アルバムアーティスト="+ playingItem.album_artist;						// ,アルバムアーティスト=10cc
 			}else{
 				intent.putExtra("albumArtist",creditArtistName);								//アルバムアーティスト	albumArtist
 			}
-			dbMsg +=",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
-			intent.putExtra("creditArtistName",creditArtistName);			//クレジットされているアーティスト名
-			dbMsg= dbMsg +",アルバム名=" + albumName;/////////////////////////////////////
-			intent.putExtra("albumName",albumName);		//アルバム名
-			dbMsg= dbMsg +",曲名=" + titolName;/////////////////////////////////////
-			intent.putExtra("titolName",titolName);		//"");		//曲名
-			dbMsg= dbMsg +",アルバムアートのURI=" + albumArt;/////////////////////////////////////
+			dbMsg +=",クレジットされているアーティスト名=" + creditArtistName;				// クレジットされているアーティスト名=10cc,
+			intent.putExtra("albumArtist",playingItem.album_artist);					//アルバムアーティスト	albumArtist
+			intent.putExtra("creditArtistName",creditArtistName);					//クレジットされているアーティスト名
+			dbMsg= dbMsg +",アルバム名=" + albumName;										// アルバム名=ORIGNAL SOUNDTRAK
+			intent.putExtra("albumName",albumName);									//アルバム名
+			dbMsg= dbMsg +",曲名=" + titolName;												// 曲名=Une Nuit A Paris
+			intent.putExtra("titolName",titolName);									//曲名
+			dbMsg= dbMsg +",アルバムアートのURI=" + albumArt;								// アルバムアートのURI=null,
 			intent.putExtra("albumArt",albumArt);
-			dbMsg +=",dataFN="+ dataFN ;			// + ",albumArtist="+albumArtist ;/////////////////////////////////////
-			intent.putExtra("dataFN",dataFN);								//アルバムアーティスト	albumArtist
-			dbMsg +=",mcPosition= " + mcPosition;//////////////////////////////////
+			dbMsg +=",dataFN="+ dataFN ;					// dataFN=/storage/emulated/0/Music/10cc/ORIGNAL SOUNDTRAK/01 Une Nuit A Paris.mp3
+			intent.putExtra("dataFN",dataFN);
+			dbMsg +=",mcPosition= " + mcPosition;											// ,mcPosition= 0
 			intent.putExtra("mcPosition", mcPosition);
-			dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
+			dbMsg +=",再生中か= " + IsPlaying;												// ,再生中か= false,
 			intent.putExtra("IsPlaying", IsPlaying);
-			dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
+			dbMsg +=",生成中= " + IsSeisei;			// 生成中= false
 			intent.putExtra("IsSeisei", IsSeisei);
-			startActivityForResult(intent , reqCode );				//200;プレイヤーを表示
+			setResult(RESULT_OK, intent);                //20190518
+			MaraSonActivity.this.finish();     //			startActivityForResult(intent , reqCode );										//200;プレイヤーを表示
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5398,8 +5192,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public void onClick(View v) {																		//操作対応②ⅰ
-		final String TAG = "onClick[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "onClick";
+		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			b_dataFN = dataFN;
@@ -5537,8 +5331,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public boolean onLongClick(View v) {
-		final String TAG = "onLongClick[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "onLongClick";
+		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
 		try{
 			dbMsg= "View=" + v.getId();
 			if (v == vol_btn) {
@@ -5577,8 +5371,8 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
 //http://motogeneralpurpose.blogspot.jp/2012/11/viewflippern9988.html
-		final String TAG = "dispatchTouchEvent[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "dispatchTouchEvent";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 //			dbMsg="MotionEvent.getAction=" + event.getAction();/////////////////////////////////////
@@ -5636,7 +5430,7 @@ public class MaraSonActivity extends AppCompatActivity
 					break;
 				case 1:		//"ビジュアライザー						//2131624129
 					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
-					if( dataFN != null || visualizerType == Visualizer_type_none  ){
+					if( (dataFN != null && ! dataFN.equals(""))|| visualizerType == Visualizer_type_none  ){
 						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
 						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
 						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
@@ -5683,8 +5477,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public boolean onDown(MotionEvent me) {
-		final String TAG = "onDown[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "onDown";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg="MotionEvent=" + me ;///////////////////////////////////
 //MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0,
@@ -5705,8 +5499,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public void onShowPress(MotionEvent me) {
-		final String TAG = "onShowPress[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "onShowPress";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg="MotionEvent=" + me ;/////////////////////////////////////
 			myLog(TAG, dbMsg);
@@ -5717,8 +5511,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent me) {
-		final String TAG = "onSingleTapUp[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "onSingleTapUp";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg="MotionEvent=" + me ;/////////////////////////////////////
 			myLog(TAG, dbMsg);
@@ -5731,8 +5525,8 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
-		final String TAG = "onScroll[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "onScroll";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 //			dbMsg="MotionEvent1=" + e1 ;/////////////////////////////////////
 //			dbMsg +=",MotionEvent2=" + e2 ;/////////////////////////////////////
@@ -5751,8 +5545,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public void onLongPress(MotionEvent me) {
-		final String TAG = "onLongPress[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "onLongPress";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg="MotionEvent=" + me ;/////////////////////////////////////
 			myLog(TAG, dbMsg);
@@ -5765,7 +5559,7 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "onGestureStarted[MaraSonActivity]";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
-	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
 			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
 			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
@@ -5778,6 +5572,7 @@ public class MaraSonActivity extends AppCompatActivity
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
+
 	public void onGesture(GestureOverlayView overlay, MotionEvent event) {
 		final String TAG = "onGesture[MaraSonActivity]";
 		String dbMsg= "開始";/////////////////////////////////////
@@ -5837,7 +5632,7 @@ public class MaraSonActivity extends AppCompatActivity
 	//	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {		// トラッキング開始時に呼び出されます
 		final String TAG = "onStartTrackingTouch[saiseiSeekMP]";
-		String dbMsg="開始";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{//戻し操作
 			dbMsg= "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
 			dbMsg +="[再生ポジション=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
@@ -5854,10 +5649,9 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {	// トラッキング中に呼び出されます☆ここが呼ばれる
-		//☆キー操作為操作以外でも動いてしまえば発生
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {	// トラッキング中に呼び出されます☆ここが呼ばれる//☆キー操作為操作以外でも動いてしまえば発生
 		final String TAG = "onProgressChanged[saiseiSeekMP]";
-		String dbMsg="開始";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg= "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
 			dbMsg +="[再生ポジション=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
@@ -5871,8 +5665,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {									// トラッキング終了時に呼び出されます
-		final String TAG = "onStopTrackingTouch[saiseiSeekMP]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "onStopTrackingTouch";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg= "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
 			dbMsg= "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
@@ -5899,7 +5693,7 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		final String TAG = "onKey[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			dbMsg="keyCode="+keyCode+",event="+event.toString()+"が"+ORGUT.nowTime(true,true,true)+"発生";///////////////////////////////////////////////////////////////////
@@ -6133,7 +5927,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public int SelID;
 	public void setKeyAri() {									//d-pad対応;送り先の設定
 		final String TAG = "setKeyAri";
-		String dbMsg="開始";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			prTT_dpad=true;					//d-pad有りか
 			dbMsg=",ppPBT=" + ppPBT.getId() ;
@@ -6233,8 +6027,8 @@ public class MaraSonActivity extends AppCompatActivity
 //////////////////////////////////////////////////////////キー対応//
 	public AlertDialog.Builder volDog;		// アラーとダイアログ を生成
 	private void setVol() {				//音量設定
-		final String TAG = "setVol[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "setVol";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
 			dbMsg= "nowVol=" + nowVol;//0～15/////////////////////////////
@@ -6286,8 +6080,8 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	private void reSetVol() {				//設定されたミュートを解除
-		final String TAG = "reSetVol[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "reSetVol";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
 			dbMsg= "nowVol=" + nowVol;//0～15/////////////////////////////
@@ -6331,8 +6125,8 @@ public class MaraSonActivity extends AppCompatActivity
 	//通信//////////////////////////////////////////////////////////////////////////
 	static class btHandler extends Handler{
 		public void handleMessage(Message msg) {
-			final String TAG = "handleMessage[btHandler.MaraSonActivity]";
-			String dbMsg="開始";/////////////////////////////////////
+			final String TAG = "handleMessage";
+			String dbMsg= "[MaraSonActivity.btHandler]";/////////////////////////////////////
 			try {
 				Intent broadcastIntent = new Intent();
 				dbMsg="message" + msg.toString() ;/////////////////////////////////////
@@ -6351,8 +6145,8 @@ public class MaraSonActivity extends AppCompatActivity
  * 再生/停止操作は class BuletoohtReceiver	で行う
  * */
 	public void setBTinfo( String stateBaseStr){					//Bluettoth情報更新
-		final String TAG = "setBTinfo[MaraSonActivity]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "setBTinfo";
+		String dbMsg= "[MaraSonActivity.btHandler]";/////////////////////////////////////
 		try{
 			dbMsg +=",Buletooth=" +stateBaseStr;
 			this.stateBaseStr = stateBaseStr;

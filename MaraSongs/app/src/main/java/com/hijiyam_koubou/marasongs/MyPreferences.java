@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.media.audiofx.PresetReverb;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +41,7 @@ public class MyPreferences extends PreferenceActivity {
 	public static SharedPreferences sharedPref;
 	public Editor myEditor;
 	public String pref_apiLv = "28";							//APIレベル
-	public int pref_sonota_vercord =0;				//このアプリのバージョンコード
+	public int pref_sonota_vercord;				//このアプリのバージョンコード
 
 	public String pref_compBunki = "40";			//コンピレーション設定[%]
 	public String pref_gyapless = null;			//クロスフェード時間
@@ -655,7 +657,6 @@ public class MyPreferences extends PreferenceActivity {
 			ORGUT = new OrgUtil();		//自作関数集
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			sharedPref = PreferenceManager.getDefaultSharedPreferences (context);
 			myEditor = sharedPref.edit();
 			String wrStr;
 			String selectStr = null;
@@ -664,10 +665,8 @@ public class MyPreferences extends PreferenceActivity {
 			others = "";				//その他の情報
 			Map<String, ?> keys = sharedPref.getAll();
 			dbMsg += "読み込み開始"+keys.size()+"項目;mySharedPref="+sharedPref;
-//			syokiPrif( keys);		//プリファレンス未作成時の初期作成
 			pref_apiLv=String.valueOf(Build.VERSION.SDK);									//APIレベル
 			if (0 < keys.size()) {
-	//			myLog(TAG,dbMsg);
 				int i=0;
 				for (String key : keys.keySet()) {
 					i++;
@@ -839,7 +838,7 @@ public class MyPreferences extends PreferenceActivity {
 									prTT_dpad = Boolean.valueOf(keys.get(key).toString());
 									dbMsg +=  "ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
 								}else if(key.equals("pref_sonota_vercord")){
-									pref_file_album = String.valueOf(keys.get(key));
+									pref_sonota_vercord = Integer.parseInt(String.valueOf(keys.get(key)));
 									dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
 								}else if(key.equals("pref_reset")){		//">このダイアログを閉じたら設定を初期化します。</string>
 									pref_reset = Boolean.valueOf(keys.get(key).toString());			//設定を初期化
@@ -856,8 +855,6 @@ public class MyPreferences extends PreferenceActivity {
 								}else if(key.equals("dataFN")){		//">このダイアログを閉じたら設定を初期化します。
 									Editor mainEditor = sharedPref.edit();
 									mainEditor.remove("dataFN");
-								}else{
-//									others =others + key + " : " +  String.valueOf(keys.get(key))+"\n";				//その他の情報
 								}
 							}
 						}
@@ -960,7 +957,6 @@ public class MyPreferences extends PreferenceActivity {
 					String[] toneNames = context.getResources().getStringArray(R.array.tone_names);											//plNameSL.toArray(new String[plNameSL.size()]);
 					dbMsg +=  ",toneNames= " + toneNames.length + "件";
 					JSONArray array = new JSONArray(toneNames);
-//					dbMsg +=  ",array= " + array;
 					int length = array.length();
 					dbMsg +=  "= " + length +"件";
 					pref_toneList =  new ArrayList<String>();				//トーンリストの初期化
@@ -987,7 +983,6 @@ public class MyPreferences extends PreferenceActivity {
 				pref_zenkai_saiseijikann = "0";		//;		//前回の連続再生時間
 				myEditor.putString ("pref_zenkai_saiseijikann", pref_zenkai_saiseijikann);
 				dbMsg += "前回の連続再生時間＝" + pref_zenkai_saiseijikann;//////////////////
-
 				pref_file_kyoku = "0";
 				dbMsg += "総曲数＝" + pref_file_kyoku;////////////////
 				myEditor.putString ("pref_file_kyoku", pref_file_kyoku);
@@ -999,16 +994,15 @@ public class MyPreferences extends PreferenceActivity {
 				prTT_dpad = false;
 				dbMsg +=  "ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
 				myEditor.putBoolean ("pref_sonota_dpad", prTT_dpad);
-//				pref_sonota_vercord = 1;
-//				PackageManager pm = getApplicationContext().getPackageManager();
-//				try{
-//					PackageInfo packageInfo = pm.getPackageInfo(getApplicationContext().getPackageName(), 0);
-//					pref_sonota_vercord = packageInfo.versionCode;
-//				}catch(PackageManager.NameNotFoundException e){
-//					e.printStackTrace();
-//				}
-//				dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
-//				others =others + getString(R.string.pref_sonota_vercord) + " : " + pref_sonota_vercord+"\n";		//バージョンコード
+				pref_sonota_vercord = 1;
+				PackageManager pm = getApplicationContext().getPackageManager();
+				try{
+					PackageInfo packageInfo = pm.getPackageInfo(getApplicationContext().getPackageName(), 0);
+					pref_sonota_vercord = packageInfo.versionCode;
+				}catch(PackageManager.NameNotFoundException e){
+					e.printStackTrace();
+				}
+				dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
 				pref_reset = false;			//設定を初期化
 				dbMsg +=  "このダイアログを閉じたら設定を初期化"+pref_reset ;////////////////////////////////////////////////////////////////////////////
 				myEditor.putBoolean ("pref_reset", pref_reset);
@@ -1023,7 +1017,6 @@ public class MyPreferences extends PreferenceActivity {
 
 			pref_file_in = 	context.getFilesDir().getPath();	//内部データ領域
 			dbMsg += ",内蔵メモリ＝" + pref_file_in;////////////////    //storage/emulated/0/Music
-			// 	Environment.getExternalStorageDirectory().getPath(); = storage/emulated/0/Music
 			myEditor.putString ("pref_file_in", pref_file_in);
 			pref_file_ex = "";
 			String status = Environment.getExternalStorageState();
@@ -1039,90 +1032,10 @@ public class MyPreferences extends PreferenceActivity {
 			myEditor.putString ("pref_file_wr", pref_file_wr);
 
 			pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
-//			pref_commmn_music = Environment.getDataDirectory().getPath();
 			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 			myEditor.putString ("pref_commmn_music", pref_commmn_music);
 
-			myLog(TAG,dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG,dbMsg+"で"+e);
-		}
-	}
-
-	public void syokiPrif(Map<String, ?> keys){		//プリファレンス未作成時の初期作成
-		final String TAG = "syokiPrif";
-		String dbMsg="[MyPreferences]";
-		try{
-			if( ! keys.containsKey("pref_pb_bgc") ){
-				pref_pb_bgc = false;
-				dbMsg +=  "プレイヤーの背景は白=" + pref_pb_bgc;////////////////////////////////////////////////////////////////////////////
-				prefBoolKakikomi("pref_pb_bgc" ,pref_pb_bgc);
-			}
-			if( ! keys.containsKey("pref_list_simple") ){
-				pref_list_simple = false;
-				dbMsg +=  ",シンプルなリスト表示（サムネールなど省略）=" + pref_list_simple;////////////////////////////////////////////////////////////////////////////
-				prefBoolKakikomi("pref_list_simple" ,pref_list_simple);
-			}
-
-			if( ! keys.containsKey("pref_compBunki") ){
-				pref_compBunki = "40";
-				dbMsg +=  ",コンピレーション分岐点" ;////////////////////////////////////////////////////////////////////////////
-				prefItemuKakikomi("pref_compBunki" ,String.valueOf(pref_compBunki));
-			}
-			if( ! keys.containsKey("pref_gyapless") ){
-				pref_gyapless = "100";
-				dbMsg +=  ",クロスフェード時間=" + pref_gyapless ;
-				prefItemuKakikomi("pref_gyapless" ,String.valueOf(pref_gyapless));
-			}
-
-			if( ! keys.containsKey("pref_artist_bunnri") ){
-				pref_artist_bunnri = "1000";
-				dbMsg +=  ",アーティストリストを分離する曲数=" + pref_artist_bunnri ;
-				prefItemuKakikomi("pref_artist_bunnri" ,String.valueOf(pref_artist_bunnri));
-			}
-			if( ! keys.containsKey("pref_saikin_tuika") ){
-				pref_saikin_tuika = "1";
-				dbMsg +=  ",最近追加リストのデフォルト枚数=" + pref_saikin_tuika ;////////////////////////////////////////////////////////////////////////////
-				prefItemuKakikomi("pref_saikin_tuika" ,String.valueOf(pref_saikin_tuika));
-			}
-			if( ! keys.containsKey("pref_saikin_sisei") ){
-				pref_saikin_sisei = "100";
-				dbMsg +=  ",最近再生リストのデフォルト曲数=" + pref_saikin_sisei ;////////////////////////////////////////////////////////////////////////////
-				prefItemuKakikomi("pref_saikin_sisei" ,String.valueOf(pref_saikin_sisei));
-			}
-			if( ! keys.containsKey("pref_rundam_list_size") ){
-				pref_rundam_list_size = "100";
-				dbMsg +=  ",ランダム再生の設定曲数=" + pref_rundam_list_size ;////////////////////////////////////////////////////////////////////////////
-				prefItemuKakikomi("pref_rundam_list_size" ,String.valueOf(pref_rundam_list_size));
-			}
-
-			if( ! keys.containsKey("pref_notifplayer") ){
-				pref_notifplayer = true;
-				dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
-				prefBoolKakikomi("pref_notifplayer" ,pref_notifplayer);
-			}
-			if( ! keys.containsKey("pref_lockscreen") ){
-				pref_lockscreen = true;
-				dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;//////////////
-				prefBoolKakikomi("pref_lockscreen" ,pref_lockscreen);
-			}
-			if( ! keys.containsKey("pref_bt_renkei") ){
-				pref_bt_renkei = true;
-				dbMsg +=  ",Bluetoothの接続に連携=" + pref_bt_renkei;////////////////////////////////////////////////////////////////////////////
-				prefBoolKakikomi("pref_bt_renkei" ,pref_bt_renkei);
-			}
-			if( ! keys.containsKey("pref_cyakusinn_fukki") ){
-				pref_cyakusinn_fukki = true;
-				dbMsg +=  ",着信後の復帰=" + pref_cyakusinn_fukki;////////////////////////////////////////////////////////////////////////////
-				prefBoolKakikomi("pref_cyakusinn_fukki" ,pref_cyakusinn_fukki);
-			}
-
-			if( ! keys.containsKey("prTT_dpad") ){
-				prTT_dpad = false;
-				dbMsg +=  ",ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
-				prefBoolKakikomi("prTT_dpad" ,prTT_dpad);
-			}
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}

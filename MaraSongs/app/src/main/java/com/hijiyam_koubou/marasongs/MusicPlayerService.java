@@ -2790,8 +2790,8 @@ public Uri addPlaylist(String listName, Uri images_uri, String thumb){			//プ�
  * 	呼出し元	onStartCommandで
  * */
 public void dataUketori(Intent intent) {	//クライアントからデータを受け取りグローバル変数にセット
-	final String TAG = "dataUketori[MusicPlayerService]";
-	String dbMsg="開始";/////////////////////////////////////
+	final String TAG = "dataUketori";
+	String dbMsg="[MusicPlayerService]";/////////////////////////////////////
 	try{
 		b_dataFN="";
 		String b_list = nowList;
@@ -2912,8 +2912,8 @@ public void dataUketori(Intent intent) {	//クライアントからデータを�
 
 	public int itemUmu(int playlistId , String dataURL) {	//指定されたリストの中に指定した曲が有るか		 ,String listName
 		int retInt = -1;
-		final String TAG = "itemUmu[MusicPlayerService]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "itemUmu";
+		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
 		try{
 			Cursor cursor = null;
 			dbMsg +="[listId="+playlistId +"の中に" + dataURL +"を確認";
@@ -2970,8 +2970,8 @@ public void dataUketori(Intent intent) {	//クライアントからデータを�
 
 	public int itemUmuZenkyoku( String dataURL) {	//全曲リストの中に指定した曲が有るか		 ,String listName
 		int retInt = -1;
-		final String TAG = "itemUmuZenkyoku[MusicPlayerService]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "itemUmuZenkyoku";
+		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
 		try{
 			String fn = getString(R.string.zenkyoku_file);			//全曲リスト名
 			ZenkyokuHelper zenkyokuHelper = null;				//全曲リストヘルパー
