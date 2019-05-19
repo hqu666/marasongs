@@ -1,15 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+			  xmlns:app="http://schemas.android.com/apk/res-auto"
+			  android:layout_width="wrap_content"
+			  android:layout_height="match_parent"
+			  android:orientation="vertical"
+			  android:gravity="center"
+	>
 
-    <ImageView
-        android:id="@+id/mpJakeImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:src="@drawable/no_image" >
+	<ImageView
+		android:id="@+id/mpJakeImg"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:adjustViewBounds="true"
+		android:cropToPadding="false"
+		android:scaleType="fitCenter"
+		android:src="@drawable/no_image">
 
-    </ImageView>
+	</ImageView>
 
 </LinearLayout>

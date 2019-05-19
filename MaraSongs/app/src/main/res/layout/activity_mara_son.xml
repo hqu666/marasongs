@@ -1,55 +1,56 @@
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:columnCount="1"
-    android:orientation="vertical"
-    android:padding="0dp"
-    android:paddingBottom="0dp"
-    android:paddingTop="0dp"
-    tools:context=".MaraSonActivity" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/LinearLayout1"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:columnCount="1"
+              android:orientation="vertical"
+              android:padding="0dp"
+              android:paddingTop="0dp"
+              android:paddingBottom="0dp"
+              tools:context=".MaraSonActivity">
 
     <!--
 <LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:ads="http://schemas.android.com/apk/res-auto"
  -->
 
 	<android.support.v7.widget.Toolbar
-	    android:id="@+id/pp_tool_bar"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:background="?attr/colorPrimary"
-	    android:minHeight="?attr/actionBarSize"
-	    android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
-      </android.support.v7.widget.Toolbar>
+        android:id="@+id/pp_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+    </android.support.v7.widget.Toolbar>
 
-<!--     <android.support.v7.widget.Toolbar -->
-<!--         android:id="@+id/pp_tool_bar" -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="52dp" -->
-<!-- 	    android:background="?attr/colorPrimary" -->
-<!--         android:minHeight="?attr/actionBarSize" -->
-<!--         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" > -->
-<!--     </android.support.v7.widget.Toolbar> -->
+    <!--     <android.support.v7.widget.Toolbar -->
+    <!--         android:id="@+id/pp_tool_bar" -->
+    <!--         android:layout_width="match_parent" -->
+    <!--         android:layout_height="52dp" -->
+    <!-- 	    android:background="?attr/colorPrimary" -->
+    <!--         android:minHeight="?attr/actionBarSize" -->
+    <!--         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" > -->
+    <!--     </android.support.v7.widget.Toolbar> -->
 
     <TableLayout
         android:id="@+id/headAria"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TableRow
             android:id="@+id/artisr_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp" >
+            android:layout_marginTop="2dp">
 
             <LinearLayout
                 android:id="@+id/artistCountLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom" >
+                android:layout_gravity="bottom">
 
                 <TextView
                     android:id="@+id/artistIDPTF"
@@ -57,14 +58,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/TextView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/srash"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/artistTotalPTF"
@@ -72,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
             <TextView
@@ -87,7 +88,7 @@
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
         </TableRow>
         <!-- android:ellipsize="marquee" -->
         <!-- android:focusable="true" -->
@@ -99,13 +100,13 @@
             android:id="@+id/albumRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp" >
+            android:layout_marginTop="2dp">
 
             <LinearLayout
                 android:id="@+id/albumCountLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom" >
+                android:layout_gravity="bottom">
 
                 <TextView
                     android:id="@+id/albumIDPTF"
@@ -113,14 +114,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/TextView02"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/srash"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/alubumTotalPTF"
@@ -129,7 +130,7 @@
                     android:layout_gravity="bottom"
                     android:layout_marginRight="5dp"
                     android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
             <TextView
@@ -143,20 +144,20 @@
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
         </TableRow>
 
         <TableRow
             android:id="@+id/titolLayauto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp" >
+            android:layout_marginTop="2dp">
 
             <LinearLayout
                 android:id="@+id/titolCountLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom" >
+                android:layout_gravity="bottom">
 
                 <TextView
                     android:id="@+id/nIDPTF"
@@ -164,14 +165,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/nol_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/srash"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/tIDPTF"
@@ -179,7 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
             <TextView
@@ -194,7 +195,7 @@
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
         </TableRow>
     </TableLayout>
 
@@ -202,20 +203,21 @@
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_weight="20">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-<!--             <ImageButton -->
-<!--                 android:id="@+id/lockButton" -->
-<!--                 android:layout_width="wrap_content" -->
-<!--                 android:layout_height="wrap_content" -->
-<!--                 android:nextFocusUp="@id/titolLayauto" -->
-<!--                 android:scaleType="fitStart" -->
-<!--                 android:src="@android:drawable/ic_secure" /> -->
+            <!--             <ImageButton -->
+            <!--                 android:id="@+id/lockButton" -->
+            <!--                 android:layout_width="wrap_content" -->
+            <!--                 android:layout_height="wrap_content" -->
+            <!--                 android:nextFocusUp="@id/titolLayauto" -->
+            <!--                 android:scaleType="fitStart" -->
+            <!--                 android:src="@android:drawable/ic_secure" /> -->
 
             <ImageButton
                 android:id="@+id/vol_btn"
@@ -225,12 +227,12 @@
                 android:focusableInTouchMode="true"
                 android:longClickable="true"
                 android:scaleType="fitEnd"
-                android:src="@android:drawable/ic_lock_silent_mode_off" />
+                android:src="@android:drawable/ic_lock_silent_mode_off"/>
 
             <LinearLayout
                 android:id="@+id/vol_ll"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/vol_tf"
@@ -239,7 +241,7 @@
                     android:layout_gravity="right"
                     android:gravity="right"
                     android:text="15"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/textView81"
@@ -247,14 +249,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:text="/"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/textView82"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="15"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
             <ImageButton
@@ -262,13 +264,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:layout_marginBottom="20dp"
                 android:layout_marginRight="2dp"
+                android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/color_state"
                 android:baselineAlignBottom="false"
                 android:scaleType="fitEnd"
-                android:src="@drawable/rewbtn" />
+                android:src="@drawable/rewbtn"/>
         </LinearLayout>
 
         <ViewFlipper
@@ -277,26 +279,27 @@
             android:layout_height="match_parent"
             android:layout_gravity="top"
             android:layout_marginLeft="2dp"
-            android:layout_weight="8" >
+            android:layout_weight="8">
 
             <include
                 android:id="@+id/jaket_ll"
-                layout="@layout/jaket_art" />
+                layout="@layout/jaket_art"/>
 
             <include
                 android:id="@+id/visualizer_ll"
-                layout="@layout/visualizer" />
+                layout="@layout/visualizer"/>
 
             <include
                 android:id="@+id/lilic_ll"
-                layout="@layout/lilic" />
+                layout="@layout/lilic"/>
         </ViewFlipper>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="right"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/ffPButton"
@@ -305,7 +308,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/color_state"
                 android:scaleType="fitStart"
-                android:src="@drawable/ffbtn" />
+                android:src="@drawable/ffbtn"/>
         </LinearLayout>
 
         <!-- android:background="@null" pingの透明部分反映 -->
@@ -315,22 +318,23 @@
         android:id="@+id/bottomAria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
         android:layout_row="4"
+        android:layout_gravity="top"
+        android:layout_weight="1"
         android:gravity="bottom"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <SeekBar
             android:id="@+id/saiseiSeekMP"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
         <!-- android:progressDrawable="@drawable/pp_progress" -->
 
         <LinearLayout
             android:id="@+id/playPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom" >
+            android:gravity="bottom">
 
             <ImageButton
                 android:id="@+id/ppPButton"
@@ -340,19 +344,19 @@
                 android:layout_margin="1dp"
                 android:background="@drawable/color_state"
                 android:nextFocusDown="@id/artist_tv"
-                android:src="@drawable/pl_r_btn" />
+                android:src="@drawable/pl_r_btn"/>
 
             <LinearLayout
                 android:id="@+id/LinearLayout2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/pp_pp_ll"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/pp_pp_start_tf"
@@ -360,7 +364,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1.02"
                         android:gravity="center_horizontal"
-                        android:text="@string/mm_ss" />
+                        android:text="@string/mm_ss"/>
 
                     <TextView
                         android:id="@+id/textView32"
@@ -370,7 +374,7 @@
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:text=">>>" />
+                        android:text=">>>"/>
 
                     <TextView
                         android:id="@+id/pp_pp_end_tf"
@@ -379,13 +383,13 @@
                         android:layout_gravity="right"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:text="@string/mm_ss" />
+                        android:text="@string/mm_ss"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/timeLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/songIDPTF"
@@ -393,21 +397,21 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/TextView03"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/titolAllPTF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/pp_start_tf"
@@ -415,7 +419,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:text="@string/pp_kyoku"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"/>
 
                     <TextView
                         android:id="@+id/saiseiPositionPTF"
@@ -424,14 +428,14 @@
                         android:layout_weight="0.49"
                         android:gravity="right"
                         android:text="@string/mm_ss"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                     <TextView
                         android:id="@+id/TextView01"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/totalTimePTF"
@@ -439,7 +443,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="left|right"
                         android:text="@string/mm_ss"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -447,7 +451,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/ruikei_kyoku_tv"
@@ -457,7 +461,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/textView52"
@@ -466,7 +470,7 @@
                         android:gravity="right"
                         android:text="@string/pp_kyoku"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"/>
 
                     <TextView
                         android:id="@+id/textView53"
@@ -474,7 +478,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/ruikei_jikan_tv"
@@ -482,7 +486,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="@string/hhmmss"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/textView61"
@@ -492,7 +496,7 @@
                         android:gravity="right"
                         android:text="@string/comon_zennkai"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"/>
 
                     <TextView
                         android:id="@+id/zenkai_ruikei_suu_tv"
@@ -500,7 +504,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/textView62"
@@ -509,7 +513,7 @@
                         android:gravity="right"
                         android:text="@string/pp_kyoku"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"/>
 
                     <TextView
                         android:id="@+id/textView63"
@@ -517,7 +521,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                     <TextView
                         android:id="@+id/zenkai_ruikei_tv"
@@ -525,40 +529,40 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="@string/hhmmss"
-                        android:textAppearance="?android:attr/textAppearanceSmall" /><!--  zennkaiLL -->
+                        android:textAppearance="?android:attr/textAppearanceSmall"/><!--  zennkaiLL -->
                 </LinearLayout><!--  LinearLayout50 -->
 
                 <!--<LinearLayout-->
-                    <!--android:id="@+id/pp_koukoku"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:orientation="horizontal" >-->
+                <!--android:id="@+id/pp_koukoku"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:orientation="horizontal" >-->
 
-                    <!--<net.nend.android.NendAdView-->
-                        <!--android:id="@+id/pp_nend"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--NendApiKey="@string/nend_apiKey"-->
-                        <!--NendSpotId="@string/nend_spotID" >-->
+                <!--<net.nend.android.NendAdView-->
+                <!--android:id="@+id/pp_nend"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--NendApiKey="@string/nend_apiKey"-->
+                <!--NendSpotId="@string/nend_spotID" >-->
 
-                    <!--</net.nend.android.NendAdView>-->
-<!--&lt;!&ndash;                         NendApiKey="c5cb8bc474345961c6e7a9778c947957ed8e1e4f" &ndash;&gt;-->
-<!--&lt;!&ndash;                         NendSpotId="3174" > &ndash;&gt;-->
-<!--&lt;!&ndash; 					<com.google.android.gms.ads.AdView android:id="@+id/pp_adView" &ndash;&gt;-->
-<!--&lt;!&ndash;                          android:layout_width="wrap_content" &ndash;&gt;-->
-<!--&lt;!&ndash;                          android:layout_height="wrap_content" &ndash;&gt;-->
-<!--&lt;!&ndash;                          ads:adUnitId="@string/banner_ad_unit_id" &ndash;&gt;-->
-<!--&lt;!&ndash;                          ads:adSize="BANNER" &ndash;&gt;-->
-<!--&lt;!&ndash;                          /> &ndash;&gt;-->
+                <!--</net.nend.android.NendAdView>-->
+                <!--&lt;!&ndash;                         NendApiKey="c5cb8bc474345961c6e7a9778c947957ed8e1e4f" &ndash;&gt;-->
+                <!--&lt;!&ndash;                         NendSpotId="3174" > &ndash;&gt;-->
+                <!--&lt;!&ndash; 					<com.google.android.gms.ads.AdView android:id="@+id/pp_adView" &ndash;&gt;-->
+                <!--&lt;!&ndash;                          android:layout_width="wrap_content" &ndash;&gt;-->
+                <!--&lt;!&ndash;                          android:layout_height="wrap_content" &ndash;&gt;-->
+                <!--&lt;!&ndash;                          ads:adUnitId="@string/banner_ad_unit_id" &ndash;&gt;-->
+                <!--&lt;!&ndash;                          ads:adSize="BANNER" &ndash;&gt;-->
+                <!--&lt;!&ndash;                          /> &ndash;&gt;-->
 
-                    <!--<LinearLayout-->
-                        <!--android:id="@+id/pp_ad_ll"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:orientation="vertical" >-->
+                <!--<LinearLayout-->
+                <!--android:id="@+id/pp_ad_ll"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="vertical" >-->
 
-                    <!--</LinearLayout>-->
+                <!--</LinearLayout>-->
 
                 <!--</LinearLayout>-->
                 <!-- pp_koukoku -->
@@ -567,18 +571,18 @@
                     android:id="@+id/pp_bt_ll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/imageView1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/bt_con" />
+                        android:src="@drawable/bt_con"/>
 
                     <HorizontalScrollView
                         android:id="@+id/dviceStyteHSV"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/dviceStyte"
@@ -590,10 +594,10 @@
                             android:marqueeRepeatLimit="marquee_forever"
                             android:scrollHorizontally="true"
                             android:singleLine="true"
-                            android:textAppearance="?android:attr/textAppearanceSmall" />
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
                     </HorizontalScrollView>
                 </LinearLayout><!-- bt -->
-        </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
