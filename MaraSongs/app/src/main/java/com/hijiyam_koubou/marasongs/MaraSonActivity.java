@@ -542,114 +542,114 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "setADSens";
 		String dbMsg="[MaraSonActivity]";
 		try {
-			adView = new PublisherAdView(this);
-			String AdUnitID = getString (R.string.banner_ad_unit_id);
-			//AdUnitID=ca-app-pub-3940256099942544/6300978111,adView=com.google.android.gms.ads.doubleclick.PublisherAdView{5c0764c V.E...... ......I. 0,0-0,0}[0×0]
-			// ,adRequest=com.google.android.gms.ads.doubleclick.PublisherAdRequest@1c5b69
-//			String AdUnitID = getString (R.string.banner_test_id);
-			//AdUnitID=ca-app-pub-3940256099942544/6300978111,adView=com.google.android.gms.ads.doubleclick.PublisherAdView{5c0764c V.E...... ......I. 0,0-0,0}[0×0],
-			// adRequest=com.google.android.gms.ads.doubleclick.PublisherAdRequest@1c5b69
-//			MobileAds.initialize(this,getResources ().getString (R.string.banner_ad_unit_id));       //Mobile Ads SDK を初期化
-			dbMsg += ",AdUnitID=" + AdUnitID ;
-			adView.setAdUnitId(AdUnitID);
-			dbMsg += ",adView=" + adView;
+			if(adView == null){
+				adView = new PublisherAdView(this);
+				String AdUnitID = getString (R.string.banner_ad_unit_id);
+//				String AdUnitID = getString (R.string.banner_test_id);//配信停止中のデバッグ用
+				dbMsg += ",AdUnitID=" + AdUnitID ;
+				adView.setAdUnitId(AdUnitID);
+				dbMsg += ",adView=" + adView;
+				adView = new PublisherAdView(this);
+				adView.setAdUnitId(AdUnitID);
 
-//			int baceWidth =(int)(advertisement_ll.getWidth());
-//			dbMsg += ",baceWidth=" + baceWidth;
-			float scale = getResources().getDisplayMetrics().density;
-			dbMsg += ",scale=" + scale;
-			int layoutWidth =(int)(ad_layout.getWidth()/scale);
-			int layoutHeight =(int)(ad_layout.getHeight()/scale);
-			dbMsg += "[" + layoutWidth + "×" + layoutHeight + "]";
-			AdSize customAdSize = new AdSize(layoutWidth, layoutHeight);
-			adView.setAdSizes(customAdSize);
-			ad_layout.addView(adView);
-			PublisherAdRequest adRequest = new PublisherAdRequest.Builder().build();
-			dbMsg += ",adRequest=" + adRequest;
-			adView.loadAd(adRequest);
-			if (adView != null) {
-			}else{
-				ad_layout.setVisibility (View.GONE);
-			}
+				float scale = getResources().getDisplayMetrics().density;
+////			int baceWidth =(int)(advertisement_ll.getWidth());
+////			dbMsg += ",baceWidth=" + baceWidth;
+				dbMsg += ",scale=" + scale;
+				int layoutWidth =320;			//(int)(ad_layout.getWidth()/scale);
+				int layoutHeight =50;			//(int)(ad_layout.getHeight()/scale);
+				dbMsg += "[" + layoutWidth + "×" + layoutHeight + "]";
+//			layoutWidth =(int)(320*scale)/2;
+//			layoutHeight =(int)(layoutWidth /320 * 50);
+////			layoutHeight =(int)(50*scale)/2;
+//			dbMsg += ">>[" + layoutWidth + "×" + layoutHeight + "]";
+				AdSize customAdSize = new AdSize(layoutWidth, layoutHeight);
+				adView.setAdSizes(customAdSize);
+				ad_layout.addView(adView);
 
-			adView.setAdListener(new AdListener() {
-				@Override
-				public void onAdLoaded() {
-					final String TAG = "onAdLoaded";
-					String dbMsg = "[adView]";
-					try {
-						ad_layout.setVisibility (View.VISIBLE);
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
+				PublisherAdRequest adRequest = new PublisherAdRequest.Builder().build();
+				dbMsg += ",adRequest=" + adRequest;
+				adView.loadAd(adRequest);
 
-				@Override
-				public void onAdFailedToLoad(int errorCode) {
-					final String TAG = "onAdFailedToLoad";
-					String dbMsg = "[adView]";
-					try {
-						if(errorCode == 0 ) {
-							dbMsg += "ERROR_CODE_INTERNAL_ERROR";
-						}else if(errorCode == 1 ){
-							dbMsg += "ERROR_CODE_INVALID_REQUEST";
-						}else if(errorCode == 2 ){
-							dbMsg += "ERROR_CODE_NETWORK_ERROR";
-						}else if(errorCode == 3 ){
-							dbMsg += "ERROR_CODE_NO_FILL";
+				adView.setAdListener(new AdListener() {
+					@Override
+					public void onAdLoaded() {
+						final String TAG = "onAdLoaded";
+						String dbMsg = "[adView]";
+						try {
+							ad_layout.setVisibility (View.VISIBLE);
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
 						}
-						ad_layout.setVisibility (View.GONE);
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
-				}
 
-				@Override
-				public void onAdOpened() {
-					final String TAG = "onAdOpened";
-					String dbMsg = "[adView]";
-					try {
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onAdFailedToLoad(int errorCode) {
+						final String TAG = "onAdFailedToLoad";
+						String dbMsg = "[adView]";
+						try {
+							if(errorCode == 0 ) {
+								dbMsg += "ERROR_CODE_INTERNAL_ERROR";
+							}else if(errorCode == 1 ){
+								dbMsg += "ERROR_CODE_INVALID_REQUEST";
+							}else if(errorCode == 2 ){
+								dbMsg += "ERROR_CODE_NETWORK_ERROR";
+							}else if(errorCode == 3 ){
+								dbMsg += "ERROR_CODE_NO_FILL";
+							}
+							ad_layout.setVisibility (View.GONE);
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
 
-				@Override
-				public void onAdClicked() {
-					final String TAG = "onAdClicked";
-					String dbMsg = "[adView]";
-					try {
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onAdOpened() {
+						final String TAG = "onAdOpened";
+						String dbMsg = "[adView]";
+						try {
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
 
-				@Override
-				public void onAdLeftApplication() {
-					final String TAG = "onAdLeftApplication";
-					String dbMsg = "[adView]";
-					try {
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onAdClicked() {
+						final String TAG = "onAdClicked";
+						String dbMsg = "[adView]";
+						try {
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
 
-				@Override
-				public void onAdClosed() {
-					final String TAG = "onAdClosed";
-					String dbMsg = "[adView]";
-					try {
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onAdLeftApplication() {
+						final String TAG = "onAdLeftApplication";
+						String dbMsg = "[adView]";
+						try {
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
-			});
+
+					@Override
+					public void onAdClosed() {
+						final String TAG = "onAdClosed";
+						String dbMsg = "[adView]";
+						try {
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
+					}
+				});
+			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -660,105 +660,110 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "setNend";
 		String dbMsg="[MaraSonActivity]";
 		try {
-			int nend_spotID = Integer.parseInt(getString (R.string.nend_spotID));
-			dbMsg += ",nend_spotID=" + nend_spotID ;
-			String nend_apiKey = getString (R.string.nend_apiKey);
-			dbMsg += ",nend_apiKey=" + nend_apiKey ;
-			float scale = getResources().getDisplayMetrics().density;
-			dbMsg += ",scale=" + scale;
-			int layoutWidth = (nend_layout.getWidth());                  //advertisement_ll ;ll object reference
-			int layoutHeight = (nend_layout.getHeight());
-			dbMsg += "[" + layoutWidth + "×" + layoutHeight + "]";
-			layoutWidth =(int)(320*scale);
-			layoutHeight =(int)(50*scale) +10;
-			dbMsg += ">>[" + layoutWidth + "×" + layoutHeight + "]";
-			nendAdView = new NendAdView(this,nend_spotID, nend_apiKey ,true);    							// 1 NendAdView をインスタンス化   ,第3引数:nendsdk:NendAdjustSize="true"相当  画面幅いっぱいに広がる
-			nend_layout.addView(nendAdView, new LinearLayout.LayoutParams( layoutWidth, layoutHeight));	 	// 2 NendAdView をレイアウトに追加
-//			nend_layout.addView(nendAdView);
+			if(nendAdView == null){
+				int nend_spotID = Integer.parseInt(getString (R.string.nend_spotID));
+				dbMsg += ",nend_spotID=" + nend_spotID ;
+				String nend_apiKey = getString (R.string.nend_apiKey);
+				dbMsg += ",nend_apiKey=" + nend_apiKey ;
+				float scale = getResources().getDisplayMetrics().density;
+				dbMsg += ",scale=" + scale;
+				int layoutWidth = (int)(320*scale)/2;		//(nend_layout.getWidth());                  //advertisement_ll ;ll object reference
+				int layoutHeight = (int)(50*scale)/4;		//(nend_layout.getHeight());	//50;		//(int)(layoutWidth* 50 / 320);	//
+				dbMsg += "[" + layoutWidth + "×" + layoutHeight + "]";
+				float ratio = layoutWidth / (320.0f * scale);
+				dbMsg += ",ratio=" + ratio;
+//				layoutHeight =(int)(50*scale)/2;
+				layoutHeight =(int)(50*ratio);
+				dbMsg += ">>[" + layoutWidth + "×" + layoutHeight + "]";
+				nendAdView = new NendAdView(this,nend_spotID, nend_apiKey);    							// 1 NendAdView をインスタンス化   ,第3引数:nendsdk:NendAdjustSize="true"相当  画面幅いっぱいに広がる
+				nend_layout.addView(nendAdView, new LinearLayout.LayoutParams( layoutWidth, layoutHeight));	 	// 2 NendAdView をレイアウトに追加
+	//			nend_layout.addView(nendAdView);
 
-			nendAdView.loadAd();     		// 3 広告の取得を開始
-			nendAdView.setListener(new NendAdInformationListener() {
-				@Override
-				public void onFailedToReceiveAd(NendAdView adView) {
-					final String TAG = "onFailedToReceiveAd";
-					String dbMsg="[MaraSonActivity]";
-					try {
-						dbMsg += "広告取得失敗";
-						NendAdView.NendError nendError = adView.getNendError();
-						switch (nendError) {
-							case INVALID_RESPONSE_TYPE:
-								dbMsg += "不明な広告ビュータイプ";
-								break;
-							case FAILED_AD_DOWNLOAD:
-								dbMsg += "広告画像の取得失敗";
-								break;
-							case FAILED_AD_REQUEST:
-								dbMsg += "広告取得失敗";
-								break;
-							case AD_SIZE_TOO_LARGE:
-								dbMsg += "広告サイズがディスプレイサイズよりも大きい";
-								break;
-							case AD_SIZE_DIFFERENCES:
-								dbMsg += "リクエストしたサイズと取得したサイズが異なる";
-								break;
+				nendAdView.loadAd();     		// 3 広告の取得を開始
+
+				nendAdView.setListener(new NendAdInformationListener() {
+					@Override
+					public void onFailedToReceiveAd(NendAdView adView) {
+						final String TAG = "onFailedToReceiveAd";
+						String dbMsg="[MaraSonActivity]";
+						try {
+							dbMsg += "広告取得失敗";
+							NendAdView.NendError nendError = adView.getNendError();
+							switch (nendError) {
+								case INVALID_RESPONSE_TYPE:
+									dbMsg += "不明な広告ビュータイプ";
+									break;
+								case FAILED_AD_DOWNLOAD:
+									dbMsg += "広告画像の取得失敗";
+									break;
+								case FAILED_AD_REQUEST:
+									dbMsg += "広告取得失敗";
+									break;
+								case AD_SIZE_TOO_LARGE:
+									dbMsg += "広告サイズがディスプレイサイズよりも大きい";
+									break;
+								case AD_SIZE_DIFFERENCES:
+									dbMsg += "リクエストしたサイズと取得したサイズが異なる";
+									break;
+							}
+							nend_layout.setVisibility (View.GONE);
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
 						}
-						nend_layout.setVisibility (View.GONE);
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
-				}
 
-				@Override
-				public void onReceiveAd(NendAdView adView) {
-					final String TAG = "[nendAdView]";
-					String dbMsg = "onReceiveAd;";
-					try {
-						dbMsg += "広告取得成功";
-						nend_layout.setVisibility (View.VISIBLE);
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onReceiveAd(NendAdView adView) {
+						final String TAG = "[nendAdView]";
+						String dbMsg = "onReceiveAd;";
+						try {
+							dbMsg += "広告取得成功";
+							nend_layout.setVisibility (View.VISIBLE);
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
 
-				@Override
-				public void onClick(NendAdView adView) {
-					final String TAG = "[nendAdView]";
-					String dbMsg = "onClick;";
-					try {
-						dbMsg += "クリック成功";
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onClick(NendAdView adView) {
+						final String TAG = "[nendAdView]";
+						String dbMsg = "onClick;";
+						try {
+							dbMsg += "クリック成功";
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
 
-				@Override
-				public void onDismissScreen(NendAdView adView) {
-					final String TAG = "[nendAdView]";
-					String dbMsg = "onDismissScreen;";
-					try {
-						dbMsg += "復帰成功";
-						nend_layout.setVisibility (View.VISIBLE);
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onDismissScreen(NendAdView adView) {
+						final String TAG = "[nendAdView]";
+						String dbMsg = "onDismissScreen;";
+						try {
+							dbMsg += "復帰成功";
+							nend_layout.setVisibility (View.VISIBLE);
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
 
-				@Override
-				public void onInformationButtonClick(NendAdView adView) {
-					final String TAG = "onInformationButtonClick";
-					String dbMsg="[MaraSonActivity]";
-					try {
-						dbMsg += "Informationボタンクリック成功";
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
+					@Override
+					public void onInformationButtonClick(NendAdView adView) {
+						final String TAG = "onInformationButtonClick";
+						String dbMsg="[MaraSonActivity]";
+						try {
+							dbMsg += "Informationボタンクリック成功";
+							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
+						}
 					}
-				}
-			});
+				});
+			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1150,43 +1155,9 @@ public class MaraSonActivity extends AppCompatActivity
 				// 20190506:  java.lang.NullPointerException: Attempt to invoke virtual method 'int android.widget.ImageButton.getWidth()' on a null object reference
 				//広告表示//////////////////////////////////////////////////
 				dbMsg += ",Locale=" + Locale.getDefault ();/////////////////////////////////////
+				setADSens();	////////////////////////////////////////////////広告表示////
 				setNend();
-				setADSens();
-				////////////////////////////////////////////////広告表示////
-//				int motoHaba = pp_koukoku.getWidth();
-//				int motoTakasa = pp_koukoku.getHeight();
-//				dbMsg +="motoHaba["+ motoHaba +" × "+ motoTakasa + "]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//				pp_koukoku.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
-//				dbMsg +=",広告表示枠("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-////ディスプレイ[1080 × 1776],statusBarHeight=75,ppPBT[276 × 276]motoHaba[798 × 0],広告表示枠(282,1642)][798 × -148]nenvNow=false,nendAdView[798×0nenvNow=true,adMobNow=false
-//
-//				koukokuW= dWidth - location[0];			//広告表示枠
-//				koukokuh = location[1];			//広告表示枠高さ
-//				pp_bt_ll.getLocationOnScreen(location);							//buletooth情報
-//				koukokuh = location[1] - koukokuh;			//広告表示枠高さ
-//				dbMsg +="["+ koukokuW +" × "+ koukokuh + "]";/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//				if(Locale.getDefault().equals( Locale.JAPAN)){											//日本語の場合のみconstant for ja_JP.
-//					nendLoad();		//nendの広告設定
-//				}else{
-//					adMobLoad();													//Google AdMobの広告設定
-//				}
-//				dbMsg +="nenvNow=" + nenvNow;/////////////////////////////////////
-//				if( ! nenvNow){
-//					layout_ad.setVisibility(View.GONE);
-//					nendAdView.setVisibility(View.VISIBLE);
-//					dbMsg += ",nendAdView[" + nendAdView.getWidth() + "×" +  nendAdView.getHeight();
-//					nendLoad();		//nendの広告設定
-//				}
-//				dbMsg +=">>" + nenvNow;/////////////////////////////////////
-//				dbMsg +=",adMobNow=" + adMobNow;/////////////////////////////////////
-////				dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" +  layout_ad.getHeight();
-////				dbMsg += "(" + layout_ad.getX() + "," + layout_ad.getY() + ")]";
-//				if(! adMobNow &&  ! nenvNow){
-//					nendAdView.setVisibility(View.GONE);
-//					layout_ad.setVisibility(View.VISIBLE);
-//					adMobLoad();													//Google AdMobの広告設定
-//					dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" +  layout_ad.getHeight();
-//				}
+
 				String rStr = String.valueOf(MaraSonActivity.this.titol_tv.getText());			//前曲名
 				dbMsg= dbMsg +"、書き込まれている曲名="+ rStr + " を　";
 				if( rStr.equals(titolName) ){
@@ -4836,12 +4807,12 @@ public class MaraSonActivity extends AppCompatActivity
 	}		//http://fernweh.jp/b/startactivityforresult/
 
 	@Override
-	protected void onRestart() {
-		super.onRestart();
-		final String TAG = "onRestart[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+	protected void onStart() {
+		super.onStart();
+		final String TAG = "onStart[MaraSonActivity]";
+		String dbMsg= "←(onRestart;アクティビティ再表示←onStop)";/////////////////////////////////////
 		try{
-			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -4850,12 +4821,83 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		final String TAG = "onStart[MaraSonActivity]";
-		String dbMsg= "←(onRestart;アクティビティ再表示←onStop)";/////////////////////////////////////
+	protected void onResume() {										//mItemsを読み込む				MediaPlayerを生成
+		super.onResume();
+		final String TAG = "onResume[MaraSonActivity]";
+		String dbMsg= "←(onPause;アクティビティ再表示)";/////////////////////////////////////
 		try{
-	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg = "adView="+ mAdView;//////////////////
+			if( mAdView != null ){
+				dbMsg +=",adWidth["+ adWidth+"×"+ adHight +"]";//////////////////
+				mAdView.resume();             //二重表示さ有れる
+			}
+			dbMsg +=">>"+ mAdView;//////////////////
+			dbMsg +=",nendAdView="+ nendAdView;//////////////////
+			if( nendAdView != null ){
+				nendAdView.resume();
+			}
+//			dbMsg +=">>"+ nendAdView;//////////////////
+			//	myLog(TAG,dbMsg);
+//			if( kidou_jyoukyou == kidou_notif  ){				//ノティフィケーションからの起動
+//			}else {
+			//		receiverSeisei();		//レシーバーを生成
+//			}
+			dbMsg +="shigot_bangou;" + shigot_bangou;/////////////////////////////////////
+			switch(shigot_bangou) {
+				case quit_all :		//すべて終了
+					//		quitMe();		//このアプリを終了する.
+					break;
+				default:
+					receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
+					break;
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@SuppressLint("NewApi")
+	@Override
+	protected void onPause() {										//レシーバーを破棄
+		super.onPause();
+		final String TAG = "onPause[MaraSonActivity]";
+		String dbMsg= "←(別の;アクティビティをスタート)";/////////////////////////////////////
+		try{
+			dbMsg= "shigot_bangou;" + shigot_bangou;/////////////////////////////////////
+			//		myLog(TAG,dbMsg);
+			switch(shigot_bangou) {
+//				case syoki_activty_set:		// 105;プリファレンスの読み込み
+//					aSetei();		//フォーカス取得後のActibty設定
+//					break;
+				default:
+					break;
+			}
+			dbMsg +=",ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg +="adView="+ mAdView;//////////////////
+			if( mAdView != null ){
+				dbMsg +=",adWidth["+ adWidth+"×"+ adHight +"]";//////////////////
+				mAdView.pause();
+				//		dbMsg +=">>layout_ad["+ layout_ad.getWidth() +"×"+ layout_ad.getHeight() +"]";//////////////////
+			}
+			dbMsg +=">>"+ mAdView;//////////////////
+			if( nendAdView != null ){
+				nendAdView.pause();
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		final String TAG = "onRestart[MaraSonActivity]";
+		String dbMsg= "開始;";/////////////////////////////////////
+		try{
+			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -4947,76 +4989,6 @@ public class MaraSonActivity extends AppCompatActivity
 ///////////////////////////////////////////////////////////////////////////
 //ロック画面クライアントからの制御方法	http://www.atmarkit.co.jp/ait/articles/1203/28/news128_3.html	MediaPlayerのリモート操作
 //Androidで各種プレイヤーの再生情報を取得する方法		http://mamor-blog.tumblr.com/post/2525335625/android
-	@Override
-	protected void onResume() {										//mItemsを読み込む				MediaPlayerを生成
-		super.onResume();
-		final String TAG = "onResume[MaraSonActivity]";
-		String dbMsg= "←(onPause;アクティビティ再表示)";/////////////////////////////////////
-		try{
-			dbMsg = "adView="+ mAdView;//////////////////
-			if( mAdView != null ){
-				dbMsg +=",adWidth["+ adWidth+"×"+ adHight +"]";//////////////////
-				mAdView.resume();
-			}
-			dbMsg +=">>"+ mAdView;//////////////////
-			dbMsg +=",nendAdView="+ nendAdView;//////////////////
-			if( nendAdView != null ){
-				nendAdView.resume();
-			}
-//			dbMsg +=">>"+ nendAdView;//////////////////
-		//	myLog(TAG,dbMsg);
-//			if( kidou_jyoukyou == kidou_notif  ){				//ノティフィケーションからの起動
-//			}else {
-		//		receiverSeisei();		//レシーバーを生成
-//			}
-			dbMsg +="shigot_bangou;" + shigot_bangou;/////////////////////////////////////
-			switch(shigot_bangou) {
-			case quit_all :		//すべて終了
-		//		quitMe();		//このアプリを終了する.
-				break;
-			default:
-				receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
-				break;
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	@SuppressLint("NewApi")
-	@Override
-	protected void onPause() {										//レシーバーを破棄
-		super.onPause();
-		final String TAG = "onPause[MaraSonActivity]";
-		String dbMsg= "←(別の;アクティビティをスタート)";/////////////////////////////////////
-		try{
-			dbMsg= "shigot_bangou;" + shigot_bangou;/////////////////////////////////////
-	//		myLog(TAG,dbMsg);
-			switch(shigot_bangou) {
-//				case syoki_activty_set:		// 105;プリファレンスの読み込み
-//					aSetei();		//フォーカス取得後のActibty設定
-//					break;
-			default:
-				break;
-			}
-			dbMsg +=",ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
-			dbMsg +="adView="+ mAdView;//////////////////
-			if( mAdView != null ){
-				dbMsg +=",adWidth["+ adWidth+"×"+ adHight +"]";//////////////////
-				mAdView.pause();
-		//		dbMsg +=">>layout_ad["+ layout_ad.getWidth() +"×"+ layout_ad.getHeight() +"]";//////////////////
-			}
-			dbMsg +=">>"+ mAdView;//////////////////
-			if( nendAdView != null ){
-				nendAdView.pause();
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
 
 	//操作系/////////////////////////////////////////////////////////////////////////////////////////////////
 	//08-28 22:32:33.626: I/[MaraSonActivity]onPause(8041): mReceiver;isInitialStickyBroadcast=false

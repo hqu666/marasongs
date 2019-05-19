@@ -203,7 +203,7 @@
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="20">
+        android:layout_weight="6">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -251,13 +251,15 @@
                     android:text="/"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-                <TextView
-                    android:id="@+id/textView82"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="15"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView82"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="15"
+                android:textAlignment="textEnd"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <ImageButton
                 android:id="@+id/rewPButton"
@@ -278,7 +280,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_marginLeft="2dp"
+            android:layout_margin="5px"
             android:layout_weight="8">
 
             <include
@@ -318,11 +320,10 @@
         android:id="@+id/bottomAria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_row="4"
         android:layout_gravity="top"
-        android:layout_weight="1"
-        android:gravity="bottom"
+        android:layout_weight="2"
         android:orientation="vertical">
+        <!--android:gravity="bottom"-->
 
         <SeekBar
             android:id="@+id/saiseiSeekMP"
@@ -333,8 +334,9 @@
         <LinearLayout
             android:id="@+id/playPanel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <!--android:gravity="bottom"-->
 
             <ImageButton
                 android:id="@+id/ppPButton"
@@ -348,263 +350,236 @@
 
             <LinearLayout
                 android:id="@+id/LinearLayout2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/pp_pp_ll"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/pp_pp_start_tf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.02"
-                        android:gravity="center_horizontal"
-                        android:text="@string/mm_ss"/>
-
-                    <TextView
-                        android:id="@+id/textView32"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text=">>>"/>
-
-                    <TextView
-                        android:id="@+id/pp_pp_end_tf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="@string/mm_ss"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/timeLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/songIDPTF"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/TextView03"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/titolAllPTF"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/pp_start_tf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:text="@string/pp_kyoku"
-                        android:textSize="10sp"/>
-
-                    <TextView
-                        android:id="@+id/saiseiPositionPTF"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.49"
-                        android:gravity="right"
-                        android:text="@string/mm_ss"
-                        android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-                    <TextView
-                        android:id="@+id/TextView01"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/totalTimePTF"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="left|right"
-                        android:text="@string/mm_ss"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/pp_zenkai_ll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:orientation="horizontal">
+                    android:layout_weight="2"
+                    android:orientation="vertical"
+                    >
 
-                    <TextView
-                        android:id="@+id/ruikei_kyoku_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/textView52"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/pp_kyoku"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textSize="10sp"/>
-
-                    <TextView
-                        android:id="@+id/textView53"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/ruikei_jikan_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/hhmmss"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/textView61"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="right"
-                        android:text="@string/comon_zennkai"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textSize="10sp"/>
-
-                    <TextView
-                        android:id="@+id/zenkai_ruikei_suu_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="0"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/textView62"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/pp_kyoku"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:id="@+id/textView63"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/srash"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-                    <TextView
-                        android:id="@+id/zenkai_ruikei_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="@string/hhmmss"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/><!--  zennkaiLL -->
-                </LinearLayout><!--  LinearLayout50 -->
-
-                <!--<LinearLayout-->
-                <!--android:id="@+id/pp_koukoku"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:orientation="horizontal" >-->
-
-                <!--<net.nend.android.NendAdView-->
-                <!--android:id="@+id/pp_nend"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--NendApiKey="@string/nend_apiKey"-->
-                <!--NendSpotId="@string/nend_spotID" >-->
-
-                <!--</net.nend.android.NendAdView>-->
-                <!--&lt;!&ndash;                         NendApiKey="c5cb8bc474345961c6e7a9778c947957ed8e1e4f" &ndash;&gt;-->
-                <!--&lt;!&ndash;                         NendSpotId="3174" > &ndash;&gt;-->
-                <!--&lt;!&ndash; 					<com.google.android.gms.ads.AdView android:id="@+id/pp_adView" &ndash;&gt;-->
-                <!--&lt;!&ndash;                          android:layout_width="wrap_content" &ndash;&gt;-->
-                <!--&lt;!&ndash;                          android:layout_height="wrap_content" &ndash;&gt;-->
-                <!--&lt;!&ndash;                          ads:adUnitId="@string/banner_ad_unit_id" &ndash;&gt;-->
-                <!--&lt;!&ndash;                          ads:adSize="BANNER" &ndash;&gt;-->
-                <!--&lt;!&ndash;                          /> &ndash;&gt;-->
-
-                <!--<LinearLayout-->
-                <!--android:id="@+id/pp_ad_ll"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical" >-->
-
-                <!--</LinearLayout>-->
-
-                <!--</LinearLayout>-->
-                <!-- pp_koukoku -->
-
-                <LinearLayout
-                    android:id="@+id/pp_bt_ll"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/imageView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_con"/>
-
-                    <HorizontalScrollView
-                        android:id="@+id/dviceStyteHSV"
+                    <LinearLayout
+                        android:id="@+id/pp_pp_ll"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        >
 
                         <TextView
-                            android:id="@+id/dviceStyte"
+                            android:id="@+id/pp_pp_start_tf"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:marqueeRepeatLimit="marquee_forever"
-                            android:scrollHorizontally="true"
-                            android:singleLine="true"
+                            android:layout_weight="1.02"
+                            android:gravity="center_horizontal"
+                            android:text="@string/mm_ss"/>
+
+                        <TextView
+                            android:id="@+id/textView32"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text=">>>"/>
+
+                        <TextView
+                            android:id="@+id/pp_pp_end_tf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="@string/mm_ss"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/timeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                        <TextView
+                            android:id="@+id/songIDPTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="0"
                             android:textAppearance="?android:attr/textAppearanceSmall"/>
-                    </HorizontalScrollView>
-                </LinearLayout><!-- bt -->
+
+                        <TextView
+                            android:id="@+id/TextView03"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/srash"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/titolAllPTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/pp_start_tf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:text="@string/pp_kyoku"
+                            android:textSize="10sp"/>
+
+                        <TextView
+                            android:id="@+id/saiseiPositionPTF"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.49"
+                            android:gravity="right"
+                            android:text="@string/mm_ss"
+                            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                        <TextView
+                            android:id="@+id/TextView01"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/srash"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/totalTimePTF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left|right"
+                            android:text="@string/mm_ss"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/pp_zenkai_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/ruikei_kyoku_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="0"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/textView52"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="@string/pp_kyoku"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textSize="10sp"/>
+
+                        <TextView
+                            android:id="@+id/textView53"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="@string/srash"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/ruikei_jikan_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="@string/hhmmss"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/textView61"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="right"
+                            android:text="@string/comon_zennkai"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textSize="10sp"/>
+
+                        <TextView
+                            android:id="@+id/zenkai_ruikei_suu_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="0"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/textView62"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="@string/pp_kyoku"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/textView63"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="@string/srash"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                        <TextView
+                            android:id="@+id/zenkai_ruikei_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="@string/hhmmss"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/><!--  zennkaiLL -->
+                    </LinearLayout><!--  LinearLayout50 -->
+
+                    <LinearLayout
+                        android:id="@+id/pp_bt_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/bt_con"/>
+
+                        <HorizontalScrollView
+                            android:id="@+id/dviceStyteHSV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/dviceStyte"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="marquee"
+                                android:focusable="true"
+                                android:focusableInTouchMode="true"
+                                android:marqueeRepeatLimit="marquee_forever"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                        </HorizontalScrollView>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <include
+                    layout="@layout/advertisemen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
             </LinearLayout>
-
         </LinearLayout>
-
-        <include
-            layout="@layout/advertisemen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10px"/>
-    </LinearLayout>
+    </LinearLayout><!-- bt -->
 </LinearLayout>

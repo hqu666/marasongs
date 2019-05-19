@@ -8,9 +8,10 @@
 	android:layout_height="match_parent"
 	android:background="@color/background_floating_material_dark"
 	>
+
 	<LinearLayout
 		android:id="@+id/advertisement_ll"
-		android:layout_width="match_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:background="#000000"
@@ -20,19 +21,25 @@
 
 		<LinearLayout
 			android:id="@+id/ad_layout"
-			android:layout_width="320px"
-			android:layout_height="50px"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_gravity="center"
 			android:layout_margin="5px"
+			android:layout_weight="1"
+			android:minWidth="320px"
+			android:minHeight="50px"
 			android:orientation="vertical">
 		</LinearLayout>
 
 		<LinearLayout
 			android:id="@+id/nend_layout"
-			android:layout_width="320px"
-			android:layout_height="50px"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_gravity="center"
 			android:layout_margin="5px"
+			android:layout_weight="1"
+			android:minWidth="320px"
+			android:minHeight="50px"
 			android:orientation="vertical">
 		</LinearLayout>
 
