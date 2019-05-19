@@ -224,7 +224,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	public int nowList_id = -1;				//再生中のプレイリストID	(受取り時/戻し時)
 	public String nowList = null;				//再生中のプレイリスト名
 	public String nowListSub;				//再生中のプレイリストの詳細
-	public String nowList_data = null;		//再生中のプレイリストの保存場所
+	public String nowList_data;		//再生中のプレイリストの保存場所
 	public int reqestList_id = 0;			//アクティビテイ方戻されたのプレイリストID
 
 	public int play_order = 0;
@@ -370,7 +370,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					Manifest.permission.WAKE_LOCK ,
 					Manifest.permission.MEDIA_CONTENT_CONTROL
 				};
-				//						Manifest.permission.GET_TASKS ,
 				boolean isNeedParmissionReqest = false;
 				for ( String permissionName : PERMISSIONS ) {
 					dbMsg += "," + permissionName;
@@ -385,6 +384,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					dbMsg += "::許諾処理へ";
 					requestPermissions(PERMISSIONS , REQUEST_PREF);
 					return;
+				}else{
+					dbMsg += "::許諾済み";
 				}
 			}
 			dbMsg += "::readPrefへ";
@@ -446,8 +447,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myEditor =myPreferences.myEditor;
 //			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
-			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
-
+//			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 //			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
@@ -459,15 +459,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			pref_rundam_list_size =myPreferences.pref_rundam_list_size;	//ランダム再生リストアップ曲数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
 			rp_pp = myPreferences.rp_pp;							//2点間リピート中
-//			pp_start = myPreferences.pp_start;							//リピート区間開始点
-//			pp_end = myPreferences.pp_end;								//リピート区間終了点
-
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
-//			pref_reset = myPreferences.pref_reset;					//設定を初期化
-//			pref_listup_reset = myPreferences.pref_listup_reset;			//調整リストを初期化
 
 			saisei_fname =myPreferences.saisei_fname;				//
 			dbMsg += "、再生中のファイル名=" + saisei_fname;
@@ -482,6 +477,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			pref_file_wr= myPreferences.pref_file_wr;		//設定保存フォルダ
 			pref_file_kyoku= Integer.parseInt(myPreferences.pref_file_kyoku);		//総曲数
 			dbMsg += "、総曲数=" + pref_file_kyoku;
+			nowList_data = myPreferences.pref_file_wr;		//設定保存フォルダ
+			dbMsg += "、設定保存フォルダ=" + nowList_data;
 			pref_file_album= Integer.parseInt(myPreferences.pref_file_album);		//総アルバム数
 			pref_file_saisinn= myPreferences.pref_file_saisinn;	//最新更新日
 			dbMsg += "、最新更新日=" + pref_file_saisinn;
@@ -608,171 +605,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}																	//プリファレンスの内容削除
-
-	@Override
-	protected void onActivityResult (int requestCode, int resultCode, Intent intent) { // startActivityForResult で起動させたアクティビティがfinish() により破棄されたときにコールされる
-		super.onActivityResult (requestCode, resultCode, intent);
-		final String TAG = "onActivityResult";
-		String dbMsg = "[MuList]";
-		try {
-			backTime= System.currentTimeMillis();						//このActivtyに戻った時間
-			Bundle bundle = null ;
-			boolean kakikomi  = false;
-			if( intent != null ){
-				bundle = intent.getExtras();
-				dbMsg = "requestCode="+requestCode;/////////////////////////////////////////////////
-				dbMsg =dbMsg+",resultCode="+resultCode;///////////////////////////////////////////////
-				Boolean retBool;
-				switch(requestCode) {
-					case MaraSonActivity.syoki_Yomikomi:		//128；全曲リスト更新
-						//		dbMsg +=  dbMsg  +">mItems>" + mItems;/////////////////////////////////////
-						dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
-						if(mItems !=null){
-							Item.itemsClear();		//要素を全消去
-						}
-						mItems = Item.getItems( getApplicationContext());
-						dbMsg +=  dbMsg  +"/" + mItems.size() + "]";/////////////////////////////////////
-						dMessege = bundle.getString("dMessege");
-						dbMsg +=  dbMsg  +",dMessege=" + dMessege;/////////////////////////////////////
-//					if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){		// ;		// 全曲リスト</string>
-//						mIndex = Item.getMPItem( saisei_fname );			//インデックスの逆検索	, mItems  ,getApplicationContext()
-//					}
-//					dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
-//					dbMsg +=  dbMsg  +"/" + mItems.size() + "]";/////////////////////////////////////
-//					if( artistSL != null ){
-//						artistSL.clear();					//アーティストリスト用簡易リスト
-//						dbMsg +=  dbMsg  +",artistSL = " + artistSL;/////////////////////////////////////
-//					}
-//					if( artistList != null ){
-//						artistList.clear();		//アーティストリスト用ArrayList
-//						dbMsg +=  dbMsg  +",artistAL=" + artistList;/////////////////////////////////////
-//					}
-						String versionName = "";
-						PackageManager packageManager = this.getPackageManager();
-						try {
-							PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
-							pref_sonota_vercord = packageInfo.versionCode;
-							dbMsg +=",versionCode="+ pref_sonota_vercord;
-							myEditor.putString( "pref_sonota_vercord", String.valueOf(pref_sonota_vercord));
-							kakikomi = myEditor.commit();
-							dbMsg +=",書き込み=" + kakikomi;	////////////////
-							versionName = packageInfo.versionName;
-							dbMsg +=",versionName="+ versionName;
-						} catch (NameNotFoundException e) {
-							myErrorLog(TAG,dbMsg+"で"+e);
-						}
-						sousalistName = String.valueOf(getResources().getString(R.string.listmei_zemkyoku));	// 全曲リスト
-						makePlayListSPN();		//プレイリストスピナーを作成する
-						if(0< plNameSL.size()){
-							int ePosition = plNameSL.indexOf(sousalistName);
-							dbMsg += ",ePosition=" + ePosition;
-							pl_sp.setSelection(ePosition , true);								//☆falseで勝手に動作させない
-						}
-						requestCode =MaraSonActivity.v_artist;							//...334:アーティスト
-						artistList_yomikomi();								//アーティストリストを読み込む(db未作成時は-)
-						dtitol = String.valueOf(getResources().getString(R.string.listmei_zemkyoku));	// 全曲リスト
-						shigot_bangou =reTryMse;				//全曲リスト作成から戻ってメッセージ表示
-						break;
-					case settei_hyouji:		//);			//設定表示
-						retBool = Boolean.valueOf(bundle.getString("key.pref_list_simple"));						//プレイヤーの背景
-						dbMsg +="シンプルなリスト表示="+ retBool +"(今は"+ pref_list_simple +")";	////////////////
-						if( retBool != pref_list_simple){
-							pref_list_simple = retBool;
-							simpleSyousai( pref_list_simple );
-						}
-						pref_lockscreen = Boolean.valueOf(bundle.getBoolean("key.pref_lockscreen")) ;				//ロックスクリーンプレイヤー</string>
-						pref_notifplayer = Boolean.valueOf( bundle.getBoolean("key.pref_notifplayer")) ;					//ノティフィケーションプレイヤー</string>
-						retBool = false;
-						retBool = Boolean.valueOf(bundle.getString("key.pref_listup_reset"));						//調整リスト消去
-						if( retBool ){
-							dbMsg +=",調整リスト消去="+ retBool ;	////////////////
-							String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
-							File shyuFile = new File(fn);
-							dbMsg += ",exists=" + shyuFile.exists();
-							this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
-							dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-							preRead( MaraSonActivity.syoki_Yomikomi , null);
-						}
-						break;
-					//		case veiwPlayer:								// 200起動
-					case chyangeSong:							//201；プレイヤーから戻って曲変更
-						reqCode =bundle.getInt("reqCode");
-						dbMsg += ",reqCode="+ reqCode;
-	//					if( reqCode == quite_me ){
-							psSarviceUri = bundle.getString("psSarviceUri");
-	//					} else {
-						mIndex = bundle.getInt("mIndex");
-						dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
-						//		Item playingItem = mItems.get(mIndex);
-						senntakuItem = bundle.getString("senntakuItem");
-						dbMsg += "]選択アイテム="+senntakuItem;
-						albumArtist = bundle.getString("albumArtist");
-						dbMsg += ",アルバムアーティスト="+b_artist +  ">"+albumArtist;
-						creditArtistName = bundle.getString("creditArtistName");
-						dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
-						albumName = bundle.getString("albumName");
-						dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
-						titolName = bundle.getString("titolName");
-						dbMsg +=",曲名=" + titolName;/////////////////////////////////////
-						albumArt = bundle.getString("albumArt");
-						dbMsg +=",アルバムアートのURI=" + albumArt;/////////////////////////////////////
-						saisei_fname = bundle.getString("saisei_fname");
-						dbMsg +=",saisei_fname=" + saisei_fname;/////////////////////////////////////
-						mcPosition = bundle.getInt("mcPosition");
-						dbMsg +=",再生ポジション=" + mcPosition;/////////////////////////////////////
-						IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
-						dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
-						IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
-						dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
-						pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
-						dbMsg += ",/シンプルなリスト表示= " + pref_list_simple;//////////////////////////////////
-						myLog(TAG, dbMsg);
-						switch(reqCode) {
-							case MaraSonActivity.v_artist:													//...334
-								dbMsg +=",artistAL = " + artistAL.size();
-								//				myLog(TAG,dbMsg);
-								sigotoFuriwake(reqCode,  albumArtist , null  , null , null);		//表示するリストの振り分け		artistAL ,
-								break;
-							case MaraSonActivity.v_alubum:												//...340
-								dbMsg +=",albumAL = " + albumAL.size();
-								if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
-								} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
-									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
-									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
-									sigotoFuriwake(reqCode,  albumArtist , albumName  , null , null);		//表示するリストの振り分け	albumAL ,
-								}
-								break;
-							case MaraSonActivity.v_titol:
-								dbMsg +=",titolAL = " + titolAL.size();	////////////////////////////
-	//							if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
-	//							} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
-									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
-									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
-									sigotoFuriwake(reqCode,  albumArtist , albumName  , null , null);		//表示するリストの振り分けtitolAL ,
-	//							}
-								break;
-							default:
-								break;
-						}
-						if( IsSeisei ){					//		IsPlaying
-							showMyPlayer();					//プレイヤー表示
-						} else{
-							list_player.setVisibility(View.GONE);
-						}
-						////		}
-						break;
-					case quite_me:										//99;終了
-						MuList.this.finish();
-						break;
-					default:
-						break;
-				}
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
 
 	//メニューボタンで表示するメニュー///////////////////////////////////////////////////////////////////////////////
 	@Override
@@ -1119,7 +951,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 				String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 				String c_selection = null;			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
-				String[] c_selectionArgs= null;			//{"%" + artistMei + "%" , albumMei };		//	artistMei , albumMei };  ////
+				String[] c_selectionArgs= null;
 				String c_groupBy = "ARTIST";
 				String c_having = null;
 				String c_orderBy = "ARTIST"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
@@ -1442,12 +1274,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			Cursor cursor;
 			if( mtoAlubm == null ){
 				dbMsg += mtoArtist + "は" ;
-				String[] c_selectionArgs= { mtoArtist };			// {"%" + artistMei + "%" , albumMei };
+				String[] c_selectionArgs= { mtoArtist };
 				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}else{
 				dbMsg += mtoAlubmArtist +"の" + mtoAlubm  + "は" ;
 				c_selection = "ALBUM_ARTIST = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";			SORT_NAME
-				String[] c_selectionArgs2= { mtoAlubmArtist , mtoAlubm };			// {"%" + artistMei + "%" , albumMei };
+				String[] c_selectionArgs2= { mtoAlubmArtist , mtoAlubm };
 				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}
 			syuuseKensuu = cursor.getCount();			//修正レコード数
@@ -1474,11 +1306,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 				if( mtoAlubm == null ){
 					c_selection = "ARTIST = ? ";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
-					String[] c_selectionArgs= { mtoArtist };			// {"%" + artistMei + "%" , albumMei };
+					String[] c_selectionArgs= { mtoArtist };
 					cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 				}else{
 					c_selection = "ARTIST = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
-					String[] c_selectionArgs2= { mtoArtist , mtoAlubm };			// {"%" + artistMei + "%" , albumMei };
+					String[] c_selectionArgs2= { mtoArtist , mtoAlubm };
 					cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 				}
 				henkouKensuu = cursor.getCount();			//変更レコード数
@@ -1760,7 +1592,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			shyuusei_db = shyuusei_Helper.getReadableDatabase();			// データベースをオープン
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 			String c_selection = null;			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
-			String[] c_selectionArgs= null;			//{"%" + artistMei + "%" , albumMei };		//	artistMei , albumMei };  ////
+			String[] c_selectionArgs= null;
 			String c_groupBy = "ARTIST";
 			String c_having = null;
 			String c_orderBy = "ARTIST"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
@@ -1930,11 +1762,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			dbMsg += " , ARTIST = " + mtoArtist +  " , ALBUM = " + mtoAlubm;//////
 			if( mtoAlubm == null ){
 				c_selection = "ARTIST = ? ";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
-				String[] c_selectionArgs= { mtoArtist };			// {"%" + artistMei + "%" , albumMei };
+				String[] c_selectionArgs= { mtoArtist };
 				cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}else{
 				c_selection = "ARTIST = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
-				String[] c_selectionArgs2= { mtoArtist , mtoAlubm };			// {"%" + artistMei + "%" , albumMei };
+				String[] c_selectionArgs2= { mtoArtist , mtoAlubm };
 				cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}
 			henkouKensuu = cursorS.getCount();			//変更レコード数
@@ -2003,7 +1835,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 				String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 				String c_selection = null;			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
-				String[] c_selectionArgs= null;			//{"%" + artistMei + "%" , albumMei };		//	artistMei , albumMei };  ////
+				String[] c_selectionArgs= null;
 				String c_groupBy = "ARTIST";
 				String c_having = null;
 				String c_orderBy = "ARTIST"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
@@ -2281,260 +2113,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	}	//このアプリを終了する/////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////メニューボタンで表示するメニュー//
-	private Object[] activities = {
-		"MusicPlayer (Normal)", MaraSonActivity.class,
-		"MusicPlayer (RemoteControl)", MusicPlayerRemoteControlActivity.class,
-	};
-	@Override
-	public void onCreate(Bundle savedInstanceState) {									//①起動
-		super.onCreate(savedInstanceState);
-		final String TAG = "onCreate";
-		String dbMsg = "[MuList]";
-		try{
-			long start = System.currentTimeMillis();	// 開始時刻の取得
-			dbMsg +=  ",start="+ start ;/////////////////////////////////////
-			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
-			IsPlaying = false;
-			ORGUT = new OrgUtil();		//自作関数集
-			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
-			Bundle extras = getIntent().getExtras();
-			dbMsg +=  ",extras="+ extras ;/////////////////////////////////////
-			if( extras== null ){
-				ArrayList<String> serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
-				dbMsg +=  "起動時serviceList="+ serviceList ;/////////////////////////////////////
-				if( 0 < serviceList.size() ){
-					dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
-					for(String serviceName : serviceList){
-						if(serviceName.contains("MusicPlayerService")){
-							dbMsg +=  ",MPSIntent=" + MPSIntent;/////////////////////////////////////
-							if( MPSIntent == null){
-								MPSIntent = new Intent(MuList.this, MusicPlayerService.class);
-								dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
-							}
-							MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);					//service内のquitMe
-							startService(MPSIntent);
-							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
-							}else if(serviceName.contains("NotifRecever")){
-							MPSIntent = new Intent(MuList.this, NotifRecever.class);
-							dbMsg += ",NotifRecever="+ MPSIntent;//////////////////
-							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
-							dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
-						}else if(serviceName.contains("BuletoohtReceiver")){
-							MPSIntent = new Intent(MuList.this, BuletoohtReceiver.class);
-							dbMsg = ",BuletoohtReceiver="+ MPSIntent;//////////////////
-							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
-							dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
-						}
-					}
-					serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
-					dbMsg +=  "破棄後serviceList="+ serviceList ;/////////////////////////////////////
-				}
-				imanoJyoutai = veiwPlayer ;												//プレイヤーを表示;起動直後
-//				shigot_bangou = jyoukyou_bunki ;			//ファイルに変更が有れば全曲リスト更新の警告/無ければURiリストの読み込みに
-			}else{
-				imanoJyoutai = chyangeSong ;												//プレイヤーから戻って曲変更
-				shigot_bangou = make_list_head ;			//500；ヘッド作成
-			}
-			dbMsg += ",imanoJyoutai="+ imanoJyoutai ;/////////////////////////////////////
-			yobidashiMoto = imanoJyoutai;													//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-			//スレッド起動確認///////////////////////////////////
-			ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
-			dbMsg +=  ",ActivityManager="+ am ;/////////////////////////////////////
-			List<android.app.ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
-			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	// クラス名を比較
-				dbMsg += curr.getClass().getName();/////////////////////////////////////
-				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {
-					dbMsg += ">>実行中のサービス="+ MusicPlayerService.class.getName() +"と一致";/////////////////////////////////////
-					if( extras== null ){
-						MuList.this.finish();
-						Intent intent = new Intent(MuList.this, MaraSonActivity.class);
-						intent.putExtra("kidou_jyoukyou",MaraSonActivity.kidou_notif);
-						startActivity(intent);		//プレイやのみ起動
-					}
-					break;
-				}
-			}
-			///////////////////////////////////スレッド起動確認//
-			CharSequence[] list = new CharSequence[activities.length / 2];
-			for (int i = 0; i < list.length; i++) {
-				list[i] = (String) activities[i * 2];
-			}
-			locale = Locale.getDefault();		// アプリで使用されているロケール情報を取得
-			setContentView(R.layout.mu_list);				//			setContentView(R.layout.main);
-			toolbar = (Toolbar) findViewById(R.id.list_tool_bar);						//このアクティビティのtoolBar
-			toolbar.setTitle("");				//何かを設定しなければアプリ名が表示される		☆.setDisplayShowTitleEnabled(false);　はtoolbarに無い？
-			toolbar.setContentInsetsAbsolute(0,0);								//左と上の余白を無くす
-			View tbContainer = LayoutInflater.from(this).inflate(R.layout.list_toolbar,  toolbar, false);
-			ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			toolbar.addView(tbContainer, lp);
-			pl_sp = (Spinner) tbContainer.findViewById(R.id.list_pl_sp);		//プレイリスト選択	pl_sp = (Spinner) findViewById(R.id.pl_sp);	から置換え
-			headImgIV = (ImageView) tbContainer.findViewById(R.id.headImg);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-			dbMsg +=",headImgIV="+headImgIV;
-			headImgIV.setVisibility(View.VISIBLE);
-			mainHTF = (TextView)tbContainer.findViewById(R.id.mainHTF);			//				mainHTF = (TextView)findViewById(R.id.mainHTF);			//ヘッダーのメインテキスト表示枠
-			subHTF = (TextView)tbContainer.findViewById(R.id.subHTF);				//ヘッダーのサブテキスト表示枠			subHTF = (TextView)findViewById(R.id.subHTF);				//ヘッダーのサブテキスト表示枠
-			artistHTF = (TextView)tbContainer.findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠			artistHTF = (TextView)findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠
-			headLayout = (LinearLayout)tbContainer.findViewById(R.id.headLayout);			//ツールバーのカスタムレイアウト
-			setSupportActionBar(toolbar);
-			lvID = (ListView) findViewById(android.R.id.list);	//　作成したリストアダプターをリストビューにセットする	 Id	@id/android:list
-			lvID.setTextFilterEnabled(true);						//ListViewにフォーカスを移して「a」を入力すると、以下の図のように先頭に「a」の文字がある項目だけが表示されます。
-			lvID.setFocusableInTouchMode(true);
-			registerForContextMenu(lvID);							//コンテキストメニュー
-			list_player = (LinearLayout)findViewById(R.id.list_player);		//プレイヤーのインクルード
-			list_player.setVisibility(View.GONE);
-			mainHTF.setOnKeyListener( this);
-			//ヘッダー部分のロングタップ/////////////////////////////////////////////////////////////////////////////////////////////////////////
-			mainHTF.setOnLongClickListener(new View.OnLongClickListener() {	// ボタンが長押しクリックされた時のハンドラ
-		//	@Override
-			public boolean onLongClick(View v) {	// 長押しクリックされた時の処理を記述
-				final String TAG = "mainHTF.onLongClick";
-				String dbMsg = "[MuList]";
-				try{
-					dbMsg += "reqCode;" + reqCode;/////////////////////////////////////
-					myLog(TAG, dbMsg);
-				} catch (Exception e) {
-					myErrorLog(TAG ,  dbMsg + "で" + e);
-				}
-				return false;
-			}
-
-			//////////////////////////////デレクトリ名表示フィールドのロングタッチ//
-			});
-			mainHTF.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
-				public void onClick(View v) {	// クリックされた時の処理を記述
-					headClickAction();//ヘッドが クリックされた時の処理
-				}
-			});
-
-			lvID.setOnKeyListener( this);
-			artistAL = new ArrayList<Map<String, Object>>();
-			albumAL = new ArrayList<Map<String, Object>>();
-			albumList = new ArrayList<String>();		//アルバム名
-			titolAL = new ArrayList<Map<String, Object>>();
-
-			dbMsg +=",imanoJyoutai=" + imanoJyoutai ;////////////////////////////////////
-			String comp1 = getString(R.string.artist_tuika01);			//コンピレーション</string>
-			String comp2 = getString(R.string.artist_tuika02);				//サウンドトラック</string>
-			String comp3  = getString(R.string.artist_tuika03);				//">クラシック</string>
-			String comp4  = getString(R.string.comon_nuKnow_artist);				//"">アーティスト情報なし</string>
-			compList = new String[]{ comp1 , comp2 , comp3 , comp4};
-			comCount = compList.length;
-			compSelection = "ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ?";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			dbMsg += " , compList = " + compList+"の" + comCount + "件";		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			dbMsg +=  ">>ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
-			if(prTT_dpad){
-				setKeyAri();									//d-pad対応
-			}
-//			if( extras != null ){
-//				reqCode = extras.getInt("reqCode");					//何のリストか
-//				dbMsg += ",プレイヤーからreqCode="+ reqCode ;/////////////////////////////////////
-//				switch(reqCode) {
-//				case MaraSonActivity.v_artist:				//アーティストリスト表示<R.id.artist_tv
-//				case MaraSonActivity.v_alubum:				//アルバムリスト表示<R.id.alubum_tv
-//				case MaraSonActivity.v_titol:					//タイトルリスト表示<R.id.titol_tv:
-//					yobidashiItem = reqCode;		//プレイヤー画面でタップされたアイテム
-//					break;
-//				}
-//				reqestList_id =  extras.getInt("nowList_id");
-//				dbMsg += ",戻されたプレイリスト[" + reqestList_id;///////////////アクティビテイ方戻されたプレイリストID
-//				sousalistID = reqestList_id ;		//操作対象リストID
-//				nowList =  extras.getString("nowList");
-//				dbMsg += "]" + nowList;//////////////////////////////////
-//				sousalistName = nowList;		//操作対象リスト名
-//				if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku))){			// 全曲リスト
-//					zenkyokuAri = true;																		//全曲リスト有り	 ,
-//				}
-//				nowList_data =  extras.getString("nowList_data");
-//				dbMsg += ",保存場所= " + nowList_data;//////////////////////////////////
-//				sousalist_data = nowList_data ;		//操作対象リストのUrl
-//				mIndex =  extras.getInt("mIndex");
-//				dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
-//				senntakuItem =  extras.getString("senntakuItem");
-//				dbMsg += "]選択アイテム="+senntakuItem;
-//				albumArtist =  extras.getString("albumArtist");
-//				dbMsg += ",アルバムアーティスト="+b_artist +  ">"+albumArtist;
-//				sousa_artist = albumArtist;
-//				creditArtistName =  extras.getString("creditArtistName");
-//				dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
-//				if( albumArtist == null ){
-//					if( creditArtistName != null ){
-//						albumArtist = creditArtistName;
-//						dbMsg += ">アルバムアーティスト>>"+albumArtist;
-//					}
-//				}
-//				albumName =  extras.getString("albumName");
-//				dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
-//				sousa_alubm = albumName;
-//				titolName =  extras.getString("titolName");
-//				dbMsg +=",曲名=" + titolName;/////////////////////////////////////
-//				sousa_titol = titolName;
-//				switch(reqCode) {
-//				case MaraSonActivity.v_artist:							//2131558436 :アーティスト
-//					senntakuItem = albumArtist;
-//					break;
-//				case MaraSonActivity.v_alubum:			//2131558442	アルバム
-//					senntakuItem = albumName;
-//					break;
-//				case MaraSonActivity.v_titol:						//2131558448 ;タイトル
-//					senntakuItem = titolName;
-//					break;
-//				}
-//				itemStr = senntakuItem;
-//				albumArt =  extras.getString("albumArt");
-//				dbMsg +=",アルバムアートのURI=" + albumArt;/////////////////////////////////////
-//				saisei_fname =  extras.getString("saisei_fname");
-//				dbMsg +=",saisei_fname=" + saisei_fname;/////////////////////////////////////
-//				mcPosition =  extras.getInt("mcPosition");
-//				dbMsg +=",再生ポジション=" + mcPosition;/////////////////////////////////////
-//				IsPlaying =  extras.getBoolean("IsPlaying");			//再生中か
-//				dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
-//				IsSeisei =  extras.getBoolean("IsSeisei");			//再生中か
-//				dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
-//		//		headKusei();							//ヘッドエリアの構成物調整
-//				if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){					//全曲リスト
-//				}else if( nowList.equals(getResources().getString(R.string.playlist_namae_request))){
-//					sousalistID = -1 ;																		//操作対象リストID			sousalistID
-//					sousalistName = getResources().getString(R.string.listmei_zemkyoku);						//全曲リスト				sousalistName
-//					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , sousa_titol , null);				//次のリクエストの為に全曲リスト表示
-//				} else {																					//その他のリスト
-//					headImgIV.setVisibility(View.GONE);
-//					mainHTF.setVisibility(View.GONE);
-//					artistHTF.setVisibility(View.GONE);
-//					pl_sp.setVisibility(View.VISIBLE);
-//				}
-//				switch(reqCode) {
-//				case MaraSonActivity.CONTEXT_runum_sisei:				//ランダム再生
-//					shigot_bangou = MaraSonActivity.CONTEXT_runum_sisei;
-//					break;
-//				case MaraSonActivity.rp_artist:			//アーティストリピート指定ボタン<R.id.rd_artist_rd:
-//				case MaraSonActivity.rp_album:			//アルバムリピート指定ボタン<R.id.rd_album_rd:			//2131558548 アーティストリピート指定ボタン
-//				case MaraSonActivity.rp_titol:			//タイトルリピート指定ボタン< R.id.titol_rd_rd:			//2131558549 タイトルリピート指定ボタン
-//				case MaraSonActivity.rp_point:			//二点間リピート指定ボタン<  R.id.rd_point_rb:			//2131558550 二点間リピート指定ボタン
-//					shigot_bangou = reqCode;
-//					break;
-//				default:
-//						makePlayListSPN();		//プレイリストスピナーを作成する
-//					break;
-//				}
-//				if(pl_sp.isShown() ){																		//スピナーが表示されていたら
-//					int ePosition = plNameSL.indexOf(MuList.this.nowList);
-//					dbMsg += ",ePosition=" + ePosition;
-//					pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
-//				}
-//				String subText = creditArtistName+" / "+ albumName +" / "+ titolName;
-//				subHTF.setText(subText );		//		//toolbar.setSubtitle(subText);
-//				artistPosition = -1;			//選択させるアーティスト
-//				alubmPosition = -1;				//選択させるアルバム
-//				titolePosition = -1;			//選択させるタイトル
-//			}
-			long end=System.currentTimeMillis();		// 終了時刻の取得
-			dbMsg += ":"+String.valueOf(ORGUT.sdf_mss.format(end-start))+"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}	//onCreate
-
 	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
 		final String TAG = "setteriYomikomi";
 		String dbMsg = "[MuList]";
@@ -2657,50 +2235,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		return retBool;
 	}
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {	 //<onCreate ヘッドのイメージは実際にローディンされた時点で設定表示と同時にウィジェットの高さや幅を取得したいときは大抵ここで取る。
-		final String TAG = "onWindowFocusChanged";
-		String dbMsg = "[MuList]";
-		try{
-			dbMsg +=  "hasFocus=;" + hasFocus;/////////////////////////////////////
-			if(hasFocus){
-				dbMsg +=",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
-				dbMsg +=",reqCode;" + reqCode;
-				switch(shigot_bangou) {
-					case reTryMse:				//全曲リスト作成から戻ってメッセージ表示
-						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-						alertDialogBuilder.setTitle(dtitol);
-						alertDialogBuilder.setMessage(dMessege);
-						alertDialogBuilder.setPositiveButton(getResources().getString(R.string.comon_kakuninn),			//確認</string>
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-										final String TAG = "onClick";
-										String dbMsg = "[MuList,onWindowFocusChanged]";
-										try {
-											myLog(TAG, dbMsg);
-										} catch (Exception e) {
-											myErrorLog(TAG ,  dbMsg + "で" + e);
-										}
-									}
-								});
-						alertDialogBuilder.setCancelable(true);				// アラートダイアログのキャンセルが可能かどうかを設定します
-						AlertDialog alertDialog = alertDialogBuilder.create();
-						alertDialog.show();				// アラートダイアログを表示します
-						break;
-					default:
-//						dbMsg +=",oFRへ" ;
-//						oFR();												 // onWindowFocusChanged , onResumeじの共通操作
-						break;
-				}
-				shigot_bangou = 0;
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		super.onWindowFocusChanged(hasFocus);
-	}
 
 	public void headKusei() {								//ヘッドエリアの構成物調整
 		final String TAG = "headKusei[MuList]";
@@ -2751,58 +2285,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	public void oFR() {	 // onWindowFocusChanged , onResume の共通操作
-		final String TAG = "oFR";
-		String dbMsg = "[MuList]";
-		try{
-			dbMsg +=   dbMsg +",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
-			dbMsg +=   dbMsg +",reqCode;" + reqCode;/////////////////////////////////////
-			myLog(TAG,dbMsg);
-			if(shigot_bangou > 0){
-				switch(shigot_bangou) {
-				case jyoukyou_bunki:		//204；現在の状態に見合った分岐を行う
-					dbMsg +=",jyoukyouBunkiへ" ;
-					jyoukyouBunki();			//①ⅱ現在の状態に見合った分岐を行う；全曲リストが出来ているか
-					break;
-				case make_list_head:		//500；ヘッド作成
-				case shyou_Main:			//205 アーティストリスト作成後、作成するリストの振り分けに
-//					if(reqCode== MENU_MUSCK_PLIST || ! nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){			//536;プレイリスト選択中
-//						String pdMessage = nowList;
-//						if(plAL != null){
-//							dbMsg += ",読み込まれているリスト= " + plAL.size() + "件";///////////////アクティビテイ方戻されたプレイリストID
-//							dbMsg += ",戻されたプレイリストID= " + reqestList_id;///////////////アクティビテイ方戻されたプレイリストID
-//							dbMsg += ",プリファレンスで詠み込んだプレイリストID= " + nowList_id;///////////////アクティビテイ方戻されたプレイリストID
-//							if(reqestList_id != nowList_id){
-//								nowList_id = reqestList_id;
-//								CreatePLList( Long.valueOf(nowList_id) , pdMessage);		//プレイリストの内容取得			nowList_data,
-//							}
-//						}else{
-//							CreatePLList(  Long.valueOf(nowList_id) , pdMessage);		//プレイリストの内容取得				nowList_data,
-//						}
-//					}else{
-						shyouMain( yobidashiItem );		//onCleateの続きで仕掛けの仕込み		reqCode
-//					}
-					break;
-				case MaraSonActivity.CONTEXT_runum_sisei:			//184 ランダム再生
-					randumPlay();			//ランダム再生
-					break;
-				case MaraSonActivity.rp_artist:			//2131558547 アーティストリピート指定ボタン
-				case MaraSonActivity.rp_album:			//2131558548 アーティストリピート指定ボタン
-				case MaraSonActivity.rp_titol:			//2131558549 タイトルリピート指定ボタン
-				case MaraSonActivity.rp_point:			//2131558550 二点間リピート指定ボタン
-					repeatPlay();			//リピート再生
-					break;
-				case quite_me:										//99;終了
-					MuList.this.finish();
-					break;
-				}
-			}
-			shigot_bangou = 0;
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
 	}
 
@@ -3510,7 +2992,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			String table =artistTName = getString(R.string.artist_table);;			//テーブル名を指定します。
 			String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String selections = "ALBUM_ARTIST = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] selectionArgs = new String[]{ comp };  			//	 {"%" + artistMei + "%" , albumMei };
+			String[] selectionArgs = new String[]{ comp };
 			String groupBy ="ALBUM_ARTIST";					//groupBy句を指定します。
 			String having =null;					//having句を指定します。
 			String orderBy = null;					//"ALBUM_ARTIST,ALBUM";				//
@@ -3527,138 +3009,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 		return retInt;
-	}
-
-	/** 全曲リストの場合はプレイヤーでタップされたフィールドに応じてたリストを表示する */
-	public void sigotoFuriwake(int reqC , String artistMei , String albumMei , String titolMei,String albumArt){		//表示するリストの振り分け		, List<Map<String, Object>> ItemAL
-		final String TAG = "sigotoFuriwake";
-		String dbMsg = "[MuList]";
-		try{
-			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;		/////////////////////////////////////
-			String subTStr = "";
-			dbMsg +=  "artistMei=" + artistMei + ",albumMei=" + albumMei + ",titolMei=" + titolMei ;
-			dbMsg +=  ",reqC=" + reqC +")";					//";listItems = " + listItems.size();	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//			myLog(TAG, dbMsg);
-			switch(reqC) {
-			case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
-				dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
-				artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
-				mainHTF.setVisibility(View.GONE);
-				pl_sp.setVisibility(View.VISIBLE);
-				makePlayListSPN();		//プレイリストスピナーを作成する
-				artistList_yomikomi();
-				dbMsg +=",pref_list_simple= " + pref_list_simple;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
-					dbMsg +=",artistSL= " + artistSL.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				} else {
-					dbMsg +=",artistAL= " + artistAL.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				}
-				subTStr = getResources().getString(R.string.pp_artist)+artistSL.size() +  getResources().getString(R.string.comon_nin);			//アーティスト
-				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠				//toolbar.setSubtitle(subTStr);
-				int selPosition = artistSL.indexOf(artistMei);
-//				dbMsg +=",artistAL= " + artistAL.size() + "件中" ;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//				int selPosition = artistAL.indexOf(artistMei);
-				dbMsg +=",selPosition= " + selPosition ;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				myLog(TAG,dbMsg);				//
-				lvID.setSelection(selPosition);
-				lvID.setFocusable(true);
-				lvID.setFocusableInTouchMode(true);
-				lvID.requestFocus();
-				break;
-			case MaraSonActivity.v_alubum:			//196 ; 2131558442	アルバム
-				dbMsg +=",アーティストをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				pl_sp.setVisibility(View.GONE);	//プレイリスト選択
-				headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
-				artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
-
-				dbMsg +="alubum_tv:artistMei= " + artistMei +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				mainHTF.setVisibility(View.VISIBLE);
-				mainHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);					//Toolbar を Action Bar のように使用する場合	//	toolbar.setTitle(artistMei);								//スタンドアローン Toolbar を使用する場合
-				MuList.this.albumAL = CreateAlbumList( artistMei , albumMei );		//リスト表示せずに曲リスト作成
-				dbMsg += ",抽出できたアルバム=" + MuList.this.albumAL.size() + "枚 ";
-
-				if( artistMei == null){
-					artistMei = sousa_artist;
-				}
-				dbMsg += ",imanoJyoutai= " + imanoJyoutai+ ",saisei_fname= " + saisei_fname;         //200
-				if ( imanoJyoutai == veiwPlayer &&  saisei_fname.equals("")  ){
-					if( playingItem != null ){
-						titolName =playingItem.title;		//曲名
-						dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-					}
-					dbMsg += "(" + albumName;///////////////////////
-//					if ( position  >= 0) {
-					if( albumMei != null){
-						MuList.this.albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,artistMei , albumMei );			//アルバムアートUriだけを返す	this ,
-						dbMsg += ",albumArt=" + MuList.this.albumArt;
-					}
-//					}
-					myLog(TAG, dbMsg);
-					sigotoFuriwake(reqCode, artistMei , MuList.this.albumName  , MuList.this.titolName , MuList.this.albumArt);		//表示するリストの振り分け		titolAL ,
-				} else {
-					if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
-						makePlainList( albumList);			//階層化しないシンプルなリスト
-					} else {
-						setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
-					}
-				}
-				dbMsg +=",albumList= " + MuList.this.albumList.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				if( 0 < MuList.this.albumList.size()){
-					subTStr = MuList.this.albumList.size() + getResources().getString(R.string.pp_mai);
-				}
-				dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
-				myLog(TAG, dbMsg);
-
-				break;
-			case MaraSonActivity.v_titol:						//197；2131558448 ;タイトル
-//				backCode = MaraSonActivity.v_alubum;		//上のリスト
-				dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				pl_sp.setVisibility(View.GONE);	//プレイリスト選択
-				headImgIV.setVisibility(View.VISIBLE);								 // 表示枠を消す
-				headImgIV.setImageResource(R.drawable.no_image);		//		toolbar.setNavigationIcon(defoltIcon);								//リサイズしたR.drawable.no_image
-				titolAL = CreateTitleList(artistMei , albumMei , titolMei);
-				subTStr =  titolAL.size() + getResources().getString(R.string.pp_kyoku);
-				dbMsg +=",titol_tv;titol; = " + subTStr;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				Bitmap mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
-				albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,MuList.this.creditArtistName , albumMei );			//アルバムアートUriだけを返す			MuList.this ,
-				dbMsg +=",albumArt= " + albumArt;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				if( albumArt != null  ){
-					Drawable drawable = new BitmapDrawable(getResources(), albumArt);
-					Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
-					dbMsg +=",orgBitmap="+orgBitmap;
-					Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
-					dbMsg +=",resizedBitmap="+resizedBitmap;
-					drawable = new BitmapDrawable(getResources(), resizedBitmap);
-					headImgIV.setImageDrawable(drawable);		//			toolbar.setNavigationIcon(drawable);			//☆toolbar.setLogo(drawable);はセットできてもリムーブできない
-				}
-				dbMsg +=",headImgIV[" + headImgIV.getX() +", " + headImgIV.getY() +"] " + headImgIV.getHeight();		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-				mainHTF.setVisibility(View.VISIBLE);		//		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-				mainHTF.setText(albumMei);					//ヘッダーのメインテキスト表示枠		//		getSupportActionBar().setTitle(albumMei);
-
-				artistHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
-				artistHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist
-				subHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
-				subHTF.setText(subTStr);	//ヘッダーのサブテキスト表示枠
-				imgItems=null;				//アルバムアート
-				if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
-					makePlainList( titolList);			//階層化しないシンプルなリスト
-				} else {
-					setHeadImgList(titolAL );				//イメージとサブテキストを持ったリストを構成
-				}
-				if ( imanoJyoutai == veiwPlayer  && (saisei_fname !=null || ! saisei_fname.equals("")) ){											//200;プレイヤーを表示;起動直後
-					send2Player(saisei_fname);				//プレイヤーにuriを送る , albumMei
-				}
-				break;
-			default:
-				break;
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
 	}
 
 	public List<Map<String, Object>> CreateAlbumList(String albumArtist , String albumMei) throws IOException {		//起動直後はCreateTitleListへ	//アルバムリスト作成
@@ -3797,15 +3147,13 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	}
 
 	public List<Map<String, Object>> CreateTitleList(String artistMei , String albumMei , String titolMei) throws IOException {		//起動時はここからプレイヤー起動/曲リスト作成
-		final String TAG = "CreateTitleList[MuList]";
-		String dbMsg = "[MuList]";
-		dbMsg+=ORGUT.nowTime(true,true,true);/////////////////////////////////////
+		final String TAG = "CreateTitleList";
+		String dbMsg = "[MuList.List<Map<String, Object>>]";
+		dbMsg +=ORGUT.nowTime(true,true,true);/////////////////////////////////////
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
-			dbMsg += "artistMei="+artistMei+",albumMei="+albumMei;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg += ",artistMei="+artistMei+",albumMei="+albumMei;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			int releaceYear = 0;			//制作年
-	//		reqCode = MaraSonActivity.v_titol;							//アーティスト
-
 			titolAL = new ArrayList<Map<String, Object>>();		//タイトルムリスト用ArrayList
 			titolList = null;
 			titolList = new ArrayList<String>();		//曲名
@@ -3828,38 +3176,36 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			String c_orderBy= "TRACK"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
 			Cursor cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			dbMsg += ",getCount=" + cursor.getCount() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-			String comp = getResources().getString(R.string.comon_compilation);			//コンピレーション
+			String comp = getResources().getString(R.string.comon_compilation);			//
 			if(artistMei.equals(comp)){
+				dbMsg += "、コンピレーションでアルバム名のみ";
 				c_selection = "ALBUM = ?";			//MediaStore.Audio.Media.ARTIST +" LIKE ? AND " + MediaStore.Audio.Media.ALBUM +" = ?";
 				String[] c_selectionArgs2= {albumMei };   			//⑥引数groupByには、groupBy句を指定します。
 				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}else{
 				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}
-			dbMsg += cursor.getCount()+"件";///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			trackInAlbum = cursor.getCount();
+			dbMsg +="、収録曲" +  trackInAlbum +"曲";///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if( cursor.moveToFirst()){
 				creditArtistName = cursor.getString(cursor.getColumnIndex( "SORT_NAME" ));				//SORT_NAME
 			}
-//			ContentResolver resolver = getApplicationContext().getContentResolver();	//c.getContentResolver();
-//			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
-//			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-//			String c_selection = "ARTIST = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
-//			String[] c_selectionArgs= { artistMei , albumMei };   			// {"%" + artistMei + "%" , albumMei };
-//			String c_orderBy= "TRACK"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
-//			Cursor cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
-			dbMsg += "、creditArtistName="+creditArtistName;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			cursor.close();
-			if(artistMei.equals(comp)){
-				c_selection = "ALBUM = ?";			//MediaStore.Audio.Media.ARTIST +" LIKE ? AND " + MediaStore.Audio.Media.ALBUM +" = ?";
-				String[] c_selectionArgs2= {albumMei };   			//⑥引数groupByには、groupBy句を指定します。
-				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
-			}else{
-				c_selection = "SORT_NAME = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
-				String[] c_selectionArgs3= { creditArtistName , albumMei };   			// {"%" + artistMei + "%" , albumMei };
-				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs3 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
-			}
-			trackInAlbum = cursor.getCount();
-			dbMsg += ";" + trackInAlbum + "曲;";
+			dbMsg += "、creditArtistName="+creditArtistName;//////
+// 20190519;二回処理している利用不明///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//			cursor.close();
+//			if(artistMei.equals(comp)){
+//				dbMsg += "、コンピレーションでアルバムのみ=";
+//				c_selection = "ALBUM = ?";			//MediaStore.Audio.Media.ARTIST +" LIKE ? AND " + MediaStore.Audio.Media.ALBUM +" = ?";
+//				String[] c_selectionArgs2= {albumMei };   			//⑥引数groupByには、groupBy句を指定します。
+//				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
+//			}else{
+//				c_selection = "SORT_NAME = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
+//				String[] c_selectionArgs3= { creditArtistName , albumMei };   			// {"%" + artistMei + "%" , albumMei };
+//				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs3 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
+//			}
+//			trackInAlbum = cursor.getCount();
+//			dbMsg += ";" + trackInAlbum + "曲;";
+// 明///////////////////////////////////////////////////////////////////////////////////20190519;二回処理している利用不//////
 			if(cursor.moveToFirst()){
 				do{
 					String dMsg = cursor.getPosition() +"/"+ cursor.getCount() + "曲;";/////////////////////////////////////////////////////////////////////////////////////////////
@@ -3892,7 +3238,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 						MuList.this.titolMap.put("sub" ,tTime );		//アルバム付加情報
 						MuList.this.titolMap.put("DATA" ,cursor.getString(cursor.getColumnIndex("DATA")));		//アルバム付加情報
 						MuList.this.titolAL.add( titolMap);			//アルバムリスト用ArrayList
-						myLog(TAG, dbMsg);
 					}catch(IllegalArgumentException e){
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}catch (Exception e) {
@@ -3914,7 +3259,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			dbMsg += dbMsg+(int)((end - start)) + "m秒で表示終了";
 			String toastStr = titolAL.size() +getResources().getString(R.string.pp_kyoku)+"["+getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]";		//	<string name="">所要時間</string>
 			dbMsg += toastStr ;
-//			myLog(TAG, dbMsg);
+			myLog(TAG, dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		} catch (Exception e) {
@@ -3994,11 +3339,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 	/** 送信前のプリファレンス処理など onCreateで受け取った再生リスト(nowList)と異なる操作結果リストが渡されたら更新 */
 	public void sousinnMaeSyori( String saisei_fname ) {										//送信前のプリファレンス処理など
-		final String TAG = "sousinnMaeSyori[MuList]";
+		final String TAG = "sousinnMaeSyori";
 		String dbMsg = "[MuList]";
 		try{
-//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			myEditor = sharedPref.edit();
 			dbMsg +=  "nowList[" + nowList_id + "]" + nowList +"→操作中のリスト[" + sousalistID + "]" + sousalistName ;	////////////////
 			boolean listHenkou = false;
 			if( ! nowList.equals(sousalistName)){
@@ -4027,8 +3370,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				Boolean kakikomi = myEditor.commit();	// データの保存
 				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
 			}
-////			dbMsg += ",repeatType=" + repeatType;	////////////////
-////			myEditor.putString( "repeatType", String.valueOf(repeatType));			//リピート再生の種類
 			dbMsg += ",rp_pp=" + rp_pp;	////////////////
 			myEditor.putBoolean("pref_nitenkan", rp_pp);							//2点間リピート中
 			dbMsg += ",pp_start=" + pp_start;	////////////////
@@ -4067,9 +3408,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				intent.putExtra("nowList_id",nowList_id);
 				dbMsg += "]" + nowList;/////////////////////////////////////
 				intent.putExtra("nowList",nowList);
-				dbMsg += ",保存場所= " + nowList_data;//////////////////////////////////
+//				dbMsg += ",保存場所= " + nowList_data;//////////////////////////////////
 				intent.putExtra("nowList_data",nowList_data);
-				dbMsg += ",sort_order=" + mIndex;/////////////////////////////////////
+				dbMsg += "[" + mIndex;/////////////////////////////////////
 				intent.putExtra("mIndex",mIndex);
 				dbMsg += "]saisei_fname=" + saisei_fname;/////////////////////////////////////
 				intent.putExtra("saisei_fname",saisei_fname);
@@ -4081,22 +3422,22 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				intent.putExtra("imanoJyoutai",imanoJyoutai);
 				dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
 				intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
-				dbMsg +=",Bluetoothの接続に連携=" + pref_bt_renkei;/////////////////////////////////////
+//				dbMsg +=",Bluetoothの接続に連携=" + pref_bt_renkei;/////////////////////////////////////
 				intent.putExtra( "pref_bt_renkei",pref_bt_renkei);
-				dbMsg +=",前回=" + pref_zenkai_saiseKyoku +"曲";/////////////////////////////////////
+//				dbMsg +=",前回=" + pref_zenkai_saiseKyoku +"曲";/////////////////////////////////////
 				intent.putExtra( "pref_zenkai_saiseKyoku",pref_zenkai_saiseKyoku);
-				dbMsg += pref_zenkai_saiseijikann +"mS";/////////////////////////////////////
+//				dbMsg += pref_zenkai_saiseijikann +"mS";/////////////////////////////////////
 				intent.putExtra( "pref_zenkai_saiseijikann",pref_zenkai_saiseijikann);
 				intent.putExtra("kidou_jyoukyou",MaraSonActivity.kidou_std);
-				dbMsg += ",pref_lockscreen=" + pref_lockscreen;/////////////////////////////////////
+//				dbMsg += ",pref_lockscreen=" + pref_lockscreen;/////////////////////////////////////
 				intent.putExtra("pref_lockscreen",pref_lockscreen);
-				dbMsg += ",pref_notifplayer=" + pref_notifplayer;/////////////////////////////////////
+//				dbMsg += ",pref_notifplayer=" + pref_notifplayer;/////////////////////////////////////
 				intent.putExtra("pref_notifplayer",pref_notifplayer);
-				dbMsg += ",点間リピート中="+rp_pp;/////////////////////////////////////
+//				dbMsg += ",点間リピート中="+rp_pp;/////////////////////////////////////
 				intent.putExtra("rp_pp",rp_pp);
-				dbMsg += ",リピート区間開始点="+pp_start;/////////////////////////////////////
+//				dbMsg += ",リピート区間開始点="+pp_start;/////////////////////////////////////
 				intent.putExtra("pp_start",pp_start);
-				dbMsg += ",リピート区間終了点="+pp_end;/////////////////////////////////////
+//				dbMsg += ",リピート区間終了点="+pp_end;/////////////////////////////////////
 				intent.putExtra("pp_end",pp_end);
 				myLog(TAG,dbMsg);
 				startActivityForResult(intent, chyangeSong);      //201；プレイヤーから戻って曲変更     //				MuList.this.finish();
@@ -4502,12 +3843,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			TreeEntry treeEntry;
 			String rStr;
 			dbMsg += ",シンプルなリスト表示="+pref_list_simple+ ":position="+position+",[id="+id+"]";////////"リスト；parent="+parent+",view="+view+
-			dbMsg += ",sousalistName="+sousalistName;////////"リスト；parent="+parent+",view="+view+
+			dbMsg += ",プレイリスト="+sousalistName;////////"リスト；parent="+parent+",view="+view+
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
-				dbMsg +=",全曲リストの";
+				dbMsg +=",reqCode=" + reqCode;
 				switch(reqCode) {
 				case MaraSonActivity.v_artist:							//195 ;2131558436 アーティスト
-					dbMsg +=",アーティストから";
+					dbMsg +="=アーティストから";
 					itemStr = String.valueOf(artistSL.get(position));		//クレジットされているアーティスト名
 					sousa_artist = itemStr;
 					sousa_alubm = null;
@@ -4520,6 +3861,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				case MaraSonActivity.v_alubum:							//196;2131558442 アルバム
 					dbMsg +=",アルバムから";
 					itemStr = albumList.get(position);		//アルバム名
+					dbMsg +=",itemStr=" +itemStr;
 					sousa_alubm = itemStr;
 					sousa_titol = null;
 					reqCode= MaraSonActivity.v_titol;
@@ -4891,133 +4233,132 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		final String TAG = "setHeadImgList";
 		String dbMsg = "[MuList]";
 		try{
-		if( cursor != null){
-			if(! cursor.isClosed()){
-				cursor.close();
+			dbMsg += ORGUT.nowTime(true,true,true);
+			if( cursor != null){
+				if(! cursor.isClosed()){
+					cursor.close();
+				}
 			}
-		}
-
-		if(Zenkyoku_db != null){
-			if(Zenkyoku_db.isOpen()){
-				Zenkyoku_db.close();
+			if(Zenkyoku_db != null){
+				if(Zenkyoku_db.isOpen()){
+					Zenkyoku_db.close();
+				}
 			}
-		}
-		dbMsg = "reqCode" + reqCode;
-
-		dbMsg += "最終：" + ItemAL.size() +")";
-		dbMsg +=ItemAL.get(0) +"～" +ItemAL.get(ItemAL.size()-1);
-		String album_art = null;			//アルバムアートUriだけを返す
-		int sPosition = 0;
-		isList = null;
-		isList = new ArrayList<CustomData>();		//ヘッドイメージとサブテキストを持ったリストアイテム
-		for(int i=0;i<ItemAL.size();i++){
-			dbMsg +=  i +"/" + ItemAL.size() ;///////////////////////////////////////////////////////////////////////////////////////////
-			CustomData item1 = new CustomData();
-			String rStr = null;
-			switch(reqCode) {
-			case MENU_infoKaisou:													////	reqCode = ;								//537;情報付き曲名リスト書き込み中
-				rStr = (String) ItemAL.get(i).get("img");
-				dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				item1.setimageUrl((String) rStr);				//アルバムアート	//		albumArt = jakeSya(artistMei , alName , mpJakeImg);		//相当するジャケット写真
-				rStr =  (String) ItemAL.get(i).get("main");
-				dbMsg +=",main=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				item1.setTextData(rStr);
-				rStr =  (String) ItemAL.get(i).get("sub");
-				dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				if(rStr != null){
-					if(! rStr.equals("") ){
-						item1.setSubData(rStr);
-					}
-				}
-				rStr =  (String) ItemAL.get(i).get("DATA");
-				dbMsg +=",DATA=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				if(rStr != null){
-					if(! rStr.equals("") ){
-						item1.setDataUri(rStr);
-					}
-				}
-				break;
-			default:
-				rStr = (String) ItemAL.get(i).get("img");
-				dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				item1.setimageUrl((String) rStr);				//アルバムアート	//		albumArt = jakeSya(artistMei , alName , mpJakeImg);		//相当するジャケット写真
-				String titleStr =  (String) ItemAL.get(i).get("main");
-				if( titleStr.equals(senntakuItem) ){
-					sPosition = i;
-				}
-				item1.setTextData((String) ItemAL.get(i).get("main"));
-				dbMsg +=")" + ItemAL.get(i).get("main") ;///////////////////////////////////////////////////////////////////////////////////////////
-
+			dbMsg += "reqCode" + reqCode + "：" + ItemAL.size() +"件";
+			dbMsg +=ItemAL.get(0) +"～" +ItemAL.get(ItemAL.size()-1);
+			String album_art = null;			//アルバムアートUriだけを返す
+			int sPosition = 0;
+			isList = null;
+			isList = new ArrayList<CustomData>();		//ヘッドイメージとサブテキストを持ったリストアイテム
+			for(int i=0;i<ItemAL.size();i++){
+				dbMsg +=  "\n" + i +"/" + ItemAL.size() ;///////////////////////////////////////////////////////////////////////////////////////////
+				CustomData item1 = new CustomData();
+				String rStr = null;
 				switch(reqCode) {
-				case MaraSonActivity.v_artist:													//...334
-						break;
-				case MaraSonActivity.v_alubum:												//...340
-					MuList.this.albumName = titleStr;
-					break;
-				case MaraSonActivity.v_titol:
-					if(i<9){
-						rStr = "0"+ ( i + 1 ) + ";" ;
-					}else{
-						rStr = ( i + 1 ) + ";";
+				case MENU_infoKaisou:							//539				//537;情報付き曲名リスト書き込み中
+					rStr = (String) ItemAL.get(i).get("img");
+					dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+					item1.setimageUrl((String) rStr);
+					rStr =  (String) ItemAL.get(i).get("main");
+					dbMsg +=",main=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+					item1.setTextData(rStr);
+					rStr =  (String) ItemAL.get(i).get("sub");
+					dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+					if(rStr != null){
+						if(! rStr.equals("") ){
+							item1.setSubData(rStr);
+						}
 					}
-					item1.setNom(rStr);
+					rStr =  (String) ItemAL.get(i).get("DATA");
+					dbMsg +=",DATA=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+					if(rStr != null){
+						if(! rStr.equals("") ){
+							item1.setDataUri(rStr);
+						}
+					}
+					break;
 				default:
+					rStr = (String) ItemAL.get(i).get("img");
+					dbMsg +=",img=" +rStr ;
+					item1.setimageUrl((String) rStr);
+					String titleStr =  (String) ItemAL.get(i).get("main");
+					if( titleStr.equals(senntakuItem) ){
+						sPosition = i;
+					}
+					item1.setTextData((String) ItemAL.get(i).get("main"));
+					dbMsg +=")" + ItemAL.get(i).get("main") ;///////////////////////////////////////////////////////////////////////////////////////////
+
+					switch(reqCode) {
+					case MaraSonActivity.v_artist:					//195	...334
+							break;
+					case MaraSonActivity.v_alubum:					//196	...340
+						MuList.this.albumName = titleStr;
+						break;
+					case MaraSonActivity.v_titol:					//197
+						if(i<9){
+							rStr = "0"+ ( i + 1 ) + ";" ;
+						}else{
+							rStr = ( i + 1 ) + ";";
+						}
+						item1.setNom(rStr);
+					default:
+						break;
+					}
+					rStr =  (String) ItemAL.get(i).get("sub");
+					dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+					if(rStr != null){
+						if(! rStr.equals("") ){
+							item1.setSubData(rStr);
+						}
+					}
+					rStr =  (String) ItemAL.get(i).get("DATA");
+					dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+					if(rStr != null){
+						if(! rStr.equals("") ){
+							item1.setDataUri(rStr);
+						}
+					}
 					break;
 				}
-				rStr =  (String) ItemAL.get(i).get("sub");
-				dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				if(rStr != null){
-					if(! rStr.equals("") ){
-						item1.setSubData(rStr);
+				isList.add(item1);
+//				dbMsg +=">>" +isList.size() ;
+			}      // for(int i=0;i<ItemAL.size();i++){
+			dbMsg+= "最終：" + isList.size() +"件"+isList.get(isList.size()-1);
+
+			lvID.setAdapter(new CustomAdapter(this, R.layout.custom_item_layout, isList));			//getApplicationContext()	/this ?	R.layout.custom_item_layout
+
+			lvID.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent,View view, int position, long id) {
+					final String TAG = "onItemClick";
+					String dbMsg =  "[MuList・setHeadImgList]";
+					try{
+						dbMsg +=  ",position="+position + ",id="+id;
+						myLog(TAG, dbMsg);
+						listClick( parent, view, position, id);			//共有：クリックの処理
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
 				}
-				rStr =  (String) ItemAL.get(i).get("DATA");
-				dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-				if(rStr != null){
-					if(! rStr.equals("") ){
-						item1.setDataUri(rStr);
+			});
+
+			lvID.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){	// 項目が長押しクリックされた時のハンドラ
+				// リスナーを登録する thisを引数にできない //☆キャストの方法　(OnItemLongClickListener) this
+			//	@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {	// 長押しクリックされた時の処理を記述
+					final String TAG = "onItemLongClick[setHeadImgList]";
+					String dbMsg =  "[MuList・setHeadImgList]";
+					dbMsg += ORGUT.nowTime(true,true,true);
+					try{
+						dbMsg += ",position=" + position + ",id=" + id;
+						myLog(TAG, dbMsg);
+						listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
+					return false;
 				}
-				break;
-			}
-			isList.add(item1);
-			dbMsg +=">>" +isList.size() ;	///////////////////////////////////////////////////////////////////////////////////////////
-		}
-			 dbMsg+= "最終：" + isList.size() +"件"+isList.get(isList.size()-1);
-
-		lvID.setAdapter(new CustomAdapter(this, R.layout.custom_item_layout, isList));			//getApplicationContext()	/this ?	R.layout.custom_item_layout
-
-		lvID.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent,View view, int position, long id) {
-				final String TAG = "onItemClick";
-				String dbMsg =  "[MuList・setHeadImgList]";
-				try{
-					dbMsg =  ",position="+position + ",id="+id;
-					myLog(TAG, dbMsg);
-					listClick( parent, view, position, id);			//共有：クリックの処理
-				}catch (Exception e) {
-					myErrorLog(TAG ,  dbMsg + "で" + e);
-				}
-			}
-		});
-
-		lvID.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){	// 項目が長押しクリックされた時のハンドラ
-			// リスナーを登録する thisを引数にできない //☆キャストの方法　(OnItemLongClickListener) this
-		//	@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {	// 長押しクリックされた時の処理を記述
-				final String TAG = "onItemLongClick[setHeadImgList]";
-				String dbMsg = ORGUT.nowTime(true,true,true);
-				try{
-					dbMsg += ",position=" + position + ",id=" + id;
-					myLog(TAG, dbMsg);
-					listLongClick( parent, view, position, id);		//共有：ロングクリックの処理
-				}catch (Exception e) {
-					myErrorLog(TAG ,  dbMsg + "で" + e);
-				}
-				return false;
-			}
-			//このブロックでToast.makeTextは使えない
-		});		//onItemLongClick
+				//このブロックでToast.makeTextは使えない
+			});		//onItemLongClick
 
 			dbMsg +=",nowList=" + nowList;///あ;12354～65437,;8,は;Shift;13
 			if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){		// ;		// 全曲リスト</string>
@@ -6334,8 +5675,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				// リスナーを登録する thisを引数にできない //☆キャストの方法　(OnItemLongClickListener) this
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {	// 長押しクリックされた時の処理を記述
-					final String TAG = "onItemLongClick[plWrightEnd]";
-					String dbMsg = ORGUT.nowTime(true,true,true);/////////////////////////////////////
+					final String TAG = "onItemLongClick";
+					String dbMsg = "[MuList.plWrightEnd]";
+					dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
 					try{
 						dbMsg += ",position=" + position + ",id=" + id;
 						myLog(TAG, dbMsg);
@@ -8112,7 +7454,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 			String c_selection = "ALBUM_ARTIST LIKE ? ";			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
-			String[] c_selectionArgs= {"%" + albumArtist + "%"  };	;				//{"%" + artistMei + "%" , albumMei };		//	artistMei , albumMei };  ////
+			String[] c_selectionArgs= {"%" + albumArtist + "%"  };
 			String c_orderBy= "_id , ALBUM , TRACK";			// ""; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
 			cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			dbMsg +=albumArtist+ "は"+ cursor.getCount() + "件";
@@ -8341,7 +7683,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 							String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 							String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 							String c_selection = "DATA = ?";			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
-							String[] c_selectionArgs= {String.valueOf(MuList.this.saisei_fname)};			//{"%" + artistMei + "%" , albumMei };		//	artistMei , albumMei };  ////
+							String[] c_selectionArgs= {String.valueOf(MuList.this.saisei_fname)};
 							String c_groupBy = null;
 							String c_having = null;
 							String c_orderBy = null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
@@ -8357,7 +7699,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 								}
 								dbMsg += ">>("+ tugiIndex + "/"+listEnd + ")" ;////////
 								c_selection = "_id = ? ";			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
-								String[] c_selectionArgs2= {String.valueOf(tugiIndex)};			//{"%" + artistMei + "%" , albumMei };		//	artistMei , albumMei };  ////
+								String[] c_selectionArgs2= {String.valueOf(tugiIndex)};
 								cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , c_groupBy, c_having, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 								if( cursor.moveToFirst() ){
 									String tugiFN = String.valueOf(cursor.getString(cursor.getColumnIndex("DATA")));													//mItems.get(tugiIndex).data;
@@ -9470,6 +8812,663 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
+
+
+	public void oFR() {	 // onWindowFocusChanged , onResume の共通操作
+		final String TAG = "oFR";
+		String dbMsg = "[MuList]";
+		try{
+			dbMsg +=   dbMsg +",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
+			dbMsg +=   dbMsg +",reqCode;" + reqCode;/////////////////////////////////////
+			myLog(TAG,dbMsg);
+			if(shigot_bangou > 0){
+				switch(shigot_bangou) {
+					case jyoukyou_bunki:		//204；現在の状態に見合った分岐を行う
+						dbMsg +=",jyoukyouBunkiへ" ;
+						jyoukyouBunki();			//①ⅱ現在の状態に見合った分岐を行う；全曲リストが出来ているか
+						break;
+					case make_list_head:		//500；ヘッド作成
+					case shyou_Main:			//205 アーティストリスト作成後、作成するリストの振り分けに
+//					if(reqCode== MENU_MUSCK_PLIST || ! nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){			//536;プレイリスト選択中
+//						String pdMessage = nowList;
+//						if(plAL != null){
+//							dbMsg += ",読み込まれているリスト= " + plAL.size() + "件";///////////////アクティビテイ方戻されたプレイリストID
+//							dbMsg += ",戻されたプレイリストID= " + reqestList_id;///////////////アクティビテイ方戻されたプレイリストID
+//							dbMsg += ",プリファレンスで詠み込んだプレイリストID= " + nowList_id;///////////////アクティビテイ方戻されたプレイリストID
+//							if(reqestList_id != nowList_id){
+//								nowList_id = reqestList_id;
+//								CreatePLList( Long.valueOf(nowList_id) , pdMessage);		//プレイリストの内容取得			nowList_data,
+//							}
+//						}else{
+//							CreatePLList(  Long.valueOf(nowList_id) , pdMessage);		//プレイリストの内容取得				nowList_data,
+//						}
+//					}else{
+						shyouMain( yobidashiItem );		//onCleateの続きで仕掛けの仕込み		reqCode
+//					}
+						break;
+					case MaraSonActivity.CONTEXT_runum_sisei:			//184 ランダム再生
+						randumPlay();			//ランダム再生
+						break;
+					case MaraSonActivity.rp_artist:			//2131558547 アーティストリピート指定ボタン
+					case MaraSonActivity.rp_album:			//2131558548 アーティストリピート指定ボタン
+					case MaraSonActivity.rp_titol:			//2131558549 タイトルリピート指定ボタン
+					case MaraSonActivity.rp_point:			//2131558550 二点間リピート指定ボタン
+						repeatPlay();			//リピート再生
+						break;
+					case quite_me:										//99;終了
+						MuList.this.finish();
+						break;
+				}
+			}
+			shigot_bangou = 0;
+		}catch (Exception e) {
+			myErrorLog(TAG,dbMsg + "で"+e.toString());
+		}
+	}
+
+	/** 全曲リストの場合はプレイヤーでタップされたフィールドに応じてたリストを表示する */
+	public void sigotoFuriwake(int reqC , String artistMei , String albumMei , String titolMei,String albumArt){		//表示するリストの振り分け		, List<Map<String, Object>> ItemAL
+		final String TAG = "sigotoFuriwake";
+		String dbMsg = "[MuList]";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true);		/////////////////////////////////////
+			String subTStr = "";
+			dbMsg +=  ",reqC=" + reqC +") artist;" + ";album=" + albumMei + ",titolMei=" + titolMei ;
+			switch(reqC) {
+				case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
+					dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+					mainHTF.setVisibility(View.GONE);
+					pl_sp.setVisibility(View.VISIBLE);
+					makePlayListSPN();		//プレイリストスピナーを作成する
+					artistList_yomikomi();
+					dbMsg +=",pref_list_simple= " + pref_list_simple;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					int selPosition = artistSL.indexOf(artistMei);
+					int artistCount =  artistSL.size();
+					if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
+					} else {
+						selPosition = artistAL.indexOf(artistMei);
+						artistCount =  artistAL.size();
+					}
+					dbMsg +=",artistSL= " + artistCount+ "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					subTStr = getResources().getString(R.string.pp_artist)+ selPosition + "/"+ artistCount + getResources().getString(R.string.comon_nin);			//アーティスト
+					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠				//toolbar.setSubtitle(subTStr);
+					myLog(TAG,dbMsg);
+					lvID.setSelection(selPosition);
+					lvID.setFocusable(true);
+					lvID.setFocusableInTouchMode(true);
+					lvID.requestFocus();
+					break;
+				case MaraSonActivity.v_alubum:			//196 ; 2131558442	アルバム
+					dbMsg +=",アーティストをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					pl_sp.setVisibility(View.GONE);	//プレイリスト選択
+					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+
+					dbMsg +="alubum_tv:artistMei= " + artistMei +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					mainHTF.setVisibility(View.VISIBLE);
+					mainHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);					//Toolbar を Action Bar のように使用する場合	//	toolbar.setTitle(artistMei);								//スタンドアローン Toolbar を使用する場合
+					MuList.this.albumAL = CreateAlbumList( artistMei , albumMei );		//リスト表示せずに曲リスト作成
+					dbMsg += ",抽出できたアルバム=" + MuList.this.albumAL.size() + "枚 ";
+					if( artistMei == null){
+						artistMei = sousa_artist;
+					}
+					saisei_fname = saisei_fname + "";
+					dbMsg += ",imanoJyoutai= " + imanoJyoutai+ ",saisei_fname= " + saisei_fname;         //200
+					if ( imanoJyoutai == veiwPlayer &&  saisei_fname.equals("")  ){
+						if( playingItem != null ){
+							titolName =playingItem.title;		//曲名
+							dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+						}
+						dbMsg += "(" + albumName;///////////////////////
+//					if ( position  >= 0) {
+						if( albumMei != null){
+							MuList.this.albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,artistMei , albumMei );			//アルバムアートUriだけを返す	this ,
+							dbMsg += ",albumArt=" + MuList.this.albumArt;
+						}
+//					}
+						myLog(TAG, dbMsg);
+						sigotoFuriwake(reqCode, artistMei , MuList.this.albumName  , MuList.this.titolName , MuList.this.albumArt);		//表示するリストの振り分け		titolAL ,
+					} else {
+						if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
+							makePlainList( albumList);			//階層化しないシンプルなリスト
+						} else {
+							setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
+						}
+					}
+					dbMsg +=",albumList= " + MuList.this.albumList.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					if( 0 < MuList.this.albumList.size()){
+						subTStr = MuList.this.albumList.size() + getResources().getString(R.string.pp_mai);
+					}
+					dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
+					myLog(TAG, dbMsg);
+
+					break;
+				case MaraSonActivity.v_titol:						//197；2131558448 ;タイトル
+					backCode = MaraSonActivity.v_alubum;		//上のリスト
+					dbMsg +=",アルバムをタップ；backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					pl_sp.setVisibility(View.GONE);	//プレイリスト選択
+					headImgIV.setVisibility(View.VISIBLE);								 // 表示枠を消す
+					headImgIV.setImageResource(R.drawable.no_image);		//		toolbar.setNavigationIcon(defoltIcon);								//リサイズしたR.drawable.no_image
+					titolAL = CreateTitleList(artistMei , albumMei , titolMei);
+					subTStr =  titolAL.size() + getResources().getString(R.string.pp_kyoku);
+					dbMsg +=",titol_tv;titol; = " + subTStr;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					Bitmap mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
+					albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,MuList.this.creditArtistName , albumMei );			//アルバムアートUriだけを返す			MuList.this ,
+					dbMsg +=",albumArt= " + albumArt;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					if( albumArt != null  ){
+						Drawable drawable = new BitmapDrawable(getResources(), albumArt);
+						Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
+						dbMsg +=",orgBitmap="+orgBitmap;
+						Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
+						dbMsg +=",resizedBitmap="+resizedBitmap;
+						drawable = new BitmapDrawable(getResources(), resizedBitmap);
+						headImgIV.setImageDrawable(drawable);		//			toolbar.setNavigationIcon(drawable);			//☆toolbar.setLogo(drawable);はセットできてもリムーブできない
+					}
+					dbMsg +=",headImgIV[" + headImgIV.getX() +", " + headImgIV.getY() +"] " + headImgIV.getHeight();		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					mainHTF.setVisibility(View.VISIBLE);		//		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+					dbMsg +=",albumMei=" + albumMei;
+					mainHTF.setText(albumMei);					//ヘッダーのメインテキスト表示枠		//		getSupportActionBar().setTitle(albumMei);
+					artistHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
+					artistHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist
+					subHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
+					subHTF.setText(subTStr);	//ヘッダーのサブテキスト表示枠
+					imgItems=null;				//アルバムアート
+					if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
+						dbMsg +=",階層化しないシンプルなリスト";
+						makePlainList( titolList);
+					} else {
+						dbMsg +=",イメージとサブテキストを持ったリストを構成";
+						setHeadImgList(titolAL );
+					}
+//					dbMsg +=",imanoJyoutai=" + imanoJyoutai;               //20190519;タイトルリストで止まらない
+//					saisei_fname = saisei_fname +"";
+//					if ( imanoJyoutai == veiwPlayer  && (saisei_fname !=null || ! saisei_fname.equals("")) ){											//200;プレイヤーを表示;起動直後
+//						send2Player(saisei_fname);				//プレイヤーにuriを送る , albumMei
+//					}
+					break;
+				default:
+					break;
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent intent) { // startActivityForResult で起動させたアクティビティがfinish() により破棄されたときにコールされる
+		super.onActivityResult (requestCode, resultCode, intent);
+		final String TAG = "onActivityResult";
+		String dbMsg = "[MuList]";
+		try {
+			backTime= System.currentTimeMillis();						//このActivtyに戻った時間
+			Bundle bundle = null ;
+			boolean kakikomi  = false;
+			if( intent != null ){
+				bundle = intent.getExtras();
+				dbMsg += "requestCode="+requestCode;/////////////////////////////////////////////////
+				dbMsg +=",resultCode="+resultCode;///////////////////////////////////////////////
+				Boolean retBool;
+				switch(requestCode) {
+					case MaraSonActivity.syoki_Yomikomi:		//128；全曲リスト更新
+						//		dbMsg +=  dbMsg  +">mItems>" + mItems;/////////////////////////////////////
+						dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
+						if(mItems !=null){
+							Item.itemsClear();		//要素を全消去
+						}
+						mItems = Item.getItems( getApplicationContext());
+						dbMsg +=  "/" + mItems.size() + "]";/////////////////////////////////////
+						dMessege = bundle.getString("dMessege");
+						dbMsg += ",dMessege=" + dMessege;/////////////////////////////////////
+//					if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){		// ;		// 全曲リスト</string>
+//						mIndex = Item.getMPItem( saisei_fname );			//インデックスの逆検索	, mItems  ,getApplicationContext()
+//					}
+//					dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
+//					dbMsg +=  dbMsg  +"/" + mItems.size() + "]";/////////////////////////////////////
+//					if( artistSL != null ){
+//						artistSL.clear();					//アーティストリスト用簡易リスト
+//						dbMsg +=  dbMsg  +",artistSL = " + artistSL;/////////////////////////////////////
+//					}
+//					if( artistList != null ){
+//						artistList.clear();		//アーティストリスト用ArrayList
+//						dbMsg +=  dbMsg  +",artistAL=" + artistList;/////////////////////////////////////
+//					}
+						String versionName = "";
+						PackageManager packageManager = this.getPackageManager();
+						try {
+							PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
+							pref_sonota_vercord = packageInfo.versionCode;
+							dbMsg +=",versionCode="+ pref_sonota_vercord;
+							myEditor.putString( "pref_sonota_vercord", String.valueOf(pref_sonota_vercord));
+							kakikomi = myEditor.commit();
+							dbMsg +=",書き込み=" + kakikomi;	////////////////
+							versionName = packageInfo.versionName;
+							dbMsg +=",versionName="+ versionName;
+						} catch (NameNotFoundException e) {
+							myErrorLog(TAG,dbMsg+"で"+e);
+						}
+						sousalistName = String.valueOf(getResources().getString(R.string.listmei_zemkyoku));	// 全曲リスト
+						makePlayListSPN();		//プレイリストスピナーを作成する
+						if(0< plNameSL.size()){
+							int ePosition = plNameSL.indexOf(sousalistName);
+							dbMsg += ",ePosition=" + ePosition;
+							pl_sp.setSelection(ePosition , true);								//☆falseで勝手に動作させない
+						}
+						requestCode =MaraSonActivity.v_artist;							//...334:アーティスト
+						artistList_yomikomi();								//アーティストリストを読み込む(db未作成時は-)
+						dtitol = String.valueOf(getResources().getString(R.string.listmei_zemkyoku));	// 全曲リスト
+						shigot_bangou =reTryMse;				//全曲リスト作成から戻ってメッセージ表示
+						break;
+					case settei_hyouji:		//);			//設定表示
+						retBool = Boolean.valueOf(bundle.getString("key.pref_list_simple"));						//プレイヤーの背景
+						dbMsg +="シンプルなリスト表示="+ retBool +"(今は"+ pref_list_simple +")";	////////////////
+						if( retBool != pref_list_simple){
+							pref_list_simple = retBool;
+							simpleSyousai( pref_list_simple );
+						}
+						pref_lockscreen = Boolean.valueOf(bundle.getBoolean("key.pref_lockscreen")) ;				//ロックスクリーンプレイヤー</string>
+						pref_notifplayer = Boolean.valueOf( bundle.getBoolean("key.pref_notifplayer")) ;					//ノティフィケーションプレイヤー</string>
+						retBool = false;
+						retBool = Boolean.valueOf(bundle.getString("key.pref_listup_reset"));						//調整リスト消去
+						if( retBool ){
+							dbMsg +=",調整リスト消去="+ retBool ;	////////////////
+							String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
+							File shyuFile = new File(fn);
+							dbMsg += ",exists=" + shyuFile.exists();
+							this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
+							dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+							preRead( MaraSonActivity.syoki_Yomikomi , null);
+						}
+						break;
+					//		case veiwPlayer:								// 200起動
+					case chyangeSong:							//201；プレイヤーから戻って曲変更
+						reqCode =bundle.getInt("reqCode");
+						dbMsg += ",プレイヤーからreqCode="+ reqCode;
+						//					if( reqCode == quite_me ){
+						psSarviceUri = bundle.getString("psSarviceUri");
+						//					} else {
+						mIndex = bundle.getInt("mIndex");
+						dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
+						//		Item playingItem = mItems.get(mIndex);
+						senntakuItem = bundle.getString("senntakuItem");
+						dbMsg += "]選択アイテム="+senntakuItem;
+						albumArtist = bundle.getString("albumArtist");
+						dbMsg += ",アルバムアーティスト="+albumArtist;           //b_artist +  ">"+
+						creditArtistName = bundle.getString("creditArtistName");
+						dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
+						albumName = bundle.getString("albumName");
+						dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
+						titolName = bundle.getString("titolName");
+						dbMsg +=",曲名=" + titolName;/////////////////////////////////////
+						albumArt = bundle.getString("albumArt");
+						dbMsg +=",アルバムアートのURI=" + albumArt;/////////////////////////////////////
+						saisei_fname = bundle.getString("dataFN");
+						dbMsg +=",dataFN=" + saisei_fname;/////////////////////////////////////
+						mcPosition = bundle.getInt("mcPosition");
+						dbMsg +=",再生ポジション=" + mcPosition;/////////////////////////////////////
+						IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
+						dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
+						IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
+						dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
+						pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
+						dbMsg += ",/シンプルなリスト表示= " + pref_list_simple;//////////////////////////////////
+						myLog(TAG, dbMsg);
+						b_artist = b_artist + "";
+						b_album = b_album + "";
+						switch(reqCode) {
+							case MaraSonActivity.v_artist:													//169...334
+								dbMsg +=",artistAL = " + artistAL.size() + "件";
+								//				myLog(TAG,dbMsg);
+								sigotoFuriwake(reqCode,  albumArtist , null  , null , null);		//表示するリストの振り分け		artistAL ,
+								break;
+							case MaraSonActivity.v_alubum:												//196...340
+								dbMsg +=",albumAL = " + albumAL.size() + "件";
+
+								if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
+								} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
+//									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
+//									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
+									sigotoFuriwake(reqCode,  albumArtist , albumName  , null , null);		//表示するリストの振り分け	albumAL ,
+								}
+								break;
+							case MaraSonActivity.v_titol:													//197
+								dbMsg +=",曲リスト = " + titolAL.size() + "件";
+//								//							if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
+//								//							} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
+//									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
+//									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
+//									dbMsg +=">>曲リスト = " + titolAL.size() + "件";
+//															}
+								sigotoFuriwake(reqCode,  albumArtist , albumName  , null , null);		//表示するリストの振り分けtitolAL ,
+								break;
+							default:
+								break;
+						}
+						if( IsSeisei ){					//		IsPlaying
+							showMyPlayer();					//プレイヤー表示
+						} else{
+							list_player.setVisibility(View.GONE);
+						}
+						////		}
+						break;
+					case quite_me:										//99;終了
+						dbMsg += ",プレイヤーから";
+						MuList.this.finish();
+						break;
+					default:
+						break;
+				}
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {	 //<onCreate ヘッドのイメージは実際にローディンされた時点で設定表示と同時にウィジェットの高さや幅を取得したいときは大抵ここで取る。
+		final String TAG = "onWindowFocusChanged";
+		String dbMsg = "[MuList]";
+		try{
+			dbMsg +=  "hasFocus=;" + hasFocus;/////////////////////////////////////
+			if(hasFocus){
+				dbMsg +=",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
+				dbMsg +=",reqCode;" + reqCode;
+				switch(shigot_bangou) {
+					case reTryMse:				//全曲リスト作成から戻ってメッセージ表示
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+						alertDialogBuilder.setTitle(dtitol);
+						alertDialogBuilder.setMessage(dMessege);
+						alertDialogBuilder.setPositiveButton(getResources().getString(R.string.comon_kakuninn),			//確認</string>
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										final String TAG = "onClick";
+										String dbMsg = "[MuList,onWindowFocusChanged]";
+										try {
+											myLog(TAG, dbMsg);
+										} catch (Exception e) {
+											myErrorLog(TAG ,  dbMsg + "で" + e);
+										}
+									}
+								});
+						alertDialogBuilder.setCancelable(true);				// アラートダイアログのキャンセルが可能かどうかを設定します
+						AlertDialog alertDialog = alertDialogBuilder.create();
+						alertDialog.show();				// アラートダイアログを表示します
+						break;
+					default:
+//						dbMsg +=",oFRへ" ;
+//						oFR();												 // onWindowFocusChanged , onResumeじの共通操作
+						break;
+				}
+				shigot_bangou = 0;
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		super.onWindowFocusChanged(hasFocus);
+	}
+
+	private Object[] activities = {
+			"MusicPlayer (Normal)", MaraSonActivity.class,
+			"MusicPlayer (RemoteControl)", MusicPlayerRemoteControlActivity.class,
+	}
+	;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {									//①起動
+		super.onCreate(savedInstanceState);
+		final String TAG = "onCreate";
+		String dbMsg = "[MuList]";
+		try{
+			long start = System.currentTimeMillis();	// 開始時刻の取得
+			dbMsg +=  ",start="+ start ;/////////////////////////////////////
+			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
+			IsPlaying = false;
+			ORGUT = new OrgUtil();		//自作関数集
+			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
+			Bundle extras = getIntent().getExtras();
+			dbMsg +=  ",extras="+ extras ;/////////////////////////////////////
+			if( extras== null ){
+				ArrayList<String> serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+				dbMsg +=  "起動時serviceList="+ serviceList ;/////////////////////////////////////
+				if( 0 < serviceList.size() ){
+					dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
+					for(String serviceName : serviceList){
+						if(serviceName.contains("MusicPlayerService")){
+							dbMsg +=  ",MPSIntent=" + MPSIntent;/////////////////////////////////////
+							if( MPSIntent == null){
+								MPSIntent = new Intent(MuList.this, MusicPlayerService.class);
+								dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+							}
+							MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);					//service内のquitMe
+							startService(MPSIntent);
+							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+						}else if(serviceName.contains("NotifRecever")){
+							MPSIntent = new Intent(MuList.this, NotifRecever.class);
+							dbMsg += ",NotifRecever="+ MPSIntent;//////////////////
+							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+							dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+						}else if(serviceName.contains("BuletoohtReceiver")){
+							MPSIntent = new Intent(MuList.this, BuletoohtReceiver.class);
+							dbMsg = ",BuletoohtReceiver="+ MPSIntent;//////////////////
+							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+							dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+						}
+					}
+					serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+					dbMsg +=  "破棄後serviceList="+ serviceList ;/////////////////////////////////////
+				}
+				imanoJyoutai = veiwPlayer ;												//プレイヤーを表示;起動直後
+//				shigot_bangou = jyoukyou_bunki ;			//ファイルに変更が有れば全曲リスト更新の警告/無ければURiリストの読み込みに
+			}else{
+				imanoJyoutai = chyangeSong ;												//プレイヤーから戻って曲変更
+				shigot_bangou = make_list_head ;			//500；ヘッド作成
+			}
+			dbMsg += ",imanoJyoutai="+ imanoJyoutai ;/////////////////////////////////////
+			yobidashiMoto = imanoJyoutai;													//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
+			//スレッド起動確認///////////////////////////////////
+			ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
+			dbMsg +=  ",ActivityManager="+ am ;/////////////////////////////////////
+			List<android.app.ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
+			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	// クラス名を比較
+				dbMsg += curr.getClass().getName();/////////////////////////////////////
+				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {
+					dbMsg += ">>実行中のサービス="+ MusicPlayerService.class.getName() +"と一致";/////////////////////////////////////
+					if( extras== null ){
+						MuList.this.finish();
+						Intent intent = new Intent(MuList.this, MaraSonActivity.class);
+						intent.putExtra("kidou_jyoukyou",MaraSonActivity.kidou_notif);
+						startActivity(intent);		//プレイやのみ起動
+					}
+					break;
+				}
+			}
+			///////////////////////////////////スレッド起動確認//
+			CharSequence[] list = new CharSequence[activities.length / 2];
+			for (int i = 0; i < list.length; i++) {
+				list[i] = (String) activities[i * 2];
+			}
+			locale = Locale.getDefault();		// アプリで使用されているロケール情報を取得
+			setContentView(R.layout.mu_list);				//			setContentView(R.layout.main);
+			toolbar = (Toolbar) findViewById(R.id.list_tool_bar);						//このアクティビティのtoolBar
+			toolbar.setTitle("");				//何かを設定しなければアプリ名が表示される		☆.setDisplayShowTitleEnabled(false);　はtoolbarに無い？
+			toolbar.setContentInsetsAbsolute(0,0);								//左と上の余白を無くす
+			View tbContainer = LayoutInflater.from(this).inflate(R.layout.list_toolbar,  toolbar, false);
+			ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+			toolbar.addView(tbContainer, lp);
+			pl_sp = (Spinner) tbContainer.findViewById(R.id.list_pl_sp);		//プレイリスト選択	pl_sp = (Spinner) findViewById(R.id.pl_sp);	から置換え
+			headImgIV = (ImageView) tbContainer.findViewById(R.id.headImg);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+			dbMsg +=",headImgIV="+headImgIV;
+			headImgIV.setVisibility(View.VISIBLE);
+			mainHTF = (TextView)tbContainer.findViewById(R.id.mainHTF);			//				mainHTF = (TextView)findViewById(R.id.mainHTF);			//ヘッダーのメインテキスト表示枠
+			subHTF = (TextView)tbContainer.findViewById(R.id.subHTF);				//ヘッダーのサブテキスト表示枠			subHTF = (TextView)findViewById(R.id.subHTF);				//ヘッダーのサブテキスト表示枠
+			artistHTF = (TextView)tbContainer.findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠			artistHTF = (TextView)findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠
+			headLayout = (LinearLayout)tbContainer.findViewById(R.id.headLayout);			//ツールバーのカスタムレイアウト
+			setSupportActionBar(toolbar);
+			lvID = (ListView) findViewById(android.R.id.list);	//　作成したリストアダプターをリストビューにセットする	 Id	@id/android:list
+			lvID.setTextFilterEnabled(true);						//ListViewにフォーカスを移して「a」を入力すると、以下の図のように先頭に「a」の文字がある項目だけが表示されます。
+			lvID.setFocusableInTouchMode(true);
+			registerForContextMenu(lvID);							//コンテキストメニュー
+			list_player = (LinearLayout)findViewById(R.id.list_player);		//プレイヤーのインクルード
+			list_player.setVisibility(View.GONE);
+			mainHTF.setOnKeyListener( this);
+			//ヘッダー部分のロングタップ/////////////////////////////////////////////////////////////////////////////////////////////////////////
+			mainHTF.setOnLongClickListener(new View.OnLongClickListener() {	// ボタンが長押しクリックされた時のハンドラ
+				//	@Override
+				public boolean onLongClick(View v) {	// 長押しクリックされた時の処理を記述
+					final String TAG = "mainHTF.onLongClick";
+					String dbMsg = "[MuList]";
+					try{
+						dbMsg += "reqCode;" + reqCode;/////////////////////////////////////
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+					return false;
+				}
+
+				//////////////////////////////デレクトリ名表示フィールドのロングタッチ//
+			});
+			mainHTF.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
+				public void onClick(View v) {	// クリックされた時の処理を記述
+					headClickAction();//ヘッドが クリックされた時の処理
+				}
+			});
+
+			lvID.setOnKeyListener( this);
+			artistAL = new ArrayList<Map<String, Object>>();
+			albumAL = new ArrayList<Map<String, Object>>();
+			albumList = new ArrayList<String>();		//アルバム名
+			titolAL = new ArrayList<Map<String, Object>>();
+
+			dbMsg +=",imanoJyoutai=" + imanoJyoutai ;////////////////////////////////////
+			String comp1 = getString(R.string.artist_tuika01);			//コンピレーション</string>
+			String comp2 = getString(R.string.artist_tuika02);				//サウンドトラック</string>
+			String comp3  = getString(R.string.artist_tuika03);				//">クラシック</string>
+			String comp4  = getString(R.string.comon_nuKnow_artist);				//"">アーティスト情報なし</string>
+			compList = new String[]{ comp1 , comp2 , comp3 , comp4};
+			comCount = compList.length;
+			compSelection = "ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ?";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+			dbMsg += " , compList = " + compList+"の" + comCount + "件";		//03-28java.lang.IllegalArgumentException:  contains a path separator
+			dbMsg +=  ">>ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
+			if(prTT_dpad){
+				setKeyAri();									//d-pad対応
+			}
+//			if( extras != null ){
+//				reqCode = extras.getInt("reqCode");					//何のリストか
+//				dbMsg += ",プレイヤーからreqCode="+ reqCode ;/////////////////////////////////////
+//				switch(reqCode) {
+//				case MaraSonActivity.v_artist:				//アーティストリスト表示<R.id.artist_tv
+//				case MaraSonActivity.v_alubum:				//アルバムリスト表示<R.id.alubum_tv
+//				case MaraSonActivity.v_titol:					//タイトルリスト表示<R.id.titol_tv:
+//					yobidashiItem = reqCode;		//プレイヤー画面でタップされたアイテム
+//					break;
+//				}
+//				reqestList_id =  extras.getInt("nowList_id");
+//				dbMsg += ",戻されたプレイリスト[" + reqestList_id;///////////////アクティビテイ方戻されたプレイリストID
+//				sousalistID = reqestList_id ;		//操作対象リストID
+//				nowList =  extras.getString("nowList");
+//				dbMsg += "]" + nowList;//////////////////////////////////
+//				sousalistName = nowList;		//操作対象リスト名
+//				if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku))){			// 全曲リスト
+//					zenkyokuAri = true;																		//全曲リスト有り	 ,
+//				}
+//				nowList_data =  extras.getString("nowList_data");
+//				dbMsg += ",保存場所= " + nowList_data;//////////////////////////////////
+//				sousalist_data = nowList_data ;		//操作対象リストのUrl
+//				mIndex =  extras.getInt("mIndex");
+//				dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
+//				senntakuItem =  extras.getString("senntakuItem");
+//				dbMsg += "]選択アイテム="+senntakuItem;
+//				albumArtist =  extras.getString("albumArtist");
+//				dbMsg += ",アルバムアーティスト="+b_artist +  ">"+albumArtist;
+//				sousa_artist = albumArtist;
+//				creditArtistName =  extras.getString("creditArtistName");
+//				dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
+//				if( albumArtist == null ){
+//					if( creditArtistName != null ){
+//						albumArtist = creditArtistName;
+//						dbMsg += ">アルバムアーティスト>>"+albumArtist;
+//					}
+//				}
+//				albumName =  extras.getString("albumName");
+//				dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
+//				sousa_alubm = albumName;
+//				titolName =  extras.getString("titolName");
+//				dbMsg +=",曲名=" + titolName;/////////////////////////////////////
+//				sousa_titol = titolName;
+//				switch(reqCode) {
+//				case MaraSonActivity.v_artist:							//2131558436 :アーティスト
+//					senntakuItem = albumArtist;
+//					break;
+//				case MaraSonActivity.v_alubum:			//2131558442	アルバム
+//					senntakuItem = albumName;
+//					break;
+//				case MaraSonActivity.v_titol:						//2131558448 ;タイトル
+//					senntakuItem = titolName;
+//					break;
+//				}
+//				itemStr = senntakuItem;
+//				albumArt =  extras.getString("albumArt");
+//				dbMsg +=",アルバムアートのURI=" + albumArt;/////////////////////////////////////
+//				saisei_fname =  extras.getString("saisei_fname");
+//				dbMsg +=",saisei_fname=" + saisei_fname;/////////////////////////////////////
+//				mcPosition =  extras.getInt("mcPosition");
+//				dbMsg +=",再生ポジション=" + mcPosition;/////////////////////////////////////
+//				IsPlaying =  extras.getBoolean("IsPlaying");			//再生中か
+//				dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
+//				IsSeisei =  extras.getBoolean("IsSeisei");			//再生中か
+//				dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
+//		//		headKusei();							//ヘッドエリアの構成物調整
+//				if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){					//全曲リスト
+//				}else if( nowList.equals(getResources().getString(R.string.playlist_namae_request))){
+//					sousalistID = -1 ;																		//操作対象リストID			sousalistID
+//					sousalistName = getResources().getString(R.string.listmei_zemkyoku);						//全曲リスト				sousalistName
+//					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , sousa_titol , null);				//次のリクエストの為に全曲リスト表示
+//				} else {																					//その他のリスト
+//					headImgIV.setVisibility(View.GONE);
+//					mainHTF.setVisibility(View.GONE);
+//					artistHTF.setVisibility(View.GONE);
+//					pl_sp.setVisibility(View.VISIBLE);
+//				}
+//				switch(reqCode) {
+//				case MaraSonActivity.CONTEXT_runum_sisei:				//ランダム再生
+//					shigot_bangou = MaraSonActivity.CONTEXT_runum_sisei;
+//					break;
+//				case MaraSonActivity.rp_artist:			//アーティストリピート指定ボタン<R.id.rd_artist_rd:
+//				case MaraSonActivity.rp_album:			//アルバムリピート指定ボタン<R.id.rd_album_rd:			//2131558548 アーティストリピート指定ボタン
+//				case MaraSonActivity.rp_titol:			//タイトルリピート指定ボタン< R.id.titol_rd_rd:			//2131558549 タイトルリピート指定ボタン
+//				case MaraSonActivity.rp_point:			//二点間リピート指定ボタン<  R.id.rd_point_rb:			//2131558550 二点間リピート指定ボタン
+//					shigot_bangou = reqCode;
+//					break;
+//				default:
+//						makePlayListSPN();		//プレイリストスピナーを作成する
+//					break;
+//				}
+//				if(pl_sp.isShown() ){																		//スピナーが表示されていたら
+//					int ePosition = plNameSL.indexOf(MuList.this.nowList);
+//					dbMsg += ",ePosition=" + ePosition;
+//					pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
+//				}
+//				String subText = creditArtistName+" / "+ albumName +" / "+ titolName;
+//				subHTF.setText(subText );		//		//toolbar.setSubtitle(subText);
+//				artistPosition = -1;			//選択させるアーティスト
+//				alubmPosition = -1;				//選択させるアルバム
+//				titolePosition = -1;			//選択させるタイトル
+//			}
+			long end=System.currentTimeMillis();		// 終了時刻の取得
+			dbMsg += ":"+String.valueOf(ORGUT.sdf_mss.format(end-start))+"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;////////
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}	//onCreate
 
 	@Override
 	protected void onRestart() {
