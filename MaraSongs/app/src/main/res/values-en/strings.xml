@@ -491,5 +491,7 @@
 	<string name="pref_titol_sonota_kikikousei">configuration</string>
 	<string name="ptext_retbt_listhe">I return to a list</string>
 	<string name="pref_commmn_music">commmn music folder</string>
+	<string name="permission_titol">Please admit the use</string>
+	<string name="permission_msg">This application uses a part of the recording function to display a file authorization and a visualizer to play a music file.</string>
 
 </resources>

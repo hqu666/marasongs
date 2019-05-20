@@ -507,12 +507,17 @@ public class Util {
 //         builder.create().show();
 //    }
 
-	public void messageShow(String titolStr , String mggStr , Context context) {
+//	public static boolean messageShowRet= false;
+	public static void messageShow(String titolStr , String mggStr , Context context) {
 		new AlertDialog.Builder(context).setTitle(titolStr).setMessage(mggStr).setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog , int which) {
+				if(which == 1){
+//					messageShowRet = true;
+				}
 			}
 		}).create().show();
+//		return messageShowRet;
 	}
 
 	public static boolean debugNow = true;

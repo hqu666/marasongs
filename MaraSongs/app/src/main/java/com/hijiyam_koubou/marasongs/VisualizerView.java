@@ -16,10 +16,10 @@ public class VisualizerView  extends View {
 	
 	public VisualizerView(Context context) {
 		super(context);
-		final String TAG = "VisualizerView[VisualizerView]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "VisualizerView";
+		String dbMsg= "[VisualizerView]";
 		try{
-			dbMsg= "context =" + context;
+			dbMsg+= "context =" + context;
 			init();
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -29,14 +29,14 @@ public class VisualizerView  extends View {
 	
 	private void init() {
 		final String TAG = "init[VisualizerView]";
-		String dbMsg= "開始";/////////////////////////////////////
+		String dbMsg= "[VisualizerView]";
 		try{
 			mBytes = null;
 			mForePaint.setStrokeWidth(1f);
 			mForePaint.setAntiAlias(true);
 			mForePaint.setColor(Color.rgb(0, 128, 255));
-			dbMsg= "mForePaint =" + mForePaint;
-	//		myLog(TAG,dbMsg);
+			dbMsg += "mForePaint =" + mForePaint;
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
@@ -44,9 +44,9 @@ public class VisualizerView  extends View {
 	
 	public void updateVisualizer(byte[] bytes) {
 		final String TAG = "updateVisualizer[VisualizerView]";
-		String dbMsg= "開始";/////////////////////////////////////
+		String dbMsg= "[VisualizerView]";
 		try{
-			dbMsg=  "mBytes = " + mBytes;
+			dbMsg += "mBytes = " + mBytes;
 			mBytes = bytes;
 			dbMsg +=">>" + mBytes;
 			invalidate();
@@ -60,9 +60,9 @@ public class VisualizerView  extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		final String TAG = "onDraw[VisualizerView]";
-		String dbMsg= "開始";/////////////////////////////////////
+		String dbMsg= "[VisualizerView]";
 		try{
-			dbMsg=  "mBytes = " + mBytes;
+			dbMsg += "mBytes = " + mBytes;
 			if (mBytes == null) {
 				return;
 			}

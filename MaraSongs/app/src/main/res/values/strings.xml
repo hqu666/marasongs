@@ -20,8 +20,10 @@
 <!-- test -->
 <!-- 	<string name="nend_apiKey">c5cb8bc474345961c6e7a9778c947957ed8e1e4f</string> -->
 <!-- 	<string name="nend_spotID">3174</string> -->
+	<string name="permission_titol">利用を許可して下さい</string>
+	<string name="permission_msg">このアプリは音楽ファイルを再生するためのファイルアクセス権限とビジュアライザーを表示する為に録音機能の一部を使用します。</string>
 
-    <string name="artist_reW_file">artist_rw.db</string>
+	<string name="artist_reW_file">artist_rw.db</string>
     <string name="artist_reW_table">artist_rw_table</string>
     <string name="a_WSepalater"> >> </string> <!-- 変更するアーティスト名のセパレータ -->
     <string name="aaWSepalater"> ;; </string> <!-- 特定アルバムの指定 -->

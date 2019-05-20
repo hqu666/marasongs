@@ -105,7 +105,7 @@ public class MyPreferences extends PreferenceActivity {
 	public String tone_name;				//トーン名称
 	public boolean bBoot = false;					//バスブート
 	public short reverbBangou = 0;				//リバーブ効果番号
-	public int visualizerType = MaraSonActivity.Visualizer_type_FFT;		//VisualizerはFFT
+	public int visualizerType;		// = MaraSonActivity.Visualizer_type_FFT;		//VisualizerはFFT
 
 	public Boolean prTT_dpad = false;		//ダイヤルキーの有無
 	public String Siseiothers ="";				//レジューム再生の情報
@@ -974,7 +974,7 @@ public class MyPreferences extends PreferenceActivity {
 				reverbBangou = 0;
 				dbMsg +=  ",リバーブ効果番号=" + reverbBangou ;
 				myEditor.putInt ("reverbBangou", reverbBangou);
-				visualizerType = 0;
+				visualizerType =  MaraSonActivity.Visualizer_type_FFT;
 				dbMsg +=  "visualizerType=" + visualizerType ;
 				myEditor.putInt ("visualizerType", visualizerType);
 				pref_zenkai_saiseKyoku = "0";		//pTF_pref_saisei_nagasa;		// != null ){		//

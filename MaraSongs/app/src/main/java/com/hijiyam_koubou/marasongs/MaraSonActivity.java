@@ -4190,8 +4190,8 @@ public class MaraSonActivity extends AppCompatActivity
  * 呼出し元	aSetei	reMakeVisualizer	onActivityResult
  * */
 	private void makeVisualizer(  ) {					//VisualizerのView作成
-		final String TAG = "makeVisualizer[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "makeVisualizer";
+		String dbMsg= "[MaraSonActivity]";
 		try{
 			LinearLayout visualizer_ll = (LinearLayout) findViewById(R.id.visualizer_ll);
 			float VISUALIZER_HEIGHT_DIP =200.0f;
@@ -5345,7 +5345,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public boolean dispatchTouchEvent(MotionEvent event) {
 //http://motogeneralpurpose.blogspot.jp/2012/11/viewflippern9988.html
 		final String TAG = "dispatchTouchEvent";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 		try{
 	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 //			dbMsg="MotionEvent.getAction=" + event.getAction();/////////////////////////////////////
@@ -5371,8 +5371,8 @@ public class MaraSonActivity extends AppCompatActivity
 	public int flipper = 0;					//ジャケットを0として右にフリックで++,左にフリックで減算
 	@Override
 	public final boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
-		final String TAG = "onFling[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "onFling";
+		String dbMsg= "[MaraSonActivity]";
 		try{
 	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 //			dbMsg="MotionEvent=" + e1 + ",2=" + e2;/////////////////////////////////////

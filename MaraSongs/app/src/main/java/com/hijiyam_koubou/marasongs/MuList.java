@@ -331,16 +331,18 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 
 	static final int REQUEST_PREF = 100;                          //Prefarensからの戻り
 	///////////////////////////////////////////////////////////////////////////////////
-	public void pendeingMessege() {
-		String titolStr = "制作中です";
-		String mggStr = "最終リリースをお待ちください";
-		messageShow(titolStr , mggStr);
-	}
+//	public void pendeingMessege() {
+//		String titolStr = "制作中です";
+//		String mggStr = "最終リリースをお待ちください";
+//		messageShow(titolStr , mggStr);
+//	}
 
-	public void messageShow(String titolStr , String mggStr) {
-		Util UTIL = new Util();
-		UTIL.messageShow(titolStr , mggStr , MuList.this);
-	}
+//	public static void  messageShow(String titolStr , String mggStr) {
+//		final String TAG = "messageShow";
+//		String dbMsg = "[MuList]"+titolStr + "\n" + mggStr;
+//		Util UTIL = new Util();
+//		 UTIL.messageShow(titolStr , mggStr , MuList.this);
+//	}
 
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
@@ -365,7 +367,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //						Manifest.permission.READ_PHONE_STATE,                //プライバシー ポリシーの設定が必要;国の判断に使用
 					Manifest.permission.BLUETOOTH ,
 					Manifest.permission.BLUETOOTH_ADMIN ,
-					Manifest.permission.RECORD_AUDIO ,              		//プライバシー ポリシーの設定が必要
+					Manifest.permission.RECORD_AUDIO ,              		//プライバシー ポリシーの設定が必要;ビジュアライザー
 					Manifest.permission.MODIFY_AUDIO_SETTINGS ,
 					Manifest.permission.WAKE_LOCK ,
 					Manifest.permission.MEDIA_CONTENT_CONTROL
@@ -382,14 +384,28 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				dbMsg += "isNeedParmissionReqest=" + isNeedParmissionReqest;
 				if ( isNeedParmissionReqest ) {
 					dbMsg += "::許諾処理へ";
-					requestPermissions(PERMISSIONS , REQUEST_PREF);
-					return;
+					new AlertDialog.Builder(MuList.this).setTitle( getResources().getString(R.string.permission_titol) )
+							.setMessage( getResources().getString(R.string.permission_msg))
+							.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog , int which) {
+//									if(which == 1){
+										requestPermissions(PERMISSIONS , REQUEST_PREF);
+										return;
+//									} else{
+//										quitMe();
+//									}
+								}
+							}).create().show();
 				}else{
 					dbMsg += "::許諾済み";
+					dbMsg += "::readPrefへ";
+					readPref();
 				}
+			} else{
+				dbMsg += "::readPrefへ";
+				readPref();
 			}
-			dbMsg += "::readPrefへ";
-			readPref();
 			myLog(TAG , dbMsg);
 		} catch (Exception er) {
 			myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -516,12 +532,122 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
 //			others =myPreferences.others;				//その他の情報
 			setteriYomikomi();			//状況に応じた分岐を行う
-//
+
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}																	//設定読込・旧バージョン設定の消去
+
+	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
+		final String TAG = "setteriYomikomi";
+		String dbMsg = "[MuList]";
+		long start = System.currentTimeMillis();		// 開始時刻の取得
+		try{
+			String maeList_id = null;		//リクエスト前のリスト
+			String maeList = null;			//リクエスト前のリスト
+			String maeDatFN = null;			//リクエスト前の再生ファイル
+			String fName =  "/data/data/" +getPackageName()+"/shared_prefs/" + getString(R.string.pref_main_file) +".xml";
+			dbMsg += "fName = " + fName;/////////////////////////////////////
+			File tFile = new File(fName);
+			dbMsg += ">>有無 = " + tFile.exists();/////////////////////////////////////
+//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			myEditor = sharedPref.edit();
+			if( ! tFile.exists()){
+				dbMsg += "shared_prefs無し";/////////////////////////////////////
+			}
+			//1.06ユーザーが居なくなったら消去
+			String dName = "/data/data/" +getApplicationContext().getPackageName() + "/shared_prefs/" + getResources().getString(R.string.pref_artist_file) +".xml";
+			dbMsg += ",artistList= " + dName;
+			File chFile3 = new File(dName);
+			dbMsg += " = " +chFile3.exists();
+			if(chFile3.exists()){
+				chFile3.delete();
+			}
+			dbMsg += ">再生中[" + nowList_id + "]" + nowList + "" + saisei_fname;
+			if(null == nowList ){																	//初期の未設定時など
+				nowList=(String) getResources().getText(R.string.listmei_zemkyoku);				//再生中のプレイリスト名
+			}else if( nowList.equals("null") ){
+				nowList=(String) getResources().getText(R.string.listmei_zemkyoku);				//再生中のプレイリスト名
+			}
+			if( ! nowList.equals(getResources().getText(R.string.listmei_zemkyoku)) ){
+				Cursor cursor = list_dataUMU( nowList_id , MediaStore.Audio.Playlists.Members.DATA , saisei_fname);				//指定した名前のリスト指定した項目のデータが有ればカーソルを返す
+				dbMsg += "、" + sousalistName + "に"+ cursor.getCount() + "件";
+				if( cursor.moveToFirst() ){
+				} else {
+					nowList = String.valueOf(getResources().getText(R.string.listmei_zemkyoku));
+				}
+			}
+			if( nowList.equals(getResources().getText(R.string.listmei_zemkyoku)) && -1 < Integer.valueOf(nowList_id) ){
+				nowList_id = -1;
+				nowList_data = null;
+			}
+			dbMsg +=  ">修正結果[" + nowList_id + "]" + nowList + "" + saisei_fname;
+			sousalistName = nowList;		//操作対象リスト名
+			sousalistID = nowList_id;		//操作対象リストID
+			sousalist_data = nowList_data;		//操作対象リストのUrl
+			dbMsg +=  ",読み込まれたバージョンコード" +  String.valueOf(pref_sonota_vercord)  ;//////////////このアプリのバージョンコード///////////////////////
+			PackageManager packageManager = this.getPackageManager();
+			PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
+			pref_sonota_vercord = packageInfo.versionCode;					//このアプリのバージョンコード
+			dbMsg += ",このアプリのバージョンコード="+ pref_sonota_vercord;
+//			if(tukurinaosi_ver < pref_sonota_vercord ){
+//				pref_sonota_vercord = pref_sonota_vercord;
+//				dbMsg += dbMsg+",このアプリのバージョンコード=" + pref_sonota_vercord;//
+//				boolean kakikomi = psetVersionCode(pref_sonota_vercord);			//アプリのバージョン情報をプリファレンスに書き込む
+//			}else
+//			if(pref_sonota_vercord < tukurinaosi_ver ){
+//				String dlTitol = getResources().getString(R.string.saisinnVerKakuninn_titol);
+//				String dlMessege = getResources().getString(R.string.saisinnVerKakuninn_meg);
+//				preReadJunbi(dlTitol , dlMessege);										//全曲再生リスト作成を促すダイアログ表示
+//			}
+			if( MuList.this.nowList.equals(getResources().getString(R.string.playlist_namae_request))){				// );		//リクエストリスト
+				Cursor cursor = listUMU(String.valueOf(getResources().getString(R.string.playlist_namae_request)));
+				dbMsg +=  "全件="+cursor.getCount() + "件";
+				if(cursor.moveToFirst()){
+					String listID  = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
+					dbMsg +=  "listID["+ listID + "]";
+					String listName  = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME));
+					dbMsg +=  listName;
+					Uri uri2 = MediaStore.Audio.Playlists.Members.getContentUri("external", Long.valueOf(listID));
+					String[] columns = null;			//{ idKey, nameKey };
+					String c_selection = null;				//MediaStore.Audio.Playlists.NAME +" = ? ";
+					String[] c_selectionArg= null;				//{ String.valueOf(listName) };		//⑥引数groupByには、groupBy句を指定します。
+					String c_orderBy = null;			//MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+					Cursor cursol2 = this.getContentResolver().query(uri2, columns, c_selection, c_selectionArg, c_orderBy);
+					int count  = cursol2.getCount();
+					dbMsg +=  ";count=" +cursol2 +"件";
+					if(cursol2.moveToFirst()){
+					}else{
+						if( maeList != null ){
+							nowList = maeList;
+							nowList_id = Integer.valueOf(maeList_id);				//再生中のプレイリストID
+							saisei_fname = maeDatFN;
+							dbMsg += ">>[" + nowList_id + "]" + nowList +";;" + saisei_fname;
+							//						myLog(TAG,dbMsg);
+						}
+					}
+					cursol2.close();
+				}
+				cursor.close();
+			}
+			if( nowList.equals(String.valueOf(getResources().getString(R.string.listmei_zemkyoku))) ){
+				dbMsg += "、" + nowList +"に" + saisei_fname +"は";
+				nowList_id =-1;
+			}
+			shigot_bangou = jyoukyou_bunki ;			//ファイルに変更が有れば全曲リスト更新の警告/無ければURiリストの読み込みに
+
+			long end=System.currentTimeMillis();		// 終了時刻の取得
+			dbMsg += ";"+ (int)((end - start)) + "m秒で終了";
+			myLog(TAG, dbMsg);
+			shigot_bangou= jyoukyou_bunki;		//204；現在の状態に見合った分岐を行う
+
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
 
 	public void wriAllPrif () {        //プリファレンス全項目書込み
 		final String TAG = "wriAllPrif";
@@ -2113,129 +2239,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	}	//このアプリを終了する/////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////メニューボタンで表示するメニュー//
-	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
-		final String TAG = "setteriYomikomi";
-		String dbMsg = "[MuList]";
-		long start = System.currentTimeMillis();		// 開始時刻の取得
-		try{
-			String maeList_id = null;		//リクエスト前のリスト
-			String maeList = null;			//リクエスト前のリスト
-			String maeDatFN = null;			//リクエスト前の再生ファイル
-			String fName =  "/data/data/" +getPackageName()+"/shared_prefs/" + getString(R.string.pref_main_file) +".xml";
-			dbMsg += "fName = " + fName;/////////////////////////////////////
-			File tFile = new File(fName);
-			dbMsg += ">>有無 = " + tFile.exists();/////////////////////////////////////
-//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			myEditor = sharedPref.edit();
-			if( ! tFile.exists()){
-				dbMsg += "shared_prefs無し";/////////////////////////////////////
-			}
-			//1.06ユーザーが居なくなったら消去
-			String dName = "/data/data/" +getApplicationContext().getPackageName() + "/shared_prefs/" + getResources().getString(R.string.pref_artist_file) +".xml";
-			dbMsg += ",artistList= " + dName;
-			File chFile3 = new File(dName);
-			dbMsg += " = " +chFile3.exists();
-			if(chFile3.exists()){
-				chFile3.delete();
-			}
-			dbMsg += ">再生中[" + nowList_id + "]" + nowList + "" + saisei_fname;
-			if(null == nowList ){																	//初期の未設定時など
-				nowList=(String) getResources().getText(R.string.listmei_zemkyoku);				//再生中のプレイリスト名
-			}else if( nowList.equals("null") ){
-				nowList=(String) getResources().getText(R.string.listmei_zemkyoku);				//再生中のプレイリスト名
-			}
-			if( ! nowList.equals(getResources().getText(R.string.listmei_zemkyoku)) ){
-				Cursor cursor = list_dataUMU( nowList_id , MediaStore.Audio.Playlists.Members.DATA , saisei_fname);				//指定した名前のリスト指定した項目のデータが有ればカーソルを返す
-				dbMsg += "、" + sousalistName + "に"+ cursor.getCount() + "件";
-				if( cursor.moveToFirst() ){
-				} else {
-					nowList = String.valueOf(getResources().getText(R.string.listmei_zemkyoku));
-				}
-			}
-			if( nowList.equals(getResources().getText(R.string.listmei_zemkyoku)) && -1 < Integer.valueOf(nowList_id) ){
-				nowList_id = -1;
-				nowList_data = null;
-			}
-			dbMsg +=  ">修正結果[" + nowList_id + "]" + nowList + "" + saisei_fname;
-			sousalistName = nowList;		//操作対象リスト名
-			sousalistID = nowList_id;		//操作対象リストID
-			sousalist_data = nowList_data;		//操作対象リストのUrl
-			dbMsg +=  ",読み込まれたバージョンコード" +  String.valueOf(pref_sonota_vercord)  ;//////////////このアプリのバージョンコード///////////////////////
-			PackageManager packageManager = this.getPackageManager();
-			PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
-			pref_sonota_vercord = packageInfo.versionCode;					//このアプリのバージョンコード
-			dbMsg += ",このアプリのバージョンコード="+ pref_sonota_vercord;
-//			if(tukurinaosi_ver < pref_sonota_vercord ){
-//				pref_sonota_vercord = pref_sonota_vercord;
-//				dbMsg += dbMsg+",このアプリのバージョンコード=" + pref_sonota_vercord;//
-//				boolean kakikomi = psetVersionCode(pref_sonota_vercord);			//アプリのバージョン情報をプリファレンスに書き込む
-//			}else
-//			if(pref_sonota_vercord < tukurinaosi_ver ){
-//				String dlTitol = getResources().getString(R.string.saisinnVerKakuninn_titol);
-//				String dlMessege = getResources().getString(R.string.saisinnVerKakuninn_meg);
-//				preReadJunbi(dlTitol , dlMessege);										//全曲再生リスト作成を促すダイアログ表示
-//			}
-			if( MuList.this.nowList.equals(getResources().getString(R.string.playlist_namae_request))){				// );		//リクエストリスト
-				 Cursor cursor = listUMU(String.valueOf(getResources().getString(R.string.playlist_namae_request)));
-				dbMsg +=  "全件="+cursor.getCount() + "件";
-				if(cursor.moveToFirst()){
-					String listID  = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
-					dbMsg +=  "listID["+ listID + "]";
-					String listName  = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME));
-					dbMsg +=  listName;
-					Uri uri2 = MediaStore.Audio.Playlists.Members.getContentUri("external", Long.valueOf(listID));
-					String[] columns = null;			//{ idKey, nameKey };
-					String c_selection = null;				//MediaStore.Audio.Playlists.NAME +" = ? ";
-					String[] c_selectionArg= null;				//{ String.valueOf(listName) };		//⑥引数groupByには、groupBy句を指定します。
-					String c_orderBy = null;			//MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-					Cursor cursol2 = this.getContentResolver().query(uri2, columns, c_selection, c_selectionArg, c_orderBy);
-					int count  = cursol2.getCount();
-					dbMsg +=  ";count=" +cursol2 +"件";
-					if(cursol2.moveToFirst()){
-					}else{
-						if( maeList != null ){
-							nowList = maeList;
-							nowList_id = Integer.valueOf(maeList_id);				//再生中のプレイリストID
-							saisei_fname = maeDatFN;
-							dbMsg += ">>[" + nowList_id + "]" + nowList +";;" + saisei_fname;
-	//						myLog(TAG,dbMsg);
-						}
-					}
-					cursol2.close();
-				}
-				cursor.close();
-			}
-			if( nowList.equals(String.valueOf(getResources().getString(R.string.listmei_zemkyoku))) ){
-				dbMsg += "、" + nowList +"に" + saisei_fname +"は";
-				nowList_id =-1;
-			}
-			shigot_bangou = jyoukyou_bunki ;			//ファイルに変更が有れば全曲リスト更新の警告/無ければURiリストの読み込みに
-
-			long end=System.currentTimeMillis();		// 終了時刻の取得
-			dbMsg += ";"+ (int)((end - start)) + "m秒で終了";
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	public boolean psetVersionCode(int Ver_cord){			//アプリのバージョン情報をプリファレンスに書き込む
-		boolean retBool = false;
-		final String TAG = "psetVersionCode";
-		String dbMsg = "[MuList]";
-		try{
-			dbMsg +=",versionCode="+ Ver_cord;
-			myEditor.putString( "pref_sonota_vercord", String.valueOf(Ver_cord));
-			retBool = myEditor.commit();
-			dbMsg += ",書き込み=" + retBool;	////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return retBool;
-	}
-
-
 	public void headKusei() {								//ヘッドエリアの構成物調整
 		final String TAG = "headKusei[MuList]";
 		String dbMsg = "[MuList]";
@@ -8821,7 +8824,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			dbMsg +=   dbMsg +",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
 			dbMsg +=   dbMsg +",reqCode;" + reqCode;/////////////////////////////////////
 			myLog(TAG,dbMsg);
-			if(shigot_bangou > 0){
+			if(0 < shigot_bangou ){
 				switch(shigot_bangou) {
 					case jyoukyou_bunki:		//204；現在の状態に見合った分岐を行う
 						dbMsg +=",jyoukyouBunkiへ" ;
@@ -9228,7 +9231,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		try{
 			long start = System.currentTimeMillis();	// 開始時刻の取得
 			dbMsg +=  ",start="+ start ;/////////////////////////////////////
-			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
+			shigot_bangou = 0;
+//			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
@@ -9465,6 +9469,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg += ":"+String.valueOf(ORGUT.sdf_mss.format(end-start))+"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;////////
 			myLog(TAG, dbMsg);
+			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
