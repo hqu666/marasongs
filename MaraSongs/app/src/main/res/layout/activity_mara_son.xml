@@ -203,7 +203,7 @@
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="6">
+        android:layout_weight="4">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -278,8 +278,8 @@
         <ViewFlipper
             android:id="@+id/pp_vf"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="top"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="5px"
             android:layout_weight="8">
 
@@ -293,7 +293,8 @@
 
             <include
                 android:id="@+id/lilic_ll"
-                layout="@layout/lilic"/>
+                layout="@layout/lilic"
+                />
         </ViewFlipper>
 
         <LinearLayout

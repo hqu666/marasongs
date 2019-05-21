@@ -4333,8 +4333,8 @@ public class MaraSonActivity extends AppCompatActivity
 	public String b_filePath = null;					//読み込み済みのファイル
 	private void readLyric( String filepath ) {					//歌詞の読出し
 		//http://www.nilab.info/z3/20120806_02.html
-		final String TAG = "readLyric[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "readLyric";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
 			if(filepath != null){
 				if(! filepath.equals(b_filePath)){
@@ -5411,7 +5411,6 @@ public class MaraSonActivity extends AppCompatActivity
 							pp_vf.showNext();
 						}
 					}
-
 					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
 					if(visualizerType < Visualizer_type_none){
 						visualizerType = Visualizer_type_FFT;

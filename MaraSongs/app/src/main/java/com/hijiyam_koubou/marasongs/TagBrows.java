@@ -450,12 +450,12 @@ private byte majorVersion = (byte) 0;
 		@Override
 		public void onCreate(Bundle savedInstanceState) {	//WindowManagerの設定とアクティビティの読み込み
 			super.onCreate(savedInstanceState);
-			final String TAG = "onCreate[TagBrows]";
-			String dbMsg="起動";
+			final String TAG = "onCreate";
+			String dbMsg="[TagBrows]";
 			try{
 //				startPart = System.currentTimeMillis();		// 開始時刻の取得
 //				ORGUT = new OrgUtil();				//自作関数集
-				dbMsg="rContext=" + this.rContext;/////////////////////////////////////
+				dbMsg +="rContext=" + this.rContext;/////////////////////////////////////
 				if(this.rContext == null){
 					this.rContext = TagBrows.this;
 					dbMsg +=">>" + this.rContext;/////////////////////////////////////
@@ -504,10 +504,10 @@ private byte majorVersion = (byte) 0;
 		 */
 		public void file2Tag(final File file){			//RandomAccessFileをString変換
 			String result =null;
-			final String TAG = "file2Tag[TagBrows]";
-			String dbMsg= "開始";//	http://tomorrowscode.blogspot.jp/2010/02/javaiorandomaccessfilereadlineutf-8.html	////////////////////////////
+			final String TAG = "file2Tag";
+			String dbMsg="[TagBrows]";
 			try{
-				dbMsg= "file=" + file;
+				dbMsg += "file=" + file;
 				filePath = file.getPath();
 				dbMsg +=",filename=" + filePath ;				//this.fileObj.getPath()
 				initResult();								//戻り値の初期化
@@ -535,7 +535,7 @@ private byte majorVersion = (byte) 0;
 		public void initResult() {								//戻り値の初期化
 			String result =null;
 			final String TAG = "initResult[TagBrows]";
-			String dbMsg= "開始";//		http://tomorrowscode.blogspot.jp/2010/02/javaiorandomaccessfilereadlineutf-8.html	//TCON������������Rock10cces��
+			String dbMsg="[TagBrows]";
 			try{
 				result_Tag =null;				//	タグ名
 				result_USLT =null;				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
@@ -629,7 +629,7 @@ private byte majorVersion = (byte) 0;
 	public void makeSyougouList() {	//フィールド名リストをList<String> syougouに作成
 		String result =null;
 		final String TAG = "makeSyougouList[TagBrows]";
-		String dbMsg= "開始";//		//TCON������������Rock10cces��
+		String dbMsg="[TagBrows]";
 		try{
 			if(syougou == null){
 				syougou = new ArrayList<String>();
@@ -1721,8 +1721,6 @@ Bob Dylan/Desire/01 Hurricane.m4a,newFile.length=8864066バイト,
 
 	/**
 	 * AACのQuickTime Tags読取り
-	 * @param String result 検索する文字列
-	 * @param  String target　抽出するフレーム名
 	 * */
 	public void headReadAacBody(String readStr , String target){		//AACのQuickTime Tags読取り
 		final String TAG = "headReadAacBody[TagBrows]";
