@@ -15,10 +15,10 @@ public class NotifRecever extends Service {
 
 	//@Override
 	public void onReceive(Context context, Intent intent) {
-		final String TAG = "onReceive[NotifRecever]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "onReceive";
+		String dbMsg="[NotifRecever]";
 		try{
-			dbMsg="intent=" + intent ;/////////////////////////////////////
+			dbMsg +="intent=" + intent ;/////////////////////////////////////
 			String action = intent.getAction();
 			dbMsg +=",action= " + action;
 			myLog(TAG,dbMsg);
@@ -30,9 +30,10 @@ public class NotifRecever extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		final String TAG = "onStartCommand[NotifRecever]";
-		String dbMsg="Startで呼び出された";/////////////////////////////////////
+		String dbMsg="[NotifRecever]";
+		dbMsg +="Startで呼び出された";/////////////////////////////////////
 		try{
-			dbMsg= dbMsg +";intent=" + intent ;/////////////////////////////////////
+			dbMsg += dbMsg +";intent=" + intent ;/////////////////////////////////////
 			if( intent != null ){
 				dbMsg +=",flags=" + flags ;/////////////////////////////////////
 				dbMsg +=",startId=" + startId ;/////////////////////////////////////
@@ -60,10 +61,11 @@ public class NotifRecever extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		final String TAG = "onBind[NotifRecever]";
-		String dbMsg="Bindで呼び出された場合のみ発生";/////////////////////////////////////
+		final String TAG = "onBind";
+		String dbMsg="[NotifRecever]";
+		dbMsg +="Bindで呼び出された場合のみ発生";/////////////////////////////////////
 		try{
-			dbMsg= dbMsg +";intent=" + intent ;/////////////////////////////////////
+			dbMsg += dbMsg +";intent=" + intent ;/////////////////////////////////////
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);

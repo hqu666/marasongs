@@ -91,7 +91,7 @@ public class MyPreferences extends PreferenceActivity {
 	public String b_List =null;			//前に再生していたプレイリスト
 	public int b_List_id = 0;			//前のプレイリストID
 	public int modori_List_id = 0;			//リピート前のプレイリストID
-	private int b_index;				//前の曲順
+	public int b_index;				//前の曲順
 
 	public String prBTname = "";			//前回接続していたBluetooth機器名
 	public String prBTAdress = "";			//MACアドレス（機器固有番号）
@@ -154,7 +154,7 @@ public class MyPreferences extends PreferenceActivity {
 	public EditTextPreference pref_filse;
 
 	public Map<String, ?> keys;
-	public EditTextPreference pEdit;
+//	public EditTextPreference pEdit;
 	public CheckBoxPreference pCB;			//汎用
 
 ///外部から呼ばれる時の動作//////////////////////////////

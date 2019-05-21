@@ -488,12 +488,12 @@ public class MaraSonActivity extends AppCompatActivity
 //			pref_zenkai_saiseKyoku =myPreferences.pref_zenkai_saiseKyoku;			//前回の連続再生曲数
 //			pref_zenkai_saiseijikann =myPreferences.pref_zenkai_saiseijikann;			//前回の連続再生時間
 //
-//			pref_file_in =myPreferences.pref_file_in;		//内蔵メモリ
-//			pref_file_ex=myPreferences.pref_file_ex;		//メモリーカード
-//			pref_file_wr= myPreferences.pref_file_wr;		//設定保存フォルダ
+			file_in =myPreferences.pref_file_in;		//内蔵メモリ
+			file_ex=myPreferences.pref_file_ex;		//メモリーカード
+			file_wr= myPreferences.pref_file_wr;		//設定保存フォルダ
 //			pref_file_kyoku= myPreferences.pref_file_kyoku;		//総曲数
 //			pref_file_album= myPreferences.pref_file_album;		//総アルバム数
-//			pref_file_saisinn= myPreferences.pref_file_saisinn;	//最新更新日
+			file_saisinn= myPreferences.pref_file_saisinn;	//最新更新日
 
 			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
 			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
@@ -508,7 +508,7 @@ public class MaraSonActivity extends AppCompatActivity
 			b_List =myPreferences.b_List;			//前に再生していたプレイリスト
 			b_List_id = myPreferences.b_List_id;			//前のプレイリストID
 			modori_List_id = myPreferences.modori_List_id;			//リピート前のプレイリストID
-//			b_index= myPreferences.b_index;				//前の曲順
+			b_index= myPreferences.b_index;				//前の曲順
 
 //			prBTname = myPreferences.prBTname;			//前回接続していたBluetooth機器名
 //			prBTAdress = myPreferences.prBTAdress;			//MACアドレス（機器固有番号）
@@ -527,8 +527,6 @@ public class MaraSonActivity extends AppCompatActivity
 
 			prTT_dpad = myPreferences.prTT_dpad;		//ダイヤルキーの有無
 //			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
-//			others =myPreferences.others;				//その他の情報
-
 
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
