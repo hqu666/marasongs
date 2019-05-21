@@ -370,18 +370,18 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 					Manifest.permission.RECORD_AUDIO ,              		//プライバシー ポリシーの設定が必要;ビジュアライザー
 					Manifest.permission.MODIFY_AUDIO_SETTINGS ,
 					Manifest.permission.WAKE_LOCK ,
-					Manifest.permission.MEDIA_CONTENT_CONTROL
+//					Manifest.permission.MEDIA_CONTENT_CONTROL      //フラグが変わらない；再生中メディアへのアクセス許可    ；
 				};
 				boolean isNeedParmissionReqest = false;
 				for ( String permissionName : PERMISSIONS ) {
 					dbMsg += "," + permissionName;
-					int checkResalt = checkSelfPermission(permissionName);
+					int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
 					dbMsg += "=" + checkResalt;
 					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
 						isNeedParmissionReqest = true;
 					}
 				}
-				dbMsg += "isNeedParmissionReqest=" + isNeedParmissionReqest;
+				dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
 				if ( isNeedParmissionReqest ) {
 					dbMsg += "::許諾処理へ";
 					new AlertDialog.Builder(MuList.this).setTitle( getResources().getString(R.string.permission_titol) )
@@ -389,14 +389,17 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 							.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog , int which) {
-//									if(which == 1){
-										requestPermissions(PERMISSIONS , REQUEST_PREF);
-										return;
-//									} else{
-//										quitMe();
-//									}
+									requestPermissions(PERMISSIONS , REQUEST_PREF);
+//									return;
 								}
-							}).create().show();
+							})
+							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog , int which) {
+									quitMe();
+								}
+							})
+							.create().show();
 				}else{
 					dbMsg += "::許諾済み";
 					dbMsg += "::readPrefへ";
@@ -646,8 +649,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
-
-
 
 	public void wriAllPrif () {        //プリファレンス全項目書込み
 		final String TAG = "wriAllPrif";
@@ -2302,17 +2303,49 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		final String TAG = "jyoukyouBunki";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg ="プリファレンス；端末内にあるファイル数=" + pref_file_kyoku + ",更新日=" + pref_file_saisinn;
-			if( 0< pref_file_kyoku && ! pref_file_saisinn.equals("")){
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-				String modified = sdf.format(new Date(Long.valueOf(pref_file_saisinn)*1000));
-				dbMsg += "=" + modified;//////////////////
-				zenkyokuAri = true;			//全曲リスト有り
-				if(saisinnFileKakuninn( pref_file_kyoku + "" , pref_file_saisinn )){			//端末内にあるファイル数と更新日の照合>>音楽ファイルが無ければ終了
-					dbMsg += ">ファイル変更なし；再生中のファイル名=" + saisei_fname ;//// pref_saisei_fname //////
-					dbMsg += ",nowList[" + nowList_id  + "]" + nowList ;//// pref_saisei_fname //////
-					shigot_bangou = 0;
-					if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku)) || -1 == nowList_id ){		//全曲リストで
+			String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE ,
+					Manifest.permission.WRITE_EXTERNAL_STORAGE ,
+			};
+			boolean isNeedParmissionReqest = false;
+			for ( String permissionName : PERMISSIONS ) {
+				dbMsg += "," + permissionName;
+				int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
+				dbMsg += "=" + checkResalt;
+				if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
+					isNeedParmissionReqest = true;
+				}
+			}
+			dbMsg += "isNeedParmissionReqest=" + isNeedParmissionReqest;
+			if ( isNeedParmissionReqest ) {
+				dbMsg += "::許諾処理へ";
+				new AlertDialog.Builder(MuList.this).setTitle( getResources().getString(R.string.permission_file_titol) )
+						.setMessage( getResources().getString(R.string.permission_file_msg))
+						.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+								requestPermissions(PERMISSIONS , REQUEST_PREF);
+								return;
+							}
+						})
+						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+								quitMe();
+							}
+						})
+						.create().show();
+			}else{
+				dbMsg ="プリファレンス；端末内にあるファイル数=" + pref_file_kyoku + ",更新日=" + pref_file_saisinn;
+				if( 0< pref_file_kyoku && ! pref_file_saisinn.equals("")){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+					String modified = sdf.format(new Date(Long.valueOf(pref_file_saisinn)*1000));
+					dbMsg += "=" + modified;//////////////////
+					zenkyokuAri = true;			//全曲リスト有り
+					if(saisinnFileKakuninn( pref_file_kyoku + "" , pref_file_saisinn )){			//端末内にあるファイル数と更新日の照合>>音楽ファイルが無ければ終了
+						dbMsg += ">ファイル変更なし；再生中のファイル名=" + saisei_fname ;//// pref_saisei_fname //////
+						dbMsg += ",nowList[" + nowList_id  + "]" + nowList ;//// pref_saisei_fname //////
+						shigot_bangou = 0;
+						if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku)) || -1 == nowList_id ){		//全曲リストで
 //						if( -1 == nowList_id){
 //							nowList = getResources().getString(R.string.listmei_zemkyoku);
 //							sousalistName = nowList;
@@ -2321,151 +2354,152 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //							sousalistID = nowList_id;
 //						}
 //						dbMsg += ">>[" + nowList_id  + "]" + nowList ;//// pref_saisei_fname //////
-						if( saisei_fname != null && ! saisei_fname.equals("")){																				//前回再生曲があれば
-							dbMsg += ">>プレイヤーへ";
-							send2Player(saisei_fname);																			//プレイヤーにuriを送る
-						}else{																								//前回再生曲が無ければ
-							dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);							//選曲して下さい。
-							dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);							//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
-							readDB();										//全曲リストの読み込み
-						}
-					}else{																				//その他のリストを
-						dbMsg += ">>全曲以外";
-						if( MuList.this.nowList != null){												//使用した経過が有れば
-							listUMUCursor1 = listUMU(MuList.this.nowList);								//そのプレイリストの情報を取得
-							dbMsg +=  ",再生中のリスト="+ MuList.this.nowList + "には" + listUMUCursor1.getCount() + "件登録";
-							if( listUMUCursor1.moveToFirst() ){
-								if( saisei_fname != null && ! saisei_fname.equals("")){
-									list_dataUMUCursor = list_dataUMU(nowList_id , MediaStore.Audio.Media.DATA , String.valueOf( saisei_fname ));			//指定した名前のリスト指定した項目のデータが有ればカーソルを返す	MediaStore.Audio.Playlists.Members.DATA
-									dbMsg +=  ","+ saisei_fname + "を" + list_dataUMUCursor.getCount() + "件検出";
-									if( list_dataUMUCursor.moveToFirst() ){
-										if ( imanoJyoutai == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-											send2Player(saisei_fname);														//プレイヤーにuriを送る
+							if( saisei_fname != null && ! saisei_fname.equals("")){																				//前回再生曲があれば
+								dbMsg += ">>プレイヤーへ";
+								send2Player(saisei_fname);																			//プレイヤーにuriを送る
+							}else{																								//前回再生曲が無ければ
+								dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);							//選曲して下さい。
+								dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);							//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
+								readDB();										//全曲リストの読み込み
+							}
+						}else{																				//その他のリストを
+							dbMsg += ">>全曲以外";
+							if( MuList.this.nowList != null){												//使用した経過が有れば
+								listUMUCursor1 = listUMU(MuList.this.nowList);								//そのプレイリストの情報を取得
+								dbMsg +=  ",再生中のリスト="+ MuList.this.nowList + "には" + listUMUCursor1.getCount() + "件登録";
+								if( listUMUCursor1.moveToFirst() ){
+									if( saisei_fname != null && ! saisei_fname.equals("")){
+										list_dataUMUCursor = list_dataUMU(nowList_id , MediaStore.Audio.Media.DATA , String.valueOf( saisei_fname ));			//指定した名前のリスト指定した項目のデータが有ればカーソルを返す	MediaStore.Audio.Playlists.Members.DATA
+										dbMsg +=  ","+ saisei_fname + "を" + list_dataUMUCursor.getCount() + "件検出";
+										if( list_dataUMUCursor.moveToFirst() ){
+											if ( imanoJyoutai == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
+												send2Player(saisei_fname);														//プレイヤーにuriを送る
+											}
+										}else {																			//指定されたリストが無ければ
+											dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
+											dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);		//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
 										}
-									}else {																			//指定されたリストが無ければ
+										list_dataUMUCursor.close();
+									}else{																			//再生する曲が無ければ
 										dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
-										dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);		//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
+										dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m2);	//プレイリストから再生するファイルを選択して下さい。</string>
+										readDB();										//全曲リストの読み込み
 									}
-									list_dataUMUCursor.close();
-								}else{																			//再生する曲が無ければ
-									dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
-									dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m2);	//プレイリストから再生するファイルを選択して下さい。</string>
-									readDB();										//全曲リストの読み込み
+								}else{																			//指定されたリストが無ければ
+									dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。
+									dMessege = getResources().getString(R.string.jyoukyouBunki_list_m);		//（初めてのご利用か）前回利用したリストが読み込めませんでした。既存のリストから選曲しますか?
 								}
-							}else{																			//指定されたリストが無ければ
-								dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。
-								dMessege = getResources().getString(R.string.jyoukyouBunki_list_m);		//（初めてのご利用か）前回利用したリストが読み込めませんでした。既存のリストから選曲しますか?
+								listUMUCursor1.close();
 							}
-							listUMUCursor1.close();
 						}
+					}else{		//ここで誤動作
+						dbMsg +=  "最新状況確認でfalse";
+						dtitol = getResources().getString(R.string.jyoukyouBunki_file_t);		//ファイルリストを更新します// アラートダイアログのタイトルを設定します
+						dMessege = getResources().getString(R.string.jyoukyouBunki_file_m);		//音楽ファイルに変更がある様です。全曲リストを作り直してもよろしいですか？\n１～２分かかります。今お時間が無ければ"しない"でアプリを一旦終了します。
 					}
-				}else{		//ここで誤動作
-					dbMsg +=  "最新状況確認でfalse";
-					dtitol = getResources().getString(R.string.jyoukyouBunki_file_t);		//ファイルリストを更新します// アラートダイアログのタイトルを設定します
-					dMessege = getResources().getString(R.string.jyoukyouBunki_file_m);		//音楽ファイルに変更がある様です。全曲リストを作り直してもよろしいですか？\n１～２分かかります。今お時間が無ければ"しない"でアプリを一旦終了します。
-				}
-			} else if(0 == pref_file_kyoku  || pref_file_saisinn.equals("")) {
-				dbMsg +=  ",全曲リストは未作成でsaisei_fname="+ saisei_fname;
-				zenkyokuAri = false;			//全曲リスト有り
-				if( saisei_fname == null ||  saisei_fname.equals("")){															//前回再生曲があれば
-					dtitol = getResources().getString(R.string.syokairiyou_dt);				//全曲リストを作成作成させ下さい。
-					dMessege = getResources().getString(R.string.syokairiyou_dm);				//１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n
+				} else if(0 == pref_file_kyoku  || pref_file_saisinn.equals("")) {
+					dbMsg +=  ",全曲リストは未作成でsaisei_fname="+ saisei_fname;
+					zenkyokuAri = false;			//全曲リスト有り
+					if( saisei_fname == null ||  saisei_fname.equals("")){															//前回再生曲があれば
+						dtitol = getResources().getString(R.string.syokairiyou_dt);				//全曲リストを作成作成させ下さい。
+						dMessege = getResources().getString(R.string.syokairiyou_dm);				//１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n
+					} else {
+						send2Player(saisei_fname);														//プレイヤーにuriを送る
+					}
 				} else {
-					send2Player(saisei_fname);														//プレイヤーにuriを送る
+					dbMsg +=  "；pref_file_kyoku == null || pref_file_saisinn == null";
+					if( plNameSL == null){
+						plNameSL = getPList();		//プレイリストを取得する
+					}
+					dbMsg +="plNameSL = " + plNameSL.size() +"件";
+					if(0 < plNameSL.size()){
+						dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。
+						dMessege = getResources().getString(R.string.jyoukyouBunki_list_m);		//（初めてのご利用か）前回利用したリストが読み込めませんでした。既存のリストから選曲しますか?
+					}else{
+						dbMsg +=  "：,0 < plNameSL.size())";
+						dtitol = getResources().getString(R.string.jyoukyouBunki_file_t);		//全曲リストを更新します// アラートダイアログのタイトルを設定します
+						dMessege = getResources().getString(R.string.jyoukyouBunki_file_m2);		//再生できるプレイリストが見つかりません。全曲リストを作成させて下さい。</string>
+					}
 				}
-			} else {
-				dbMsg +=  "；pref_file_kyoku == null || pref_file_saisinn == null";
-				if( plNameSL == null){
-					plNameSL = getPList();		//プレイリストを取得する
-				}
-				dbMsg +="plNameSL = " + plNameSL.size() +"件";
-				if(0 < plNameSL.size()){
-					dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。
-					dMessege = getResources().getString(R.string.jyoukyouBunki_list_m);		//（初めてのご利用か）前回利用したリストが読み込めませんでした。既存のリストから選曲しますか?
-				}else{
-					dbMsg +=  "：,0 < plNameSL.size())";
-					dtitol = getResources().getString(R.string.jyoukyouBunki_file_t);		//全曲リストを更新します// アラートダイアログのタイトルを設定します
-					dMessege = getResources().getString(R.string.jyoukyouBunki_file_m2);		//再生できるプレイリストが見つかりません。全曲リストを作成させて下さい。</string>
-				}
-			}
-			dbMsg +=",dtitol = " + dtitol;
-			myLog(TAG,dbMsg);
-			if(! dtitol.equals("") ){            				//dtitol != null ||
-				makePlayListSPN();		//プレイリストスピナーを作成する
-				headKusei();							//ヘッドエリアの構成物調整
-				if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
-					dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
+				dbMsg +=",dtitol = " + dtitol;
+				myLog(TAG,dbMsg);
+				if(! dtitol.equals("") ){            				//dtitol != null ||
+					makePlayListSPN();		//プレイリストスピナーを作成する
+					headKusei();							//ヘッドエリアの構成物調整
+					if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
+							   dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
 					){
-					preReadJunbi( dtitol , dMessege);										//全曲再生リスト作成を促すダイアログ表示
-				}else{
-					imanoJyoutai =0;
-					int ePosition = plNameSL.indexOf(MuList.this.nowList);
-					dbMsg += ",ePosition=" + ePosition;
-					pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
-					String subText = creditArtistName+" / "+ albumName +" / "+ titolName;
-					subHTF.setText(subText );				//	toolbar.setSubtitle(subText);
-					artistPosition = -1;		//選択させるアーティスト
-					alubmPosition = -1;		//選択させるアルバム
-					titolePosition = -1;		//選択させるタイトル
-					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-					alertDialogBuilder.setTitle(dtitol);
-					alertDialogBuilder.setMessage(dMessege);
-					alertDialogBuilder.setPositiveButton(getResources().getString(R.string.comon_suru),			//する
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								final String TAG = "jyoukyouBunki";
-								String dbMsg = "[MuList]";
-								try {
-									if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
-										dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
+						preReadJunbi( dtitol , dMessege);										//全曲再生リスト作成を促すダイアログ表示
+					}else{
+						imanoJyoutai =0;
+						int ePosition = plNameSL.indexOf(MuList.this.nowList);
+						dbMsg += ",ePosition=" + ePosition;
+						pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
+						String subText = creditArtistName+" / "+ albumName +" / "+ titolName;
+						subHTF.setText(subText );				//	toolbar.setSubtitle(subText);
+						artistPosition = -1;		//選択させるアーティスト
+						alubmPosition = -1;		//選択させるアルバム
+						titolePosition = -1;		//選択させるタイトル
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+						alertDialogBuilder.setTitle(dtitol);
+						alertDialogBuilder.setMessage(dMessege);
+						alertDialogBuilder.setPositiveButton(getResources().getString(R.string.comon_suru),			//する
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										final String TAG = "jyoukyouBunki";
+										String dbMsg = "[MuList]";
+										try {
+											if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
+													   dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
 											){
-										//			dismissDialog(0);//基本はこっち。showDialogを再度すると、前のダイアログが使いまわされる
-										//			MaraSonActivity.this.removeDialog(0);//手動でダイアログの消去と、ダイアログ使い回しを破棄をしたい場合。
-										dbMsg +="ファイルに変更あり";/////////////////////////////////////
-										myLog(TAG,dbMsg);
-										preRead( MaraSonActivity.syoki_Yomikomi , null);			//syoki_start_up
-									}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t))){			//プレイリストを選択して下さい。
-									}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t))){		//選曲して下さい。
-										nowList = getResources().getString(R.string.listmei_zemkyoku);				//全曲リスト
-										artistList_yomikomi();
+												//			dismissDialog(0);//基本はこっち。showDialogを再度すると、前のダイアログが使いまわされる
+												//			MaraSonActivity.this.removeDialog(0);//手動でダイアログの消去と、ダイアログ使い回しを破棄をしたい場合。
+												dbMsg +="ファイルに変更あり";/////////////////////////////////////
+												myLog(TAG,dbMsg);
+												preRead( MaraSonActivity.syoki_Yomikomi , null);			//syoki_start_up
+											}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t))){			//プレイリストを選択して下さい。
+											}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t))){		//選曲して下さい。
+												nowList = getResources().getString(R.string.listmei_zemkyoku);				//全曲リスト
+												artistList_yomikomi();
+											}
+											myLog(TAG, dbMsg);
+										} catch (Exception e) {
+											myErrorLog(TAG ,  dbMsg + "で" + e);
+										}
 									}
-									myLog(TAG, dbMsg);
-								} catch (Exception e) {
-									myErrorLog(TAG ,  dbMsg + "で" + e);
-								}
-							}
-						});
+								});
 						alertDialogBuilder.setNegativeButton(getResources().getString(R.string.comon_sinai),			//しない
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									final String TAG = "jyoukyouBunki";
-									String dbMsg = "[MuList]";
-									if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
-											dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
-												){
-										if(zenkyokuAri){
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										final String TAG = "jyoukyouBunki";
+										String dbMsg = "[MuList]";
+										if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
+												   dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
+										){
+											if(zenkyokuAri){
+												nowList = getResources().getString(R.string.listmei_zemkyoku);				//全曲リスト
+												artistList_yomikomi();
+											}else{
+												quitMe();		//このアプリを終了する
+											}
+										}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t))){			//プレイリストを選択して下さい。
+										}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t))){		//選曲して下さい。
 											nowList = getResources().getString(R.string.listmei_zemkyoku);				//全曲リスト
 											artistList_yomikomi();
-										}else{
-											quitMe();		//このアプリを終了する
 										}
-									}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t))){			//プレイリストを選択して下さい。
-									}else if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t))){		//選曲して下さい。
-										nowList = getResources().getString(R.string.listmei_zemkyoku);				//全曲リスト
-										artistList_yomikomi();
+										myLog(TAG, dbMsg);
 									}
-									myLog(TAG, dbMsg);
-								}
-							});
+								});
 						alertDialogBuilder.setCancelable(true);				// アラートダイアログのキャンセルが可能かどうかを設定します
 						AlertDialog alertDialog = alertDialogBuilder.create();
 						alertDialog.show();				// アラートダイアログを表示します
-			//		}
+						//		}
+					}
+				}else{
+					readDB();										//全曲リストの読み込み
 				}
-			}else{
-				readDB();										//全曲リストの読み込み
 			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -9232,7 +9266,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			long start = System.currentTimeMillis();	// 開始時刻の取得
 			dbMsg +=  ",start="+ start ;/////////////////////////////////////
 			shigot_bangou = 0;
-//			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////

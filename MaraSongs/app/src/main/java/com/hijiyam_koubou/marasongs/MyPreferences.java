@@ -106,6 +106,9 @@ public class MyPreferences extends PreferenceActivity {
 	public boolean bBoot = false;					//バスブート
 	public short reverbBangou = 0;				//リバーブ効果番号
 	public int visualizerType;		// = MaraSonActivity.Visualizer_type_FFT;		//VisualizerはFFT
+	public int Visualizer_type_none;		//191;Visualizerを使わない
+	public int Visualizer_type_wave;		//189;Visualizerはwave表示
+	public int Visualizer_type_FFT;		//190;VisualizerはFFT
 
 	public Boolean prTT_dpad = false;		//ダイヤルキーの有無
 	public String Siseiothers ="";				//レジューム再生の情報
@@ -199,6 +202,11 @@ public class MyPreferences extends PreferenceActivity {
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			ORGUT = new OrgUtil();		//自作関数集
+			MSA = new MaraSonActivity();
+			Visualizer_type_wave = MSA.Visualizer_type_wave;		//189;Visualizerはwave表示
+			Visualizer_type_FFT =  MSA.Visualizer_type_wave;		//190;VisualizerはFFT
+			Visualizer_type_none =  MSA.Visualizer_type_wave;;		//191;Visualizerを使わない
+
 			sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());			//	this.getSharedPreferences(this, MODE_PRIVATE);		//
 			myEditor = sharedPref.edit();
 			locale = Locale.getDefault();		// アプリで使用されているロケール情報を取得
@@ -655,6 +663,11 @@ public class MyPreferences extends PreferenceActivity {
 		String dbMsg="[MyPreferences]";
 		try{
 			ORGUT = new OrgUtil();		//自作関数集
+			MSA = new MaraSonActivity();
+			Visualizer_type_wave = MSA.Visualizer_type_wave;		//189;Visualizerはwave表示
+			Visualizer_type_FFT =  MSA.Visualizer_type_wave;		//190;VisualizerはFFT
+			Visualizer_type_none =  MSA.Visualizer_type_wave;;		//191;Visualizerを使わない
+
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			myEditor = sharedPref.edit();
@@ -974,8 +987,8 @@ public class MyPreferences extends PreferenceActivity {
 				reverbBangou = 0;
 				dbMsg +=  ",リバーブ効果番号=" + reverbBangou ;
 				myEditor.putInt ("reverbBangou", reverbBangou);
-				visualizerType =  MaraSonActivity.Visualizer_type_FFT;
-				dbMsg +=  "visualizerType=" + visualizerType ;
+				visualizerType = Visualizer_type_FFT;
+				dbMsg +=  ",visualizerType=" + visualizerType ;
 				myEditor.putInt ("visualizerType", visualizerType);
 				pref_zenkai_saiseKyoku = "0";		//pTF_pref_saisei_nagasa;		// != null ){		//
 				myEditor.putString ("pref_zenkai_saiseKyoku", pref_zenkai_saiseKyoku);
@@ -1320,7 +1333,7 @@ public class MyPreferences extends PreferenceActivity {
 		}
 	};
 
-/**
+	/**
  * SwitchPreferenceの変更反映
  * 変更値をObjectからbooleanにキャストしてプリファレンスに書き込む
  * 項目追加時は個々の変数にここで設定
@@ -1428,7 +1441,7 @@ public class MyPreferences extends PreferenceActivity {
 		return true;
 	}
 
-@Override
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		final String TAG = "onOptionsItemSelected[MaraSonActivity]";
 		String dbMsg="[MyPreferences]";
@@ -1466,7 +1479,6 @@ public class MyPreferences extends PreferenceActivity {
 		//Log.d("onOptionsMenuClosed","NakedFileVeiwActivity;mlMenu="+flMenu);
 	}
 	//このアプリを終了する/////////////////////////////////////////////////////////////////////////////////
-
 
 ///////////////////////////////////////////////////////////////////////////////メニューボタンで表示するメニュー//
 	@Override

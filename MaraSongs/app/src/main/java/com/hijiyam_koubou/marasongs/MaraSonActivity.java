@@ -1,4 +1,5 @@
 package com.hijiyam_koubou.marasongs;
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.gesture.GestureOverlayView;
@@ -186,10 +188,10 @@ public class MaraSonActivity extends AppCompatActivity
 	public static final int pref_haikesyoku = call_artistV+5;		//プリファレンスの読み込み後、背景色変更
 	public static final int Seek_kick = pref_haikesyoku+5;		//シークバーが動作していない時の再起動
 	public static final int CONTEXT_runum_sisei = Seek_kick+10;						//ランダム再生
-	public static final int Visualizer_type_wave = CONTEXT_runum_sisei+5;		//189;Visualizerはwave表示
+	public static final int Visualizer_type_none = CONTEXT_runum_sisei + 5;		//191;Visualizerを使わない
+	public static final int Visualizer_type_wave = Visualizer_type_none + 1;		//189;Visualizerはwave表示
 	public static final int Visualizer_type_FFT = Visualizer_type_wave+1;		//190;VisualizerはFFT
-	public static final int Visualizer_type_none = Visualizer_type_FFT+1;		//191;Visualizerを使わない
-	public static final int LyricCheck = Visualizer_type_none+1;					//歌詞の有無確認
+	public static final int LyricCheck = Visualizer_type_FFT + 1;					//歌詞の有無確認
 	public static final int LyricEnc= LyricCheck+1;					//歌詞の再エンコード
 	public static final int LyricWeb = LyricEnc+1;					//192;歌詞のweb表示
 	public static final int v_artist = LyricWeb+1;					//アーティストリスト表示
@@ -521,6 +523,7 @@ public class MaraSonActivity extends AppCompatActivity
 			bBoot = myPreferences.bBoot;					//バスブート
 			reverbBangou = myPreferences.reverbBangou;				//リバーブ効果番号
 			visualizerType =myPreferences.visualizerType;		//VisualizerはFFT
+			dbMsg += "、visualizerType=" + visualizerType;
 
 			prTT_dpad = myPreferences.prTT_dpad;		//ダイヤルキーの有無
 //			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
@@ -3607,9 +3610,7 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	public Visualizer mVisualizer;
-//	public int visualizerType = Visualizer_type_wave;		//Visualizerはwave表示
 	public int visualizerType = Visualizer_type_FFT;		//VisualizerはFFT
-//	public int visualizerType = Visualizer_type_none;		//Visualizerを使わない
 	public boolean useWaveFormDataCapture = false;
 	public boolean useFftDataCapture = false;
 
@@ -4189,7 +4190,7 @@ public class MaraSonActivity extends AppCompatActivity
  * アナログはVisualizerView Class , デジタルはFftView Classで作成
  * 呼出し元	aSetei	reMakeVisualizer	onActivityResult
  * */
-	private void makeVisualizer(  ) {					//VisualizerのView作成
+	private void makeVisualizer() {					//VisualizerのView作成
 		final String TAG = "makeVisualizer";
 		String dbMsg= "[MaraSonActivity]";
 		try{
@@ -4231,8 +4232,8 @@ public class MaraSonActivity extends AppCompatActivity
 	private void setupVisualizerFxAndUI(  ) throws IllegalStateException{					//Visualizerの設定
 		//http://tools.oesf.biz/android-4.1.2_r1.0/xref/development/samples/ApiDemos/src/com/example/android/apis/media/AudioFxDemo.java#eqTextView
 		// Create a VisualizerView (defined below), which will render the simplified audio wave form to a Canvas.
-		final String TAG = "setupVisualizerFxAndUI[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "setupVisualizerFxAndUI";
+		String dbMsg= "[MaraSonActivity]";
 		try{
 			mVisualizer = (Visualizer) ObjectResults.getObject();					//Serializableを使ったオブジェクトの受け渡し
 			dbMsg= "mVisualizer=" + mVisualizer;
@@ -4699,11 +4700,11 @@ public class MaraSonActivity extends AppCompatActivity
 							}
 							myEditor.commit();
 							dbMsg +=",mVisualizer="+ mVisualizer;//////////////////
-//							if( mVisualizer != null ){
-//								mVisualizer.release();
-//								mVisualizer = null;
-//								visualizerVG.removeAllViews();							//設定されているViewGrupを削除
-//							}
+							if( mVisualizer != null ){
+								mVisualizer.release();
+								mVisualizer = null;
+								visualizerVG.removeAllViews();							//設定されているViewGrupを削除
+							}
 							AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 							alertDialogBuilder.setTitle(getResources().getString(R.string.pref_henkou_titol));
 							String dMessege = getResources().getString(R.string.pref_pb_bgc_titol);								//プレイヤー色</string>
@@ -5389,26 +5390,39 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg= dbMsg +",velocityX=" + velocityX;									//velocityX=10339.762,
 				if (velocityX > 0) {
 					pp_vf.setInAnimation(slideInFromLeft);
-			//		pp_vf.setOutAnimation(slideOutToRight);
 					pp_vf.showPrevious();
 				} else {
 					pp_vf.setInAnimation(slideInFromRight);
-			//		pp_vf.setOutAnimation(slideOutToLeft);
 					pp_vf.showNext();
 				}
-				dbMsg +=",表示" + pp_vf.getDisplayedChild() + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
-				switch(pp_vf.getDisplayedChild()) {		//
+				int nextVF = pp_vf.getDisplayedChild();
+				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
+				switch( nextVF ) {		//
 				case 0:		//"ジャケット	mpJakeImg.getId();						//2131624054
 					dbMsg +="ジャケット=" + mpJakeImg.getId();		//2131624129
 					break;
 				case 1:		//"ビジュアライザー						//2131624129
+					int checkResalt = checkSelfPermission(Manifest.permission.RECORD_AUDIO);	//許可されていなければ -1 いれば 0
+					dbMsg += "=" + checkResalt;
+					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {  //許可されていなければ
+						if (velocityX > 0) {
+							pp_vf.showPrevious();
+						} else {
+							pp_vf.showNext();
+						}
+					}
+
 					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
-					if( (dataFN != null && ! dataFN.equals(""))|| visualizerType == Visualizer_type_none  ){
-						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
+					if(visualizerType < Visualizer_type_none){
+						visualizerType = Visualizer_type_FFT;
+						myEditor.putInt ("visualizerType", visualizerType);
+					}
+					if( (dataFN != null && ! dataFN.equals("")) ){                                //|| visualizerType == Visualizer_type_none
+//						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
 						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
 						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
 						if( mVisualizerView == null && fftView == null ){
-							makeVisualizer(  );						//VisualizerのView作成
+							makeVisualizer();						//VisualizerのView作成
 							dbMsg +=">>アナログ>>" + mVisualizerView;/////////////////////////////////////
 							dbMsg +=">>FFT>>" + fftView;/////////////////////////////////////
 						}
@@ -5496,14 +5510,13 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,float distanceY) {
 		final String TAG = "onScroll";
 		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
-//			dbMsg="MotionEvent1=" + e1 ;/////////////////////////////////////
-//			dbMsg +=",MotionEvent2=" + e2 ;/////////////////////////////////////
-//			dbMsg +=",distanceX=" + distanceX ;/////distanceX=-49.9375
+			dbMsg +="MotionEvent1=" + e1 ;/////////////////////////////////////
+			dbMsg +=",MotionEvent2=" + e2 ;/////////////////////////////////////
+			dbMsg +=",distanceX=" + distanceX ;/////distanceX=-49.9375
 ///*MotionEvent1=MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
 // *  pointerCount=1, historySize=0, eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 },
 // * MotionEvent2=MotionEvent { action=ACTION_MOVE, id[0]=0, x[0]=354.9375, y[0]=803.18884, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
