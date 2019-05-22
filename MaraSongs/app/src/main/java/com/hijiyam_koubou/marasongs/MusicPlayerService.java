@@ -1943,12 +1943,13 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 				mNotificationChannel = new NotificationChannel(
 						getResources().getString(R.string.notifi_id),																// 一意のチャンネルID ここはどこかで定数にしておくのが良さそう
 						getResources().getString(R.string.notifi_name),																	// 設定に表示されるチャンネル名 ここは実際にはリソースを指定するのが良さそう
-						NotificationManager.IMPORTANCE_DEFAULT													// チャンネルの重要度	重要度によって表示箇所が異なる
+						NotificationManager.IMPORTANCE_LOW													// チャンネルの重要度	重要度によって表示箇所が異なる
+																												// IMPORTANCE_DEFAULT   音・バイブレーションあり
 				);
 //						mNotificationChannel.enableLights(true);														// 通知時にライトを有効にする
 //						mNotificationChannel.setLightColor(Color.WHITE);												// 通知時のライトの色
-//				mNotificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);					// ロック画面での表示レベル
-				mNotificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);					// ロック画面での表示レベル
+				mNotificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);					// ロック画面での表示レベル；全内容を表示
+//VISIBILITY_PRIVATE； 基本的な情報は表示されますが、通知の完全なコンテンツは非表示   / VISIBILITY_SECRET；非表示
 				mNotificationManager.createNotificationChannel(mNotificationChannel);										// チャンネルの登録
 			}
 
@@ -1973,32 +1974,10 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 			nBuilder.addAction( generateAction( android.R.drawable.ic_lock_power_off, "Qite", ACTION_SYUURYOU_NOTIF ));;		//ノティフィケーションから終了	ロックスクリーンでは4つ目のアイコンでsetLargeIconが表示されなくなる	☆終了不能に陥る?
 			nBuilder.setContentIntent(contentIntent);																		//タップで起動する画面
 												  //		.setAutoCancel(true)																					//タップで通知領域から削除する＞＞setContentIntentと合わせて削除せずにノティフィケーションだけを閉じさせる　＝　ノティフィケーションを閉じてアクテイビティを表示
-			nBuilder.build();
-//			lpNotification.flags = Notification.FLAG_ONGOING_EVENT;			//フリックで削除させない（削除されることを防ぐ）			//http://mashilo-blog.blogspot.jp/2015/11/notificationbuildernotificationsetlights.html
+			lpNotification = nBuilder.build();																						//生成
+			lpNotification.flags = Notification.FLAG_ONGOING_EVENT;														//フリックで削除させない（削除されることを防ぐ）
 			lpNControls = mediaSession.getController().getTransportControls();			// Do something with your TransportControls			final TransportControls
-			mNotificationManager.notify(NOTIFICATION_ID, nBuilder.build());
-
-//				lpNotification = new Notification.Builder(this)								// Create a new Notification				final Notification
-//										 .setVisibility(Notification.VISIBILITY_PUBLIC)														//2016050:通知にメディア再生コントロールを表示	http://developer.android.com/intl/ja/about/versions/android-5.0.html アプリで RemoteControlClient を使用する場合
-//										 .setShowWhen(false)																	// Hide the timestamp
-//										 .setStyle(new Notification.MediaStyle()												// Set the Notification style☆RemoteViews.RemoteViewから変更					new Notification.MediaStyle()
-//														   .setMediaSession(mediaSession.getSessionToken())									// Attach our MediaSession token
-//														   .setShowActionsInCompactView(0, 1, 2))												// Show our playback controls in the compat view
-//										 .setColor(getResources().getColor(R.color.dark_gray))								// Set the Notification color		//
-//										 .setLargeIcon(artwork)																// Set the large and small icons
-//										 .setSmallIcon(R.drawable.no_image)													// Set Notification content information			R.drawable.no_image
-//										 .setContentText(keyArtist)															//ここが実際に書き込まれる文字
-//										 .setContentInfo(keyAlbum)
-//										 .setContentTitle(keyTitle)
-//										 .setChannelId(getResources().getString(R.string.notifi_id)) 					// Build.VERSION_CODES.O の追加分
-//										 .addAction( generateAction( android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND ))				//.addAction(android.R.drawable.ic_media_rew, "prev", retreivePlaybackAction(3))			// Add some playback controls		//retreivePlaybackAction(3)
-//										 .addAction(generateAction(ppIcon , ppTitol , ACTION_PLAYPAUSE ))			//.addAction(android.R.drawable.ic_media_pause, "pause", retreivePlaybackAction(1))			//retreivePlaybackAction(1)
-//										 .addAction( generateAction( android.R.drawable.ic_media_ff, "Next", ACTION_SKIP ))					//.addAction(android.R.drawable.ic_media_ff, "next", retreivePlaybackAction(2))				//retreivePlaybackAction()
-//										 .addAction( generateAction( android.R.drawable.ic_lock_power_off, "Qite", ACTION_SYUURYOU_NOTIF ))		//ノティフィケーションから終了	ロックスクリーンでは4つ目のアイコンでsetLargeIconが表示されなくなる	☆終了不能に陥る?
-//										 .setContentIntent(contentIntent)																		//タップで起動する画面
-//										 //		.setAutoCancel(true)																					//タップで通知領域から削除する＞＞setContentIntentと合わせて削除せずにノティフィケーションだけを閉じさせる　＝　ノティフィケーションを閉じてアクテイビティを表示
-//										 .build();
-
+			mNotificationManager.notify(NOTIFICATION_ID, lpNotification);
 
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
