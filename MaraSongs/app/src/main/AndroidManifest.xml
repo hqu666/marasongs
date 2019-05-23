@@ -54,8 +54,8 @@
 			<meta-data
 				android:name="com.google.android.gms.ads.APPLICATION_ID"
 				android:value="@string/banner_ad_unit_id"/>
-
         </activity>
+
         <receiver android:name=".MusicPlayerReceiver" >
             <intent-filter>
                 <!-- action android:name="android.media.AUDIO_BECOMING_NOISY" /> -->
@@ -87,7 +87,7 @@
 	            <action android:name="android.intent.action.MEDIA_BUTTON" />								<!-- 操作ボタン対応？ -->
 				<action android:name="android.intent.action.PACKAGE_ADDED" android:priority="200"/>
 			</intent-filter>
-      </receiver>
+      	</receiver>
 
         <receiver android:name="lsRecever"
 			android:label="@string/sample_device_admin"

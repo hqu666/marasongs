@@ -532,4 +532,8 @@
 	<string name="comon_tone_low">低域</string>
     <string name="comon_tone_high_level">高域レベル</string>
 
+	<string name="notifi_id" translatable="false">mara_notif</string>
+	<string name="notifi_name" translatable="false">marasongs notification</string>
+
+
 </resources>

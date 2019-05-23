@@ -1540,8 +1540,11 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 					g_handler.post( new Runnable() {
 					public void run() {
 						final String TAG = "run[changeCount.MusicPlayerService]";
-						String dbMsg="g_handler="+g_handler+",g_timer="+g_timer+"/"+ saiseiJikan +"mS,";/////////////////////////////////////
+						String dbMsg="[MusicPlayerService]";
+						dbMsg +="g_handler="+g_handler+",g_timer="+g_timer+"/"+ saiseiJikan +"mS,";/////////////////////////////////////
 						try {
+//							Intent intent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);           //明示化
+//							intent.setAction(ACTION_STATE_CHANGED) ;
 							Intent intent = new Intent(ACTION_STATE_CHANGED);
 							dbMsg +=",action=" + action ;/////////////////////////////////////
 							if( action.equals(MusicPlayerService.ACTION_SKIP) || action.equals(MusicPlayerService.ACTION_REWIND)){
@@ -1616,7 +1619,7 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 									imanoJyoutai =  MuList.sonomama ;
 									onCompletNow = false;			//曲間処理中
 									if(saiseiJikan-mcPosition > 75){
-							//			sendPlayerState(mPlayer);
+										dbMsg +=";Broadcast送信";
 										sendBroadcast(intent);					//APIL1
 									}
 									if(nokori > kankaku){
@@ -2660,6 +2663,7 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 						dbMsg += dbMsg  +  saiseiJikan + "mS]";/////////////////////////////////////
 					}
 					intent.putExtra("songLyric", songLyric);
+					dbMsg +=";Broadcast送信";
 					sendBroadcast(intent);					//APIL1
 			//		}						//if( (action.equals(ACTION_SKIP) || action.equals(ACTION_REWIND)) && frCount >0){
 				}							//if (mItems != null) {
@@ -3093,11 +3097,11 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 	//通信//////////////////////////////////////////////////////////////////////////
 	static class btHandler extends Handler{
 		public void handleMessage(Message msg) {
-			final String TAG = "handleMessage[MusicPlayerService]";
-			String dbMsg="開始";/////////////////////////////////////
+			final String TAG = "handleMessage";
+			String dbMsg="[MusicPlayerService]";
 			try {
 				Intent broadcastIntent = new Intent();
-				dbMsg="message" + msg.toString() ;/////////////////////////////////////
+				dbMsg +="message" + msg.toString() ;/////////////////////////////////////
 				broadcastIntent.putExtra("message", msg);
 				String actionName = ACTION_BLUETOOTH_INFO;
 				broadcastIntent.setAction(actionName);
@@ -3113,7 +3117,7 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 
 	public void setBTinfo( String stateBaseStr){					//Bluettoth情報更新
 		final String TAG = "setBTinfo[MusicPlayerService]";
-		String dbMsg="開始";/////////////////////////////////////
+		String dbMsg="[MusicPlayerService]";
 		try{
 			dbMsg +=",Buletooth=" +stateBaseStr;
 			this.stateBaseStr = stateBaseStr;
@@ -3749,14 +3753,14 @@ try {
 	//@Override
 	protected void onHandleIntent(Intent intent) {
 		final String TAG = "onHandleIntent[MusicPlayerService]";
-		String dbMsg="開始";/////////////////////////////////////
+		String dbMsg="[MusicPlayerService]";
 		try {
 			Thread.sleep(10000);
 			Intent broadcastIntent = new Intent();
 			//	  public Item playingItem;
-			dbMsg="artist=" +creditArtistName ;//////////////////////////
+			dbMsg +="artist=" +creditArtistName ;//////////////////////////
 			broadcastIntent.putExtra("artist", creditArtistName);						//クレジットアーティスト名
-			dbMsg="album_artist=" + album_artist;/////////////////////////////////////
+			dbMsg +="album_artist=" + album_artist;/////////////////////////////////////
 			broadcastIntent.putExtra("album_artist", album_artist);		//リストアップしたアルバムアーティスト名
 			dbMsg +=",album=" + albumName;
 			broadcastIntent.putExtra("albumName", albumName);			//アルバム名
@@ -3769,6 +3773,7 @@ try {
 			dbMsg +="/" + saiseiJikan +"]";
 			broadcastIntent.putExtra("saiseiJikan", saiseiJikan);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 			broadcastIntent.setAction("mFilter");
+			dbMsg +=";Broadcast送信";
 			myLog(TAG,dbMsg);
 			getBaseContext().sendBroadcast(broadcastIntent);
 		} catch (InterruptedException e) {

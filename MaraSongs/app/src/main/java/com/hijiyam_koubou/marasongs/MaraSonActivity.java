@@ -1608,7 +1608,7 @@ public class MaraSonActivity extends AppCompatActivity
 									lyric_tv.setText(songLyric);					//歌詞表示
 								}
 							}
-//							myLog(TAG, dbMsg);
+							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG ,  dbMsg + "で" + e);
 						}
@@ -1617,10 +1617,13 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 		};
 //http://blog.justoneplanet.info/2011/12/14/android%E3%81%A7notification%E3%82%92%E4%BD%BF%E3%81%86/
-
-	public void pointKousin(){		//再生ポイント更新
-		final String TAG = "pointKousin[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+	/**
+	 * 再生ポイント更新
+	 * 呼出し元  MusicReceiver
+	 * */
+	public void pointKousin(){		//
+		final String TAG = "pointKousin";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 //			new Thread(new Runnable() {				//ワーカースレッドの生成
 //				public void run() {
 //					String dbMsg= "thread id = " + Thread.currentThread().getId();/////////////////////////////////////
@@ -1636,21 +1639,21 @@ public class MaraSonActivity extends AppCompatActivity
 //						public void run() {
 //							final String TAG = "runOnUiThread[pointKousin]";
 //							String dbMsg= "開始";/////////////////////////////////////
-						try{
+		try{
 //								dbMsg= "thread id = " + Thread.currentThread().getId();/////////////////////////////////////
-							dbMsg +="[再生ポジション=" + mcPosition + "/";
-							saiseiSeekMP.setProgress((int) mcPosition);
-							saiseiPositionPTF.setText(ORGUT.sdf_mss.format(mcPosition).toString());	   		//再生画面の経過時間枠
-							dbMsg +="再生時間=" +saiseiJikan;
-							totalTimePTF.setText(ORGUT.sdf_mss.format(saiseiJikan).toString());
-							saiseiSeekMP.setMax((int) saiseiJikan);		//DURATION;
-							nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-							dbMsg +=">>" + nowVol;//0～15/////////////////////////////
-							vol_tf.setText(String.valueOf(nowVol));;												//音量表示
-							myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG ,  dbMsg + "で" + e);
-						}
+			dbMsg +="[再生ポジション=" + mcPosition + "/";
+			saiseiSeekMP.setProgress((int) mcPosition);
+			saiseiPositionPTF.setText(ORGUT.sdf_mss.format(mcPosition).toString());	   		//再生画面の経過時間枠
+			dbMsg +="再生時間=" +saiseiJikan;
+			totalTimePTF.setText(ORGUT.sdf_mss.format(saiseiJikan).toString());
+			saiseiSeekMP.setMax((int) saiseiJikan);		//DURATION;
+			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
+			dbMsg +=">>" + nowVol;//0～15/////////////////////////////
+			vol_tf.setText(String.valueOf(nowVol));;												//音量表示
+//							myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
 //						}
 //					});
 //				}
@@ -1733,8 +1736,8 @@ public class MaraSonActivity extends AppCompatActivity
 	 * ☆サービスからサービスは呼び出せないのでこのアクティビティから呼び出す。
 	 * */
 	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service	onClick
-		final String TAG = "receiverSeisei[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
+		final String TAG = "receiverSeisei";
+		String dbMsg= "[MaraSonActivity]";
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			dbMsg= dbMsg +",mReceiver=" + mReceiver;////////////////////////

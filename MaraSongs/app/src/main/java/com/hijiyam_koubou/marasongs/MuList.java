@@ -16,6 +16,10 @@ import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothA2dp;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.media.AudioManager;
 import android.os.Build;
 import android.Manifest;
 import android.preference.PreferenceManager;
@@ -440,6 +444,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 //			NendAdInterstitial.dismissAd ();
 			//		NendAdInterstitial.showFinishAd(this);			// アプリ内で使用するインタースティシャル広告の枠が一つの場合はこちらをお使いください
 			//		NendAdInterstitial.showFinishAd (this,458687);		// 広告枠指定ありの場合
+			receiverHaki();							//unregisterReceiverで
+			dbMsg += "レシーバーを破棄";
 			MuList.this.finish ();
 			this.finish();
 			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
@@ -3541,12 +3547,55 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	//サービス
 	public ComponentName MPSName;
 	public MusicPlayerService MPS;
+	public MusicReceiver mReceiver;
 	Handler mHandler = new Handler();
 	public IntentFilter mFilter;
 
-///②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
-	BroadcastReceiver mReceiver = new BroadcastReceiver() {	//②ⅰ					public BroadcastReceiver	>>onReceive
-//		MusicPlayerReceiver mReceiver = new MusicPlayerReceiver() {
+
+	public boolean showMyPlayer(){ 					//プレイヤー表示
+		final String TAG = "showMyPlayer";
+		String dbMsg = "[MuList]";
+		boolean retBool = false;
+		try{
+			list_player.setVisibility(View.VISIBLE);
+
+			dbMsg += ",IsPlaying=" + IsPlaying;/////////////////////////////////////
+			boolean playing = IsPlaying;
+			dbMsg += ",playing=" + playing;/////////////////////////////////////
+			int playPauseRes = playing ? R.drawable.pouse_notif : R.drawable.play_notif;			//操作ボタン	...509 / ...510
+			dbMsg +=",playPauseRes=" + playPauseRes;/////////////////////////////////////
+			lp_ppPButton.setImageResource(playPauseRes);
+			playingItem = mItems.get(mIndex);
+			dbMsg +=";" + playingItem.artist;/////////////////////////////////////
+			lp_artist.setText( playingItem.artist);
+			dbMsg +=";" + playingItem.album;/////////////////////////////////////
+			lp_album.setText( playingItem.album);
+			dbMsg +=";" + playingItem.title;/////////////////////////////////////
+			lp_title.setText( playingItem.title);
+			dbMsg += "[" + this.mcPosition  + "/" + playingItem.duration +"]";/////////////////////////////////////
+			//			long baseTime = playingItem.duration;
+			//			dbMsg += " , baseTime:" + baseTime;								//baseTime:1427555870315
+			//			long current = SystemClock.elapsedRealtime() - playingItem.duration;																					//再生ポイントを取得
+			backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
+			long current = SystemClock.elapsedRealtime() - this.mcPosition + backTime;																					//再生ポイントを取得
+			dbMsg += " , current:" + current;
+			lp_chronometer.setBase( current);
+			lp_chronometer.start();
+
+//			lp_ppPButton.setOnClickListener(this);
+//			lp_stop.setOnClickListener(this);
+//			rc_fbace.setOnClickListener(this);
+			retBool = true;
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+	}
+
+	///②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
+//	BroadcastReceiver mReceiver = new BroadcastReceiver() {	//②ⅰ					public BroadcastReceiver	>>onReceive
+	public class MusicReceiver extends BroadcastReceiver{
 			@Override
 			public void onReceive(Context context, final Intent intent) {
 				mHandler.post(new Runnable() {
@@ -3573,142 +3622,76 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 							mIndex = intent.getIntExtra("mIndex", 0);		//再生ポジション//mCurrentPosition = intent.getIntExtra("currentPosition", 0);
 							dbMsg +="[mIndex=" + mIndex + "]";
 							dbMsg +=",IsPlaying= "+ IsPlaying;/////////////////////////////////////
-	//						myLog(TAG,dbMsg);
+	//						if( IsPlaying ){
+								showMyPlayer();					//プレイヤー表示
+	//						} else{
+	////							list_player.setVisibility(View.GONE);
+	//						}
 						}					//if(! saisei_fname.equals(b_saisei_fname) ){
-						if( IsPlaying ){
-							showMyPlayer();					//プレイヤー表示
-						} else{
-							list_player.setVisibility(View.GONE);
-						}
+//							boolean playing = IsPlaying;
+//							int playPauseRes = playing ? R.drawable.pouse_notif : R.drawable.play_notif;			//操作ボタン	...509 / ...510
+//							dbMsg +=",playPauseRes=" + playPauseRes;/////////////////////////////////////
+//							lp_ppPButton.setImageResource(playPauseRes);
+//							playingItem = mItems.get(mIndex);
+//							dbMsg +=";" + playingItem.artist;/////////////////////////////////////
+//							lp_artist.setText( playingItem.artist);
+//							dbMsg +=";" + playingItem.album;/////////////////////////////////////
+//							lp_album.setText( playingItem.album);
+//							dbMsg +=";" + playingItem.title;/////////////////////////////////////
+//							lp_title.setText( playingItem.title);
+//							dbMsg += "[" + mcPosition  + "/" + playingItem.duration +"]";/////////////////////////////////////
+//							//			long baseTime = playingItem.duration;
+//							//			dbMsg += " , baseTime:" + baseTime;								//baseTime:1427555870315
+//							//			long current = SystemClock.elapsedRealtime() - playingItem.duration;																					//再生ポイントを取得
+//							backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
+//							long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
+//							dbMsg += " , current:" + current;
+//							lp_chronometer.setBase( current);
+//							lp_chronometer.start();
+
+
 						//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
-						dbMsg +=  "ノティフィケーション";				// + intent ;/////////////////////////////////////
-						String action = intent.getAction();
-						dbMsg += ",action= " + action;														//com.example.android.notification.action①.INIT→②PLAY_PAUSE→③PLAY_PAUSE
-						Notification notification = (Notification) intent.getParcelableExtra("notification");
-//												dbMsg += " , notification=:" + notification;				//Notification(pri=0 contentView=com.example.android.notification/0x7f030002 vibrate=null sound=null defaults=0x0 flags=0x10 kind=[null]) ,
-//												 Bundle bundle = intent.getExtras();
-//												dbMsg += " , bundle=:" + bundle;				//Notification(pri=0 contentView=com.example.android.notification/0x7f030002 vibrate=null sound=null defaults=0x0 flags=0x10 kind=[null]) ,
-//												Notification notification =(Notification) bundle.get("notification");
-						dbMsg += " , notification=:" + notification;				//Notification(pri=0 contentView=com.example.android.notification/0x7f030002 vibrate=null sound=null defaults=0x0 flags=0x10 kind=[null]) ,
-						IsPlaying = intent.getBooleanExtra("isPlaying", false);
-						dbMsg += " , isPlaying=" + IsPlaying;									// isPlaying:true→③false
-						long baseTime = intent.getLongExtra("baseTime", 0);
-						dbMsg += " , baseTime:" + baseTime;								//baseTime:1427555870315
-						lp_chronometer.start();
-						long current = SystemClock.elapsedRealtime() - baseTime;																					//再生ポイントを取得
-						dbMsg += " , current:" + current;
-						lp_chronometer.setBase( current);
-						lp_chronometer.start();
+//						dbMsg +=  "ノティフィケーション";				// + intent ;/////////////////////////////////////
+//						String action = intent.getAction();
+//						dbMsg += ",action= " + action;														//com.example.android.notification.action①.INIT→②PLAY_PAUSE→③PLAY_PAUSE
+//						Notification notification = (Notification) intent.getParcelableExtra("notification");
+////												dbMsg += " , notification=:" + notification;				//Notification(pri=0 contentView=com.example.android.notification/0x7f030002 vibrate=null sound=null defaults=0x0 flags=0x10 kind=[null]) ,
+////												 Bundle bundle = intent.getExtras();
+////												dbMsg += " , bundle=:" + bundle;				//Notification(pri=0 contentView=com.example.android.notification/0x7f030002 vibrate=null sound=null defaults=0x0 flags=0x10 kind=[null]) ,
+////												Notification notification =(Notification) bundle.get("notification");
+//						dbMsg += " , notification=:" + notification;				//Notification(pri=0 contentView=com.example.android.notification/0x7f030002 vibrate=null sound=null defaults=0x0 flags=0x10 kind=[null]) ,
+//						IsPlaying = intent.getBooleanExtra("isPlaying", false);
+//						dbMsg += " , isPlaying=" + IsPlaying;									// isPlaying:true→③false
+//						long baseTime = intent.getLongExtra("baseTime", 0);
+//						dbMsg += " , baseTime:" + baseTime;								//baseTime:1427555870315
+//						lp_chronometer.start();
+//						long current = SystemClock.elapsedRealtime() - baseTime;																					//再生ポイントを取得
+//						dbMsg += " , current:" + current;
+//						lp_chronometer.setBase( current);
+//						lp_chronometer.start();
 
-						NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//												NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-						dbMsg += " , manager=" + manager;/////////////////////////////////////
-						if (ACTION_INIT.equals(action)) {										//起動時button3の"showNotification[MainActivity]"
-							intent.setAction(ACTION_PLAY_PAUSE);							//次に.layout.sample
-						} else if (ACTION_PLAY_PAUSE.equals(intent.getAction())) {
-							dbMsg += " , isPlaying=:" + IsPlaying;							//②208450
-							if (IsPlaying) {																																			//再生中なら
-								current = System.currentTimeMillis() - baseTime;																					//再生ポイントを取得
-								dbMsg += " , current:" + current;							//②208450
-								notification.contentView.setImageViewResource(R.id.ppPButton, R.drawable.play_notif);									//アイコンを再生に
-								notification.contentView.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() - current, null, false);		//再生時間設定
-//										intent.putExtra("current", current);
-							} else {																																					//	停止していたら
-								current = intent.getLongExtra("current", 0);																							//再生ポイントリセット
-								dbMsg += " , current:" + current;/////////////////////////////////////
-								notification.contentView.setImageViewResource(R.id.ppPButton, R.drawable.pouse_notif);								//アイコンをポーズに
-								notification.contentView.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() - current, null, true);
-//														intent.putExtra("baseTime", System.currentTimeMillis() - current);
-							}
-//													intent.putExtra("isPlaying", !isPlaying);																											//再生/停止表示を反転
-//													intent.putExtra("notification", notification);
-						}
-//												PendingIntent pendingIntent = PendingIntent.getBroadcast(MaraSonActivity.this, R.id.ppPButton, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-////												PendingIntent pendingIntent = PendingIntent.getBroadcast(context, R.id.ppPButton, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//																							//PendingIntentをBoradcastReceiverのコンテキストで生成。第2引数にはウィジェット単位でユニークな値を指定。
-//																							//第4引数のフラグはIntent内のエクストラデータだけを差し替えたPendingIntentを返す
-//												notification.contentView.setOnClickPendingIntent(R.id.ppPButton, pendingIntent);
-//																							//ボタンにPendingIntentを設定。ボタンがクリックされた際に、PendingIntent内のIntentがブロードキャストされる
-//												manager.notify(R.id.ppPButton, notification);
-								//Notifiationを通知。第一引数のIDはアプリ内でユニークな値を指定=同一のIDでNotifiationを通知することにより、既存のNotificationを更新。
-						myLog(TAG, dbMsg);
-				//////////////////////////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	//////////
-//												CharSequence btStre = ppPBT.getContentDescription();
-//												dbMsg += ",ppPBT=" + btStre;
-//								//				myLog(TAG, dbMsg);
-//												if(btStre != null){
-//													if (btStre.equals(getResources().getText(R.string.play))) {
-//														playing();
-//													} else if (btStre.equals(getResources().getText(R.string.pause))) {
-//														paused();
-//													} else if (btStre.equals(getResources().getText(R.string.stop))) {
-//														stopped();
-//													}
-//												}
-//
-//												dbMsg += ",intent= " + intent;
-//													//ロックスクリーン； 	{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver (has extras) }:
-//													//プレイヤー； 			{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver }:
-//												dbMsg +="getAction=null" + intent.getAction();
-//												dbMsg += ":" + (
-//												intent.getAction() == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY? "ACTION_AUDIO_BECOMING_NOISY" :
-//												intent.getAction() == Intent.ACTION_MEDIA_BUTTON ? "ボタン" : "不明");
-//												if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-//													Toast.makeText(getApplicationContext(), "Headphones disconnected.", Toast.LENGTH_SHORT).show();
-//													getApplicationContext().startService(new Intent(MusicPlayerService.ACTION_PAUSE));				// send an intent to our PlayerService to telling it to pause the audio
-//												} else if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
-//													dbMsg +=",getExtras=" + intent.getExtras();
-//													if(  intent.getExtras() != null ){
-//														String action = intent.getAction();
-//														dbMsg +=  ",action=" + action;
-
-//														KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-//														if (keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
-//															return;
-//														}
-//														dbMsg += ":" + (
-//															keyEvent.getKeyCode() == KeyEvent.KEYCODE_HEADSETHOOK ? "PLAY/PAUSE" :
-//															keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ? "PLAY/PAUSE" :
-//															keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_STOP ? "STOP" :
-//															keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_NEXT ? "FF" :
-//															keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PREVIOUS ? "Rew" : "Rew");
-//														if( keyEvent != null ){
-//															dbMsg +="を"  + (
-//															keyEvent.getAction() == KeyEvent.ACTION_DOWN ? "押した" :
-//															keyEvent.getAction() == KeyEvent.ACTION_UP ? "UP" :
-//															keyEvent.getAction() == KeyEvent.ACTION_MULTIPLE ? "MULTIPLE" : "Unknown");			//ロックスクリーン以外はここでエラーで止まる
-//														}
-//														Intent MPSIntent = new Intent(getApplicationContext(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-//														switch (keyEvent.getKeyCode()) {
-//														case KeyEvent.KEYCODE_HEADSETHOOK:
-//														case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-//						//									MPSIntent.putExtra("mIndex",mIndex);	//現リスト中の順番;
-//						//									registerReceiver(mReceiver, mFilter);
-//															MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);	//	ontext.startService(new Intent(MusicPlayerService.ACTION_PLAYPAUSE));
-//															break;
-//														case KeyEvent.KEYCODE_MEDIA_PLAY:
-//															MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);				//context.startService(new Intent(MusicPlayerService.ACTION_PLAY));
-//															break;
-//														case KeyEvent.KEYCODE_MEDIA_PAUSE:
-//															MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);			//	context.startService(new Intent(MusicPlayerService.ACTION_PAUSE));
-//															break;
-//														case KeyEvent.KEYCODE_MEDIA_STOP:
-//															MPSIntent.setAction(MusicPlayerService.ACTION_STOP);				//	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
-//															break;
-//														case KeyEvent.KEYCODE_MEDIA_NEXT:
-//															MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);				//	context.startService(new Intent(MusicPlayerService.ACTION_SKIP));
-//															break;
-//														case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-//															MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);			//	context.startService(new Intent(MusicPlayerService.ACTION_REWIND));					// plays the previous song
-//															break;
-//														}
-//														dbMsg += " ,ロックスクリーンから" + MPSIntent.getAction();/////////////////////////////////////
-//														ComponentName MPSName = getApplicationContext().startService(MPSIntent);
-//														dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
-//													} else {
-//														dbMsg += dbMsg+ ",ロックスクリーンではない";/////////////////////////////////////
-//													}						//if(  intent.getExtras() != null ){
-					//				}							//} else if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
+//						NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+////												NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//						dbMsg += " , manager=" + manager;/////////////////////////////////////
+//						if (ACTION_INIT.equals(action)) {										//起動時button3の"showNotification[MainActivity]"
+//							intent.setAction(ACTION_PLAY_PAUSE);							//次に.layout.sample
+//						} else if (ACTION_PLAY_PAUSE.equals(intent.getAction())) {
+//							dbMsg += " , isPlaying=:" + IsPlaying;							//②208450
+//							if (IsPlaying) {																																			//再生中なら
+//								current = System.currentTimeMillis() - baseTime;																					//再生ポイントを取得
+//								dbMsg += " , current:" + current;							//②208450
+//								notification.contentView.setImageViewResource(R.id.ppPButton, R.drawable.play_notif);									//アイコンを再生に
+//								notification.contentView.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() - current, null, false);		//再生時間設定
+////										intent.putExtra("current", current);
+//							} else {																																					//	停止していたら
+//								current = intent.getLongExtra("current", 0);																							//再生ポイントリセット
+//								dbMsg += " , current:" + current;/////////////////////////////////////
+//								notification.contentView.setImageViewResource(R.id.ppPButton, R.drawable.pouse_notif);								//アイコンをポーズに
+//								notification.contentView.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime() - current, null, true);
+////														intent.putExtra("baseTime", System.currentTimeMillis() - current);
+//							}
+//						}
+//						myLog(TAG, dbMsg);
 							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG,dbMsg+"で"+e);
@@ -3718,54 +3701,48 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			}
 		};			//MusicPlayerReceiver
 
-	public boolean showMyPlayer(){ 					//プレイヤー表示
-			final String TAG = "showMyPlayer";
-			String dbMsg = "[MuList]";
-			boolean retBool = false;
-			try{
-				list_player.setVisibility(View.VISIBLE);
-				lp_ppPButton = (ImageButton)list_player.findViewById(R.id.ppPButton);			//プレイヤーの再生/停止ボタン
-				rc_fbace = (LinearLayout)list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
-				lp_stop = (ImageButton)list_player.findViewById(R.id.stop);								//プレイヤーの終了ボタン
-				lp_artist = (TextView)list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
-				lp_album = (TextView)list_player.findViewById(R.id.album);									//プレイヤーのアルバム表示
-				lp_title = (TextView)list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
-				lp_chronometer = (Chronometer)list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
-
-				dbMsg += ",IsPlaying=" + IsPlaying;/////////////////////////////////////
-				myLog(TAG,dbMsg);
-				boolean playing = IsPlaying == true;
-				dbMsg += ",playing=" + playing;/////////////////////////////////////
-				int playPauseRes = playing ? R.drawable.pouse_notif : R.drawable.play_notif;			//操作ボタン	...509 / ...510
-				dbMsg +=",playPauseRes=" + playPauseRes;/////////////////////////////////////
-				lp_ppPButton.setImageResource(playPauseRes);
-				playingItem = mItems.get(mIndex);
-				dbMsg +=";" + playingItem.artist;/////////////////////////////////////
-				lp_artist.setText( playingItem.artist);
-				dbMsg +=";" + playingItem.album;/////////////////////////////////////
-				lp_album.setText( playingItem.album);
-				dbMsg +=";" + playingItem.title;/////////////////////////////////////
-				lp_title.setText( playingItem.title);
-				dbMsg += "[" + this.mcPosition  + "/" + playingItem.duration +"]";/////////////////////////////////////
-	//			long baseTime = playingItem.duration;
-	//			dbMsg += " , baseTime:" + baseTime;								//baseTime:1427555870315
-	//			long current = SystemClock.elapsedRealtime() - playingItem.duration;																					//再生ポイントを取得
-				backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
-				long current = SystemClock.elapsedRealtime() - this.mcPosition + backTime;																					//再生ポイントを取得
-				dbMsg += " , current:" + current;
-				lp_chronometer.setBase( current);
-				lp_chronometer.start();
-
-				lp_ppPButton.setOnClickListener(this);
-				lp_stop.setOnClickListener(this);
-				rc_fbace.setOnClickListener(this);
-				retBool = true;
-				myLog(TAG, dbMsg);
-			}catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
+	/**
+	 * レシーバーを生成
+	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 	onClick		keizoku2Service	onStopTrackingTouch	onKey
+	 * ☆サービスからサービスは呼び出せないのでこのアクティビティから呼び出す。
+	 * */
+	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service	onClick
+		final String TAG = "receiverSeisei";
+		String dbMsg= "[MuList]";
+		try{
+			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg= dbMsg +",mReceiver=" + mReceiver;////////////////////////
+			if( mReceiver== null ){
+				mFilter = new IntentFilter();
+				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+				mReceiver = new MusicReceiver();
+				registerReceiver(mReceiver, mFilter);
+				dbMsg +=">生成>=" + mReceiver;////////////////////////
+				showMyPlayer();					//プレイヤー表示
 			}
-			return retBool;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
+	}
+
+	public void receiverHaki(){		//レシーバーを破棄
+		final String TAG = "receiverHaki";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		try{
+			dbMsg= "mReceivert=" + mReceiver;////////////////////////
+			if( mReceiver != null ){
+				unregisterReceiver(mReceiver);
+				mReceiver = null;
+				dbMsg= ">>" + mReceiver;////////////////////////
+				list_player.setVisibility(View.GONE);
+			}
+//			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
 
 	//設定値管理////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void reWriteAllVal(){ //変数全設定	★wriAllPrifに続けてreadPrifを呼び出しても更新がされていない
@@ -9268,6 +9245,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			shigot_bangou = 0;
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
+			receiverHaki();		//レシーバーを破棄
+
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
 			Bundle extras = getIntent().getExtras();
 			dbMsg +=  ",extras="+ extras ;/////////////////////////////////////
@@ -9353,6 +9332,18 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			lvID.setFocusableInTouchMode(true);
 			registerForContextMenu(lvID);							//コンテキストメニュー
 			list_player = (LinearLayout)findViewById(R.id.list_player);		//プレイヤーのインクルード
+
+			lp_ppPButton = (ImageButton)list_player.findViewById(R.id.ppPButton);			//プレイヤーの再生/停止ボタン
+			rc_fbace = (LinearLayout)list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
+			lp_stop = (ImageButton)list_player.findViewById(R.id.stop);								//プレイヤーの終了ボタン
+			lp_artist = (TextView)list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
+			lp_album = (TextView)list_player.findViewById(R.id.album);									//プレイヤーのアルバム表示
+			lp_title = (TextView)list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
+			lp_chronometer = (Chronometer)list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
+			lp_ppPButton.setOnClickListener(this);
+			lp_stop.setOnClickListener(this);
+			rc_fbace.setOnClickListener(this);
+
 			list_player.setVisibility(View.GONE);
 			mainHTF.setOnKeyListener( this);
 			//ヘッダー部分のロングタップ/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9522,21 +9513,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		final String TAG = "onResume";
-		String dbMsg = "[MuList]";
-		try{
-			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg +="shigot_bangou="+shigot_bangou;/////////////////////////////////////
-			myLog(TAG, dbMsg);
-			oFR();
-		}catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	@Override
 	protected void onStart() {
 		super.onStart();
 		final String TAG = "onStart";
@@ -9544,6 +9520,23 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		final String TAG = "onResume";
+		String dbMsg = "[MuList]";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg +="shigot_bangou="+shigot_bangou;
+			receiverSeisei();		//
+			dbMsg +="レシーバーを生成";
+			myLog(TAG, dbMsg);
+			oFR();
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}

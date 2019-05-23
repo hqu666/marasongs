@@ -8,12 +8,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import static com.hijiyam_koubou.marasongs.MusicPlayerService.ACTION_STATE_CHANGED;
+
 /*リモートコントロール（ロックスクリーンやBluethootアンプ）からブロードキャストされるマルチメディアイベントを受け取るレシーバ。 */
 public class MusicPlayerReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		final String TAG = "onReceive[MusicPlayerReceiver]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "onReceive";
+		String dbMsg="[MusicPlayerReceiver]";/////////////////////////////////////
 		try{
 			dbMsg="context="+context;				
 //				//ロックスクリーン；	android.app.ReceiverRestrictedContext@419e37f8
@@ -21,23 +23,27 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 			dbMsg +=",intent= " + intent;
 				//ロックスクリーン； 	{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver (has extras) }:
 				//プレイヤー； 			{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver }:
-			dbMsg= dbMsg +",getAction=" + intent.getAction();
+			String rAction = intent.getAction();
+			dbMsg= dbMsg +",getAction=" + rAction;
+			if(rAction == null){
+				rAction = ACTION_STATE_CHANGED;
+			}
 			Intent MPSIntent = new Intent(context, MusicPlayerService.class);
 			dbMsg +=":" + (
-				intent.getAction() == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY? "ACTION_AUDIO_BECOMING_NOISY" :
-				intent.getAction() == Intent.ACTION_MEDIA_BUTTON ? "ボタン" : "不明");
-				if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
+					rAction == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY? "ACTION_AUDIO_BECOMING_NOISY" :
+							rAction== Intent.ACTION_MEDIA_BUTTON ? "ボタン" : "不明");
+				if (rAction.equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
 					dbMsg +=",Headphonesが外された" ;															//offしか発生しない
 					Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
 //					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
 //					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
-				}else if (intent.getAction().equals(android.media.AudioManager.ACTION_HEADSET_PLUG)) {		
+				}else if (rAction.equals(android.media.AudioManager.ACTION_HEADSET_PLUG)) {
 					dbMsg +=",Headphonessoucy装着" ;
 //					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
 //					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
-				} else if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
+				} else if (rAction.equals(Intent.ACTION_MEDIA_BUTTON)) {
 					dbMsg= dbMsg +",getExtras=" + intent.getExtras();
 					if(  intent.getExtras() != null ){
 						KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
