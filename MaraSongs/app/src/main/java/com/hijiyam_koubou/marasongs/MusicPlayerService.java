@@ -1539,10 +1539,11 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 				public void run() {
 					g_handler.post( new Runnable() {
 					public void run() {
-						final String TAG = "run[changeCount.MusicPlayerService]";
-						String dbMsg="[MusicPlayerService]";
+						final String TAG = "changeCount.run";
+						String dbMsg="[MusicPlayerService.changeCount.MusicPlayerService]";
 						dbMsg +="g_handler="+g_handler+",g_timer="+g_timer+"/"+ saiseiJikan +"mS,";/////////////////////////////////////
 						try {
+//							mcPosition = 0;
 //							Intent intent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);           //明示化
 //							intent.setAction(ACTION_STATE_CHANGED) ;
 							Intent intent = new Intent(ACTION_STATE_CHANGED);
@@ -1560,10 +1561,7 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 								if( mPlayer == null ){
 									if(rp_pp){						//2点間リピート中で//リピート区間終了点
 										mcPosition = pp_start;		//リピート区間開始点
-									}else {
-										mcPosition = 0;
 									}
-
 									IsPlaying  = false ;			//再生中か
 									IsSeisei  = false ;				//生成中
 								} else {
@@ -1576,6 +1574,7 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 								ruikeikasannTime = mcPosition;			//累積加算時間
 								intent.putExtra("saiseiJikan", saiseiJikan);
 								intent.putExtra("data", dataFN);
+								intent.putExtra("mIndex", mIndex);
 								dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
 								intent.putExtra("IsSeisei", IsSeisei);
 								dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
@@ -1583,22 +1582,18 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 								int nokori = (int) (saiseiJikan - mcPosition-kankaku);
 					  			dbMsg +="," + titolName +"再生中の残" + nokori + "/" + crossFeadTime + "mSで次曲へ";/////////////////////////////////////
 //								dbMsg +="mBluetoothAdapter=" +mBluetoothAdapter;
-//								if (mBluetoothAdapter == null) {					//スマフォのBluetiithをOffにしたら
-//								} else {
-									if(stateBaseStr != null && b_stateStr != null){
-										if( ! b_stateStr.equals(stateBaseStr)){
-											dbMsg +="stateBaseStr=" +stateBaseStr;
-											intent.putExtra("stateBaseStr", stateBaseStr);
-											b_stateStr = stateBaseStr;
-										}
+								if(stateBaseStr != null && b_stateStr != null){
+									if( ! b_stateStr.equals(stateBaseStr)){
+										dbMsg +="stateBaseStr=" +stateBaseStr;
+										intent.putExtra("stateBaseStr", stateBaseStr);
+										b_stateStr = stateBaseStr;
 									}
-//								}
-		//											myLog(TAG , dbMsg);
-					  			if( ( nokori <= crossFeadTime ||
+								}
+//								intent.setFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND);
+								if( ( nokori <= crossFeadTime ||
 					  					(rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
 					  					)){			//	&&  (Build.VERSION.SDK_INT <16)
 									dbMsg +="[ " + mIndex +",再生時間="+ saiseiJikan;/////////////////////////////////////
-									dbMsg += ",mState = " +  mState ;/////////////////////////////////////
 				//					myLog(TAG,dbMsg);
 									onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 						//			if( (Build.VERSION.SDK_INT <16)){	//Android4.2以前は
@@ -2565,10 +2560,6 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 	//					}
 					}
 
-					if(saiseiJikan > 0){
-						dbMsg +="[" +saiseiJikan + "mS]";/////////////////////////////////////
-						intent.putExtra("saiseiJikan", saiseiJikan);
-					}
 					dbMsg +=" , mState=" + mState.toString();////////////////////////////ノティフィケーション送る
 					intent.putExtra("state", mState.toString());
 			//		IsPlaying  = false ;								//再生中か
@@ -2583,7 +2574,7 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 						IsSeisei = false ;
 						IsPlaying  = false ;								//再生中か
 					}
-					dbMsg +="[再生ポジション=" +  mcPosition + ",2点間リピート中" + rp_pp ;/////////////////////////////////////
+					dbMsg += ",2点間リピート中" + rp_pp ;/////////////////////////////////////
 					if( rp_pp ){			//2点間リピート中
 						mcPosition = pp_start;			//リピート区間開始点
 						dbMsg +=">>"+ mcPosition;/////////////////////////////////////
@@ -2591,8 +2582,12 @@ public boolean yomiKomiCheck(String checkFN) throws IOException {		//setDataSour
 					}
 					intent.putExtra("mcPosition", mcPosition);
 					intent.putExtra("currentPosition", mcPosition);
-				//	saiseiJikan = (int) playingItem.duration;			//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-					dbMsg += dbMsg  + "/" +  saiseiJikan + "mS]";/////////////////////////////////////
+					saiseiJikan = (int) playingItem.duration;			//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
+					dbMsg += "[再生ポジション=" +  mcPosition + "/" +  saiseiJikan + "mS]";/////////////////////////////////////
+					if(saiseiJikan > 0){
+						dbMsg +="[" +saiseiJikan + "mS]";/////////////////////////////////////
+						intent.putExtra("saiseiJikan", saiseiJikan);
+					}
 					dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
 					intent.putExtra("IsSeisei", IsSeisei);
 					dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
@@ -3750,36 +3745,36 @@ try {
 	}
 
 	/////ライフサイクル////////////////////////////////////////////////////////////////////////Bluetooth,着信のイベント/////
-	//@Override
-	protected void onHandleIntent(Intent intent) {
-		final String TAG = "onHandleIntent[MusicPlayerService]";
-		String dbMsg="[MusicPlayerService]";
-		try {
-			Thread.sleep(10000);
-			Intent broadcastIntent = new Intent();
-			//	  public Item playingItem;
-			dbMsg +="artist=" +creditArtistName ;//////////////////////////
-			broadcastIntent.putExtra("artist", creditArtistName);						//クレジットアーティスト名
-			dbMsg +="album_artist=" + album_artist;/////////////////////////////////////
-			broadcastIntent.putExtra("album_artist", album_artist);		//リストアップしたアルバムアーティスト名
-			dbMsg +=",album=" + albumName;
-			broadcastIntent.putExtra("albumName", albumName);			//アルバム名
-			dbMsg +=",titol=" + titolName;
-			broadcastIntent.putExtra("titolName", titolName);			//曲名
-			dbMsg +=",dataFN=" + dataFN;
-			broadcastIntent.putExtra("dataFN", dataFN);				//DATA;The data stream for the file ;Type: DATA STREAM
-			dbMsg +="[" + mcPosition;
-			broadcastIntent.putExtra("mcPosition", mcPosition);		//現在の再生ポジション☆生成時は最初から
-			dbMsg +="/" + saiseiJikan +"]";
-			broadcastIntent.putExtra("saiseiJikan", saiseiJikan);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-			broadcastIntent.setAction("mFilter");
-			dbMsg +=";Broadcast送信";
-			myLog(TAG,dbMsg);
-			getBaseContext().sendBroadcast(broadcastIntent);
-		} catch (InterruptedException e) {
-			myErrorLog(TAG,dbMsg+"で"+e);
-		}
-	}
+//	//@Override
+//	protected void onHandleIntent(Intent intent) {
+//		final String TAG = "onHandleIntent[MusicPlayerService]";
+//		String dbMsg="[MusicPlayerService]";
+//		try {
+//			Thread.sleep(10000);
+//			Intent broadcastIntent = new Intent();
+//			//	  public Item playingItem;
+//			dbMsg +="artist=" +creditArtistName ;//////////////////////////
+//			broadcastIntent.putExtra("artist", creditArtistName);						//クレジットアーティスト名
+//			dbMsg +="album_artist=" + album_artist;/////////////////////////////////////
+//			broadcastIntent.putExtra("album_artist", album_artist);		//リストアップしたアルバムアーティスト名
+//			dbMsg +=",album=" + albumName;
+//			broadcastIntent.putExtra("albumName", albumName);			//アルバム名
+//			dbMsg +=",titol=" + titolName;
+//			broadcastIntent.putExtra("titolName", titolName);			//曲名
+//			dbMsg +=",dataFN=" + dataFN;
+//			broadcastIntent.putExtra("dataFN", dataFN);				//DATA;The data stream for the file ;Type: DATA STREAM
+//			dbMsg +="[" + mcPosition;
+//			broadcastIntent.putExtra("mcPosition", mcPosition);		//現在の再生ポジション☆生成時は最初から
+//			dbMsg +="/" + saiseiJikan +"]";
+//			broadcastIntent.putExtra("saiseiJikan", saiseiJikan);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
+//			broadcastIntent.setAction("mFilter");
+//			dbMsg +=";Broadcast送信";
+//			myLog(TAG,dbMsg);
+//			getBaseContext().sendBroadcast(broadcastIntent);
+//		} catch (InterruptedException e) {
+//			myErrorLog(TAG,dbMsg+"で"+e);
+//		}
+//	}
 
 	private final IBinder mBinder = new MusicPlayBinder();
 	public class MusicPlayBinder extends Binder {
