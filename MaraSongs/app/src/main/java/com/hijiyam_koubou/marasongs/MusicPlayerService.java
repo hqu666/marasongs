@@ -3443,7 +3443,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public int nowSartId = 0;
 	public boolean actClose= false;
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {			//
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		final String TAG = "onStartCommand";
 		String dbMsg="[MusicPlayerService]";
 		try{

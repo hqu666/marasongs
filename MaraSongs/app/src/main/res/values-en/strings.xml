@@ -495,5 +495,9 @@
 	<string name="permission_msg">This application uses the following functions.\n(1)File authorization to play a music file\n(2)A part of the recording function to display a visualizer\n\nWhen you cannot admit it, I finish application.</string>
 	<string name="permission_file_titol">Please admit file access</string>
 	<string name="permission_file_msg">Please give a file authorization to play a music file.</string>
+	<string name="quit_msg">Please choose it.</string>
+	<string name="quit_posi_bt">The all end</string>
+	<string name="quit_titol">finish application</string>
+	<string name="quit_nega_bt">continue  play</string>
 
 </resources>

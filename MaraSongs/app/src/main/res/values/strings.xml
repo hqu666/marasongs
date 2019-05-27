@@ -534,6 +534,10 @@
 
 	<string name="notifi_id" translatable="false">mara_notif</string>
 	<string name="notifi_name" translatable="false">marasongs notification</string>
+	<string name="quit_titol">アプリケーションを終了します</string>
+	<string name="quit_msg">選択して下さい。</string>
+	<string name="quit_nega_bt">再生を続ける</string>
+	<string name="quit_posi_bt">全て終了</string>
 
 
 </resources>

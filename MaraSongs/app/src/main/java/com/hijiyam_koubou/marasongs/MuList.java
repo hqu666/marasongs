@@ -99,8 +99,10 @@ import android.widget.Toast;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
 
-public class MuList extends AppCompatActivity implements plogTaskCallback , View.OnClickListener , View.OnKeyListener{
+import static com.hijiyam_koubou.marasongs.MusicPlayerService.ACTION_SYUURYOU_NOTIF;
 
+public class MuList extends AppCompatActivity implements plogTaskCallback, View.OnClickListener , View.OnKeyListener {
+	                                                                 //
 	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
 	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 	public OrgUtil ORGUT;						//自作関数集
@@ -385,7 +387,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
 				if ( isNeedParmissionReqest ) {
 					dbMsg += "::許諾処理へ";
-					new AlertDialog.Builder(MuList.this).setTitle( getResources().getString(R.string.permission_titol) )
+					new AlertDialog.Builder(MuList.this)
+							.setTitle( getResources().getString(R.string.permission_titol) )
 							.setMessage( getResources().getString(R.string.permission_msg))
 							.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
 								@Override
@@ -434,21 +437,55 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		}
 	}
 
-	public void quitMe() {                //このクラスを破棄
-		final String TAG = "quitMe";
+	public void quitBody() {                //このクラスを破棄
+		final String TAG = "quitBody";
 		String dbMsg = "[MuList]";
 		try {
 //			NendAdInterstitial.dismissAd ();
 			//		NendAdInterstitial.showFinishAd(this);			// アプリ内で使用するインタースティシャル広告の枠が一つの場合はこちらをお使いください
 			//		NendAdInterstitial.showFinishAd (this,458687);		// 広告枠指定ありの場合
 			receiverHaki();							//unregisterReceiverで
-			dbMsg += "レシーバーを破棄";
+			dbMsg += ",レシーバーを破棄";
 			MuList.this.finish ();
 			this.finish();
 			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
 				finishAndRemoveTask();                      //アプリケーションのタスクを消去する事でデバッガーも停止する。
 			} else {
 				moveTaskToBack(true);                       //ホームボタン相当でアプリケーション全体が中断状態
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	public void quitMe() {                //このクラスを破棄
+		final String TAG = "quitMe";
+		String dbMsg = "[MuList]";
+		try {
+			dbMsg += "IsPlaying=" + IsPlaying;
+			if(IsPlaying){
+				new AlertDialog.Builder(MuList.this)
+						.setTitle( getResources().getString(R.string.quit_titol))
+						.setMessage( getResources().getString(R.string.quit_msg))
+						.setPositiveButton(getResources().getString(R.string.quit_posi_bt) , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+								Intent intent = new Intent( MuList.this, MusicPlayerService.class);
+								intent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+								startService(intent) ;
+								quitBody();
+							}
+						})
+						.setNegativeButton(getResources().getString(R.string.quit_nega_bt) , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+								quitBody();
+							}
+						})
+						.create().show();
+			} else{
+				quitBody();
 			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -7993,45 +8030,41 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 	public int SelID;
 	View currentFo;					//選択されているアイテム
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		final String TAG = "onKeyDown";
-		String dbMsg = "[MuList]";
-		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
-		dbMsg += " , keyCode=" +keyCode;
-		myLog(TAG, dbMsg);
-		if(keyCode != KeyEvent.KEYCODE_BACK){
-				headClickAction();	//ヘッドが クリックされた時の処理
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		final String TAG = "onKeyDown";
+//		String dbMsg = "[MuList]";
+//		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
+//		dbMsg += " , keyCode=" +keyCode;
+//		myLog(TAG, dbMsg);
+//		if(keyCode != KeyEvent.KEYCODE_BACK){
+//				headClickAction();	//ヘッドが クリックされた時の処理
+//
+//				return super.onKeyDown(keyCode, event);
+//			}else{
+//				return false;
+//			}
+//	}
 
-				return super.onKeyDown(keyCode, event);
-			}else{
-				return false;
-			}
-	}
-
+	/**
+	 *  ハードウェアキーを取得
+	 *  https://techbooster.org/android/device/5056/
+	 * */
 	@Override
-	public boolean dispatchKeyEvent(KeyEvent e) {
-		final String TAG = "dispatchKeyEvent";
-		String dbMsg = "[MuList]";
-		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
-		int keyCode =  e.getKeyCode();
-		dbMsg += " , keyCode=" +keyCode;
-		if (e.getAction() == KeyEvent.ACTION_DOWN) {
-			headClickAction();	//ヘッドが クリックされた時の処理
-		}
-		myLog(TAG, dbMsg);
-		return super.dispatchKeyEvent(e);
-	}
-
-	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+	public boolean dispatchKeyEvent(KeyEvent event) {
 		boolean retBool= false;
-		final String TAG = "onKey";
+		final String TAG = "dispatchKeyEvent";
 		String dbMsg = "[MuList]";
 		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
 		try{
 			int focusItemID = 0;
 			dbMsg += ORGUT.nowTime(true,true,true)+"発生";////////////",event="+event.toString()+/////////////////////////////////
+			int keyCode =  event.getKeyCode();
 			dbMsg += " , keyCode=" +keyCode;
+//		if (e.getAction() == KeyEvent.ACTION_DOWN) {
+//			headClickAction();	//ヘッドが クリックされた時の処理
+//		}
+//		myLog(TAG, dbMsg);
+//		return super.dispatchKeyEvent(e);
 			dbMsg += " , Action=" +event.getAction();
 			currentFo = this.getCurrentFocus();				//選択されているアイテム
 			if(currentFo != null){
@@ -8043,26 +8076,77 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 				dbMsg += "list=" + lvID.getId() + ")で発生";;///////////////////////////////////////////////////////////////////
 			}
 			switch (keyCode) {
-			case KeyEvent.KEYCODE_BACK:	//4；KEYCODE_BACK :keyCode；09SH: keyCode；4,event=KeyEvent{action=0 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
-				if(event.getAction() == KeyEvent.ACTION_DOWN){					//二重発生の防止
-					headClickAction();	//ヘッドが クリックされた時の処理
-				}
-				return true;
-			//	break;
-			case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
-			case KeyEvent.KEYCODE_DPAD_DOWN:	//マルチガイド下；20
-			case KeyEvent.KEYCODE_DPAD_LEFT:	//マルチガイド左；21
-			case KeyEvent.KEYCODE_DPAD_RIGHT:	//マルチガイド右；22
-			case KeyEvent.KEYCODE_DPAD_CENTER:	//決定ボタン；23  ★ここではなくonCkickで処理される
-				if(! prTT_dpad){					//d-pad有りか
-					setKeyAri();									//d-pad対応
-				}
-				break;
+				case KeyEvent.KEYCODE_BACK:	//4；KEYCODE_BACK :keyCode；09SH: keyCode；4,event=KeyEvent{action=0 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
+					if(event.getAction() == KeyEvent.ACTION_DOWN){					//二重発生の防止
+						headClickAction();	//ヘッドが クリックされた時の処理
+					}
+					return true;
+				//	break;
+				case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
+				case KeyEvent.KEYCODE_DPAD_DOWN:	//マルチガイド下；20
+				case KeyEvent.KEYCODE_DPAD_LEFT:	//マルチガイド左；21
+				case KeyEvent.KEYCODE_DPAD_RIGHT:	//マルチガイド右；22
+				case KeyEvent.KEYCODE_DPAD_CENTER:	//決定ボタン；23  ★ここではなくonCkickで処理される
+					if(! prTT_dpad){					//d-pad有りか
+						setKeyAri();									//d-pad対応
+					}
+					break;
 //			default:
 //				 retBool= false;			//指定したキー以外はデフォルト動作
 //				break;
 			}
 			retBool= setKeyDousa( focusItemID , event.getKeyCode() ,  event.getAction());				//d-padの操作反応	event.getKeyCode,event.getAction()
+			dbMsg += "retBool=" + retBool;;///////////////////////////////////////////////////////////////////
+			myLog(TAG, dbMsg);
+		} catch (NullPointerException e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+	}
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		boolean retBool= false;
+		final String TAG = "onKey";
+		String dbMsg = "[MuList]";
+		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
+		try{
+//			int focusItemID = 0;
+//			dbMsg += ORGUT.nowTime(true,true,true)+"発生";////////////",event="+event.toString()+/////////////////////////////////
+//			dbMsg += " , keyCode=" +keyCode;
+//			dbMsg += " , Action=" +event.getAction();
+//			currentFo = this.getCurrentFocus();				//選択されているアイテム
+//			if(currentFo != null){
+//				focusItemID=currentFo.getId();
+//				dbMsg +="が" + "Item="+focusItemID+"(";
+////				if(headLayout.isShown()){
+////					dbMsg +="head=" + mainHTF.getId() + "/";///////////////////////////////////////////////////////////////////
+////				}
+//				dbMsg += "list=" + lvID.getId() + ")で発生";;///////////////////////////////////////////////////////////////////
+//			}
+//			switch (keyCode) {
+//			case KeyEvent.KEYCODE_BACK:	//4；KEYCODE_BACK :keyCode；09SH: keyCode；4,event=KeyEvent{action=0 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
+//				if(event.getAction() == KeyEvent.ACTION_DOWN){					//二重発生の防止
+//					headClickAction();	//ヘッドが クリックされた時の処理
+//				}
+//				return true;
+//			//	break;
+//			case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
+//			case KeyEvent.KEYCODE_DPAD_DOWN:	//マルチガイド下；20
+//			case KeyEvent.KEYCODE_DPAD_LEFT:	//マルチガイド左；21
+//			case KeyEvent.KEYCODE_DPAD_RIGHT:	//マルチガイド右；22
+//			case KeyEvent.KEYCODE_DPAD_CENTER:	//決定ボタン；23  ★ここではなくonCkickで処理される
+//				if(! prTT_dpad){					//d-pad有りか
+//					setKeyAri();									//d-pad対応
+//				}
+//				break;
+////			default:
+////				 retBool= false;			//指定したキー以外はデフォルト動作
+////				break;
+//			}
+//			retBool= setKeyDousa( focusItemID , event.getKeyCode() ,  event.getAction());				//d-padの操作反応	event.getKeyCode,event.getAction()
 			dbMsg += "retBool=" + retBool;;///////////////////////////////////////////////////////////////////
 			myLog(TAG, dbMsg);
 		} catch (NullPointerException e) {
@@ -8223,6 +8307,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 		}
 		return false;													//イベントを後段に送る
 	}
+
 	//属性設定　http://techbooster.org/android/ui/14993/
 	public void setKeyAri() {									//d-pad対応
 		final String TAG = "setKeyAri";
@@ -8866,7 +8951,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback , View
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
-
 
 	public void oFR() {	 // onWindowFocusChanged , onResume の共通操作
 		final String TAG = "oFR";
