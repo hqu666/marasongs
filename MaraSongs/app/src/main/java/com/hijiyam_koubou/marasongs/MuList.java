@@ -8384,7 +8384,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				send2Player(saisei_fname );
 			} else if (v == lp_stop) {
 				dbMsg +=  "クリックされたのはlp_stop(" + mIndex  +")";			//+ sentakuCyuu ;/////////////////////////////////////
-				quitMe();						//このアプリを終了する
+				Intent intent = new Intent( MuList.this, MusicPlayerService.class);
+				intent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+				startService(intent) ;
+				quitBody();
 			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -9466,7 +9469,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			lp_chronometer = (Chronometer)list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
 			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
 			lp_chronometer.setText(dataFormat.format(0));
-
 
 			lp_ppPButton.setOnClickListener(this);
 			lp_stop.setOnClickListener(this);

@@ -352,7 +352,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += " , Notificationへ= " ;
 				lpNotificationMake(playingItem.artist , playingItem.album , playingItem.title , album_art);
 			}else if ( 14 <= android.os.Build.VERSION.SDK_INT ) {													// &&  android.os.Build.VERSION.SDK_INT < 21
-				dbMsg += " , mRemoteControlClient= " + mRemoteControlClient;/////////////////////////////////////
+				dbMsg += " , mRemoteControlClient= " + mRemoteControlClient;
 				if (mRemoteControlClient != null) {		// Tell any remote controls that our playback state is 'playing'.
 					mRemoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
 				}
@@ -1258,7 +1258,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	///独自イベント///////////////////////////////////////////////////////////////////////////////////
 	long tunagiJikan;		//測定用
 	boolean onCompletNow = false;			//曲間処理中
-		public void onCompletion(MediaPlayer player) {			/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
+	public void onCompletion(MediaPlayer player) {			/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 	//☆曲の終了でも発生する
 		final String TAG = "onCompletion[MusicPlayerService]";
 		String dbMsg="ENDマーク検出から";/////////////////////////////////////
@@ -1431,12 +1431,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * 	Using Android Media Style notifications with Media Session controls										https://www.binpress.com/tutorial/using-android-media-style-notifications-with-media-session-controls/165
 	 * Android Wear に Notification で出来ること									http://y-anz-m.blogspot.jp/2014/07/android-wear-notification.html
 	 * ロック画面でのメディア再生をコントロールする					http://developer.android.com/intl/ja/guide/topics/ui/notifiers/notifications.html#controllingMedia
-	 * */
+	 * 呼出し元    sendPlayerState
+	  */
 	@SuppressLint("NewApi")
 	public void lpNotificationMake(String keyArtist  , String keyAlbum , String keyTitle , String albumArt) {
 		final String TAG = "lpNotificationMake";
-		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
+		String dbMsg="[MusicPlayerService]";
 		try{
+			dbMsg +="mState= " + mState + " ,mcPosition= " + mcPosition + "[ms]";
 			dbMsg +="KeyArtist =" + keyArtist;
 			dbMsg +=",keyAlbum =" + keyAlbum;
 			dbMsg +=",keyTitle =" + keyTitle;
@@ -1540,7 +1542,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 			}
 			dbMsg +=",ppTitol = " + ppTitol  ;
-//			dbMsg +=",ppIcon = " + ppIcon  ;
 			if( lpNotification != null ){
 				lpNotification = null;
 			}
@@ -1593,7 +1594,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		}
 	}
 	//05-07 21:43:02.811: E/MediaPlayer(5999): Should have subtitle controller already set
-
 
 	private Notification.Action generateAction( int icon, String title, String intentAction ) {
 		final String TAG = "generateAction";
@@ -1652,7 +1652,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		return null;
 	}
 
-
 	/**	http://techbooster.jpn.org/andriod/ui/8843/																			Notificationを使ってステータスバーに情報を表示する / Getting Started
 			http://techbooster.org/android/application/421/																	Notificationを使ってステータス通知する
 			http://techbooster.org/android/ui/3208/																				ステータス通知(Notification)を変化させる
@@ -1665,14 +1664,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			☆
 	ここは表示の作成と更新
 	*/
-	//	Intent intentN;													// Notification	から作成するIntent
-	//Intent intentNR ;								//ノティフィケーションレシーバ
-	//private PendingIntent pendingIntent;
 	private NotificationManager mNotificationManager;			//			NotificationManagerCompat		NotificationManager
 	private NotificationChannel mNotificationChannel;
 	private Notification mNotification = null;
 	final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
-	//	private NotificationCompat.Builder builder;
 	private RemoteViews ntfViews;						//ノティフィケーションのレイアウト
 
 	public void makeNotification() {					//ノティフィケーション作成			<createBody , updateNotification
@@ -1741,7 +1736,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 	public long currentTime = 0;
 	public boolean playing ;
-	//public String path;
 	public Bitmap notifAlbumArt;	// Dummy album art we will pass to the remote control (if the APIs are available).
 	public int playPauseRes;		//ノティフィケーションプレイヤーの再生/ポーズボタン
 	/**
@@ -2174,12 +2168,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		//		IsPlaying  = false ;								//再生中か
 				if( player != null){
 					saiseiJikan = player.getDuration();
-					if( player.getCurrentPosition() > 0){
+					if( 0 < player.getCurrentPosition()){
 						mcPosition = player.getCurrentPosition();
 					}
 					IsPlaying  = player.isPlaying() ;			//再生中か
 					IsSeisei = true;
-					dbMsg += "[再生ポジション①=" +  mcPosition + "/" +  saiseiJikan + "mS]";/////////////////////////////////////
+					dbMsg += ",player[mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]IsPlaying=" + IsPlaying;
 				} else {
 					IsSeisei = false ;
 					IsPlaying  = false ;								//再生中か
@@ -3465,8 +3459,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			 * 二点間初期
 			 *  01-22 15:55:03.780: I/onStartCommand[MusicPlayerService](11241): 開始,action=null , flags=0 , startId=15
 			 * */
-			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";/////////////////////////////////////
-
+			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]IsPlaying=" + IsPlaying;/////////////////////////////////////
 			if (action.equals(ACTION_PLAYPAUSE)) {
 				dbMsg +="でPLAY/PAUSE";
 				dataUketori(intent);										//クライアントからデータを受け取りグローバル変数にセット
@@ -3475,9 +3468,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dataUketori(intent);			//クライアントからデータを受け取りグローバル変数にセット
 				if( mPlayer !=null ){
 					dbMsg +=" ,isPlaying=" + mPlayer.isPlaying() ;/////////////////////////////////////
-					dbMsg +=" ,mcPosition=" + mcPosition + "から,";/////////////////////////////////////
 					mPlayer.seekTo(mcPosition);
-					if(!  mPlayer.isPlaying()){
+					if(! mPlayer.isPlaying()){
 						mPlayer.start();
 						mState = State.Playing;
 					}
@@ -3515,8 +3507,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +="でリストから戻り,";
 				//起動時の表示；dataUketoriでクライアントからデータを受け取りグローバル変数にセット、sendPlayerStateで一曲分のデータ抽出して他のActvteyに渡す。
 				dataUketori(intent);			//クライアントからデータを受け取りグローバル変数にセット
-				mState = State.Stopped;						//Stopped	プレイヤー生成のトリガーに使用？					Paused
-				new PrepareMusicRetrieverTask(this).execute(getApplicationContext());		// Create the retriever and start an asynchronous task that will prepare it.
+//				mState = State.Stopped;						//Stopped	プレイヤー生成のトリガーに使用？					Paused
+				if(! IsPlaying){
+					dbMsg +="起動直後？";
+					new PrepareMusicRetrieverTask(this).execute(getApplicationContext());		// Create the retriever and start an asynchronous task that will prepare it.
+				}
 				sendPlayerState(mPlayer);																		//②ⅲStop?//一曲分のデータ抽出して他のActvteyに渡す。
 			} else if (action.equals(ACTION_KEIZOKU)) {
 				dbMsg +="で終了準備,";

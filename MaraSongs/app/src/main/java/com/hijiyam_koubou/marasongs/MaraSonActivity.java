@@ -1029,7 +1029,7 @@ public class MaraSonActivity extends AppCompatActivity
 								ppPBT.setImageResource(R.drawable.pousebtn);
 								ppPBT.setContentDescription(getResources().getText(R.string.play));			//pause
 							}
-							dbMsg= dbMsg +" 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
+							dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
 							int rInt = intent.getIntExtra("imanoJyoutai",0 );		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 							dbMsg +=  ",今の状態="+rInt ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
 							if( rInt != 0 ){									//MuList.sonomama
@@ -4056,6 +4056,7 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "paused";
 		String dbMsg= "[MaraSonActivity];";
 		try{
+			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
 			dbMsg +=  "MPSIntent=" + MPSIntent;/////////////////////////////////////
 			dbMsg +=".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 			MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
@@ -4070,11 +4071,12 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	public void playing() {						//＜onClick(ppPBT)
+	public void playing() {
 		final String TAG = "playing";
 		String dbMsg= "[MaraSonActivity];";
 		try{
-			dbMsg +=  "mFilter=" + mFilter ;/////////////////////////////////////
+			dbMsg +=  "mFilter=" + mFilter ;
+			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
 			if(mFilter == null){
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg= ">>psSarviceUri=" + psSarviceUri.toString();/////////////////////////////////////
@@ -4099,7 +4101,7 @@ public class MaraSonActivity extends AppCompatActivity
 //			}else{
 //				mcPosition =0;									//前に再生していた曲の再生ポジションを消去
 			}
-			dbMsg +=">> " + mcPosition +")";/////////////////////////////////////
+			dbMsg +=">> " + mcPosition +"ms)";/////////////////////////////////////
 			sendPlaying( MPSIntent);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -4129,12 +4131,10 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "sendPlaying";
 		String dbMsg= "[MaraSonActivity];";
 		try{
-			dbMsg += ",intent=" + intent;/////////////////////////////////////
-	//		mcPosition = (int) (SystemClock.elapsedRealtime() - mcPosition);
-//			dbMsg=  "(再生ポジション="+ mcPosition + "/" +saiseiJikan;/////////////////////////////////////
-			dbMsg= dbMsg +"))" +dataFN;/////////////////////////////////////
+			dbMsg += dataFN;
+			dbMsg=  "(再生ポジション="+ mcPosition + "/" +saiseiJikan +"[ms]";
 			intent.putExtra("dataFN",dataFN);
-			dbMsg +=","+ mcPosition + "/" +saiseiJikan;/////////////////////////////////////
+			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
 			intent.putExtra("mcPosition",mcPosition);	//再生ポジション
 			intent.putExtra("saiseiJikan",saiseiJikan);
 			intent.putExtra("mIndex",mIndex);
@@ -4227,7 +4227,7 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public void onClick(View v) {																		//操作対応②ⅰ
 		final String TAG = "onClick";
-		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity];";
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			b_dataFN = dataFN;
@@ -4263,8 +4263,8 @@ public class MaraSonActivity extends AppCompatActivity
 				}else{
 					mcPosition =0;									//前に再生していた曲の再生ポジションを消去
 				}
-				dbMsg= "クリックされたのはrewPBT(" + mIndex +")";				//+ sentakuCyuu ;/////////////////////////////////////
-				dbMsg= dbMsg +" , "+ mcPosition ;/////////////////////////////////////
+				dbMsg += "クリックされたのはrewPBT(" + mIndex +")";				//+ sentakuCyuu ;/////////////////////////////////////
+				dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
 				ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
 				MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
@@ -4404,11 +4404,12 @@ public class MaraSonActivity extends AppCompatActivity
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
-//http://motogeneralpurpose.blogspot.jp/2012/11/viewflippern9988.html
 		final String TAG = "dispatchTouchEvent";
 		String dbMsg= "[MaraSonActivity]";
 		try{
-	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg +=ORGUT.nowTime(true,true,true)+dbMsg;
+			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+
 //			dbMsg="MotionEvent.getAction=" + event.getAction();/////////////////////////////////////
 //			int CFvIDthis = this.getCurrentFocus().getId();
 //			dbMsg +=",getCurrentFocus=" + CFvIDthis;/////////////////////////////////////
@@ -4524,7 +4525,7 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public boolean onDown(MotionEvent me) {
 		final String TAG = "onDown";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 		try{
 			dbMsg="MotionEvent=" + me ;///////////////////////////////////
 //MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0,
@@ -4546,9 +4547,9 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public void onShowPress(MotionEvent me) {
 		final String TAG = "onShowPress";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 		try{
-			dbMsg="MotionEvent=" + me ;/////////////////////////////////////
+			dbMsg="MotionEvent=" + me ;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4558,9 +4559,10 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public boolean onSingleTapUp(MotionEvent me) {
 		final String TAG = "onSingleTapUp";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 		try{
-			dbMsg +="MotionEvent=" + me ;/////////////////////////////////////
+			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+			dbMsg +="MotionEvent=" + me ;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4591,88 +4593,88 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public void onLongPress(MotionEvent me) {
 		final String TAG = "onLongPress";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 		try{
-			dbMsg="MotionEvent=" + me ;/////////////////////////////////////
+			dbMsg="MotionEvent=" + me ;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
 
-	public void onGestureStarted(GestureOverlayView overlay, MotionEvent event) {
-		final String TAG = "onGestureStarted[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
-		try{
-			//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
-			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
-			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
-			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
-			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
-			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
-			dbMsg +="event=" + event;/////////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	public void onGesture(GestureOverlayView overlay, MotionEvent event) {
-		final String TAG = "onGesture[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
-		try{
-	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
-			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
-			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
-			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
-			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
-			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
-			dbMsg +="event=" + event;/////////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	public void onGestureEnded(GestureOverlayView overlay, MotionEvent event) {
-		final String TAG = "onGestureEnded[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
-		try{
-	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
-			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
-			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
-			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
-			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
-			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
-			dbMsg +="event=" + event;/////////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	public void onGestureCancelled(GestureOverlayView overlay, MotionEvent event) {
-		final String TAG = "onGestureCancelled[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
-		try{
-	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
-			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
-			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
-			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
-			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
-			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
-			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
-			dbMsg +="event=" + event;/////////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
+//	public void onGestureStarted(GestureOverlayView overlay, MotionEvent event) {
+//		final String TAG = "onGestureStarted[MaraSonActivity]";
+//		String dbMsg= "開始";/////////////////////////////////////
+//		try{
+//			//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+//			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
+//			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
+//			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
+//			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
+//			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
+//			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
+//			dbMsg +="event=" + event;/////////////////////////////////////
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
+//
+//	public void onGesture(GestureOverlayView overlay, MotionEvent event) {
+//		final String TAG = "onGesture[MaraSonActivity]";
+//		String dbMsg= "開始";/////////////////////////////////////
+//		try{
+//	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+//			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
+//			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
+//			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
+//			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
+//			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
+//			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
+//			dbMsg +="event=" + event;/////////////////////////////////////
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
+//
+//	public void onGestureEnded(GestureOverlayView overlay, MotionEvent event) {
+//		final String TAG = "onGestureEnded[MaraSonActivity]";
+//		String dbMsg= "開始";/////////////////////////////////////
+//		try{
+//	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+//			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
+//			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
+//			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
+//			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
+//			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
+//			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
+//			dbMsg +="event=" + event;/////////////////////////////////////
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
+//
+//	public void onGestureCancelled(GestureOverlayView overlay, MotionEvent event) {
+//		final String TAG = "onGestureCancelled[MaraSonActivity]";
+//		String dbMsg= "開始";/////////////////////////////////////
+//		try{
+//	//		dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+//			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
+//			dbMsg= "GestureOverlayView=" + overlay.getId();/////////////////////////////////////
+//			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
+//			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
+//			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
+//			dbMsg +="アナログビジュアライザー=" + mVisualizerView.getId();/////////////////////////////////////
+//			dbMsg +="FFTビジュアライザー=" + fftView.getId();/////////////////////////////////////
+//			dbMsg +="event=" + event;/////////////////////////////////////
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
+//
 //	dbMsg=  "saiseiSeekMP設定";///////	public void onSeekBarChangeListener(SeekBar seekBar) {
 	//	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {		// トラッキング開始時に呼び出されます
@@ -4680,7 +4682,8 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{//戻し操作
 			dbMsg= "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
-			dbMsg +="[再生ポジション=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
+			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+			dbMsg +=",seekBar=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
 			if (ppPBT.getContentDescription().equals(getResources().getText(R.string.play))) {			//isPlaying
 				dbMsg= dbMsg +" 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
 		//		receiverHaki();															//レシーバーを破棄
@@ -4712,19 +4715,18 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "onStopTrackingTouch";
 		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
-			dbMsg= "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
-			dbMsg= "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
+			dbMsg += "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
+			dbMsg += "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
 			mcPosition = saiseiSeekMP.getProgress();					///seekBar.getProgress();
-			dbMsg= dbMsg +"[再生ポジション=" + mcPosition;/////////////////////////////////////
-			dbMsg= dbMsg +"/"+saiseiJikan +"mS]";/////////////////////////////////////
+			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
 			CharSequence btStre = ppPBT.getContentDescription();
 			dbMsg +=",ppPBT=" + btStre;
-			dbMsg= dbMsg +" 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
+			dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
 			if (ppPBT.getContentDescription().equals(getResources().getText(R.string.pause))) {	//isPlaying
 	//			receiverSeisei();	//レシーバーを生成
 				readPlaying();						//このアクティビティで設定されたデータを渡して再生
 			}
-			dbMsg= dbMsg +">>"+ ppPBT.getContentDescription().toString();///////////////////////////////////
+			dbMsg += ">>"+ ppPBT.getContentDescription().toString();///////////////////////////////////
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4737,11 +4739,11 @@ public class MaraSonActivity extends AppCompatActivity
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		final String TAG = "onKey[MaraSonActivity]";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 		try{
-			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg="keyCode="+keyCode+",event="+event.toString()+"が"+ORGUT.nowTime(true,true,true)+"発生";///////////////////////////////////////////////////////////////////
-			dbMsg +=",getKeyCode="+event.getKeyCode();///////////////////////////////////////////////////////////////////
+			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
+			dbMsg="keyCode="+keyCode+",event="+event.toString()+"が"+ORGUT.nowTime(true,true,true)+"発生";
+			dbMsg +=",getKeyCode="+event.getKeyCode();
 			View currentFo = this.getCurrentFocus();
 			int focusItemID= 0 ;
 			if(currentFo != null){
@@ -4754,6 +4756,7 @@ public class MaraSonActivity extends AppCompatActivity
 				CharSequence btStre = ppPBT.getContentDescription();
 				dbMsg +=",ボタンの状態は" + btStre;
 				dbMsg +="<< "+b_Action ;///////////////////////////
+				dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
 				dbMsg= dbMsg +",isTracking="+event.isTracking();///////////////////////////
 				if( event.getKeyCode() ==KeyEvent.KEYCODE_DPAD_LEFT ||  event.getKeyCode() ==KeyEvent.KEYCODE_DPAD_RIGHT ){
 					if(event.getAction() == KeyEvent.ACTION_DOWN){					//ACTION_UP =0
@@ -4959,7 +4962,6 @@ public class MaraSonActivity extends AppCompatActivity
 }*/
 			b_focusItemID = focusItemID;
 			b_Action = event.getAction();
-	//		receiverSeisei();		//レシーバーを生成
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5665,7 +5667,13 @@ public class MaraSonActivity extends AppCompatActivity
 					dbMsg += ",Locale=" + Locale.getDefault ();/////////////////////////////////////
 					setADSens();	////////////////////////////////////////////////広告表示////
 					setNend();
-
+					if( ! IsPlaying){
+						ppPBT.setImageResource(R.drawable.pl_r_btn);
+						ppPBT.setContentDescription(getResources().getText(R.string.pause));			//play
+					}else {
+						ppPBT.setImageResource(R.drawable.pousebtn);
+						ppPBT.setContentDescription(getResources().getText(R.string.play));			//pause
+					}
 					String rStr = String.valueOf(MaraSonActivity.this.titol_tv.getText());			//前曲名
 					dbMsg= dbMsg +"、書き込まれている曲名="+ rStr + " を　";
 					if( rStr.equals(titolName) ){

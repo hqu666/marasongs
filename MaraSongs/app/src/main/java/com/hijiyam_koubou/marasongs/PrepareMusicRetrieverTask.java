@@ -14,8 +14,8 @@ public class PrepareMusicRetrieverTask extends AsyncTask<Context, Void, List<Ite
 	private MusicRetrieverPreparedListener mListener;
 
 	public PrepareMusicRetrieverTask(MusicRetrieverPreparedListener listener) {
-		final String TAG = "PrepareMusicRetrieverTask[PrepareMusicRetrieverTask]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "PrepareMusicRetrieverTask";
+		String dbMsg= "[PrepareMusicRetrieverTask];";
 		try{
 			mListener = listener;
 			dbMsg= "mListener=" + mListener.getClass().getName();/////////////////////////////////////
