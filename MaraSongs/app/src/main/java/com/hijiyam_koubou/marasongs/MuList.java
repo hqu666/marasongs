@@ -8059,13 +8059,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			int focusItemID = 0;
 			dbMsg += ORGUT.nowTime(true,true,true)+"発生";////////////",event="+event.toString()+/////////////////////////////////
 			int keyCode =  event.getKeyCode();
-			dbMsg += " , keyCode=" +keyCode;
+			dbMsg += " , keyCode=" +keyCode + " , Action=" +event.getAction();
 //		if (e.getAction() == KeyEvent.ACTION_DOWN) {
 //			headClickAction();	//ヘッドが クリックされた時の処理
 //		}
 //		myLog(TAG, dbMsg);
 //		return super.dispatchKeyEvent(e);
-			dbMsg += " , Action=" +event.getAction();
 			currentFo = this.getCurrentFocus();				//選択されているアイテム
 			if(currentFo != null){
 				focusItemID=currentFo.getId();
@@ -8338,9 +8337,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=" , クリックされたのは" + v.getId();/////////////////////////////////////
 			myLog(TAG,dbMsg);
 			if (v == lp_ppPButton) {
-				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;/////////////////////////////////////
+				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying + ",MPSIntent=" + MPSIntent;/////////////////////////////////////
 				if (IsPlaying) {			//再生中か
-					dbMsg +=   "MPSIntent=" + MPSIntent;/////////////////////////////////////
 					if(MPSIntent == null){
 						MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
 						dbMsg += ">>" + MPSIntent;/////////////////////////////////////
@@ -8363,7 +8361,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						registerReceiver(mReceiver, mFilter);
 						dbMsg +=">>" + psSarviceUri.toString();/////////////////////////////////////
 					}
-					dbMsg +=  ",MPSIntent=" + MPSIntent;/////////////////////////////////////
 					if( MPSIntent == null){
 						MPSIntent = new Intent(MuList.this, MusicPlayerService.class);
 						dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
@@ -8395,8 +8392,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	
-	
 //	public class siteiMati implements Runnable{
 //		//http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html
 
@@ -8959,8 +8954,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "oFR";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg +=   dbMsg +",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
-			dbMsg +=   dbMsg +",reqCode;" + reqCode;/////////////////////////////////////
+			dbMsg += ",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
+			dbMsg += ",reqCode;" + reqCode;/////////////////////////////////////
 			myLog(TAG,dbMsg);
 			if(0 < shigot_bangou ){
 				switch(shigot_bangou) {

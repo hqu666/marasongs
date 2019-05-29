@@ -562,7 +562,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "relaxResources";
 		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
 		try{
-			dbMsg="releaseMediaPlayer=" + releaseMediaPlayer;/////////////////////////////////////
+			dbMsg +="releaseMediaPlayer=" + releaseMediaPlayer;/////////////////////////////////////
 			if(mBassBoost != null){
 				mBassBoost.release();
 			}
@@ -572,6 +572,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	//		stopForeground(true);		//APIL5 このサービスの消去 stop being a foreground service
 			if (releaseMediaPlayer  ) {		// stop and release the Media Player, if it's available
 				if ( mPlayer != null) {		// stop and release the Media Player, if it's available
+					dbMsg +=",isPlaying=" + mPlayer.isPlaying() ;/////////////////////////////////////
 					if( mPlayer.isPlaying()  ){
 						mPlayer.pause();
 						/* public void prepare()  Call this after setDataSource() or stop(), and before any other method that might throw IllegalStateException in this class
@@ -586,6 +587,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					mPlayer.release();
 				}
 				mPlayer = null;
+
 			}
 			stopForeground(true);		//APIL5 このサービスの消去 stop being a foreground service
 	//		if (btHandler != null){
