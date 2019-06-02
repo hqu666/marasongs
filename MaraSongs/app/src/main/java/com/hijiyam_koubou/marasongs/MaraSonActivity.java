@@ -428,9 +428,18 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			dbMsg += "IsPlaying="+ IsPlaying ;/////////////////////////////////////
 			if(! IsPlaying){
-				  Intent intent = new Intent( MaraSonActivity.this, MusicPlayerService.class);
-				  intent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
-				  startService(intent) ;
+				Intent intent = new Intent( MaraSonActivity.this, MusicPlayerService.class);
+				intent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+				dbMsg +=")" +dataFN;
+				MPSIntent.putExtra("dataFN",dataFN);	//再生ポジション
+				dbMsg +=",nowList_id" +nowList_id;
+				MPSIntent.putExtra("nowList_id",nowList_id);	//再生ポジション
+				dbMsg += ",mcPosition="+ mcPosition + "/" +saiseiJikan;
+				MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
+				MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+				dbMsg +=",mIndex" +mIndex;
+				MPSIntent.putExtra("mIndex",mIndex);
+				startService(intent) ;
 			  }
 
 			MaraSonActivity.this.finish ();
@@ -1090,7 +1099,7 @@ public class MaraSonActivity extends AppCompatActivity
 									randumPlay();			//ランダム再生
 									songIDPTF.setText("1");
 								}else{
-									mIndex = intent.getIntExtra("mIndex", 0);		//再生ポジション//mCurrentPosition = intent.getIntExtra("currentPosition", 0);
+									mIndex = intent.getIntExtra("mIndex", 0);
 									dbMsg += "[mIndex=" + mIndex + "]";
 									albumArt=intent.getStringExtra("albumArt");
 									dbMsg +=",albumArt=" + albumArt;
@@ -4137,7 +4146,7 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg= "[MaraSonActivity];";
 		try{
 			dbMsg += dataFN;
-			dbMsg=  "(再生ポジション="+ mcPosition + "/" +saiseiJikan +"[ms]";
+			dbMsg +=  "(再生ポジション="+ mcPosition + "/" +saiseiJikan +"[ms]";
 			intent.putExtra("dataFN",dataFN);
 			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
 			intent.putExtra("mcPosition",mcPosition);	//再生ポジション
@@ -4321,7 +4330,7 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "onClick";
 		String dbMsg= "[MaraSonActivity];";
 		try{
-			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg +=ORGUT.nowTime(true,true,true);/////////////////////////////////////
 			b_dataFN = dataFN;
 			b_album = albumName;			//それまで参照していたアルバム名
 			dbMsg += " , クリックされたのは" + v.getId();/////////////////////////////////////

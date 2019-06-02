@@ -3636,7 +3636,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					//		dbMsg += "context=" + intent.toString() + ";"+this.toString();
 							String state = intent.getStringExtra("state");
 							dbMsg += ",state=" + state;
-							mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
+							int wInt = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
+							 if( 0 < wInt){
+								 mcPosition = wInt;
+							 }
 							dbMsg += "[再生ポジション=" + mcPosition + "/";
 							saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 								dbMsg += "[" + mcPosition  + "/" + saiseiJikan +"]";					//  playingItem.duration
@@ -3667,7 +3670,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							if(! saisei_fname.equals(b_saisei_fname) ){
 //								list_player.setVisibility(View.VISIBLE);
 								dbMsg += saisei_fname + "に変更";
-								mIndex = intent.getIntExtra("mIndex", 0);		//再生ポジション//mCurrentPosition = intent.getIntExtra("currentPosition", 0);
+								mIndex = intent.getIntExtra("mIndex", 0);
 								dbMsg +="[mIndex=" + mIndex + "]";
 
 								if( mItems != null){
@@ -3733,7 +3736,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 ////														intent.putExtra("baseTime", System.currentTimeMillis() - current);
 //							}
 //						}
-//						myLog(TAG, dbMsg);
+							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG,dbMsg+"で"+e);
 						}
@@ -3896,7 +3899,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "listClick";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg +="reqCode="+reqCode;////////"リスト；parent="+parent+",view="+view+
+			dbMsg +="reqCode="+reqCode;
 			selPosition = position;
 			CharSequence itemCS;
 			TreeEntry treeEntry;
@@ -3938,7 +3941,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					titolName =  itemStr;		//曲名	titolList.get(position)
 					saisei_fname = String.valueOf(titolAL.get(position).get("DATA"));
 					dbMsg += ",再生するのは=" + saisei_fname;
-					mcPosition = 0;
+//					mcPosition = 0;
 					dbMsg += ",呼出し元=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 					if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
 						dbMsg += ">>プレイヤーへ";
@@ -8331,18 +8334,36 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "onClick";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
 			b_saisei_fname = saisei_fname;
 			b_album = albumName;			//それまで参照していたアルバム名
-			dbMsg +=" , クリックされたのは" + v.getId();/////////////////////////////////////
-			myLog(TAG,dbMsg);
+			dbMsg +=" , クリックされたのは" + v.getId();
 			if (v == lp_ppPButton) {
-				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying + ",MPSIntent=" + MPSIntent;/////////////////////////////////////
+				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying + ",MPSIntent=" + MPSIntent;
+				if(mFilter == null){
+					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
+					dbMsg +=  ">>psSarviceUri=" + psSarviceUri.toString();
+					mFilter = new IntentFilter();
+					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+					registerReceiver(mReceiver, mFilter);
+					dbMsg +=">>" + psSarviceUri.toString();
+				}
+				if( MPSIntent == null){
+					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+//					MPSIntent = new Intent(MuList.this, MusicPlayerService.class);
+					dbMsg +=  ">>" + MPSIntent;
+				}
+				dbMsg +=")" +saisei_fname;
+				MPSIntent.putExtra("dataFN",saisei_fname);	//再生ポジション
+				dbMsg +=",nowList_id" +nowList_id;
+				MPSIntent.putExtra("nowList_id",nowList_id);	//再生ポジション
+				dbMsg += ",mcPosition="+ mcPosition + "/" +saiseiJikan;
+				MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
+				MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+				dbMsg +=",mIndex" +mIndex;
+				MPSIntent.putExtra("mIndex",mIndex);
+				MPSIntent.putExtra("continu_status","toPlay");
 				if (IsPlaying) {			//再生中か
-					if(MPSIntent == null){
-						MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-						dbMsg += ">>" + MPSIntent;/////////////////////////////////////
-					}
 					dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
@@ -8352,25 +8373,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
 					IsPlaying = false;
 				} else {
-					dbMsg +=   "mFilter=" + mFilter ;/////////////////////////////////////
-					if(mFilter == null){
-						psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
-						dbMsg +=  ">>psSarviceUri=" + psSarviceUri.toString();/////////////////////////////////////
-						mFilter = new IntentFilter();
-						mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
-						registerReceiver(mReceiver, mFilter);
-						dbMsg +=">>" + psSarviceUri.toString();/////////////////////////////////////
-					}
-					if( MPSIntent == null){
-						MPSIntent = new Intent(MuList.this, MusicPlayerService.class);
-						dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
-					}
-					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
-					dbMsg += "(再生ポジション="+ mcPosition + "/" +saiseiJikan;/////////////////////////////////////
-					MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
-					MPSIntent.putExtra("saiseiJikan",saiseiJikan);
-					dbMsg +=")" +saisei_fname;/////////////////////////////////////
-					MPSIntent.putExtra("saisei_fname",saisei_fname);	//再生ポジション
+					MPSIntent.setAction(MusicPlayerService.ACTION_REQUEST_STATE);
 					MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PLAY));
 					dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
 					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
@@ -9246,7 +9249,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						saisei_fname = bundle.getString("dataFN");
 						dbMsg +=",dataFN=" + saisei_fname;/////////////////////////////////////
 						mcPosition = bundle.getInt("mcPosition");
-						dbMsg +=",再生ポジション=" + mcPosition;/////////////////////////////////////
+						dbMsg +=",mcPosition=" + mcPosition;/////////////////////////////////////
 						IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
 						dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
 						IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
