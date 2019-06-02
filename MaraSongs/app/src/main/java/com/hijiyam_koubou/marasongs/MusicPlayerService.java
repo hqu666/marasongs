@@ -228,7 +228,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String dviceStytus;										//デバイスの状態
 	public String stateBaseStr = null;
 	public String  b_stateStr;
-	public int b_posiotion = 0;
+	public String b_state ="";
 
 	static final int REQUEST_ENABLE_BT = 0;
 	public boolean selfStop = false;
@@ -2169,6 +2169,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "sendPlayerState";
 		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
 		try{
+			dbMsg +=",操作指定=" +  action.toString();
 //			Intent intent = null;
 			Intent intent = new Intent(ACTION_STATE_CHANGED);
 			if (mPlayer == null) {
@@ -2186,14 +2187,21 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				saiseiJikan = sharedPref.getInt("pref_duration" , 0);
 				dbMsg += ">>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";
 			} else {
+				dbMsg +=  "再生中のプレイリスト["  + nowList_id +"]" + nowList;
+				dbMsg +=  "再生中のファイル名" + dataFN;////////////////////////////////////////////////////////////////////////////
 				mcPosition = mPlayer.getCurrentPosition();
 				dbMsg +=">>mcPosition=" + mcPosition ;
 				saiseiJikan =mPlayer.getDuration();
 				dbMsg +=">>getDuration=" + saiseiJikan ;
+			}
 
-
-				if (mItems != null) {
-					dbMsg +=",操作指定=" +  action.toString() ;
+			if(mItems.size() == 0){
+				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+				mItems = Item.getItems(getApplicationContext());
+				dbMsg +=">>"+ mItems.size() +"]";/////////////////////////////////////
+			}
+			if (b_state != action) {
+				intent.putExtra("action", action);
 					dbMsg += ",送り戻し待ち曲数=" + frCount ;
 					dbMsg += ",player=" + player ;
 	//				if( (action.equals(ACTION_SKIP) || action.equals(ACTION_REWIND)) && frCount !=0){
@@ -2207,11 +2215,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					intent.putExtra("nowList",nowList);
 					intent.putExtra("mIndex", mIndex);
 					dbMsg +="[mIndex=" + mIndex +"/"+ mItems.size() +"]";
-					if(mItems.size() == 0){
-						mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-						mItems = Item.getItems(getApplicationContext());
-						dbMsg +=">>"+ mItems.size() +"]";/////////////////////////////////////
-					}
 
 					dbMsg +=",dataFN=" +dataFN ;
 					if( dataFN != null){
@@ -2252,7 +2255,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						dbMsg +=">>"+ mcPosition;/////////////////////////////////////
 						player.seekTo(mcPosition);
 					}
-				}
+//				}
 
 					dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
 					intent.putExtra("IsSeisei", IsSeisei);
@@ -2292,6 +2295,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 								album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 							}
 							cursor.close();
+							intent.putExtra("album_art", album_art);
 
 							OrgUtil ORGUT = new OrgUtil();				//自作関数集
 							WindowManager wm = (WindowManager)this.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
@@ -2301,7 +2305,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 							mDummyAlbumArt = ORGUT.retBitMap( album_art  , width , width ,  getResources() );		//指定したURiのBitmapを返す	 , dHighet , dWith ,
 							b_Album = albumName;
 							dbMsg +=",art=" + album_art ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
-							intent.putExtra("albumArt", album_art);
 							dbMsg +=" , AlbumArt(ビットマップ) = " + mDummyAlbumArt;/////////////////////////////////////
 						}
 					}
@@ -2313,8 +2316,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					playingItem = mItems.get(mIndex);
 					dbMsg +=",playingItem=" +playingItem ;/////////////////////////////////////
 					if(playingItem != null){
-						//		dataFN=playingItem.data;			//DATA;The data stream for the file ;Type: DATA STREAM
-						//		dbMsg +=",URi=" +dataFN ;/////////////////////////////////////
 						dbMsg +="[id=" + playingItem._id +"]";
 						intent.putExtra("_id", playingItem._id);
 						albumName = playingItem.album;
@@ -2326,6 +2327,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					intent.putExtra("songLyric", songLyric);
 					dbMsg +=";Broadcast送信";
 					sendBroadcast(intent);					//APIL1
+					b_state = action;
 				}							//if (mItems != null) {
 					/*アーティストリピート	>playNextSong	>songInfoSett
 					 * onCompletNow=false,操作指定=LISTSEL,送り戻し待ち曲数=0,player=android.media.MediaPlayer@41f4ccd0[List_id=43408]
@@ -2359,7 +2361,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 			}
 			dbMsg +=",imanoJyoutai=" + imanoJyoutai ;///////////////////////////////////
-	//	}
 			wrightSaseiList( dataFN );
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
