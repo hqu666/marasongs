@@ -5854,6 +5854,10 @@ public class MaraSonActivity extends AppCompatActivity
 				//						dbMsg += ",artistList="+artistList;
 				//					}
 				kidou_jyoukyou =  extras.getInt("kidou_jyoukyou");	 ;										//通常のリストから起動
+				dbMsg += ",kidou_jyoukyou=" + kidou_jyoukyou;//100:
+				boolean set_pref = extras.getBoolean("set_pref");			//再生中か
+				dbMsg += ",set_pref=" + set_pref;/////////////////////////////////////
+
 			}
 //			}       //if( ! found ){
 			//	nowList = (String) getResources().getText(R.string.listmei_zemkyoku);				//再生中のプレイリスト名

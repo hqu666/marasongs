@@ -2398,7 +2398,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //						dbMsg += ">>[" + nowList_id  + "]" + nowList ;//// pref_saisei_fname //////
 							if( saisei_fname != null && ! saisei_fname.equals("")){																				//前回再生曲があれば
 								dbMsg += ">>プレイヤーへ";
-								send2Player(saisei_fname);																			//プレイヤーにuriを送る
+								send2Player(saisei_fname,false);																			//プレイヤーにuriを送る
 							}else{																								//前回再生曲が無ければ
 								dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);							//選曲して下さい。
 								dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);							//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
@@ -2415,7 +2415,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 										dbMsg +=  ","+ saisei_fname + "を" + list_dataUMUCursor.getCount() + "件検出";
 										if( list_dataUMUCursor.moveToFirst() ){
 											if ( imanoJyoutai == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-												send2Player(saisei_fname);														//プレイヤーにuriを送る
+												send2Player(saisei_fname,false);														//プレイヤーにuriを送る
 											}
 										}else {																			//指定されたリストが無ければ
 											dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
@@ -2446,7 +2446,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						dtitol = getResources().getString(R.string.syokairiyou_dt);				//全曲リストを作成作成させ下さい。
 						dMessege = getResources().getString(R.string.syokairiyou_dm);				//１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n
 					} else {
-						send2Player(saisei_fname);														//プレイヤーにuriを送る
+						send2Player(saisei_fname,false);														//プレイヤーにuriを送る
 					}
 				} else {
 					dbMsg +=  "；pref_file_kyoku == null || pref_file_saisinn == null";
@@ -3473,8 +3473,13 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台*/
-	public void send2Player(String saisei_fname ) {																//プレイヤーにuriを送る   , String aName
+	/**
+	 *  プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台
+	 *  listClickのタイトルリストクリック3通り
+	 *  onClickでプレイヤーのクリック
+	 *  jyoukyouBunki
+	 *  */
+	public void send2Player(String saisei_fname ,boolean setPref) {																//プレイヤーにuriを送る   , String aName
 		final String TAG = "send2Player";
 		String dbMsg = "[MuList]";
 		try{
@@ -3518,6 +3523,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				intent.putExtra("pp_start",pp_start);
 //				dbMsg += ",リピート区間終了点="+pp_end;/////////////////////////////////////
 				intent.putExtra("pp_end",pp_end);
+				intent.putExtra("set_pref",setPref);
 				myLog(TAG,dbMsg);
 				startActivityForResult(intent, chyangeSong);      //201；プレイヤーから戻って曲変更     //				MuList.this.finish();
 			}
@@ -3952,14 +3958,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					titolName =  itemStr;		//曲名	titolList.get(position)
 					saisei_fname = String.valueOf(titolAL.get(position).get("DATA"));
 					dbMsg += ",再生するのは=" + saisei_fname;
-//					mcPosition = 0;
+					mcPosition = 0;
 					dbMsg += ",呼出し元=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-					if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
+//					if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
 						dbMsg += ">>プレイヤーへ";
-						send2Player(saisei_fname );												//プレイヤーにuriを送る
-					}else{
-						back2Player( saisei_fname);												//プレイヤーにuriを送る
-					}
+						send2Player(saisei_fname ,true);												//プレイヤーにuriを送る
+//					}else{
+//						back2Player( saisei_fname);												//プレイヤーにuriを送る
+//					}
 					break;
 				}
 			}else{		//操作対象リストID		 if( 0 < sousalistID   )
@@ -3987,7 +3993,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					dbMsg += ",saisei_fname=" + saisei_fname;/////////////////////////////////////
 					mcPosition = 0;
 					dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-					back2Player( saisei_fname);												//プレイヤーにuriを送る
+//					back2Player( saisei_fname);												//プレイヤーにuriを送る
 				} else {
 					treeEntry = (TreeEntry)parent.getItemAtPosition(position);
 					depth = treeEntry.getDepth();
@@ -4037,9 +4043,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						mIndex = play_order;					//play_order
 						dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 						if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-							send2Player(saisei_fname );												//プレイヤーにuriを送る
-						}else{
-							back2Player( saisei_fname);												//プレイヤーにuriを送る
+							send2Player(saisei_fname,true );												//プレイヤーにuriを送る
+//						}else{
+//							back2Player( saisei_fname);												//プレイヤーにuriを送る
 						}
 						break;
 					case MENU_TAKAISOU:				//535 多階層リスト選択選択中
@@ -4086,9 +4092,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							mIndex = play_order;					//play_order
 							dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 							if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-								send2Player(saisei_fname );												//プレイヤーにuriを送る
-							}else{
-								back2Player( saisei_fname);												//プレイヤーにuriを送る
+								send2Player(saisei_fname ,true);												//プレイヤーにuriを送る
+//							}else{
+//								back2Player( saisei_fname);												//プレイヤーにuriを送る
 							}
 							break;
 						}
@@ -8392,7 +8398,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				}
 			} else if (v == rc_fbace) {	//プレイヤーフィールド部の土台
 				dbMsg +=  "クリックされたのはrc_fbace(" + mIndex  +")";			//+ sentakuCyuu ;/////////////////////////////////////
-				send2Player(saisei_fname );
+				send2Player(saisei_fname ,false);
 			} else if (v == lp_stop) {
 				dbMsg +=  "クリックされたのはlp_stop(" + mIndex  +")";			//+ sentakuCyuu ;/////////////////////////////////////
 				Intent intent = new Intent( MuList.this, MusicPlayerService.class);
@@ -9129,17 +9135,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					subHTF.setText(subTStr);	//ヘッダーのサブテキスト表示枠
 					imgItems=null;				//アルバムアート
 					if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
-						dbMsg +=",階層化しないシンプルなリスト";
+						dbMsg +=",階層化しないシンプルなタイトルリスト";
 						makePlainList( titolList);
 					} else {
-						dbMsg +=",イメージとサブテキストを持ったリストを構成";
+						dbMsg +=",イメージとサブテキストを持ったタイトルリストを構成";
 						setHeadImgList(titolAL );
 					}
-//					dbMsg +=",imanoJyoutai=" + imanoJyoutai;               //20190519;タイトルリストで止まらない
-//					saisei_fname = saisei_fname +"";
-//					if ( imanoJyoutai == veiwPlayer  && (saisei_fname !=null || ! saisei_fname.equals("")) ){											//200;プレイヤーを表示;起動直後
-//						send2Player(saisei_fname);				//プレイヤーにuriを送る , albumMei
-//					}
 					break;
 				default:
 					break;
@@ -9236,6 +9237,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						}
 						break;
 					//		case veiwPlayer:								// 200起動
+					case quite_me:										//99;終了
+						dbMsg += ",プレイヤーから";
+						MuList.this.finish();
+						break;
+					default:
 					case chyangeSong:							//201；プレイヤーから戻って曲変更
 						reqCode =bundle.getInt("reqCode");
 						dbMsg += ",プレイヤーからreqCode="+ reqCode;
@@ -9305,12 +9311,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							list_player.setVisibility(View.GONE);
 						}
 						////		}
-						break;
-					case quite_me:										//99;終了
-						dbMsg += ",プレイヤーから";
-						MuList.this.finish();
-						break;
-					default:
 						break;
 				}
 			}
