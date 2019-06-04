@@ -285,6 +285,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public String titolName ="";			//曲名
 	public String dataFN=null;			//DATA;The data stream for the file ;Type: DATA STREAM
 	public boolean IsPlaying ;			//再生中か
+	public boolean toPlaying ;			//曲をセットしたら再生
 	public boolean b_Playing = false;			//状況変化
 	public boolean IsSeisei ;			//生成中
 	public int saiseiJikan;					//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
@@ -1484,6 +1485,10 @@ public class MaraSonActivity extends AppCompatActivity
 			saiseiSeekMP.setMax((int) saiseiJikan);		//DURATION;
 			saiseiSeekMP.setProgress((int) mcPosition);
 			lyric_tv.setText(songLyric);					//歌詞表示
+			dbMsg += ",曲をセットしたら再生=" + toPlaying;
+			if(toPlaying){
+				playing();
+			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4231,7 +4236,11 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=",生成中= " + IsSeisei;			// 生成中= false
 			intent.putExtra("IsSeisei", IsSeisei);
 			setResult(RESULT_OK, intent);                //20190518
-			MaraSonActivity.this.finish();     //			startActivityForResult(intent , reqCode );										//200;プレイヤーを表示
+			if(IsPlaying){
+				MaraSonActivity.this.finish();     //			startActivityForResult(intent , reqCode );										//200;プレイヤーを表示
+			} else{
+				quitMe();
+			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4270,11 +4279,11 @@ public class MaraSonActivity extends AppCompatActivity
 			switch (keyCode) {
 				case KeyEvent.KEYCODE_BACK:	//4；KEYCODE_BACK :keyCode；09SH: keyCode；4,event=KeyEvent{action=0 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
 					if(event.getAction() == KeyEvent.ACTION_DOWN){					//0;二重発生の防止
-						if(! IsPlaying){
-							quitMe();
-						}else{
+//						if(! IsPlaying){
+//							quitMe();
+//						}else{
 							callListTitolList();
-						}
+//						}
 					}
 					break;
 				case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
@@ -5777,7 +5786,7 @@ public class MaraSonActivity extends AppCompatActivity
 					mItems = null;
 					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
 					mItems = Item.getItems( MaraSonActivity.this);
-					dbMsg += ">>null>>mItems="+mItems.size() +"件";
+					dbMsg += ">>mItems読込み>>="+mItems.size() +"件";
 				}
 				receiverHaki();		//レシーバーを破棄
 				int reqCode = extras.getInt("reqCode");					//何のリストか
@@ -5805,9 +5814,10 @@ public class MaraSonActivity extends AppCompatActivity
 					dbMsg += ">>["+ mIndex +"]";
 				}
 				Item playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
+				dbMsg +=",reqCode="+ reqCode ;
 				if(reqCode == MuList.veiwPlayer  || reqCode == MuList.chyangeSong ){
 					mcPosition=extras.getInt("mcPosition");
-					dbMsg +="[mcPosition="+ mcPosition ;/////////////////////////////////////
+					dbMsg +="[mcPosition="+ mcPosition ;
 				}
 				saiseiJikan=extras.getInt("saiseiJikan");
 				dbMsg += "/"+saiseiJikan +"mS]";
@@ -5817,9 +5827,8 @@ public class MaraSonActivity extends AppCompatActivity
 				}
 				IsPlaying = extras.getBoolean("IsPlaying");			//再生中か
 				dbMsg += ",IsPlaying=" + IsPlaying;/////////////////////////////////////
-				if(! IsPlaying){
-					
-				}
+				toPlaying = extras.getBoolean("to_play");
+				dbMsg += ",曲をセットしたら再生=" + toPlaying;
 				nowList_id=extras.getInt("nowList_id");
 				dbMsg +=",プレイリストID=" + nowList_id;/////////////////////////////////////
 				nowList_data =  extras.getString("nowList_data");
