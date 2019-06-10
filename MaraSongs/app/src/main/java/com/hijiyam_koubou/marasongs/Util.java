@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
@@ -475,6 +476,44 @@ public class Util {
 			return false;
 		}
 	}
+
+	  /**文字プリファレンスの読込み*/
+	public static String getPrefStr(String keyNmae , String defaultVal ,Context context) {
+		String retStr = "";
+		final String TAG = "getPrefStr";
+		String dbMsg="[util]keyNmae=" + keyNmae + ",defaultVal=" + defaultVal;
+		try {
+			dbMsg +=",context=" + context;
+			String pefName = context.getResources().getString(R.string.pref_main_file);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			SharedPreferences.Editor myEditor = sharedPref.edit();
+			retStr = sharedPref.getString(keyNmae , defaultVal);
+			dbMsg +=  ",retStr="  + retStr;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retStr;
+	}
+
+	/**整数プリファレンスの読込み*/
+	public static int getPrefInt(String keyNmae , int defaultVal,Context context) {
+		int retInt = -99;
+		final String TAG = "getPrefStr";
+		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + defaultVal;
+		try {
+			String pefName = context.getResources().getString(R.string.pref_main_file);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			SharedPreferences.Editor myEditor = sharedPref.edit();
+			retInt = sharedPref.getInt(keyNmae , defaultVal);
+			dbMsg +=  ",retIn="  + retInt;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retInt;
+	}
+
 
 //保留；入力ダイアログ
 //    public String retStr = "";

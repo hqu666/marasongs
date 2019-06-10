@@ -2515,8 +2515,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
-										final String TAG = "jyoukyouBunki";
-										String dbMsg = "[MuList]";
+										final String TAG = "onClick";
+										String dbMsg = "[MuList.jyoukyouBunki]";
 										if(dtitol.equals(getResources().getString(R.string.jyoukyouBunki_file_t)) || 		//全曲リストを更新します
 												   dtitol.equals(getResources().getString(R.string.syokairiyou_dt))					//全曲リストを作成作成させ下さい。
 										){
@@ -2656,7 +2656,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		String dbMsg = "[MuList]";
 		try{
 			String fn = getResources().getString(R.string.zenkyoku_file);			//全曲リスト名
-			dbMsg = "fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+			dbMsg += "fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 			zenkyokuHelper = new ZenkyokuHelper(MuList.this , fn);		//全曲リストの定義ファイル		.
 			File dbF = getDatabasePath(fn);			//Environment.getExternalStorageDirectory().getPath();		new File(fn);		//cContext.
 			dbMsg += ",dbF=" + dbF;
@@ -2766,7 +2766,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				}
 			}
 			String fn = getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
-			dbMsg = "db=" + fn;
+			dbMsg += "db=" + fn;
 			artistHelper = new ArtistHelper(MuList.this , fn);		//アーティスト名のリストの定義ファイル		.
 			dbMsg += " , artistHelper =" + artistHelper+ " , artist_db =" + artist_db;				//SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/artist.db；
 			artistTName = getString(R.string.artist_table);			//artist_table
@@ -3510,7 +3510,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += "[" + mIndex;/////////////////////////////////////
 				intent.putExtra("mIndex",mIndex);
 				dbMsg += "]saisei_fname=" + saisei_fname;/////////////////////////////////////
-				intent.putExtra("saisei_fname",saisei_fname);
+//				intent.putExtra("saisei_fname",saisei_fname);
+				intent.putExtra("dataFN",saisei_fname);
 				dbMsg +=",mcPosition="+mcPosition;
 				intent.putExtra("mcPosition",mcPosition);
 				dbMsg +="/"+saiseiJikan +"mS";
@@ -3701,8 +3702,21 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 									mItems = Item.getItems( MuList.this);
 								}
 								saisei_fname =intent.getStringExtra("data");		//			intent.putExtra("data", saisei_fname);
+								if(saisei_fname == null || saisei_fname.equals("")){
+									String pefName = context.getResources().getString(R.string.pref_main_file);
+									sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+									myEditor = sharedPref.edit();
+									saisei_fname = sharedPref.getString("dataFN" , "");
+									dbMsg +=  ">pref1>" + saisei_fname;////////////////////////////////////////////////////////////////////////////
+									if(saisei_fname.equals("")){
+										saisei_fname = sharedPref.getString("saisei_fname" , "");
+										dbMsg +=  ">pref2>" + saisei_fname;////////////////////////////////////////////////////////////////////////////
+									}
+								}
+
+
 								dbMsg += ",再生ファイル；" + b_saisei_fname + " を　";
-								if(! saisei_fname.equals(b_saisei_fname) ){
+								if(! saisei_fname.equals(b_saisei_fname) ||  b_saisei_fname.equals("")){
 									dbMsg += saisei_fname + "に変更";
 									mIndex = intent.getIntExtra("mIndex", 0);
 									dbMsg +="[mIndex=" + mIndex + "]";
@@ -8411,11 +8425,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
 					IsPlaying = false;
 				} else {
-					MPSIntent.setAction(MusicPlayerService.ACTION_REQUEST_STATE);
+					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 					MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PLAY));
 					dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
 					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
 					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));			//pause
+					IsPlaying = true;
 				}
 			} else if (v == rc_fbace) {	//プレイヤーフィールド部の土台
 				dbMsg +=  "クリックされたのはrc_fbace(" + mIndex  +")";			//+ sentakuCyuu ;/////////////////////////////////////

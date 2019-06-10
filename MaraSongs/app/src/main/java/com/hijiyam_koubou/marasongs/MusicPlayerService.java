@@ -233,6 +233,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	static final int REQUEST_ENABLE_BT = 0;
 	public boolean selfStop = false;
 
+
 	public void readPref() {        //プリファレンスの読込み
 		final String TAG = "readPref";
 		String dbMsg="[MusicPlayerService]";
@@ -388,7 +389,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			if (mState == State.Stopped) {		// actually play the song
 				dbMsg += " , Stopped>>次曲へ " ;
 				playNextSong(false);			// If we're stopped, just go ahead to the next song and start playing
-			} else if (mState == State.Paused || 0 < mcPosition ) {			//0531元SoucsはPausedだけ
+			} else
+			if (mState == State.Paused || 0 < mcPosition ) {			//0531元SoucsはPausedだけ
 				mState = State.Playing;			// If we're paused, just continue playback and restore the 'foreground service' state.
 				configAndStartMediaPlayer();					//ポーズを解除
 			} else {
@@ -431,11 +433,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg +=">> " + mState;/////////////////////////////////////
 			dbMsg +=",mPlayer " + mPlayer;/////////////////////////////////////
 			if( mPlayer != null){
-				setPref();								//プリファレンス記載
 				dbMsg +=",isPlaying " + mPlayer.isPlaying();/////////////////////////////////////
 				mPlayer.pause();
 				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
-		//		myLog(TAG,dbMsg);
+				setPref();								//プリファレンス記載
 				sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
 				if(pref_notifplayer){
 					if ( 21 <= android.os.Build.VERSION.SDK_INT) {
@@ -2167,30 +2168,32 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	@SuppressLint("InlinedApi")
 	private void sendPlayerState( MediaPlayer player ) {			//①?、②ⅲStop?	,	onStartCommand(ACTION_PLAY_READ,ACTION_REQUEST_STATE),
 		final String TAG = "sendPlayerState";
-		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
+		String dbMsg="[MusicPlayerService]";
 		try{
 			dbMsg +=",操作指定=" +  action.toString();
-//			Intent intent = null;
 			Intent intent = new Intent(ACTION_STATE_CHANGED);
+			Context context = getApplicationContext();
+			nowList_id = Integer.parseInt(getPrefStr("nowList_id" , "-1" , context));
+			dbMsg +=  ",再生中のプレイリスト["  + nowList_id +"]";
+			nowList = getPrefStr("nowList" , context.getResources().getString(R.string.listmei_zemkyoku) , context);	//sharedPref.getString("nowList" , context.getResources().getString(R.string.listmei_zemkyoku));
+			dbMsg += nowList ;			dbMsg +=  "再生中のプレイリスト["  + nowList_id +"]" + nowList;
+			dbMsg +=  ",再生中のファイル名=" + dataFN;////////////////////////////////////////////////////////////////////////////
+			if(dataFN ==null ||dataFN.equals("")){
+				dataFN = getPrefStr("dataFN" , "" , context);	//sharedPref.getString("dataFN" , "");
+				dbMsg +=  ">pref1>" + dataFN;////////////////////////////////////////////////////////////////////////////
+				if(dataFN.equals("")){
+					dataFN = getPrefStr("saisei_fname" , "" , context);	//sharedPref.getString("saisei_fname" , "");
+					dbMsg +=  ">pref2>" + dataFN;////////////////////////////////////////////////////////////////////////////
+				}
+			}
 			if (mPlayer == null) {
-				Context context = getApplicationContext();
-				String pefName = context.getResources().getString(R.string.pref_main_file);
-				sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-				myEditor = sharedPref.edit();
-				nowList_id = sharedPref.getInt("nowList_id" , -1);
-				dbMsg +=  "再生中のプレイリスト["  + nowList_id +"]";
-				nowList = sharedPref.getString("nowList" , context.getResources().getString(R.string.listmei_zemkyoku));
-				dbMsg += nowList ;
-				dataFN = sharedPref.getString("saisei_fname" ,"");
-				dbMsg +=  "再生中のファイル名" + dataFN;////////////////////////////////////////////////////////////////////////////
-				mcPosition = sharedPref.getInt("pref_position" , 0);
-				saiseiJikan = sharedPref.getInt("pref_duration" , 0);
+				dbMsg +=",mPlayer=null";
+				mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
+				saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
 				dbMsg += ">>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";
 			} else {
-				dbMsg +=  "再生中のプレイリスト["  + nowList_id +"]" + nowList;
-				dbMsg +=  "再生中のファイル名" + dataFN;////////////////////////////////////////////////////////////////////////////
 				mcPosition = mPlayer.getCurrentPosition();
-				dbMsg +=">>mcPosition=" + mcPosition ;
+				dbMsg +=",mcPosition=" + mcPosition ;
 				saiseiJikan =mPlayer.getDuration();
 				dbMsg +=">>getDuration=" + saiseiJikan ;
 			}
@@ -2202,12 +2205,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			}
 			if (b_state != action) {
 				intent.putExtra("action", action);
-					dbMsg += ",送り戻し待ち曲数=" + frCount ;
-					dbMsg += ",player=" + player ;
-	//				if( (action.equals(ACTION_SKIP) || action.equals(ACTION_REWIND)) && frCount !=0){
-	//					myLog(TAG,dbMsg);
-	//					okuriMpdosi(frCount);		//送り戻しの実行
-	//				} else {
+				dbMsg += ",送り戻し待ち曲数=" + frCount ;
+				dbMsg += ",player=" + player ;
+//				if( (action.equals(ACTION_SKIP) || action.equals(ACTION_REWIND)) && frCount !=0){
+//					myLog(TAG,dbMsg);
+//					okuriMpdosi(frCount);		//送り戻しの実行
+//				} else {
 //					intent = new Intent(ACTION_STATE_CHANGED);
 					dbMsg +="[List_id=" +  nowList_id + "]";
 					intent.putExtra("nowList_id",nowList_id);
@@ -2217,7 +2220,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg +="[mIndex=" + mIndex +"/"+ mItems.size() +"]";
 
 					dbMsg +=",dataFN=" +dataFN ;
-					if( dataFN != null){
+					if(dataFN ==null ||dataFN.equals("")){
 						intent.putExtra("data", dataFN);
 						int rInt = Item.getMPItem(dataFN);
 						dbMsg +=",rInt=" +rInt ;////☆ここから参照できない？/////////////////////////////////
@@ -2361,7 +2364,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 			}
 			dbMsg +=",imanoJyoutai=" + imanoJyoutai ;///////////////////////////////////
-			wrightSaseiList( dataFN );
+			if(! dataFN.equals("")){
+				wrightSaseiList( dataFN );
+			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -2373,7 +2378,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * @ String data 再生する曲のUrl
 	 * */
 	private void wrightSaseiList( String data ) {			//最近再生リストへの追記
-		final String TAG = "wrightSaseiList[MusicPlayerService]";
+		final String TAG = "wrightSaseiList";
 		String dbMsg="[MusicPlayerService]";
 		try{
 			String audio_id = null;
@@ -2419,7 +2424,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			}else{					//OK
 				dbMsg +=   ">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
 			}
-		//	myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
@@ -3452,7 +3457,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg +=" , startId=" + startId;
 			nowSartId = startId;
 			Bundle extras = intent.getExtras();
-//			if(extras != null){
+			if(extras != null){
 				dataFN = extras.getString("dataFN");			//音楽ファイルのurl
 				dbMsg += ",dataFN="+ dataFN ;			// = extras.getInt("mIndex");		//現リスト中の順番;
 				mcPosition = extras.getInt("mcPosition");
@@ -3464,7 +3469,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						dbMsg +=">>mcPosition=" + mcPosition ;
 					}
 				}
-//			}
+			}
 
 			if (action.equals(ACTION_PLAYPAUSE)) {
 				dbMsg +="でPLAY/PAUSE";
@@ -3705,6 +3710,25 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	super.onDestroy();
 	}
 	///////////////////////////////////////////////////////////////////////////////////
+
+	public static String getPrefStr(String keyNmae , String defaultVal,Context context) {        //プリファレンスの読込み
+		String retStr = "";
+		final String TAG = "getPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+		return retStr;
+	}
+
+	public static int getPrefInt(String keyNmae , int defaultVal,Context context) {        //プリファレンスの読込み
+		int retInt = -99;
+		final String TAG = "getPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
+		return retInt;
+	}
+
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
 		Util.myLog(TAG , dbMsg);

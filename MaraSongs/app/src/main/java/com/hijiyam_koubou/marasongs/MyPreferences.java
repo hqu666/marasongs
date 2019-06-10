@@ -686,7 +686,7 @@ public class MyPreferences extends PreferenceActivity {
 					dbMsg += i+"/"+keys.size()+")"+key+"は "+String.valueOf(keys.get(key));
 					try{
 						if(String.valueOf(keys.get(key)) != null){
-							if( ! String.valueOf(keys.get(key)).equals("null")){
+//							if( ! String.valueOf(keys.get(key)).equals("null")){
 								if(key.equals("pref_pb_bgc")){
 									pref_pb_bgc =Boolean.valueOf(keys.get(key).toString());
 									dbMsg +=  "プレイヤーの背景は白=" + pref_pb_bgc;
@@ -777,9 +777,12 @@ public class MyPreferences extends PreferenceActivity {
 								}else if(key.equals("audioID")){
 									audioID = String.valueOf(keys.get(key).toString());
 									dbMsg +=  ",曲=" + audioID ;////////////////////////////////////////////////////////////////////////////
+								}else if(key.equals("dataFN")){
+									saisei_fname = String.valueOf(keys.get(key));
+									dbMsg +=  "saisei_fname=" + saisei_fname ;
 								}else if(key.equals("pref_saisei_fname")){
-									saisei_fname = String.valueOf(keys.get(key));						//再生中のファイル名
-									dbMsg +=  "再生中のファイル名" ;////////////////////////////////////////////////////////////////////////////
+									saisei_fname = String.valueOf(keys.get(key));
+									dbMsg +=  ">>" + saisei_fname ;
 								}else if(key.equals("pref_saisei_jikan")){
 									pref_saisei_jikan = String.valueOf(keys.get(key));		//再開時間		Integer.valueOf(keys.get(key).toString());
 									dbMsg += "再生中音楽ファイルの再開時間" ;//////////////////
@@ -869,7 +872,7 @@ public class MyPreferences extends PreferenceActivity {
 									Editor mainEditor = sharedPref.edit();
 									mainEditor.remove("dataFN");
 								}
-							}
+//							}
 						}
 					} catch (Exception e) {
 						myErrorLog(TAG,dbMsg+"；"+e);
