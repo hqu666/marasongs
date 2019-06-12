@@ -3487,12 +3487,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "send2Player";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg += ",saisei_fname=" + saisei_fname;/////////////////////////////////////
+//			dbMsg += ",saisei_fname=" + saisei_fname;/////////////////////////////////////
 			dbMsg += ",setPref=" + setPref;/////////////////////////////////////
 			if(setPref){
-				Intent intent = new Intent( MuList.this, MusicPlayerService.class);
-				intent.setAction(MusicPlayerService.ACTION_SYUURYOU);
-				startService(intent) ;
+//				Intent intent = new Intent( MuList.this, MusicPlayerService.class);
+//				intent.setAction(MusicPlayerService.ACTION_SYUURYOU);
+//				startService(intent) ;
 				imanoJyoutai = chyangeSong;
 				mcPosition = 0;
 				IsPlaying = false;
@@ -3501,7 +3501,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
 			intent.putExtra("reqCode",imanoJyoutai);
 			dbMsg += ",プレイリスト[ID=" + nowList_id;/////////////////////////////////////
-			if(-1 <= nowList_id){
+//			if(-1 <= nowList_id){
 				intent.putExtra("nowList_id",nowList_id);
 				dbMsg += "]" + nowList;/////////////////////////////////////
 				intent.putExtra("nowList",nowList);
@@ -3545,7 +3545,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				}
 				myLog(TAG,dbMsg);
 				startActivityForResult(intent, chyangeSong);      //201；プレイヤーから戻って曲変更     //				MuList.this.finish();
-			}
+//			}
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());

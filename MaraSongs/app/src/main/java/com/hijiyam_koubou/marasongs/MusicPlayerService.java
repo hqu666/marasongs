@@ -753,11 +753,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * (that is, it will be a random song in the user's device). If manualUrl is non-null, then it specifies the URL or path to the song that will be played next.
 	 * 呼出し元onCompletion、onMusicRetrieverPrepared、
 	 * 		onStartCommandでACTION_LISTSEL,processPlayRequestでmState == State.Paused 以外、okuriMpdosiで最終的な送り状態になった場合
+	 * 		onCompletion,onMusicRetrieverPreparedからFalse , processSkipRequestでstopの時はtrue <processPlayRequest
 	 * */
 	public void playNextSong(boolean isOnlyPrepare) {		//setDataSourceを行う				 throws IOException　 throws IllegalArgumentException
-		//←onCompletion,onMusicRetrieverPreparedからFalse , processSkipRequestでstopの時はtrue <processPlayRequest
-		final String TAG = "playNextSong[MusicPlayerService]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "playNextSong";
+		String dbMsg="[MusicPlayerService]";
 		try{
 			boolean yominaosi = false;
 			dbMsg += "isOnlyPrepareは" + isOnlyPrepare;/////////////////////////////////////
@@ -892,7 +892,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += ">>" +mState;/////////////////////////////////////
 		//		if( ! b_dataFN.equals(dataFN) || mPlayer == null ){			//読み込むデータが変わっていたら
 					relaxResources(true);				//trueで再生しているmPlayerの破棄 // release everything except MediaPlayer
-					createMediaPlayerIfNeeded();					//MediaPlerを生成←playNextSong// set the source of the media player a a content URI
+					createMediaPlayerIfNeeded();
 		//		}
 				dbMsg += "、mPlayer=" +mPlayer;/////////////////////////////////////
 				dbMsg += ",mcPosition=" + mcPosition + "mS";/////////////////////////////////////
@@ -2186,6 +2186,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg +=  ">pref2>" + dataFN;////////////////////////////////////////////////////////////////////////////
 				}
 			}
+			intent.putExtra("data", dataFN);
+
 			if (mPlayer == null) {
 				dbMsg +=",mPlayer=null";
 				mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
@@ -2221,7 +2223,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 					dbMsg +=",dataFN=" +dataFN ;
 					if(dataFN ==null ||dataFN.equals("")){
-						intent.putExtra("data", dataFN);
+//						intent.putExtra("data", dataFN);
 						int rInt = Item.getMPItem(dataFN);
 						dbMsg +=",rInt=" +rInt ;////☆ここから参照できない？/////////////////////////////////
 	//					String bLyric = songLyric;
@@ -2411,10 +2413,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			ContentValues contentvalues = new ContentValues();
 			Uri kakikomiUri = null;
 			contentvalues.put("play_order", poSetteiti);
-				kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-				dbMsg +=  ",kakikomiUri=" + kakikomiUri;
-				dbMsg +=  ",audio_id=" + audio_id;
-				contentvalues.put("audio_id", Integer.valueOf(audio_id));
+			kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+			dbMsg +=  ",kakikomiUri=" + kakikomiUri;
+			dbMsg +=  ",audio_id=" + audio_id;
+			contentvalues.put("audio_id", Integer.valueOf(audio_id));
 			Uri result_uri = getContentResolver().insert(kakikomiUri, contentvalues);				//追加
 			dbMsg +=  ",result_uri=" + result_uri;
 			if(result_uri == null){					//NG
