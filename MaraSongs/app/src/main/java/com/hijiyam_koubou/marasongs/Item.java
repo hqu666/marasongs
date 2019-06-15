@@ -27,7 +27,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	//プリファレンス
 	public static SharedPreferences sharedPref;
 	public Editor myEditor ;
-//	public static int nowList_id;
 	private static List<Item> items;
 	private static final String TAG = "Item";
 	final int listid;						//作成したリストの連番
