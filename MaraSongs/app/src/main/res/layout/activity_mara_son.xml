@@ -275,27 +275,27 @@
                 android:src="@drawable/rewbtn"/>
         </LinearLayout>
 
-        <ViewFlipper
-            android:id="@+id/pp_vf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="20px"
-            android:layout_weight="8">
+		<ViewFlipper
+			android:id="@+id/pp_vf"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_gravity="center"
+			android:layout_margin="20px"
+			android:layout_weight="8">
 
-            <include
-                android:id="@+id/jaket_ll"
-                layout="@layout/jaket_art"/>
+			<include
+				android:id="@+id/jaket_ll"
+				layout="@layout/jaket_art"/>
 
-            <include
-                android:id="@+id/visualizer_ll"
-                layout="@layout/visualizer"/>
+			<include
+				android:id="@+id/visualizer_ll"
+				layout="@layout/visualizer"/>
 
-            <include
-                android:id="@+id/lilic_ll"
-                layout="@layout/lilic"
-                />
-        </ViewFlipper>
+			<include
+				android:id="@+id/lilic_ll"
+				layout="@layout/lilic"
+				/>
+		</ViewFlipper>
 
         <LinearLayout
             android:layout_width="wrap_content"

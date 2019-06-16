@@ -954,7 +954,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "songInfoSett[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
-//20160109			makeLockScreenP( player );					//ロックスクリーン作成
 			dbMsg += "、g_timer=" + g_timer;/////////////////////////////////////
 			dbMsg += "、g_handler=" + g_handler;/////////////////////////////////////
 			player.setLooping(false);		//ループ再生はしない
@@ -1344,9 +1343,19 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			}
 			Intent intent = new Intent( getApplicationContext(), MaraSonActivity.class );						//タップで表示する画面		http://qiita.com/roga7zl/items/4c9e1b62db1b427a9226
 			intent.putExtra("notification_ID", NOTIFICATION_ID);
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0 , intent, PendingIntent.FLAG_CANCEL_CURRENT);		//http://y-anz-m.blogspot.jp/2011/07/androidappwidget-pendingintent-putextra.html
-	//		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0 , intent, PendingIntent.FLAG_ONE_SHOT);			//	;二重に開く	FLAG_CANCEL_CURRENT	FLAG_NO_CREATE	FLAG_UPDATE_CURRENT
+			dbMsg +=",dataFN =" + dataFN;
+			intent.putExtra("dataFN", dataFN);
+			dbMsg +="[List_id=" +  nowList_id + "]";
+			intent.putExtra("nowList_id",nowList_id);
+			dbMsg +=nowList;
+			dbMsg +="[mIndex=" + mIndex +"/"+ mItems.size() +"]";
+			intent.putExtra("nowList",nowList);
+			intent.putExtra("mIndex", mIndex);
+			dbMsg += ">>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";//pauseから復帰した時0になっている
+			intent.putExtra("mcPosition", mcPosition);
+			intent.putExtra("saiseiJikan", saiseiJikan);
 
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0 , intent, PendingIntent.FLAG_CANCEL_CURRENT);		//http://y-anz-m.blogspot.jp/2011/07/androidappwidget-pendingintent-putextra.html
 			if(mediaSession != null){
 				mediaSession.release();
 				mediaSession = null;
@@ -2210,7 +2219,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	}
 
 	/**
-	 * 再生した曲をリストに追記する
+	 * 再生した曲を最近再生リストに追記する
 	 * @ String data 再生する曲のUrl
 	 * */
 	private void wrightSaseiList( String data ) {			//最近再生リストへの追記

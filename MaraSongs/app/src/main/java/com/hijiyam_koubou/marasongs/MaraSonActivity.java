@@ -878,13 +878,12 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	private void keizoku2Service(){						//MusicPlayerServiceのプロパティ取得
-		final String TAG = "keizoku2Service[MaraSonActivity]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "keizoku2Service";
+		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
 		try{
 			b_dataFN ="";
 			dbMsg +=dataFN;////////////////////////////////////this.data = data;
 			dbMsg +="[" + ORGUT.sdf_mss.format(mcPosition) + "/" + ORGUT.sdf_mss.format(saiseiJikan) + "]"  ;/////////////////////////////////////
-			myLog(TAG,dbMsg);
 			dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
 			MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
 			dbMsg +=">>" + MPSIntent;/////////////////////////////////////
@@ -5727,23 +5726,20 @@ public class MaraSonActivity extends AppCompatActivity
 			boolean found = false;
 			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	//起動中のサービス名を取得 クラス名を比較
 				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {		// 実行中のサービスと一致 = ノティフィケーションからの起動
-					dbMsg +="起動中のサービス" + curr.service.getClassName();///////////	dbMsg=dbMsg +">>"+ MusicPlayerService.class.getName();/////////////////////////////////////
-//					MaraSonActivity.this.finish();		//20190518;2回目以降の遷移で閉じてしまう				//二重に開かない
+					dbMsg +="起動中のサービス=" + curr.service.getClassName();///////////	dbMsg=dbMsg +">>"+ MusicPlayerService.class.getName();/////////////////////////////////////
 					found = true;
 					kidou_jyoukyou = kidou_notif ;						//ノティフィケーションからの起動
 					imanoJyoutai = MuList.sonomama;
 					break;
-					//※サービスが拾えてもalbumArtが消えている
 				}
 			}
 			///////////////////////////////////スレッド起動確認//
 			readPref();       //					setteriYomikomi();		//<onCreate	プリファレンスに記録されているデータ読み込み
 
-
 			dbMsg += ",found="+ found ;/////////////////////////////////////
 //			if( ! found ){		//20190518;2回目以降の遷移で選択された曲を受け取れない	//サービス起動中でなければ
 			Bundle extras = getIntent().getExtras();				//起動されたアクティビティからデータを受け取る
-			dbMsg += "extras="+ extras ;/////////////////////////////////////
+			dbMsg += ",extras="+ extras ;/////////////////////////////////////
 			if( extras == null ){
 				dbMsg += ",extras=null" ;/////////////////////////////////////
 			}else{
@@ -5759,9 +5755,9 @@ public class MaraSonActivity extends AppCompatActivity
 					dbMsg += ">>mItems読込み>>="+mItems.size() +"件";
 				}
 				nowList_id = extras.getInt("nowList_id");					//何のリストか
-				dbMsg +=",リストからの受取=="+ nowList_id ;/////////////////////////////////////
+				dbMsg +="{"+ nowList_id ;/////////////////////////////////////
 				String rStr=extras.getString("nowList");
-				dbMsg +=",rStr="+ rStr ;/////////////////////////////////////
+				dbMsg +="]rStr="+ rStr ;/////////////////////////////////////
 				if( rStr !=null ){
 					if( ! rStr.equals("null") ){
 						nowList = rStr;
