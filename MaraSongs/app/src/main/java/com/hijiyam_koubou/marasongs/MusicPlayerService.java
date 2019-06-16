@@ -288,12 +288,16 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 							mainEditor.putString("nowList",nowList);							//再生中のプレイリスト名
 							mainEditor.putString("mIndex",String.valueOf( mIndex ));		//play_order
 							mainEditor.putString("pref_saisei_fname",dataFN);				//再生していた曲	.commit()
+							mainEditor.putInt("pref_position",mcPosition);
+							mainEditor.putInt("pref_duration",saiseiJikan);
 							if(mPlayer !=  null){
 								mcPosition = mPlayer.getCurrentPosition();
-								dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
+								mainEditor.putInt("pref_position",mcPosition);
+								mainEditor.putInt("pref_duration",saiseiJikan);
 								mainEditor.putString( "pref_saisei_jikan", String.valueOf(mcPosition));		//再生ポジション
 								mainEditor.putString( "pref_saisei_nagasa", String.valueOf(saiseiJikan));					//再生時間
 							}
+							dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
 							dbMsg +=";"+ruikeikyoku + "曲"+ruikeiSTTime+"mS" ;////////////////////////////////////////////////////////////////////////////
 							if( ruikeikyoku > 0 ){
 								mainEditor.putString( "pref_zenkai_saiseKyoku", String.valueOf(ruikeikyoku));			//連続再生曲数
@@ -2062,16 +2066,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +=">>getDuration=" + saiseiJikan ;
 			}
 			intent.putExtra("data", dataFN);
+			intent.putExtra("mcPosition", mcPosition);
+			intent.putExtra("saiseiJikan", saiseiJikan);
 
 //			if (b_state != action) {
 				intent.putExtra("action", action);
 				dbMsg += ",送り戻し待ち曲数=" + frCount ;
 				dbMsg += ",player=" + player ;
-//				if( (action.equals(ACTION_SKIP) || action.equals(ACTION_REWIND)) && frCount !=0){
-//					myLog(TAG,dbMsg);
-//					okuriMpdosi(frCount);		//送り戻しの実行
-//				} else {
-//					intent = new Intent(ACTION_STATE_CHANGED);
 					dbMsg +="[List_id=" +  nowList_id + "]";
 					intent.putExtra("nowList_id",nowList_id);
 					dbMsg +=nowList;
@@ -2081,7 +2082,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 					dbMsg +=",dataFN=" +dataFN ;
 					if(dataFN ==null ||dataFN.equals("")){
-//						intent.putExtra("data", dataFN);
 						int rInt = Item.getMPItem(dataFN);
 						dbMsg +=",rInt=" +rInt ;////☆ここから参照できない？/////////////////////////////////
 	//					String bLyric = songLyric;
@@ -2104,8 +2104,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //							IsSeisei = false ;
 //							IsPlaying  = false ;								//再生中か
 //						}
-						intent.putExtra("mcPosition", mcPosition);
-						intent.putExtra("saiseiJikan", saiseiJikan);
 						dbMsg +=",art=" + album_art ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
 						intent.putExtra("albumArt", album_art);
 					}
@@ -3561,7 +3559,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
 		Util UTIL = new Util();
-		retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+		retStr = UTIL.getPrefStr(keyNmae , defaultVal,context);
 		return retStr;
 	}
 
@@ -3570,8 +3568,17 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
 		Util UTIL = new Util();
-		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
+		retInt = UTIL.getPrefInt(keyNmae , defaultVal,context);
 		return retInt;
+	}
+
+	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "getPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = UTIL.setPrefInt(keyNmae , wrightVal,context);
+		return retBool;
 	}
 
 	public static void myLog(String TAG , String dbMsg) {

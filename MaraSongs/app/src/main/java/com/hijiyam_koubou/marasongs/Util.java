@@ -514,6 +514,28 @@ public class Util {
 		return retInt;
 	}
 
+	/** 整数プリファレンスの書込み*/
+	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {
+		boolean retBool = false;
+		final String TAG = "setPrefInt";
+		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + wrightVal;
+		try {
+			String pefName = context.getResources().getString(R.string.pref_main_file);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			SharedPreferences.Editor myEditor = sharedPref.edit();
+//			dbMsg= keyNmae+";"+ keyNmae;
+//			key = String.valueOf( keyNmae );
+//			vStr = String.valueOf( vStr );
+//			dbMsg= ">>" + key+";"+ vStr;
+			myEditor.putInt( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
+			retBool = myEditor.commit();
+			dbMsg +=">>書込み成功="+ retBool;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+	}
 
 //保留；入力ダイアログ
 //    public String retStr = "";
