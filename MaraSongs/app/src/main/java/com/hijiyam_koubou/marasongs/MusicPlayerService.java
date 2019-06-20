@@ -362,7 +362,17 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			} else {
 				processPauseRequest();
 			}
-		//	myLog(TAG,dbMsg);
+//			if ( 21 <= android.os.Build.VERSION.SDK_INT) {
+//				lpNotificationMake(playingItem.artist , playingItem.album , playingItem.title , album_art);
+//			}else if ( 14 <= android.os.Build.VERSION.SDK_INT  && pref_notifplayer) {								//&&  android.os.Build.VERSION.SDK_INT < 21
+//				dbMsg +=",action=" + action ;///////////////////////////////////
+//				if(! action.equals(ACTION_SYUURYOU) && ! action.equals(ACTION_SYUURYOU_NOTIF)){
+//					updateNotification(mPlayer);				//Updates the notification
+//					updateLockScreenP();					//ロックスクリーン更新
+//				}
+//			}
+
+			//	myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
@@ -485,6 +495,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		//		myLog(TAG,dbMsg);
 				if( mcPosition > 3000 ){					//3秒以上なら
 					if(rp_pp){						//2点間リピート中で//リピート区間終了点
+						dbMsg +=",rp_pp=" + rp_pp;
+						myLog(TAG,dbMsg);
 						mcPosition = pp_start;		//リピート区間開始点
 					}else {
 						mcPosition = 0;
@@ -536,6 +548,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				playingItem = mItems.get(mIndex);	//0始まりでリスト上のインデックス指定
 				dbMsg +=">>" + playingItem;/////////////////////////////////////
 				if(rp_pp){						//2点間リピート中で//リピート区間終了点
+					dbMsg +=",rp_pp=" + rp_pp;
+					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
 				}else {
 					mcPosition = 0;
@@ -1063,6 +1077,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +=">>" + mVisualizer;/////////////////////////////////////
 			}
 			if( rp_pp ){						//2点間リピート中で//リピート区間終了点
+				dbMsg +=",rp_pp=" + rp_pp;
+				myLog(TAG,dbMsg);
 				mcPosition =pp_start;									//前に再生していた曲の再生ポジションを消去
 //			} else {
 //				mcPosition = 0;									//前に再生していた曲の再生ポジションを消去
@@ -1150,6 +1166,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 							} else {
 								if( mPlayer == null ){
 									if(rp_pp){						//2点間リピート中で//リピート区間終了点
+										dbMsg +=",rp_pp=" + rp_pp;
+										myLog(TAG,dbMsg);
 										mcPosition = pp_start;		//リピート区間開始点
 									}
 									IsPlaying  = false ;			//再生中か
@@ -1183,7 +1201,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					  					(rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
 					  					)){			//	&&  (Build.VERSION.SDK_INT <16)
 									dbMsg +="[ " + mIndex +",再生時間="+ saiseiJikan;/////////////////////////////////////
-				//					myLog(TAG,dbMsg);
+									dbMsg +=",rp_pp=" + rp_pp;
+									myLog(TAG,dbMsg);
 									onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 						//			if( (Build.VERSION.SDK_INT <16)){	//Android4.2以前は
 					//				completionRegasy();				// 再生中にデータファイルのENDが現れた場合にsetNextMediaPlayerを使わず曲送り. */
@@ -1251,6 +1270,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				ruikeikyoku++;			//累積曲数
 				dbMsg += "累積曲数" + ruikeikyoku +"曲";/////////////////////////////////////
 				if(rp_pp){						//2点間リピート中で//リピート区間終了点
+					dbMsg +=",rp_pp=" + rp_pp;
+					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
 				}else {
 					mcPosition = 0;
@@ -1280,8 +1301,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg=dbMsg+ "、isPlaying=" + player.isPlaying() ;/////////////////////////////////////
 					if( !player.isPlaying() ){
 						player.setVolume(DUCK_VOLUME, DUCK_VOLUME); 	//0.1f; we'll be relatively quiet
-						dbMsg += ",2点間リピート中=" + rp_pp ;/////////////////////////////////////
 						if( rp_pp ){						//2点間リピート中の時だけ//リピート区間終了点
+							dbMsg +=",rp_pp=" + rp_pp;
+							myLog(TAG,dbMsg);
 							mcPosition =pp_start;			//前に再生していた曲の再生ポジションを消去
 						}
 						dbMsg += ",mcPosition=" + mcPosition ;//////////////////////////////////
@@ -1345,7 +1367,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				artwork = ORGUT.retBitMap( albumArt  , 144 , 144 ,  getResources() );		//指定したURiのBitmapを返す	 , dHighet , dWith ,
 				dbMsg +=">>" + albumArt;
 			}
-			Intent intent = new Intent( getApplicationContext(), MaraSonActivity.class );						//タップで表示する画面		http://qiita.com/roga7zl/items/4c9e1b62db1b427a9226
+			Intent intent = new Intent( getApplicationContext(), MuList.class );						//タップで表示する画面		http://qiita.com/roga7zl/items/4c9e1b62db1b427a9226
+//			Intent intent = new Intent( getApplicationContext(), MaraSonActivity.class );						//タップで表示する画面		http://qiita.com/roga7zl/items/4c9e1b62db1b427a9226
 			intent.putExtra("notification_ID", NOTIFICATION_ID);
 			dbMsg +=",dataFN =" + dataFN;
 			intent.putExtra("dataFN", dataFN);
@@ -1438,6 +1461,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if (! mPlayer.isPlaying()) {		//(mState == State.Paused || mState == State.Stopped
 					ppIcon = android.R.drawable.ic_media_play;
 					ppTitol = "play";
+				}else{
+					ppIcon = android.R.drawable.ic_media_pause;
 				}
 			}
 			dbMsg +=",ppTitol = " + ppTitol  ;
@@ -1460,7 +1485,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //VISIBILITY_PRIVATE； 基本的な情報は表示されますが、通知の完全なコンテンツは非表示   / VISIBILITY_SECRET；非表示
 				mNotificationManager.createNotificationChannel(mNotificationChannel);										// チャンネルの登録
 			}
-
 			Notification.Builder nBuilder = new Notification.Builder(this);
 			nBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);														//2016050:通知にメディア再生コントロールを表示	http://developer.android.com/intl/ja/about/versions/android-5.0.html アプリで RemoteControlClient を使用する場合
 			nBuilder.setShowWhen(false);																	// Hide the timestamp
@@ -1477,7 +1501,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				nBuilder.setChannelId(getResources().getString(R.string.notifi_id));                    // Build.VERSION_CODES.O の追加分
 			}
 			nBuilder.addAction( generateAction( android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND ));				//.addAction(android.R.drawable.ic_media_rew, "prev", retreivePlaybackAction(3))			// Add some playback controls		//retreivePlaybackAction(3)
-			nBuilder.addAction(generateAction(ppIcon , ppTitol , ACTION_PLAYPAUSE ));			//.addAction(android.R.drawable.ic_media_pause, "pause", retreivePlaybackAction(1))			//retreivePlaybackAction(1)
+			nBuilder.addAction(generateAction(ppIcon , ppTitol , ACTION_PLAYPAUSE ));			//再生/ポーズボタン.addAction(android.R.drawable.ic_media_pause, "pause", retreivePlaybackAction(1))			//retreivePlaybackAction(1)
 			nBuilder.addAction( generateAction( android.R.drawable.ic_media_ff, "Next", ACTION_SKIP ));					//.addAction(android.R.drawable.ic_media_ff, "next", retreivePlaybackAction(2))				//retreivePlaybackAction()
 			nBuilder.addAction( generateAction( android.R.drawable.ic_lock_power_off, "Qite", ACTION_SYUURYOU_NOTIF ));;		//ノティフィケーションから終了	ロックスクリーンでは4つ目のアイコンでsetLargeIconが表示されなくなる	☆終了不能に陥る?
 			nBuilder.setContentIntent(contentIntent);																		//タップで起動する画面
@@ -2110,10 +2134,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 					dbMsg +=" , mState=" + mState.toString();////////////////////////////ノティフィケーション送る
 					intent.putExtra("state", mState.toString());
-					dbMsg += ",2点間リピート中" + rp_pp ;/////////////////////////////////////
 					if( rp_pp ){			//2点間リピート中
 						mcPosition = pp_start;			//リピート区間開始点
 						dbMsg +=">>"+ mcPosition;/////////////////////////////////////
+						dbMsg +=",rp_pp=" + rp_pp;
+						myLog(TAG,dbMsg);
 						player.seekTo(mcPosition);
 					}
 //				}
@@ -3570,15 +3595,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		Util UTIL = new Util();
 		retInt = UTIL.getPrefInt(keyNmae , defaultVal,context);
 		return retInt;
-	}
-
-	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
-		boolean retBool = false;
-		final String TAG = "getPrefStr";
-		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = UTIL.setPrefInt(keyNmae , wrightVal,context);
-		return retBool;
 	}
 
 	public static void myLog(String TAG , String dbMsg) {

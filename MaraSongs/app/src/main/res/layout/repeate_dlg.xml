@@ -1,90 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rd_root_ll"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".MaraSonActivity" >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/rd_root_ll"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              tools:context=".MaraSonActivity">
 
     <RadioGroup
         android:id="@+id/rd_repeat_gr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <RadioButton
             android:id="@+id/rd_artist_rd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/pp_artist" />
+            android:text="@string/pp_artist"/>
 
         <RadioButton
             android:id="@+id/rd_album_rd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/comon_album" />
+            android:text="@string/comon_album"/>
 
         <RadioButton
             android:id="@+id/titol_rd_rd"
-            android:layout_width="294dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/fie_taisyou_titol" />
+            android:text="@string/fie_taisyou_titol"/>
 
         <RadioButton
             android:id="@+id/rd_point_rb"
-            android:layout_width="294dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/repeate_dt_nitenkan" />
+            android:text="@string/repeate_dt_nitenkan"/>
     </RadioGroup>
 
     <LinearLayout
         android:id="@+id/pp_pp_gll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <RadioGroup
                 android:id="@+id/rd_pp_gr"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/pp_start_rd"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="35dp"
-                    android:text="@string/comon_kaisi" />
+                    android:layout_weight="1"
+                    android:text="@string/comon_kaisi"/>
 
                 <TextView
                     android:id="@+id/textView32"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:text=">>>" />
+                    android:text=">>>"
+                    android:textAlignment="center"/>
 
                 <RadioButton
                     android:id="@+id/pp_end_rd"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|fill_horizontal"
                     android:layout_weight="1"
-                    android:text="@string/comon_syuuryou" />
+                    android:text="@string/comon_syuuryou"/>
             </RadioGroup>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/pp_pp_set_tf"
@@ -92,16 +94,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="@string/mm_ss" />
+                android:text="@string/mm_ss"/>
 
             <TextView
                 android:id="@+id/textViewm3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:text=">>>" />
+                android:text=">>>"
+                android:textAlignment="center"/>
 
             <TextView
                 android:id="@+id/rd_pp_end_tf"
@@ -110,18 +114,18 @@
                 android:layout_gravity="right"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:text="@string/mm_ss" />
+                android:text="@string/mm_ss"/>
         </LinearLayout>
 
         <SeekBar
             android:id="@+id/pp_pp_seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/rd_start_tf"
@@ -129,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:text="0" />
+                android:text="0"/>
 
             <TextView
                 android:id="@+id/pp_end_tf"
@@ -138,7 +142,7 @@
                 android:layout_gravity="right"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="@string/mm_ss" />
+                android:text="@string/mm_ss"/>
         </LinearLayout>
 
     </LinearLayout>
