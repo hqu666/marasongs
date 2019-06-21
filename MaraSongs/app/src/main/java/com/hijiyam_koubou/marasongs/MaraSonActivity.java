@@ -3086,15 +3086,15 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	public void ppSetEnd(int pp_start , int pp_end){			//二点間リピートの調整結果
-		final String TAG = "ppSetEnd[MaraSonActivity]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "ppSetEnd";
+		String dbMsg="[MaraSonActivity]";
 		try{
-			dbMsg = pp_start+"～"+pp_end;////////////////////////////////////////////////////////////////////////////
+			dbMsg += pp_start +"～"+pp_end;
 			if( pp_end < pp_start ){
 				int oki= pp_end;
-				pp_end = pp_start;
+				pp_start = pp_end;
 				pp_end = oki;
-				dbMsg += ">>" + pp_start+"～"+pp_end;////////////////////////////////////////////////////////////////////////////
+				dbMsg += ">>" + pp_start+"～"+pp_end;
 			}
 			MaraSonActivity.this.rp_pp = true;			//2点間リピート中
 			myEditor.putBoolean("pref_nitenkan", MaraSonActivity.this.rp_pp);
