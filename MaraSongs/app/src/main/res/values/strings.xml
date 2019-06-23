@@ -334,9 +334,8 @@
   <string name="pref_nitenkan_end">終了</string>
   <string name="pref_nitenkan_end_dt">二点間再生終了点</string>
   <string name="pref_nitenkan_end_dm">二点間再生を終了するポイント[mm:ss 000]</string>
-	<string name="comon_nitenkan">二点間再生</string>
 
-	<string name="repeate_dt">リピート設定</string>
+   <string name="repeate_dt">リピート設定</string>
    <string name="repeate_dt_nitenkan">二点間再生</string>
     <string name="menu_item_repeatplay_kaijo">二点間再生解除</string>
     <string name="comon_kaisi">開始</string>
