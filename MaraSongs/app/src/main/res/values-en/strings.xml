@@ -499,5 +499,9 @@
 	<string name="quit_posi_bt">The all end</string>
 	<string name="quit_titol">finish application</string>
 	<string name="quit_nega_bt">continue  play</string>
+	<string name="sonomsmst_msg">As it is</string>
+	<string name="repeate_dt_invert_msg">Initiation and termination turned over</string>
+	<string name="modosu_msg">sick</string>
+	<string name="comon_kara_mark">...</string>
 
 </resources>

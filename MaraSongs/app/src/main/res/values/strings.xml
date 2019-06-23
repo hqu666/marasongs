@@ -100,8 +100,9 @@
     <string name="comon_wo_tuika">を追加</string>
 	<string name="comon_simple">シンプル</string>
 	<string name="comon_syousai">詳細</string>
+	<string name="comon_kara_mark">～</string>
 
-    <string name="action_settings">Settings</string>
+	<string name="action_settings">Settings</string>
     <string name="n99">99</string>
     <string name="mm_ss">mm:ss 000</string>
     <string name="pp_artist">アーティスト</string>
@@ -343,8 +344,11 @@
     <string name="comon_syuuryou">終了</string>
     <string name="playlist_namae_repeat">リピート再生</string>
    <string name="menu_item_plist_saikin_saisei_dt">最近再生された楽曲</string>
+	<string name="repeate_dt_invert_msg">開始と終了が反転しました</string>
+	<string name="sonomsmst_msg">このまま</string>
+	<string name="modosu_msg">戻す</string>
 
-    <string name="playlist_namae_request">リクエスト</string>
+	<string name="playlist_namae_request">リクエスト</string>
     <string name="list_contex_add_request">リクエスト</string>
     <string name="cb_text_request_sugu">すぐ再生\n(チェックしなければ現在再生中の曲の次に再生します)</string>
     <string name="request_msg">リクエスト用のプレイリストに追加します。</string>
