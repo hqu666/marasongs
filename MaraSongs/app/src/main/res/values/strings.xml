@@ -327,6 +327,7 @@
     <string name="menu_item_plist_randam_dm1">乱数生成</string>
     <string name="pref_rundam_list_size">ランダム再生の設定曲数</string>
     <string name="pref_rundam_list_size_dm">ランダム再生用にリストアップする曲数を設定してください。</string>
+
    <string name="pref_nitenkan">二点間再生中</string>
    <string name="pref_nitenkan_start">開始</string>
   <string name="pref_nitenkan_start_dt">二点間再生開始点</string>

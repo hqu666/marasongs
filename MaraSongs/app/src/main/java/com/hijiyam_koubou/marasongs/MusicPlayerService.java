@@ -163,7 +163,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	//public String b_tagudata = null;
 	public int repeatType;			//リピート再生の種類
 	public String repeatArtist;		//リピートさせるアーティスト名
-	public boolean rp_pp;			//2点間リピート中
+	public boolean rp_pp = false;			//2点間リピート中
 	public int pp_start = 0;			//リピート区間開始点
 	public int pp_end;				//リピート区間終了点
 	public int tugiList_id;		//次に再生するリストID;
@@ -237,9 +237,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
-			rp_pp = myPreferences.rp_pp;							//2点間リピート中
-			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
-			pp_end =Integer.parseInt( myPreferences.pp_end);								//リピート区間終了点
+//			rp_pp = myPreferences.rp_pp;							//2点間リピート中
+//			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
+//			pp_end =Integer.parseInt( myPreferences.pp_end);								//リピート区間終了点
 
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>

@@ -127,7 +127,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public String pref_rundam_list_size = "100";				//ランダム再生リストアップ曲数
 	public int repeatType;							//リピート再生の種類
 	public String repeatArtist;					//リピートさせるアーティスト名
-	public boolean rp_pp;							//2点間リピート中
+	public boolean rp_pp = false;							//2点間リピート中
 	public int pp_start = 0;						//リピート区間開始点
 	public int pp_end;								//リピート区間終了点
 	public boolean zenkyokuAri;					//全曲リスト有り
@@ -358,6 +358,34 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		Util UTIL = new Util();
 		UTIL.myErrorLog(TAG , dbMsg);
 	}
+
+	public static boolean setPrefbool(String keyNmae , boolean wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "setPrefbool";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = UTIL.setPrefBool(keyNmae , wrightVal,context);
+		return retBool;
+	}
+
+	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "getPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = UTIL.setPrefInt(keyNmae , wrightVal,context);
+		return retBool;
+	}
+
+	public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "setPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = UTIL.setPreStr(keyNmae , wrightVal,context);
+		return retBool;
+	}
+
 	//起動　/終了処理//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void checkMyPermission() {
 		final String TAG = "checkMyPermission";
@@ -506,6 +534,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			myPreferences.readPrif(this);
 			sharedPref =myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
+
 //			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
 //			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
@@ -519,7 +548,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			pref_rundam_list_size =myPreferences.pref_rundam_list_size;	//ランダム再生リストアップ曲数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
-			rp_pp = myPreferences.rp_pp;							//2点間リピート中
+//			rp_pp = myPreferences.rp_pp;							//2点間リピート中
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
@@ -9424,6 +9453,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			shigot_bangou = 0;
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
+			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
+			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
+			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点
+			setPrefStr( "pp_end" ,  "0" , MuList.this);   							//リピート区間開始点
 			receiverHaki();		//レシーバーを破棄
 
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////

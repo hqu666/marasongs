@@ -483,9 +483,9 @@ public class MaraSonActivity extends AppCompatActivity
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 //			pref_rundam_list_size =myPreferences.pref_rundam_list_size;	//ランダム再生リストアップ曲数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
-			rp_pp = myPreferences.rp_pp;							//2点間リピート中
-			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
-			pp_end = Integer.parseInt(myPreferences.pp_end);								//リピート区間終了点
+//			rp_pp = myPreferences.rp_pp;							//2点間リピート中
+//			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
+//			pp_end = Integer.parseInt(myPreferences.pp_end);								//リピート区間終了点
 
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
@@ -1439,13 +1439,11 @@ public class MaraSonActivity extends AppCompatActivity
 				}
 			}
 			songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
-			if( rp_pp ){				//2点間リピート中
-				dbMsg +=",rp_pp=" + rp_pp;
-				myLog(TAG,dbMsg);
-				songIDTotal = 1;
-			}else{
-				songIDTotal = mItems.size();							//20160113; + 1
-			}
+//			if( rp_pp ){				//2点間リピート中
+//				songIDTotal = 1;
+//			}else{
+//				songIDTotal = mItems.size();							//20160113; + 1
+//			}
 			dbMsg +="/" + songIDTotal +"曲";//// pref_saisei_fname //////
 			titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
 			playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
@@ -2618,8 +2616,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 			rd_repeat_gr.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {				//ラジオボタンが押された、状態が変わった時の挙動を記述する
 				 public void onCheckedChanged(RadioGroup group, int checkedId) {
-						final String TAG = "rd_repeat_gr.repeatePlay[MaraSonActivity]";
-						String dbMsg="開始";/////////////////////////////////////
+						final String TAG = "onCheckedChanged";
+					 String dbMsg="[MaraSonActivity.repeatePlay.rd_repeat_gr]";
 						try{
 							dbMsg="group = " + ",checkedId=" + checkedId;
 							switch(checkedId) {
@@ -2652,36 +2650,36 @@ public class MaraSonActivity extends AppCompatActivity
 					//			pp_start_rd.setChecked(true);
 								rd_pp_gr.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {				//ラジオボタンが押された、状態が変わった時の挙動を記述する
 									 public void onCheckedChanged(RadioGroup group, int checkedId) {
-											final String TAG = "rd_pp_gr.repeatePlay[MaraSonActivity]";
-											String dbMsg="開始";/////////////////////////////////////
-											try{
-												dbMsg="group = " + ",checkedId=" + checkedId;
-												switch(checkedId) {
-												case R.id.pp_start_rd:		//区間リピート開始ボタン
-													dbMsg +=";区間リピート開始";
-													MaraSonActivity.this.pp_start = seekLTPosition = saiseiSeekMP.getProgress();					//シークの現在点
-													String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start).toString();				//二点間再生開始点(mmss000)
-													dbMsg +=", " + pp_startStr;
-													rd_pp_start_tf.setText(pp_startStr);			//二点間再生開始点(mmss000)
-													break;
-												case R.id.pp_end_rd:		//区間リピート終了ボタン
-													dbMsg +=";区間リピート終了";
-													MaraSonActivity.this.pp_end = seekLTPosition = saiseiSeekMP.getProgress();					//シークの現在点
-													String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end).toString();			//二点間再生終了点(mmss000)
-													dbMsg +="～" + pp_endStr + "のリピート";
-													rd_pp_end_tf.setText(pp_endStr);			//二点間再生終了点(mmss000)
-													rd_pp_seekBar.setSecondaryProgress(MaraSonActivity.this.pp_end);
-													break;
+									 	final String TAG = "rd_pp_gr";
+									 	String dbMsg="[MaraSonActivity.repeatePlay.rd_pp_gr]";
+										try{
+											dbMsg="group = " + ",checkedId=" + checkedId;
+											switch(checkedId) {
+											case R.id.pp_start_rd:		//区間リピート開始ボタン
+												dbMsg +=";区間リピート開始";
+												MaraSonActivity.this.pp_start = seekLTPosition = saiseiSeekMP.getProgress();					//シークの現在点
+												String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start).toString();				//二点間再生開始点(mmss000)
+												dbMsg +=", " + pp_startStr;
+												rd_pp_start_tf.setText(pp_startStr);			//二点間再生開始点(mmss000)
+												break;
+											case R.id.pp_end_rd:		//区間リピート終了ボタン
+												dbMsg +=";区間リピート終了";
+												MaraSonActivity.this.pp_end = seekLTPosition = saiseiSeekMP.getProgress();					//シークの現在点
+												String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end).toString();			//二点間再生終了点(mmss000)
+												dbMsg +="～" + pp_endStr + "のリピート";
+												rd_pp_end_tf.setText(pp_endStr);			//二点間再生終了点(mmss000)
+												rd_pp_seekBar.setSecondaryProgress(MaraSonActivity.this.pp_end);
+												break;
 //												default:
 //													break;
-												}
-												repeatPPSyurui = checkedId;		//区間開始/終了区分
-												myLog(TAG, dbMsg);
-											} catch (Exception e) {
-												myErrorLog(TAG ,  dbMsg + "で" + e);
 											}
+											repeatPPSyurui = checkedId;		//区間開始/終了区分
+											myLog(TAG, dbMsg);
+										} catch (Exception e) {
+											myErrorLog(TAG ,  dbMsg + "で" + e);
 										}
-									});
+									}
+								});
 
 								rd_pp_seekBar.setMax(saiseiJikan);
 								rd_pp_seekBar.setProgress(seekLTPosition);
@@ -2706,14 +2704,17 @@ public class MaraSonActivity extends AppCompatActivity
 						}
 					}
 				});
-	//		rd_pp_seekBar.setOnSeekBarChangeListener ((OnSeekBarChangeListener) this);
 			rd_pp_seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				public void onStopTrackingTouch(SeekBar seekBar) {				}
-				public void onStartTrackingTouch(SeekBar seekBar) {				}
+				public void onStopTrackingTouch(SeekBar seekBar) {
+
+				}
+				public void onStartTrackingTouch(SeekBar seekBar) {
+
+				}
 
 				public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
-					final String TAG = "rd_pp_seekBar";
-					String dbMsg="[MaraSonActivity.onProgressChanged]";
+					final String TAG = "onProgressChanged";
+					String dbMsg="[MaraSonActivity.rd_pp_seekBar]";
 					try{
 						dbMsg= "progress=" + progress + ",fromUser=" + fromUser;
 						dbMsg +=";区間開始/終了区分" + MaraSonActivity.this.repeatPPSyurui;
@@ -2766,13 +2767,16 @@ public class MaraSonActivity extends AppCompatActivity
 
 			builder.setNegativeButton(getResources().getString(R.string.comon_cyusi), new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					// Cancel ボタンクリック処理
+					String dbMsg ="[MaraSonActivity.repeatePlay]";/////////////////////////////////////
+					MaraSonActivity.this.repeatArtist = "";		//リピートさせるアーティスト名
+					MaraSonActivity.this.rp_pp = false;			//2点間リピート中
+					rp_pp_bicyousei =false;			//2点間リピート設定変更
 				}
 			});
 			builder.setPositiveButton(getResources().getString(R.string.comon_kakutei), new OnClickListener () {
 				public void onClick(DialogInterface dialog, int which) {
-					final String TAG = getResources().getString(R.string.comon_kakutei)+".repeatePlay[MaraSonActivity]";
-					String dbMsg="開始";/////////////////////////////////////
+					final String TAG = getResources().getString(R.string.comon_kakutei)+".";
+					String dbMsg ="[MaraSonActivity.repeatePlay]";/////////////////////////////////////
 					try{
 						dbMsg +=";repeatSyurui = " + MaraSonActivity.this.repeatSyurui;
 						String selName = MaraSonActivity.this.titolName;
@@ -2797,7 +2801,7 @@ public class MaraSonActivity extends AppCompatActivity
 							repeatePlaykijyo();			//リピート再生解除
 							break;
 						case rp_point:													//2131558550
-							dbMsg +=";タイトル = " + titolName;
+							dbMsg +=";二点間";
 							String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start).toString();				//二点間再生開始点(mmss000)
 							dbMsg +=", " + pp_startStr;
 							String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end).toString();			//二点間再生終了点(mmss000)
@@ -2820,9 +2824,6 @@ public class MaraSonActivity extends AppCompatActivity
 						dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
 						int reqCode = MaraSonActivity.this.repeatSyurui ;
 						dbMsg +=",reqCode="+ reqCode;/////////////////////////////////////
-		//				myLog(TAG,dbMsg);
-
-						callListView(reqCode ,selName ,mcPosition );								//リストビューを読出し
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2840,13 +2841,24 @@ public class MaraSonActivity extends AppCompatActivity
 	public EditText pp_pp_et;
 	public SeekBar pp_seek;
 	public SubMenu kaijyoMenu;
+
+	public void ppParamSet(int sPoint){			//二点間リピートの調整
+		final String TAG = "ppParamSet";
+		String dbMsg="[MaraSonActivity]";
+		try{
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
 	/**
 	 * 二点間リピートの調整
-	 *
+	 *  ダイアログ表示
 	 * */
 	public void ppSet(int se){			//二点間リピートの調整
-		final String TAG = "ppSet[MaraSonActivity]";
-		String dbMsg="開始";/////////////////////////////////////
+		final String TAG = "ppSet";
+		String dbMsg="[MaraSonActivity]";
 		try{
 			this.repeatPPSyurui = se;
 			int editInt  = saiseiSeekMP.getProgress();					//シークの現在点	seekLTPosition
@@ -2901,8 +2913,8 @@ public class MaraSonActivity extends AppCompatActivity
 			pp_pp_et.addTextChangedListener(new TextWatcher(){
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before, int count){
-					final String TAG = "onTextChanged.ppSet[MaraSonActivity]";
-					String dbMsg="開始";/////////////////////////////////////
+					final String TAG = "onTextChanged]";
+					String dbMsg ="[MaraSonActivity.ppSet.pp_pp_et]";
 					try{
 						dbMsg="s=" + s + ",start=" + start + ",before=" + before + ",count=" + count;
 						myLog(TAG, dbMsg);
@@ -2913,8 +2925,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-					final String TAG = "beforeTextChanged.ppSet[MaraSonActivity]";
-					String dbMsg="開始";/////////////////////////////////////
+					final String TAG = "beforeTextChanged";
+					String dbMsg ="[MaraSonActivity.ppSet.pp_pp_et]";
 					try{
 						dbMsg="s=" + s + ",start=" + start + ",after=" + after + ",count=" + count;
 //						String retStr = String.valueOf(s);
@@ -2942,8 +2954,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 				@Override
 				public void afterTextChanged(Editable s) {
-					final String TAG = "afterTextChanged.ppSet[MaraSonActivity]";
-					String dbMsg="開始";/////////////////////////////////////
+					final String TAG = "afterTextChanged]";
+					String dbMsg ="[MaraSonActivity.ppSet.pp_pp_et]";
 					try{
 						dbMsg="s=" + s ;
 						int len = s.length();
@@ -2982,7 +2994,7 @@ public class MaraSonActivity extends AppCompatActivity
 
 				public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
 					final String TAG = "onProgressChanged";
-					String dbMsg="[MaraSonActivity.pp_seek]";
+					String dbMsg ="[MaraSonActivity.ppSet.pp_seek]";
 					try{
 						dbMsg= "progress=" + progress + ",fromUser=" + fromUser;
 						String edidStr = ORGUT.sdf_mss.format(progress).toString();
@@ -3026,8 +3038,8 @@ public class MaraSonActivity extends AppCompatActivity
 
 			builder.setPositiveButton(getResources().getString(R.string.comon_kakutei), new OnClickListener () {
 				public void onClick(DialogInterface dialog, int which) {
-					final String TAG = getResources().getString(R.string.comon_kakutei)+".ppSet[MaraSonActivity]";
-					String dbMsg="開始";/////////////////////////////////////
+					final String TAG = getResources().getString(R.string.comon_kakutei);
+					String dbMsg ="[MaraSonActivity.ppSet.builder]";
 					try{
 						String mmsStr =  String.valueOf(pp_mms_tv.getText());
 						dbMsg="pp_mms_tv = " + pp_mms_tv.getText();
@@ -3037,15 +3049,15 @@ public class MaraSonActivity extends AppCompatActivity
 						int len = miliStr.length();
 						dbMsg +=",len=" + len +"文字" ;
 						switch(len) {
-						case 0:
-							miliStr = "000";
-							break;
-						case 1:
-							miliStr = "00" + miliStr;
-							break;
-						case 2:
-							miliStr = "0" + miliStr;
-							break;
+							case 0:
+								miliStr = "000";
+								break;
+							case 1:
+								miliStr = "00" + miliStr;
+								break;
+							case 2:
+								miliStr = "0" + miliStr;
+								break;
 //							default:
 //								break;
 						}
@@ -3065,7 +3077,7 @@ public class MaraSonActivity extends AppCompatActivity
 							pp_end = editInt;
 						}
 						rp_pp_bicyousei =true;			//2点間リピート設定変更
-						ppSetEnd( pp_start ,  pp_end);		//二点間リピートの調整結果
+						ppSetEnd( pp_start , pp_end);		//二点間リピートの調整結果
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3074,7 +3086,8 @@ public class MaraSonActivity extends AppCompatActivity
 			});
 			builder.setNegativeButton(getResources().getString(R.string.comon_cyusi), new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					// Cancel ボタンクリック処理
+					pp_start = 0;
+//					MaraSonActivity.this.repeatPPSyurui = false;
 				}
 			});
 			builder.create().show();	// 表示
@@ -3116,7 +3129,7 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
 			dbMsg +=";"+edidStr;////////////////////////////////////////////////////////////////////////////
 			edidStr = ORGUT.sdf_mss.format(pp_end).toString();
-			dbMsg +="～"+edidStr;////////////////////////////////////////////////////////////////////////////
+			dbMsg +="～"+edidStr;
 			pp_pp_end_tf.setText(edidStr);							//二点間再生終了点
 			saiseiSeekMP.setSecondaryProgress(pp_end);
 			Drawable drawable = getResources().getDrawable(R.drawable.pp_progress);
@@ -3129,10 +3142,11 @@ public class MaraSonActivity extends AppCompatActivity
 //			callListView(reqCode ,selName   );								//リストビューを読出し
 //			MPSIntent.setAction(MusicPlayerService.ACTION_STOP);
 //			MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
-			if(rp_pp_bicyousei){		//2点間リピート設定変更
+			dbMsg +=",rp_pp_bicyousei="+ rp_pp_bicyousei;
+//			if(rp_pp_bicyousei){		//2点間リピート設定変更
 				mData2Service();										//サービスにプレイヤー画面のデータを送る
 				rp_pp_bicyousei = false;
-			}
+//			}
 			onPrepareOptionsMenu(toolbar.getMenu());			//表示直前に行う非表示や非選択設定
 	//			kaijyoMenu = toolbar.getMenu().addSubMenu(R.id.menu_item_repeatplay_kaijo);
 	//		dbMsg +=",kaijyoMenu="+kaijyoMenu;////////////////////////////////////////////////////////////////////////////
@@ -4114,7 +4128,7 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 			dbMsg +=",2点間リピート中="+ rp_pp + ";" + pp_start + "～" + pp_end + "(mcPosition = " + mcPosition +")";/////////////////////////////////////
-			if( pp_start != 0 || rp_pp ){				// || MaraSonActivity.this.requestCode ==rp_point
+			if( rp_pp ){				// || MaraSonActivity.this.requestCode ==rp_point          pp_start != 0 ||
 				mcPosition = pp_start;
 				MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
 				MPSIntent.putExtra("rp_pp",rp_pp);					//2点間リピート中
@@ -5877,12 +5891,12 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg +=",このアプリのバージョンコード="+pref_sonota_vercord;/////////////////////////////////////
 				imanoJyoutai = extras.getInt("imanoJyoutai");		//リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
 				dbMsg +=",リストの状態="+imanoJyoutai;/////////////////////////////////////
-				rp_pp = extras.getBoolean("rp_pp") ;
-				dbMsg +=",点間リピート中="+rp_pp;/////////////////////////////////////
-				pp_start = extras.getInt("pp_start" , 0) ;
-				dbMsg +=",リピート区間開始点="+pp_start;/////////////////////////////////////
-				pp_end = extras.getInt("pp_end") ;
-				dbMsg +=",リピート区間終了点="+pp_end;/////////////////////////////////////
+//				rp_pp = extras.getBoolean("rp_pp") ;
+//				dbMsg +=",点間リピート中="+rp_pp;/////////////////////////////////////
+//				pp_start = extras.getInt("pp_start" , 0) ;
+//				dbMsg +=",リピート区間開始点="+pp_start;/////////////////////////////////////
+//				pp_end = extras.getInt("pp_end") ;
+//				dbMsg +=",リピート区間終了点="+pp_end;/////////////////////////////////////
 				//					artistList =extras.getStringArrayList("artistList");						//アーティスト名	albumArtistList
 				//			//		dbMsg +=artistList;/////////////////////////////////////
 				//					if( artistList != null ){
