@@ -1273,6 +1273,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg +=",rp_pp=" + rp_pp;
 					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
+					mIndex--;
 				}else {
 					mcPosition = 0;
 				}
