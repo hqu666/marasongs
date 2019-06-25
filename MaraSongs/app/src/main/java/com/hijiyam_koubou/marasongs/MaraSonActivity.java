@@ -293,7 +293,6 @@ public class MaraSonActivity extends AppCompatActivity
 	public String albumArt =null;		//アルバムアートのURI
 	public String b_albumArt =null;		//前のアルバムアートのURI
 
-//	public int mcPosition;						//再生ポジション
 	public int trackInAlbum = 0;				//アルバム内の曲数
 	public String maenoArtist =null;		//前に再生していたアルバムアーティスト名
 //	public String maenoAlbum =null;		//前に再生していたアルバムト名
@@ -5921,17 +5920,17 @@ public class MaraSonActivity extends AppCompatActivity
 					}
 				}
 				dbMsg +=",再生中のプレイリスト名=" + nowList;/////////////////////////////////////
-				dataFN =extras.getString("dataFN");
-				dbMsg +=",dataFN="+ dataFN ;/////////////////////////////////////
-				if(dataFN == null || dataFN.equals("")){
-					MyPreferences myPreferences  = new MyPreferences();
-					dataFN = myPreferences.dataURL;   //
-					dbMsg +=  ">pref1>" + dataFN;////////////////////////////////////////////////////////////////////////////
-					if(dataFN.equals("")){
-						dataFN = getPrefStr("saisei_fname" , "" , getApplicationContext());
-						dbMsg +=  ">pref2>" + dataFN;////////////////////////////////////////////////////////////////////////////
-					}
-				}
+//				dataFN =extras.getString("dataFN");
+//				dbMsg +=",dataFN="+ dataFN ;/////////////////////////////////////
+//				if(dataFN == null || dataFN.equals("")){
+//					MyPreferences myPreferences  = new MyPreferences();
+//					dataFN = myPreferences.dataURL;   //
+//					dbMsg +=  ">pref1>" + dataFN;////////////////////////////////////////////////////////////////////////////
+//					if(dataFN.equals("")){
+//						dataFN = getPrefStr("saisei_fname" , "" , getApplicationContext());
+//						dbMsg +=  ">pref2>" + dataFN;////////////////////////////////////////////////////////////////////////////
+//					}
+//				}
 				mIndex = extras.getInt("mIndex");
 				dbMsg += "["+ mIndex +"]";
 				if(mIndex == 0){
@@ -5941,17 +5940,17 @@ public class MaraSonActivity extends AppCompatActivity
 				Item playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
 				int reqCode = extras.getInt("reqCode");
 				dbMsg +=",reqCode="+ reqCode ;
-				if(reqCode == MuList.veiwPlayer  || reqCode == MuList.chyangeSong ){
-					dbMsg +=",リストからの遷移" ;
-					mcPosition=extras.getInt("mcPosition");
-					dbMsg +="[mcPosition="+ mcPosition ;
-				}
-				saiseiJikan=extras.getInt("saiseiJikan");
-				dbMsg += "/"+saiseiJikan +"mS]";
-				if(saiseiJikan == 0){
-					saiseiJikan = (int)playingItem.duration;
-					dbMsg += ">>" + saiseiJikan +"mS]";
-				}
+//				if(reqCode == MuList.veiwPlayer  || reqCode == MuList.chyangeSong ){
+//					dbMsg +=",リストからの遷移" ;
+//					mcPosition=extras.getInt("mcPosition");
+//					dbMsg +="[mcPosition="+ mcPosition ;
+//				}
+//				saiseiJikan=extras.getInt("saiseiJikan");
+//				dbMsg += "/"+saiseiJikan +"mS]";
+//				if(saiseiJikan == 0){
+//					saiseiJikan = (int)playingItem.duration;
+//					dbMsg += ">>" + saiseiJikan +"mS]";
+//				}
 				IsPlaying = extras.getBoolean("IsPlaying");			//再生中か
 				dbMsg += ",IsPlaying=" + IsPlaying;/////////////////////////////////////
 				toPlaying = extras.getBoolean("to_play");
