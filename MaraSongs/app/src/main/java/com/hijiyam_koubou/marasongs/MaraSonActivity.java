@@ -4891,10 +4891,13 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "onStopTrackingTouch";
 		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
 		try{
-			dbMsg += "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
+//			dbMsg += "seekBar=" + seekBar.getId()+"("+saiseiSeekMP.getId() +")";//////////////////////////////////////
 			dbMsg += "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
 			int mcPosition = saiseiSeekMP.getProgress();					///seekBar.getProgress();
+			int saiseiJikan  = saiseiSeekMP.getMax();
 			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+			setPrefInt( "pref_position" ,  mcPosition , MaraSonActivity.this);
+
 			CharSequence btStre = ppPBT.getContentDescription();
 			dbMsg +=",ppPBT=" + btStre;
 			dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
@@ -4914,7 +4917,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public int renzoku;
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		final String TAG = "onKey[MaraSonActivity]";
+		final String TAG = "onKey";
 		String dbMsg= "[MaraSonActivity]";
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
@@ -4935,7 +4938,6 @@ public class MaraSonActivity extends AppCompatActivity
 				CharSequence btStre = ppPBT.getContentDescription();
 				dbMsg +=",ボタンの状態は" + btStre;
 				dbMsg +="<< "+b_Action ;///////////////////////////
-//				dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
 				dbMsg += ",isTracking="+event.isTracking();///////////////////////////
 				if( event.getKeyCode() ==KeyEvent.KEYCODE_DPAD_LEFT ||  event.getKeyCode() ==KeyEvent.KEYCODE_DPAD_RIGHT ){
 					if(event.getAction() == KeyEvent.ACTION_DOWN){					//ACTION_UP =0
@@ -4944,7 +4946,7 @@ public class MaraSonActivity extends AppCompatActivity
 							dbMsg += "/"+saiseiJikan +"mS]";/////////////////////////////////////
 //							//第三引数fromTouchはタッチ操作でtrue それ以外はfalse
 						if (btStre.equals(getResources().getText(R.string.play))) {	//再生中なら
-							onStartTrackingTouch(saiseiSeekMP); 	// トラッキング開始時に呼び出されます	//			myLog(TAG,dbMsg);
+//							onStartTrackingTouch(saiseiSeekMP); 	// トラッキング開始時に呼び出されます	//			myLog(TAG,dbMsg);
 						}
 					} else if(event.getAction() == KeyEvent.ACTION_UP){					//ACTION_UP =1
 						if (btStre.equals(getResources().getText(R.string.pause))) {	//再生中なら
@@ -5533,8 +5535,8 @@ public class MaraSonActivity extends AppCompatActivity
 //								MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
 //							}
 //								dbMsg += ",mcPosition="+mcPosition;
-								saiseiJikan = bundle.getInt("saiseiJikan");
-								dbMsg += "/"+saiseiJikan +"mS";
+//								saiseiJikan = bundle.getInt("saiseiJikan");
+//								dbMsg += "/"+saiseiJikan +"mS";
 								pref_bt_renkei = bundle.getBoolean("pref_bt_renkei");
 								dbMsg += ",Bluetoothの接続に連携=" + pref_bt_renkei;/////////////////////////////////////
 								zenkai_saiseKyoku = bundle.getInt("zenkai_saiseKyoku");
@@ -5547,7 +5549,6 @@ public class MaraSonActivity extends AppCompatActivity
 //								MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
 //							}
 							}
-//							mcPosition = 0;
 							dbMsg +=",pp_start=" + pp_start;/////////////////////////////////////
 
 							dbMsg +=",点間リピート中="+rp_pp;/////////////////////////////////////
@@ -5869,7 +5870,7 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg="[MaraSonActivity]";
 		try{
 			start = System.currentTimeMillis();		// 開始時刻の取得
-			int mcPosition = 0;
+//			int mcPosition = 0;
 			ORGUT = new OrgUtil();		//自作関数集
 			OGFil = new OrgUtilFile();;	//ファイル関連関数
 			NotificationManager mNotificationManager = (NotificationManager)this.getSystemService(Activity.NOTIFICATION_SERVICE);
@@ -5955,17 +5956,6 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ",IsPlaying=" + IsPlaying;/////////////////////////////////////
 				toPlaying = extras.getBoolean("to_play");
 				dbMsg += ",曲をセットしたら再生=" + toPlaying;
-//				if(toPlaying){
-////					if(MPSIntent != null){
-//						dbMsg += ",paused";
-//						paused();
-////						MPSIntent.setAction(MusicPlayerService.ACTION_REQUEST_STATE);	//起動時の表示
-////						MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
-////					}
-//					mcPosition = 0;
-//					dbMsg +=">>mcPosition="+ mcPosition + "[ms]";
-//					toPlaying = false;
-//				}
 				dbMsg +=",起動="+ kidou_jyoukyou + ",状態="+ imanoJyoutai ;/////////////////////////////////////
 //				if( MPSIntent == null ){
 //					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
@@ -6210,12 +6200,12 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ">>psSarviceUri=" + psSarviceUri.toString();/////////////////////////////////////
 				MPSIntent = new Intent(MaraSonActivity.this, MusicPlayerService.class);
 			}
-			if(toPlaying){
-				int mcPosition = 0;
-				dbMsg +=">>mcPosition="+ mcPosition + "[ms]";
-				sendPlaying( MPSIntent , dataFN , mcPosition);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
-				toPlaying = false;
-			}
+//			if(toPlaying){
+//				int mcPosition = 0;
+//				dbMsg +=">>mcPosition="+ mcPosition + "[ms]";
+//				sendPlaying( MPSIntent , dataFN , mcPosition);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
+//				toPlaying = false;
+//			}
 			dbMsg +="shigot_bangou;" + shigot_bangou;/////////////////////////////////////
 			switch(shigot_bangou) {
 				case quit_all :		//すべて終了
@@ -6383,6 +6373,15 @@ public class MaraSonActivity extends AppCompatActivity
 		return retInt;
 	}
 
+
+	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "getPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = UTIL.setPrefInt(keyNmae , wrightVal,context);
+		return retBool;
+	}
 
 	public void messageShow(String titolStr , String mggStr) {
 		Util UTIL = new Util();
