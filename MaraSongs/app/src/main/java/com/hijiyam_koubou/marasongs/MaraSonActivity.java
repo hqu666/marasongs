@@ -887,7 +887,9 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.putExtra("nowList",nowList);
 			dbMsg +="[play_order=ID=" + mIndex;/////////////////////////////////////
 			MPSIntent.putExtra("mIndex",mIndex);
-			dbMsg += n_dataFN;/////////////////////////////////////
+			dbMsg +=",toPlaying=" + toPlaying;/////////////////////////////////////
+			MPSIntent.putExtra("continu_status",toPlaying);
+			dbMsg += ","+ n_dataFN;/////////////////////////////////////
 			if( n_dataFN != null ){				//n_dataFN
 //				if( mItems == null){
 //					dbMsg +=",mItems =" + mItems;/////////////////////////////////////

@@ -2452,9 +2452,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						mcPosition = saiseiJikan;
 						dbMsg += ">>"+ mcPosition;
 					}
-//					String continuStatus = extras.getString("continu_status") + "";
-//					dbMsg +="continuStatus," + continuStatus;
-					if ( intent.getAction() == ACTION_REQUEST_STATE) {
+					Boolean continuStatus = extras.getBoolean("continu_status") ;
+					dbMsg +=",continuStatus=" + continuStatus;
+					if ( continuStatus ) {
+//					if ( intent.getAction() == ACTION_REQUEST_STATE) {
 						dbMsg +="から再生,";
 						processPlayRequest();																	//②ⅲPlay?StoppedならplayNextSong/PausedならconfigAndStartMediaPlayer
 					}

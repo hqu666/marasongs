@@ -200,7 +200,7 @@ ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManife
 	android:name
 		ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:46:27-74
 activity#com.hijiyam_koubou.marasongs.MaraSonActivity
-ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:50:3-58:20
+ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:50:3-57:20
 	android:screenOrientation
 		ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:51:7-43
 	android:label
@@ -264,7 +264,7 @@ ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManife
 	android:name
 		ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:75:25-84
 receiver#com.hijiyam_koubou.marasongs.BuletoohtReceiver
-ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:79:9-90:18
+ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:79:9-90:19
 	android:name
 		ADDED from H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:79:19-51
 intent-filter#action:name:android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED+action:name:android.bluetooth.adapter.action.STATE_CHANGED+action:name:android.bluetooth.device.action.FOUND+action:name:android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED+action:name:android.bluetoothA2dp.action.PLAYING_STATE_CHANGED+action:name:android.intent.action.MEDIA_BUTTON+action:name:android.intent.action.PACKAGE_ADDED+action:name:android.media.AUDIO_BECOMING_NOISY

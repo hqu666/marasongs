@@ -1912,6 +1912,7 @@ string comon_kaisouka
 string comon_kakuninn
 string comon_kakutei
 string comon_kara
+string comon_kara_mark
 string comon_karifile
 string comon_ken
 string comon_kencyuu
@@ -2070,6 +2071,7 @@ string menu_settings
 string menu_sonota_settei_syoukyo
 string menu_syuusei_lisuto_hyouji
 string mm_ss
+string modosu_msg
 string mtrl_chip_close_icon_content_description
 string muqu_dlog_MediaStore_yomikomi
 string muqu_dlog_Stepend_byoude
@@ -2084,6 +2086,8 @@ string nend_apiKey
 string nend_ly_apiKey
 string nend_ly_spotID
 string nend_spotID
+string notifi_id
+string notifi_name
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through
@@ -2091,6 +2095,10 @@ string path_password_eye_mask_visible
 string path_password_strike_through
 string pause
 string permdesc_sdcardRead
+string permission_file_msg
+string permission_file_titol
+string permission_msg
+string permission_titol
 string permlab_sdcardRead
 string pl_nasi_meg
 string play
@@ -2187,8 +2195,13 @@ string pref_zenkai_saiseijikann
 string pref_zenkai_saiseikyokusuu
 string psSarviceUri
 string ptext_retbt_listhe
+string quit_msg
+string quit_nega_bt
+string quit_posi_bt
+string quit_titol
 string renameplaylist_titol
 string repeate_dt
+string repeate_dt_invert_msg
 string repeate_dt_nitenkan
 string request_msg
 string reverb_large_hall
@@ -2223,6 +2236,7 @@ string shyuusei_file
 string shyuusei_table
 string shyuuseiuListStuusei_dm
 string skip
+string sonomsmst_msg
 string srash
 string status_bar_notification_info_overflow
 string stop
