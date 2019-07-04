@@ -4277,6 +4277,7 @@ public class MaraSonActivity extends AppCompatActivity
 */
 	/**
 	 *  リストに戻る
+	 * @param reqCode	選択されたもの
 	 * */
 	public void callListView(int reqCode ,String selName ,int mcPosition ){								//リストビューを読出し
 		final String TAG = "callListView";

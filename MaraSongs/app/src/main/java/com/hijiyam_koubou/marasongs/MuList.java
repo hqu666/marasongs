@@ -8985,6 +8985,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true);		/////////////////////////////////////
 			String subTStr = "";
+			String saisei_fname = getPrefStr( "saisei_fname" ,  "" , MuList.this);
 			dbMsg +=  ",reqC=" + reqC +") artist;" + ";album=" + albumMei + ",titolMei=" + titolMei ;
 			switch(reqC) {
 				case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
@@ -9026,9 +9027,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					if( artistMei == null){
 						artistMei = sousa_artist;
 					}
-//					saisei_fname = saisei_fname + "";
+					saisei_fname = saisei_fname + "";
 					dbMsg += ",imanoJyoutai= " + imanoJyoutai ;		//+ ",saisei_fname= " + saisei_fname;         //200
-					if ( imanoJyoutai == veiwPlayer ){ 		//  &&  saisei_fname.equals("")
+
+					if ( imanoJyoutai == veiwPlayer && saisei_fname.equals("")){ 		//
 						if( playingItem != null ){
 							titolName =playingItem.title;		//曲名
 							dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
