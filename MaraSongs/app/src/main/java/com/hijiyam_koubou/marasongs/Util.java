@@ -486,10 +486,9 @@ public class Util {
 			dbMsg +=",context=" + context;
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			SharedPreferences.Editor myEditor = sharedPref.edit();
 			retStr = sharedPref.getString(keyNmae , defaultVal);
 			dbMsg +=  ",retStr="  + retStr;
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -504,10 +503,9 @@ public class Util {
 		try {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			SharedPreferences.Editor myEditor = sharedPref.edit();
 			retInt = sharedPref.getInt(keyNmae , defaultVal);
 			dbMsg +=  ",retIn="  + retInt;
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -522,14 +520,10 @@ public class Util {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			SharedPreferences.Editor myEditor = sharedPref.edit();
-//			dbMsg= keyNmae+";"+ keyNmae;
-//			key = String.valueOf( keyNmae );
-//			vStr = String.valueOf( vStr );
-//			dbMsg= ">>" + key+";"+ vStr;
 			myEditor.putString( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -545,10 +539,6 @@ public class Util {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			SharedPreferences.Editor myEditor = sharedPref.edit();
-//			dbMsg= keyNmae+";"+ keyNmae;
-//			key = String.valueOf( keyNmae );
-//			vStr = String.valueOf( vStr );
-//			dbMsg= ">>" + key+";"+ vStr;
 			myEditor.putInt( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;

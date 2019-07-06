@@ -905,6 +905,7 @@ public class MaraSonActivity extends AppCompatActivity
 				MPSIntent.putExtra("dataFN",n_dataFN);	//n_dataFN
 		//		MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);				//リスト選択後
 			} else {
+
 				if(dataFN != null){          //        &&  saisei_fname.equals("")
 					MPSIntent.putExtra("dataFN",dataFN);
 				}
@@ -4339,7 +4340,7 @@ public class MaraSonActivity extends AppCompatActivity
 
 	public void callListTitolList(){
 		final String TAG = "callListTitolList";
-		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity];";
 		try{
 			titolName =titol_tv.getText().toString();		//曲名
 			if(titolName != null){
@@ -4349,8 +4350,10 @@ public class MaraSonActivity extends AppCompatActivity
 			}else{
 				titolName = playingItem.title;					//選択しておくアイテムアイテム
 			}
+			dbMsg += ".titolName="+ titolName;
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MaraSonActivity.this);
 			int mcPosition = saiseiSeekMP.getProgress();
+			dbMsg += ".mcPosition="+ mcPosition;
 			callListView(v_titol ,dataFN , mcPosition );								//リストビューを読出し
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -5815,6 +5818,9 @@ public class MaraSonActivity extends AppCompatActivity
 					}
 				}
 				dbMsg +=",再生中のプレイリスト名=" + nowList;/////////////////////////////////////
+				dataFN = getPrefStr("saisei_fname" , "" , getApplicationContext());
+				dbMsg +=  ",dataFN=" + dataFN;////////////////////////////////////////////////////////////////////////////
+
 //				dataFN =extras.getString("dataFN");
 //				dbMsg +=",dataFN="+ dataFN ;/////////////////////////////////////
 //				if(dataFN == null || dataFN.equals("")){

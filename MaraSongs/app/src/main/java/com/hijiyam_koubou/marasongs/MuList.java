@@ -630,8 +630,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += "fName = " + fName;/////////////////////////////////////
 			File tFile = new File(fName);
 			dbMsg += ">>有無 = " + tFile.exists();/////////////////////////////////////
-//			sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			myEditor = sharedPref.edit();
 			if( ! tFile.exists()){
 				dbMsg += "shared_prefs無し";/////////////////////////////////////
 			}
@@ -726,89 +724,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	public void wriAllPrif () {        //プリファレンス全項目書込み
-		final String TAG = "wriAllPrif";
-		String dbMsg = "[MuList]";
-		try {
-//			//		delPrif ();        //プリファレンスの内容削除
-//			dbMsg = kujiSyurui;
-//			myEditor.putString ("kujiSyurui", kujiSyurui);                    //くじの種類
-//			dbMsg += "[" + randumStart_val;
-//			myEditor.putString ("randumStart_val", String.valueOf (randumStart_val));                //乱数の開始値
-//			if( 0 < grupe_suu || jyuuhuk_nasi_use) {            //グループ数,重複無しの連続使用
-//				dbMsg += "～" + grupeEnd_val;
-//				myEditor.putString ("randumEnd_val", String.valueOf (grupeEnd_val));                    //乱数の終了値
-//			}else{
-//				dbMsg += "～" + randumEnd_val;
-//				myEditor.putString ("randumEnd_val", String.valueOf (randumEnd_val));                    //乱数の終了値
-//			}
-//			dbMsg += "]" + val_val;
-//			myEditor.putString ("val_val", String.valueOf ( val_val ));                                //乱数の個数
-//			dbMsg += "回;照合web=" + shyougouURL;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("shyougouURL", shyougouURL);                    //照合web
-//			dbMsg += "繰り返し=" + kurikaesi_val;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("pref_kurikaesi", String.valueOf ( kurikaesi_val ));                    //繰り返し判定数
-//			dbMsg += "特番[" + SPNStart_val;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("SPNStart_val", String.valueOf ( SPNStart_val ));                //特番の開始値
-//			dbMsg += "～" + SPNumEnd_val;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("SPNumEnd_val", String.valueOf ( SPNumEnd_val ));                //特番の終了値
-//			dbMsg += "]" + SPNval_val;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("SPNval_val", String.valueOf ( SPNval_val ));                    //特番の数
-//			dbMsg += "," + repSyurui;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("repSyurui", repSyurui);                        //一発繰り返し区分
-//
-//			dbMsg += ",グループ数=" + grupe_suu;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("grupe_suu", String.valueOf ( grupe_suu ));
-//			dbMsg += ",重複無しの連続使用" + jyuuhuk_nasi_use;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putBoolean ("jyuuhuk_nasi_use", jyuuhuk_nasi_use);                        //一発繰り返し区分
-//			dbMsg += ",本番号の重複" + honJuufuku;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putBoolean ("honJuufuku", honJuufuku);
-//
-//			dbMsg += "個,ダイアログの使用=" + prefUseDlog;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putBoolean ("prefUseDlog_ch", prefUseDlog);            //ダイアログの使用/未使用	true	false
-//			pref_sonota_vername = String.valueOf (getPackageManager().getPackageInfo(getPackageName(), getPackageManager().GET_META_DATA).versionCode);			//.versionNameは1.3.2など
-//			dbMsg += "このアプリのバージョンコード=" + pref_sonota_vername;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("pref_sonota_vername", pref_sonota_vername);
-//			myEditor.commit ();
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}																	//設定書き込み
-
-	public void delPrif () {        //プリファレンスの内容削除
-		myEditor = sharedPref.edit();
-		final String TAG = "delPrif";
-		String dbMsg = "[MuList]";
-		try {
-//			Map<String, ?> keys = sharedPref.getAll ();
-//			int i = 0;
-//			if (keys.size () > 0) {
-//				for (String key : keys.keySet ()) {
-//					i++;
-//					dbMsg = i + "/" + keys.size () + ")　" + key + "　の値は　" + (keys.get (key)).toString ();////////////////////////////////////////////////////////////////////////////
-//					myEditor.remove (key);
-//				}
-//				myEditor.commit ();
-//			}
-//			pref_sonota_vername = String.valueOf (getPackageManager().getPackageInfo(getPackageName(), getPackageManager().GET_META_DATA).versionCode);			//.versionNameは1.3.2など
-//
-//			String fn = this.getApplicationContext ().getString (R.string.kuji_file);        //kuji.db
-//			dbMsg = "fn= " + fn;
-//			kuji_table = getResources ().getString (R.string.kuji_table);                //kuji_table</string>
-//			dbMsg += ",テーブル名=" + kuji_table;
-//			kujiHelper = new KujiHelper (getApplicationContext (), fn);                //計算履歴トヘルパ
-//			File dbF = getDatabasePath (fn);            //Environment.getExternalStorageDirectory().getPath();		new File(fn);		//cContext.
-//			dbMsg += ",dbF=" + dbF;
-//			dbMsg += " , exists=" + dbF.exists () + " , canWrite=" + dbF.canWrite ();
-//			dbF.delete ();
-//			dbStart ();                  //データベースの作成・オープン
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}																	//プリファレンスの内容削除
-
 	//メニューボタンで表示するメニュー///////////////////////////////////////////////////////////////////////////////
 	@Override
 	public boolean onCreateOptionsMenu(Menu flMenu) {
@@ -881,14 +796,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			case R.id.menu_list_simple:						//シンプルリスト
 				pref_list_simple =  true;
 				dbMsg += "指定(false詳細)=" + pref_list_simple;
-				myEditor.putString( "pref_list_simple", String.valueOf(pref_list_simple));
-				 kakikomi = myEditor.commit();
+				setPrefStr("pref_list_simple", String.valueOf(pref_list_simple) ,  MuList.this);
 				simpleSyousai( pref_list_simple );
 				return true;
 			case R.id.menu_list_syousai:						//詳細表示に切替
 				pref_list_simple = false;
 				dbMsg += "指定(false詳細)=" + pref_list_simple;
-				myEditor.putString( "pref_list_simple", String.valueOf(pref_list_simple));
+				setPrefStr("pref_list_simple", String.valueOf(pref_list_simple) ,  MuList.this);
+//				myEditor.putString( "pref_list_simple", String.valueOf(pref_list_simple));
 				simpleSyousai( pref_list_simple );
 				return true;
 			case R.id.menu_item_plist_saikin_tuika:				//最近追加リスト作成/編集
@@ -2271,11 +2186,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			sousalistName = getResources().getString(R.string.listmei_zemkyoku);			//全曲リスト
 			sousalistID = -1;		//操作対象リストID
 			sousalist_data = null;		//操作対象リストのUrl
-			myEditor.putString( "nowList", String.valueOf(sousalistName));
-			myEditor.putString( "nowList_id", String.valueOf(sousalistID));		//☆intで書き込むとcannot be cast
-			myEditor.putString( "nowList_data", String.valueOf(sousalist_data));	//再生中のプレイリストの保存場所
-			boolean kakikomi = myEditor.commit();
-			dbMsg += ",書き込み=" + kakikomi;	////////////////
+			setPrefStr( "nowList", String.valueOf(sousalistName),  MuList.this);         //			myEditor.putString( "nowList", String.valueOf(sousalistName));
+			setPrefStr( "nowList_id", String.valueOf(sousalistID),  MuList.this);         //	myEditor.putString( "nowList_id", String.valueOf(sousalistID));		//☆intで書き込むとcannot be cast
+			setPrefStr(  "nowList_data", String.valueOf(sousalist_data),  MuList.this);         //	myEditor.putString( "nowList_data", String.valueOf(sousalist_data));	//再生中のプレイリストの保存場所
 			Intent intentZL = new Intent(getApplication(),ZenkyokuList.class);						//parsonalPBook.thisではメモリーリークが起こる
 			intentZL.putExtra("reqCode",reqCode);														//処理コード
 			startActivityForResult(intentZL , reqCode);
@@ -2611,11 +2524,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			if( cursor.moveToFirst() ){
 				if (Integer.valueOf(titolCo) != tCount){
 					dbMsg +=">>件数="+ tCount + ">>"+tCount + "件";
-					myEditor.putString( "pref_file_kyoku", String.valueOf(tCount));		//総曲数
-					myEditor.commit();	// データの保存
-					retBool = false;
+					setPrefStr( "pref_file_kyoku", String.valueOf(tCount),  MuList.this);         //	myEditor.putString( "pref_file_kyoku", String.valueOf(tCount));		//総曲数
 				}
-				dbMsg +=">>"+ retBool;			//+ cursor.getColumnCount() + "項目";
 				int sisinV =0;
 				if(saisinn != null && ! saisinn.equals("null")){
 					sisinV = Integer.valueOf(saisinn);
@@ -3484,9 +3394,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			Item cItem = mItems.get(mIndex);
 			int duration = ( int ) cItem.duration;
 			dbMsg += ".再生時間=" + duration + "[ms]";/////////////////////////////////////
-			myEditor.putInt( "pref_duration", duration);	//再生中のプレイリストの保存場所
-
-
+			myEditor.putInt( "pref_duration", duration);
 		//			}
 			boolean kakikomi = myEditor.commit();
 			dbMsg +=",書き込み=" + kakikomi+",リスト変更=" + listHenkou;	////////////////
