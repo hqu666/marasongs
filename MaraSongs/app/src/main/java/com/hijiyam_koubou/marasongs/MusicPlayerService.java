@@ -159,8 +159,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String artistID;						//アーティストごとの情報
 	public String albumID;							//アルバムごとの情報
 	public String audioID;							//曲ごとの情報
-//	public String dataURL = null;
-	//public String b_tagudata = null;
 	public int repeatType;			//リピート再生の種類
 	public String repeatArtist;		//リピートさせるアーティスト名
 	public boolean rp_pp = false;			//2点間リピート中
@@ -215,7 +213,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String dviceNamer;										//デバイス名
 	public String dviceStytus;										//デバイスの状態
 	public String stateBaseStr = null;
-	public String  b_stateStr;
+	public String b_stateStr;
 	public String b_state ="";
 
 	static final int REQUEST_ENABLE_BT = 0;
@@ -2121,11 +2119,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				saiseiJikan = (int)playingItem.duration;
 				dbMsg +=  ">saiseiJikan>" + saiseiJikan;
 			}
-			intent.putExtra("data", dataFN);
-			intent.putExtra("mcPosition", mcPosition);
-			intent.putExtra("saiseiJikan", saiseiJikan);
 
 			if ( b_dataFN != dataFN ) {                  					//0706戻す            	b_state != action)
+				intent.putExtra("data", dataFN);
+				intent.putExtra("mcPosition", mcPosition);
+				intent.putExtra("saiseiJikan", saiseiJikan);
 				dbMsg += ">>action変更>>" ;
 				intent.putExtra("action", action);
 				dbMsg += ",送り戻し待ち曲数=" + frCount ;

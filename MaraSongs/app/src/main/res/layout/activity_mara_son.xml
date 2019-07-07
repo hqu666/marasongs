@@ -38,13 +38,14 @@
         android:id="@+id/headAria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_marginBottom="10px">
 
         <TableRow
             android:id="@+id/artisr_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="2dp"
+            >
 
             <LinearLayout
                 android:id="@+id/artistCountLL"
@@ -98,7 +99,7 @@
 
         <TableRow
             android:id="@+id/albumRow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp">
 
@@ -149,7 +150,7 @@
 
         <TableRow
             android:id="@+id/titolLayauto"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp">
 
@@ -203,7 +204,8 @@
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4">
+        android:layout_marginTop="0px"
+        android:layout_weight="2">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -265,9 +267,9 @@
                 android:id="@+id/rewPButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
+                android:layout_gravity="bottom"
                 android:layout_marginRight="2dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="60dp"
                 android:layout_weight="1"
                 android:background="@drawable/color_state"
                 android:baselineAlignBottom="false"
@@ -275,27 +277,27 @@
                 android:src="@drawable/rewbtn"/>
         </LinearLayout>
 
-		<ViewFlipper
-			android:id="@+id/pp_vf"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:layout_gravity="center"
-			android:layout_margin="20px"
-			android:layout_weight="8">
+        <ViewFlipper
+            android:id="@+id/pp_vf"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="60px"
+            android:layout_weight="8">
 
-			<include
-				android:id="@+id/jaket_ll"
-				layout="@layout/jaket_art"/>
+            <include
+                android:id="@+id/jaket_ll"
+                layout="@layout/jaket_art"/>
 
-			<include
-				android:id="@+id/visualizer_ll"
-				layout="@layout/visualizer"/>
+            <include
+                android:id="@+id/visualizer_ll"
+                layout="@layout/visualizer"/>
 
-			<include
-				android:id="@+id/lilic_ll"
-				layout="@layout/lilic"
-				/>
-		</ViewFlipper>
+            <include
+                android:id="@+id/lilic_ll"
+                layout="@layout/lilic"
+                />
+        </ViewFlipper>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -322,14 +324,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:orientation="vertical">
         <!--android:gravity="bottom"-->
 
         <SeekBar
             android:id="@+id/saiseiSeekMP"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80px"/>
         <!-- android:progressDrawable="@drawable/pp_progress" -->
 
         <LinearLayout
@@ -343,8 +346,6 @@
                 android:id="@+id/ppPButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_margin="1dp"
                 android:background="@drawable/color_state"
                 android:nextFocusDown="@id/artist_tv"
                 android:src="@drawable/pl_r_btn"/>
@@ -358,9 +359,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:orientation="vertical"
-                    >
+                    android:layout_weight="4"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/pp_pp_ll"
@@ -577,9 +577,10 @@
 
                 <include
                     layout="@layout/advertisemen"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    />
+                    android:layout_marginTop="20px"
+                    android:layout_weight="1"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout><!-- bt -->

@@ -991,12 +991,23 @@ public class MaraSonActivity extends AppCompatActivity
 						boolean thisCont = true;
 						boolean gamenKakikae = false;
 						/*逐次更新*/
-						String state = intent.getStringExtra("state");
+						String state = intent.getStringExtra("state") + "";
 						dbMsg +=",state=" + state;
 						IsSeisei = intent.getBooleanExtra("IsSeisei", false);			//生成中
 						dbMsg +=  ",生成中= "+ IsSeisei;/////////////////////////////////////
 						IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
 						dbMsg +=  ",再生中= "+ IsPlaying  + "(b_Playing= "+ b_Playing + ")";/////////////////////////////////////
+						String dataFN = getPrefStr( "saisei_fname" ,"" , context);
+						dbMsg +=  "以前のファイル=" + dataFN +  ">>再生中のファイル名=" + dataFN;
+						int mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
+						int saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
+						dbMsg += ">>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";
+
+//						int rInt = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
+						int rInt = intent.getIntExtra("mcPosition" , 0);        //DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
+						if(0 < rInt){
+							mcPosition = rInt;
+						}
 						if( ! IsPlaying){
 							ppPBT.setImageResource(R.drawable.pl_r_btn);
 							ppPBT.setContentDescription(getResources().getText(R.string.pause));			//play
@@ -1007,22 +1018,10 @@ public class MaraSonActivity extends AppCompatActivity
 						if(IsPlaying != b_Playing){
 							b_Playing = IsPlaying;
 						}
-						int saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-						int mcPosition = intent.getIntExtra("mcPosition" , 0);        //DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-						dbMsg += ",mcPosition=" + mcPosition + "/" + saiseiJikan;
-//						if( rp_pp ){				// = false;			//2点間リピート中
-//							if( pp_start < rInt ){
-//								mcPosition = rInt;
-								pointKousin(mcPosition,saiseiJikan);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
-//							}
-//						}else{
-//							if( 0 < rInt ){
-//								mcPosition = rInt;
-//								pointKousin(mcPosition,saiseiJikan);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
-//							}
-//						}
+						dbMsg += ",mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+						pointKousin(mcPosition,saiseiJikan);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
 
-						if(state != null){
+						if(state != ""){
 							if(state.equals( MusicPlayerService.State.Playing )){
 								ppPBT.setImageResource(R.drawable.pl_r_btn);
 								ppPBT.setContentDescription(getResources().getText(R.string.pause));			//play
@@ -1033,7 +1032,7 @@ public class MaraSonActivity extends AppCompatActivity
 								IsPlaying = true;
 							}
 							dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
-							int rInt = intent.getIntExtra("imanoJyoutai",0 );		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
+							rInt = intent.getIntExtra("imanoJyoutai",0 );		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 							dbMsg +=  ",今の状態="+rInt ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
 							if( rInt != 0 ){									//MuList.sonomama
 								imanoJyoutai = rInt;
@@ -1060,9 +1059,9 @@ public class MaraSonActivity extends AppCompatActivity
 							}
 							rStr =intent.getStringExtra("data");
 							dbMsg +=",dataFN=" + rStr;
-							if( rStr != null || ! rStr.equals("")){
-								String dataFN = rStr;
-								dbMsg +=">>" + dataFN;
+//							if( rStr != null || ! rStr.equals("")){
+//								String dataFN = rStr;
+//								dbMsg +=">>" + dataFN;
 								b_titolName =String.valueOf(MaraSonActivity.this.titol_tv.getText());			//前曲名
 								dbMsg += "、前の曲名；"+ b_titolName + " を　";
 								rStr =intent.getStringExtra("titolName");
@@ -1116,13 +1115,12 @@ public class MaraSonActivity extends AppCompatActivity
 										}
 									}
 									gamenKakikae = true;
-									myLog(TAG, dbMsg);
 									b_dataFN = dataFN;
 								}
 								if(gamenKakikae){
 									url2FSet(dataFN , mIndex);		//urlからプレイヤーの書き込みを行う		albumArtist
 								}
-							}
+//							}
 							if (thisCont) {
 								int retInt = intent.getIntExtra("ruikeikyoku" , 0);
 								dbMsg +=",累積曲数=" + retInt;
@@ -1163,7 +1161,7 @@ public class MaraSonActivity extends AppCompatActivity
 								lyric_tv.setText(songLyric);					//歌詞表示
 							}
 						}
-//						myLog(TAG, dbMsg);
+						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
