@@ -200,7 +200,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String nowAction =null;							//現在のアクション
 	public Uri uriNext ;						//次のUri
 
-	public String b_dataFN =null;			//すでに再生している再生ファイル
+	public String b_dataFN = "";			//すでに再生している再生ファイル
 	public String b_Album ="";			//前のアルバム
 	public String c_selection =null;			//取得する列を絞り込むときに使います。具体的には "AGE > 30" のように、SQL文の WHERE 句を指定します。null を指定すると、全行を取得することになります。
 	public String[] c_selectionArgs =null;		//selection でバインドを使用したとき、バインドの値をここで指定します。例えば selection で "AGE > ?" としたとき、ここで [ 30 ] と指定することができます。
@@ -770,10 +770,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			boolean yominaosi = false;
 			dbMsg += "isOnlyPrepareは" + isOnlyPrepare;/////////////////////////////////////
 			try {
+				int mIndex = getPrefInt( "mIndex" ,0 , MusicPlayerService.this);
 				String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);
 				int mcPosition = getPrefInt( "pref_position" ,0 , MusicPlayerService.this);
 				int Duration = getPrefInt( "pref_duration" ,0 , MusicPlayerService.this);
-				dbMsg +="," + dataFN + "." + mcPosition + "/" + Duration +"[ms]" ;
+				dbMsg += "[" + mIndex + "]" + dataFN + "." + mcPosition + "/" + Duration +"[ms]" ;
 				dbMsg +=",現在nowList[" + nowList_id + "]" + nowList + ";" +dataFN ;
 				b_dataFN = dataFN;
 				int listEnd =  mItems.size();
@@ -891,6 +892,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					myLog(TAG,dbMsg);
 					processStopRequest(true); // stop everything!
 					return;
+				}else{
+
 				}
 				Uri dataUri = playingItem.getURI( getApplicationContext() , mIndex );
 				dataFN = String.valueOf(dataUri);
@@ -1304,43 +1307,43 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		//	http://seesaawiki.jp/w/moonlight_aska/d/%BA%C6%C0%B8%A4%AC%BD%AA%CE%BB%A4%B9%A4%EB%A4%C8....
 		}
 
-		/**playNextSongに続いて データ詠み込み後の処理**/
-		public void onPrepared(MediaPlayer player) {					//	Called when media player is done preparing
-			final String TAG = "onPrepared[MusicPlayerService]";
-			String dbMsg="これから再生、";/////////////////////////////////////
-			try{
-				dbMsg += "渡されたplayer=" +player ;/////////////////////////////////////
-				dbMsg +=",既存のplayer=" +player ;/////////////////////////////////////
-				if( player == mPlayer ){
-					imanoJyoutai =  MuList.sonomama ;
-					dbMsg=dbMsg+ "、isPlaying=" + player.isPlaying() ;/////////////////////////////////////
-					if( !player.isPlaying() ){
-						player.setVolume(DUCK_VOLUME, DUCK_VOLUME); 	//0.1f; we'll be relatively quiet
-						if( rp_pp ){						//2点間リピート中の時だけ//リピート区間終了点
-							dbMsg +=",rp_pp=" + rp_pp;
-							myLog(TAG,dbMsg);
-							mcPosition =pp_start;			//前に再生していた曲の再生ポジションを消去
-						}
-						dbMsg += ",mcPosition=" + mcPosition ;//////////////////////////////////
-						if( 0 < mcPosition ){
-							player.seekTo(mcPosition);
-						}
-						kankaku = 100;
-						player.start();				//java.lang.SecurityException: Neither user 10859 nor current process has android.permission.WAKE_LOCK.
-						player.setVolume(1.0f, 1.0f); // we can be loud
-						mState = State.Playing;			//	20150504	mState = State.Preparing;
-						dbMsg += ">>" + player.isPlaying() ;/////////////////////////////////////
+	/**playNextSongに続いて データ詠み込み後の処理**/
+	public void onPrepared(MediaPlayer player) {					//	Called when media player is done preparing
+		final String TAG = "onPrepared[MusicPlayerService]";
+		String dbMsg="これから再生、";/////////////////////////////////////
+		try{
+			dbMsg += "渡されたplayer=" +player ;/////////////////////////////////////
+			dbMsg +=",既存のplayer=" +player ;/////////////////////////////////////
+			if( player == mPlayer ){
+				imanoJyoutai =  MuList.sonomama ;
+				dbMsg=dbMsg+ "、isPlaying=" + player.isPlaying() ;/////////////////////////////////////
+				if( !player.isPlaying() ){
+					player.setVolume(DUCK_VOLUME, DUCK_VOLUME); 	//0.1f; we'll be relatively quiet
+					dbMsg += ",2点間リピート中=" + rp_pp ;/////////////////////////////////////
+					int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+					if( rp_pp ){						//2点間リピート中の時だけ//リピート区間終了点
+						mcPosition =pp_start;			//前に再生していた曲の再生ポジションを消去
 					}
-					songInfoSett( player);
-					setPref();		//プリファレンス記載
+					dbMsg += ",mcPosition=" + mcPosition ;//////////////////////////////////
+					if( 0 < mcPosition ){
+						player.seekTo(mcPosition);
+					}
+					kankaku = 100;
+					player.start();				//java.lang.SecurityException: Neither user 10859 nor current process has android.permission.WAKE_LOCK.
+					player.setVolume(1.0f, 1.0f); // we can be loud
+					mState = State.Playing;			//	20150504	mState = State.Preparing;
+					dbMsg += ">>" + player.isPlaying() ;/////////////////////////////////////
 				}
-				dbMsg=dbMsg+ "現在再生中、mPlayer=" + mPlayer.getAudioSessionId() ;/////////////////////////////////////
-				dbMsg +=",状態=" + imanoJyoutai ;/////////////////////////////////////
-			//	myLog(TAG,dbMsg);
-			} catch (Exception e) {
-				myErrorLog(TAG,dbMsg+"で"+e);
+				songInfoSett( player);
+				setPref();		//プリファレンス記載
 			}
+			dbMsg=dbMsg+ "現在再生中、mPlayer=" + mPlayer.getAudioSessionId() ;/////////////////////////////////////
+			dbMsg +=",状態=" + imanoJyoutai ;/////////////////////////////////////
+		//	myLog(TAG,dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG,dbMsg+"で"+e);
 		}
+	}
 
 	///APIL21対応////////////////////////////////////////////////////////////////////////////////////////////////
 	//private static final String ACTION_TOGGLE_PLAYBACK = "com.your.package.name.TOGGLE_PLAYBACK";
@@ -2092,7 +2095,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += saiseiJikan + "mS]";
 			}
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);
-			dbMsg +=  ",再生中のファイル名=" + dataFN;
+			dbMsg +=  "以前のファイル=" + dataFN +  ">>再生中のファイル名=" + dataFN;
 			int mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
 			int saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
 			dbMsg += ">>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";
@@ -2122,7 +2125,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			intent.putExtra("mcPosition", mcPosition);
 			intent.putExtra("saiseiJikan", saiseiJikan);
 
-			if (b_state != action) {                  					//0706戻す
+			if ( b_dataFN != dataFN ) {                  					//0706戻す            	b_state != action)
 				dbMsg += ">>action変更>>" ;
 				intent.putExtra("action", action);
 				dbMsg += ",送り戻し待ち曲数=" + frCount ;
@@ -2171,62 +2174,64 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						myLog(TAG,dbMsg);
 						player.seekTo(mcPosition);
 					}
+					b_dataFN = dataFN;
+					b_state = action;
 				}
 
-					dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
-					intent.putExtra("IsSeisei", IsSeisei);
-					dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
-					intent.putExtra("IsPlaying", IsPlaying);
-					dbMsg += "、今の状態=" + imanoJyoutai ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
-					intent.putExtra("imanoJyoutai", imanoJyoutai);
-					dbMsg +=",Bluetooth= " + stateBaseStr;//////////////////////////////////
-					dbMsg +=" ,今日は " + ruikeikyoku +"曲";/////////////////////////////////////
-					intent.putExtra("ruikeikyoku", ruikeikyoku);
-					ruikeiSTTime = ruikeiSTTime + ruikeikasannTime;				//	累積加算時間
-					dbMsg += ruikeiSTTime +"mS(追加分" + ruikeikasannTime +"mS)";/////////////////////////////////////
-					intent.putExtra("ruikeiSTTime", ruikeiSTTime);
-					intent.putExtra("stateBaseStr", stateBaseStr);
-					sentakuCyuu = false;						//送り戻しリスト選択解除
-					dbMsg +=",選択中=" + sentakuCyuu;/////////////////////////////////////
-					dbMsg +=", album_art = " + album_art;/////////////////////////////////////
-					Cursor cursor=null;
-					dbMsg +=",creditArtistNameは " + creditArtistName;/////////////////////////////////////
-					dbMsg +=",アルバムは " + b_Album +">albumName>"+ albumName;/////////////////////////////////////
-					if( b_Album == null ){
-						if( albumName != null ){
-							b_Album = albumName;
-						}
+				dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
+				intent.putExtra("IsSeisei", IsSeisei);
+				dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
+				intent.putExtra("IsPlaying", IsPlaying);
+				dbMsg += "、今の状態=" + imanoJyoutai ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
+				intent.putExtra("imanoJyoutai", imanoJyoutai);
+				dbMsg +=",Bluetooth= " + stateBaseStr;//////////////////////////////////
+				dbMsg +=" ,今日は " + ruikeikyoku +"曲";/////////////////////////////////////
+				intent.putExtra("ruikeikyoku", ruikeikyoku);
+				ruikeiSTTime = ruikeiSTTime + ruikeikasannTime;				//	累積加算時間
+				dbMsg += ruikeiSTTime +"mS(追加分" + ruikeikasannTime +"mS)";/////////////////////////////////////
+				intent.putExtra("ruikeiSTTime", ruikeiSTTime);
+				intent.putExtra("stateBaseStr", stateBaseStr);
+				sentakuCyuu = false;						//送り戻しリスト選択解除
+				dbMsg +=",選択中=" + sentakuCyuu;/////////////////////////////////////
+				dbMsg +=", album_art = " + album_art;/////////////////////////////////////
+				Cursor cursor=null;
+				dbMsg +=",creditArtistNameは " + creditArtistName;/////////////////////////////////////
+				dbMsg +=",アルバムは " + b_Album +">albumName>"+ albumName;/////////////////////////////////////
+				if( b_Album == null ){
+					if( albumName != null ){
+						b_Album = albumName;
 					}
-					if(b_Album != null && albumName != null ){
-						if(! b_Album.equals(albumName) ){		//前のアルバム
-							album_art =null;
-							Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
-							String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-							String c_selection =  MediaStore.Audio.Albums.ARTIST +" LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM +" = ?";
-							String[] c_selectionArgs= { "%" + creditArtistName + "%" , albumName };   			//⑥引数groupByには、groupBy句を指定します。
-							String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
-							cursor = getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
-							dbMsg +="、 " +  cursor.getCount() +"件";/////////////////////////////////////
-							if( cursor.moveToFirst() ){
-								album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-							}
-							cursor.close();
-							intent.putExtra("album_art", album_art);
+				}
+				if(b_Album != null && albumName != null ){
+					if(! b_Album.equals(albumName) ){		//前のアルバム
+						album_art =null;
+						Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+						String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+						String c_selection =  MediaStore.Audio.Albums.ARTIST +" LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM +" = ?";
+						String[] c_selectionArgs= { "%" + creditArtistName + "%" , albumName };   			//⑥引数groupByには、groupBy句を指定します。
+						String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+						cursor = getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
+						dbMsg +="、 " +  cursor.getCount() +"件";/////////////////////////////////////
+						if( cursor.moveToFirst() ){
+							album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+						}
+						cursor.close();
+						intent.putExtra("album_art", album_art);
 
-							OrgUtil ORGUT = new OrgUtil();				//自作関数集
-							WindowManager wm = (WindowManager)this.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-							Display disp = wm.getDefaultDisplay();
-							int width = disp.getWidth();
-							width = width*9/10;
-							mDummyAlbumArt = ORGUT.retBitMap( album_art  , width , width ,  getResources() );		//指定したURiのBitmapを返す	 , dHighet , dWith ,
-							b_Album = albumName;
-							dbMsg +=",art=" + album_art ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
-							dbMsg +=" , AlbumArt(ビットマップ) = " + mDummyAlbumArt;/////////////////////////////////////
-						}
+						OrgUtil ORGUT = new OrgUtil();				//自作関数集
+						WindowManager wm = (WindowManager)this.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+						Display disp = wm.getDefaultDisplay();
+						int width = disp.getWidth();
+						width = width*9/10;
+						mDummyAlbumArt = ORGUT.retBitMap( album_art  , width , width ,  getResources() );		//指定したURiのBitmapを返す	 , dHighet , dWith ,
+						b_Album = albumName;
+						dbMsg +=",art=" + album_art ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
+						dbMsg +=" , AlbumArt(ビットマップ) = " + mDummyAlbumArt;/////////////////////////////////////
 					}
-					dbMsg +=">>>> " + b_Album +">albumName>"+ albumName;/////////////////////////////////////
-					intent.putExtra("songLyric", songLyric);
-					b_state = action;
+				}
+				dbMsg +=">>>> " + b_Album +">albumName>"+ albumName;/////////////////////////////////////
+				intent.putExtra("songLyric", songLyric);
+				b_state = action;
 //				}							//if (mItems != null) {
 			dbMsg +=";Broadcast送信>>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";
 			sendBroadcast(intent);					//APIL1
