@@ -4121,36 +4121,37 @@ public class MaraSonActivity extends AppCompatActivity
 	 * プリファレンス記載
 	 * 呼出し元は	quitMeだった
 	 * */
-	public void setPref(String dataFN, int nowList_id) {			//プリファレンス記載
-		final String TAG = "setPref[MaraSonActivity]";
-		String dbMsg="開始";/////////////////////////////////////
-		try{
-			dbMsg = "dataFN="+dataFN;
-			if(dataFN != null){
-				sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//MODE_WORLD_WRITEABLE 	getSharedPreferences(prefFname,MODE_PRIVATE);
-				myEditor = sharedPref.edit();
-				myEditor.putString("nowList_id",String.valueOf(nowList_id));		//再生中のプレイリストID
-				myEditor.putString("nowList",nowList);							//再生中のプレイリスト名
-				myEditor.putString("mIndex",String.valueOf( mIndex ));		//play_order
-				myEditor.putString("pref_saisei_fname",dataFN);				//再生していた曲	.commit()
-				int mcPosition = saiseiSeekMP.getProgress();
-				int saiseiJikan = saiseiSeekMP.getMax();
-				dbMsg += ",mcPosition="+mcPosition;////////////////////////////////////////////////////////////////////////////
-				if(mcPosition > 0){
-					dbMsg += "["+ORGUT.sdf_mss.format(mcPosition) + "/";////////////////////////////////////////////////////////////////////////////
-					myEditor.putString( "pref_saisei_jikan", String.valueOf(mcPosition));		//再生ポジション
-					ruikeiSTTime = ruikeiSTTime + mcPosition;
-				}
-				dbMsg +=";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";////////////////////////////////////////////////////////////////////////////
-				myEditor.putString( "pref_saisei_nagasa", String.valueOf(saiseiJikan));					//再生時間
-				Boolean kakikomi = myEditor.commit();	// データの保存
-				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
+//	public void setPref(String dataFN, int nowList_id) {			//プリファレンス記載
+//		final String TAG = "setPref[MaraSonActivity]";
+//		String dbMsg="開始";/////////////////////////////////////
+//		try{
+//			dbMsg = "dataFN="+dataFN;
+//			if(dataFN != null){
+//				sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//MODE_WORLD_WRITEABLE 	getSharedPreferences(prefFname,MODE_PRIVATE);
+//				myEditor = sharedPref.edit();
+//				myEditor.putString("nowList_id",String.valueOf(nowList_id));		//再生中のプレイリストID
+//				myEditor.putString("nowList",nowList);							//再生中のプレイリスト名
+//				myEditor.putString("mIndex",String.valueOf( mIndex ));		//play_order
+//				myEditor.putString("pref_saisei_fname",dataFN);				//再生していた曲	.commit()
+//				int mcPosition = saiseiSeekMP.getProgress();
+//				int saiseiJikan = saiseiSeekMP.getMax();
+//				dbMsg += ",mcPosition="+mcPosition;////////////////////////////////////////////////////////////////////////////
+//				if(mcPosition > 0){
+//					dbMsg += "["+ORGUT.sdf_mss.format(mcPosition) + "/";////////////////////////////////////////////////////////////////////////////
+//					myEditor.putString( "pref_saisei_jikan", String.valueOf(mcPosition));		//再生ポジション
+//					ruikeiSTTime = ruikeiSTTime + mcPosition;
+//				}
+//				dbMsg +=";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";////////////////////////////////////////////////////////////////////////////
+//				myEditor.putInt( "pref_duration",(int)saiseiJikan);					//再生時間
+//				myEditor.putString( "pref_saisei_nagasa", String.valueOf(saiseiJikan));					//再生時間
+//				Boolean kakikomi = myEditor.commit();	// データの保存
+//				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
+//			}
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
 
 ///////////////////////////////////////////////////////////////////////////
 //ロック画面クライアントからの制御方法	http://www.atmarkit.co.jp/ait/articles/1203/28/news128_3.html	MediaPlayerのリモート操作
@@ -4343,15 +4344,16 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg= "[MaraSonActivity];";
 		try{
 			titolName =titol_tv.getText().toString();		//曲名
-			if(titolName != null){
-				if(titolName.equals("")){
-					titolName = playingItem.title;					//選択しておくアイテムアイテム
-				}
-			}else{
-				titolName = playingItem.title;					//選択しておくアイテムアイテム
-			}
 			dbMsg += ".titolName="+ titolName;
+//			if(titolName != null){
+//				if(titolName.equals("")){
+////					titolName = playingItem.title;					//選択しておくアイテムアイテム
+////				}
+////			}else{
+//				titolName = playingItem.title;					//選択しておくアイテムアイテム
+////			}
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MaraSonActivity.this);
+			dbMsg += ".dataFN="+ dataFN;
 			int mcPosition = saiseiSeekMP.getProgress();
 			dbMsg += ".mcPosition="+ mcPosition;
 			callListView(v_titol ,dataFN , mcPosition );								//リストビューを読出し

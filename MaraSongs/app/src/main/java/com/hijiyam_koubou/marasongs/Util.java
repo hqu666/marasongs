@@ -486,7 +486,7 @@ public class Util {
 			dbMsg +=",context=" + context;
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			retStr = sharedPref.getString(keyNmae , defaultVal);
+			retStr = (String)sharedPref.getString(keyNmae , defaultVal);
 			dbMsg +=  ",retStr="  + retStr;
 //			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -498,13 +498,19 @@ public class Util {
 	/**整数プリファレンスの読込み*/
 	public static int getPrefInt(String keyNmae , int defaultVal,Context context) {
 		int retInt = -99;
-		final String TAG = "getPrefStr";
+		final String TAG = "getPrefInt";
 		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + defaultVal;
 		try {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			retInt = sharedPref.getInt(keyNmae , defaultVal);
-			dbMsg +=  ",retIn="  + retInt;
+			try {
+				retInt = sharedPref.getInt(keyNmae , defaultVal);
+				dbMsg +=  ",retIn="  + retInt;
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+				retInt = Integer.parseInt(sharedPref.getString(keyNmae, String.valueOf(defaultVal)));
+			}
+			dbMsg +=  ",retInt="  + retInt;
 //			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

@@ -3394,7 +3394,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			Item cItem = mItems.get(mIndex);
 			int duration = ( int ) cItem.duration;
 			dbMsg += ".再生時間=" + duration + "[ms]";/////////////////////////////////////
-			myEditor.putInt( "pref_duration", duration);
+			myEditor.putInt( "pref_duration", (int)duration);
 		//			}
 			boolean kakikomi = myEditor.commit();
 			dbMsg +=",書き込み=" + kakikomi+",リスト変更=" + listHenkou;	////////////////

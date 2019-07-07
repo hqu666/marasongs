@@ -297,8 +297,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 								mcPosition = mPlayer.getCurrentPosition();
 								saiseiJikan = mPlayer.getDuration();
 							}
-							mainEditor.putInt("pref_position",mcPosition);
-							mainEditor.putInt("pref_duration",saiseiJikan);
+							mainEditor.putInt("pref_position",(int)mcPosition);
+							mainEditor.putInt("pref_duration",(int)saiseiJikan);
 							mainEditor.putString( "pref_saisei_jikan", String.valueOf(mcPosition));		//再生ポジション
 							mainEditor.putString( "pref_saisei_nagasa", String.valueOf(saiseiJikan));					//再生時間
 							dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
@@ -388,7 +388,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		String dbMsg ="[MusicPlayerService]";/////////////////////////////////////
 		try{
 			int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);		//sharedPref.getInt("pref_position" , 0);
-			int saiseiJikan = getPrefInt("pref_duration" , 0, MusicPlayerService.this);		//sharedPref.getInt("pref_duration" , 0);
+			int saiseiJikan = getPrefInt("pref_duration" , 0, MusicPlayerService.this);
 			dbMsg +="mState= " + mState + " ,mcPosition= " + mcPosition + "/" +  saiseiJikan + "[ms]";
 			if (mState == State.Retrieving) {
 				mStartPlayingAfterRetrieve = true;			// If we are still retrieving media, just set the flag to start playing when we're ready
@@ -770,7 +770,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);
 				int mcPosition = getPrefInt( "pref_position" ,0 , MusicPlayerService.this);
 				int Duration = getPrefInt( "pref_duration" ,0 , MusicPlayerService.this);
-				dbMsg +="," + dataFN + "." + mcPosition + "/" +Duration +"[ms]" ;
+				dbMsg +="," + dataFN + "." + mcPosition + "/" + Duration +"[ms]" ;
 				dbMsg +=",現在nowList[" + nowList_id + "]" + nowList + ";" +dataFN ;
 				b_dataFN = dataFN;
 				int listEnd =  mItems.size();
@@ -901,8 +901,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //				mState = State.Stopped;
 //				dbMsg += ">>" +mState;/////////////////////////////////////
 		//		if( ! b_dataFN.equals(dataFN) || mPlayer == null ){			//読み込むデータが変わっていたら
-					relaxResources(true);				//trueで再生しているmPlayerの破棄 // release everything except MediaPlayer
-					createMediaPlayerIfNeeded();
+				relaxResources(true);				//trueで再生しているmPlayerの破棄 // release everything except MediaPlayer
+				createMediaPlayerIfNeeded();
 		//		}
 				dbMsg += "、mPlayer=" +mPlayer;/////////////////////////////////////
 				try {
@@ -1007,10 +1007,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	* 呼出し元はplayNextSong
 	*/
 	public void createMediaPlayerIfNeeded() {				//MediaPlayerを生成←playNextSong
-		final String TAG = "createMediaPlayerIfNeeded[MusicPlayerService]";
-		String dbMsg=ORGUT.nowTime(true,true,true);/////////////////////////////////////
+		final String TAG = "createMediaPlayerIfNeeded";
+		String dbMsg = "[MusicPlayerService]";
+		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
 		try {
-			dbMsg += "mPlayer = " + mPlayer;/////////////////////////////////////
+			dbMsg += "mPlayer = " + mPlayer;
 			int mcPosition = 0;
 			if (mPlayer != null) {								//MediaPlayerが生成されていれば
 				if(mPlayer.isPlaying()){						//再生中なら
@@ -1044,8 +1045,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 				// Make sure the media player will acquire a wake-lock while playing. If we don't do that, the CPU might go to sleep while the song is playing, causing playback to stop.
 				// Remember that to use this, we have to declare the android.permission.WAKE_LOCK permission in AndroidManifest.xml.
-				mPlayer.setOnPreparedListener(this);	// we want the media player to notify us when it's ready preparing, and when it's done playing:
-				mPlayer.setOnCompletionListener(this);
+				mPlayer.setOnPreparedListener(MusicPlayerService.this);	// we want the media player to notify us when it's ready preparing, and when it's done playing:
+				mPlayer.setOnCompletionListener(MusicPlayerService.this);   //曲の終了を感知する
 //				mPlayer.setOnErrorListener(this);
 //				mPlayer.setLooping(true);						//20150321
 				dbMsg +=">> " + mPlayer;//////////////////////////////////
@@ -1244,13 +1245,20 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	boolean onCompletNow = false;			//曲間処理中
 	public void onCompletion(MediaPlayer player) {			/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 	//☆曲の終了でも発生する
-		final String TAG = "onCompletion[MusicPlayerService]";
-		String dbMsg="ENDマーク検出から";/////////////////////////////////////
+		final String TAG = "onCompletion";
+		String dbMsg = "[MusicPlayerService]ENDマーク検出から";/////////////////////////////////////
 		try{
 	//		dbMsg +=",uriNext=" +uriNext;/////////////////////////////////////
 	//		if( uriNext != null ){
 				tunagiJikan = System.currentTimeMillis();		// 開始時刻の取得
-				if(g_timer != null){
+
+			dbMsg += "現在[" + mIndex +"]";
+			Item playingItem = MusicPlayerService.this.mItems.get(mIndex);
+			String saisei_fname = playingItem.data;
+			int duration = (int)playingItem.duration;
+			dbMsg += ",saisei_fname=" + saisei_fname +",duration = " + duration + "[ms]";
+
+			if(g_timer != null){
 					g_timer.cancel();
 				}
 				g_timer =null;			//☆毎回破棄しないとChoreographer: Skipped ○○」 frames!  The application may be doing too much work on its main thread.
@@ -1259,26 +1267,32 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if( mItems.size() < mIndex){
 					mIndex= 1;
 				}
-				dbMsg += "、次は" + mIndex;/////////////////////////////////////
+				dbMsg += "、次は" + mIndex;
 				ruikeikyoku++;			//累積曲数
-				dbMsg += "累積曲数" + ruikeikyoku +"曲";/////////////////////////////////////
+				dbMsg += ",累積曲数" + ruikeikyoku +"曲";
 				int mcPosition = 0;
 				if(rp_pp){						//2点間リピート中で//リピート区間終了点
 					dbMsg +=",rp_pp=" + rp_pp;
 					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
 					mIndex--;
-				} else {
-
 				}
-				setPrefInt("pref_position" , mcPosition, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
-				playNextSong(false);					// If we're stopped, just go ahead to the next song and start playing
+			dbMsg += ">>[" + mIndex +"]";
+			playingItem = MusicPlayerService.this.mItems.get(mIndex);
+			saisei_fname = playingItem.data;
+			duration = (int)playingItem.duration;
+			dbMsg += ",saisei_fname=" + saisei_fname +",duration = " + duration + "[ms]";
+			setPrefStr("saisei_fname" , saisei_fname, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+			setPrefInt("pref_duration" , duration, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+			setPrefInt("pref_position" , mcPosition, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+
+			playNextSong(false);					// If we're stopped, just go ahead to the next song and start playing
 				if( tunagiJikan > 0 ){
 					tunagiJikan = System.currentTimeMillis()-tunagiJikan;		// 開始時刻の取得
 					dbMsg +=",前曲から" +tunagiJikan +"mS経過、," ;/////////////////////////////////////
 					dbMsg +=mPlayer.toString()  ;/////////////////////////////////////
 				}
-		//		myLog(TAG,dbMsg);
+				myLog(TAG,dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG,dbMsg+"で"+e);
 			}
