@@ -552,8 +552,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
 				}
-				dbMsg += ">>" + playingItem.data +  "の" + mcPosition + "[ms]";
+				int duration = (int)playingItem.duration;
+				dbMsg += ">>" + playingItem.data +  "の" + mcPosition + "[ms]" + duration + "[ms]";
 				setPrefStr( "saisei_fname" ,playingItem.data , MusicPlayerService.this);
+				setPrefInt("mIndex" , mIndex, MusicPlayerService.this);
+				setPrefInt("pref_duration" , duration, MusicPlayerService.this);
 				setPrefInt("pref_position" , mcPosition, MusicPlayerService.this);		//sharedPref.getInt("pref_position" , 0);
 				action = MusicPlayerService.ACTION_PLAY;
 		//		myLog(TAG,dbMsg);
@@ -1253,6 +1256,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				tunagiJikan = System.currentTimeMillis();		// 開始時刻の取得
 
 			dbMsg += "現在[" + mIndex +"]";
+
 			Item playingItem = MusicPlayerService.this.mItems.get(mIndex);
 			String saisei_fname = playingItem.data;
 			int duration = (int)playingItem.duration;
@@ -1278,6 +1282,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					mIndex--;
 				}
 			dbMsg += ">>[" + mIndex +"]";
+			setPrefInt("mIndex" , mIndex, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 			playingItem = MusicPlayerService.this.mItems.get(mIndex);
 			saisei_fname = playingItem.data;
 			duration = (int)playingItem.duration;

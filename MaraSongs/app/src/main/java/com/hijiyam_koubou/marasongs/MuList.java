@@ -3392,6 +3392,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				mIndex = Item.getMPItem(saisei_fname);			//インデックスの逆検索	 ,mItems , getApplicationContext()
 				dbMsg += "[mIndex=" + mIndex + "/" +mItems.size()+"]";/////////////////////////////////////
 			Item cItem = mItems.get(mIndex);
+			myEditor.putInt( "mIndex", (int)mIndex);
 			int duration = ( int ) cItem.duration;
 			dbMsg += ".再生時間=" + duration + "[ms]";/////////////////////////////////////
 			myEditor.putInt( "pref_duration", (int)duration);

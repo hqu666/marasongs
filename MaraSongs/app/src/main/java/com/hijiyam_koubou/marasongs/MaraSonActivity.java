@@ -4297,7 +4297,9 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg +=",保存場所= " + nowList_data;//////////////////////////////////
 				intent.putExtra("nowList_data", nowList_data);
 			}
+			int mIndex = getPrefInt("mIndex" , 0, MaraSonActivity.this);
 			dbMsg +="mIndex="+ mIndex;			// リストの一曲目=0
+
 			intent.putExtra("mIndex",mIndex);
 			dbMsg +="]選択アイテム="+selName;	//			// ]選択アイテム=10cc
 			if( reqCode == MuList.MENU_MUSCK_PLIST ){
