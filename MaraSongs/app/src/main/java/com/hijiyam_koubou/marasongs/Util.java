@@ -508,10 +508,12 @@ public class Util {
 				dbMsg +=  ",retIn="  + retInt;
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);
-				retInt = Integer.parseInt(sharedPref.getString(keyNmae, String.valueOf(defaultVal)));
+				String sStr = sharedPref.getString(keyNmae, String.valueOf(defaultVal));
+				dbMsg +=  ",sStr="  + sStr;
+				retInt = Integer.parseInt(sStr);
 			}
 			dbMsg +=  ",retInt="  + retInt;
-//			myLog(TAG, dbMsg);
+			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}

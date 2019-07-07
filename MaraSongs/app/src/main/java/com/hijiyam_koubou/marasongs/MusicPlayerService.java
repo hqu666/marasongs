@@ -1362,7 +1362,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		try{
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);
 			if ( 21 <= android.os.Build.VERSION.SDK_INT) {
-				int saiseiJikan = getPrefInt("pref_saisei_jikan" , 0, MusicPlayerService.this);
+				int saiseiJikan = Integer.parseInt(getPrefStr("pref_saisei_jikan" , "0", MusicPlayerService.this));
 				dbMsg +="mState= " + mState + " ,mcPosition= " + mcPosition +  saiseiJikan + "mS]";
 				dbMsg +="KeyArtist =" + keyArtist;
 				dbMsg +=",keyAlbum =" + keyAlbum;
