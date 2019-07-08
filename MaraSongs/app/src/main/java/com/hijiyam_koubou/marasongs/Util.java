@@ -513,7 +513,7 @@ public class Util {
 				retInt = Integer.parseInt(sStr);
 			}
 			dbMsg +=  ",retInt="  + retInt;
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -550,7 +550,7 @@ public class Util {
 			myEditor.putInt( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -572,7 +572,7 @@ public class Util {
 			myEditor.putBoolean( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
