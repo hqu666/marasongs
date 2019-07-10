@@ -998,7 +998,7 @@ public class MaraSonActivity extends AppCompatActivity
 //						int sMax = saiseiSeekMP.getMax();
 //						dbMsg += ",sMax=" + sMax + "[ms]";
 						if(IsPlaying){
-							pointKousin(mcPosition,saiseiJikan);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
+							pointKousin(mcPosition);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
 						}
 //						if( ! IsPlaying){
 //							ppPBT.setImageResource(R.drawable.pl_r_btn);
@@ -1154,13 +1154,28 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 //http://blog.justoneplanet.info/2011/12/14/android%E3%81%A7notification%E3%82%92%E4%BD%BF%E3%81%86/
+public void setSeekMax(int saiseiJikan ){		//     ,
+	final String TAG = "setSeekMax";
+	String dbMsg= "[MaraSonActivity]";
+	try{
+		dbMsg +="saiseiJikan =" + saiseiJikan;
+		totalTimePTF.setText(ORGUT.sdf_mss.format(saiseiJikan).toString());
+		saiseiSeekMP.setMax((int) saiseiJikan);		//DURATION;
+		nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
+		dbMsg +=">>" + nowVol;//0～15/////////////////////////////
+		vol_tf.setText(String.valueOf(nowVol));;												//音量表示
+//							myLog(TAG, dbMsg);
+	} catch (Exception e) {
+		myErrorLog(TAG ,  dbMsg + "で" + e);
+	}
+}
 	/**
 	 * 再生ポイント更新
 	 * 呼出し元  MusicReceiver
 	 * */
-	public void pointKousin(int mcPosition , int saiseiJikan){		//
+	public void pointKousin(int mcPosition ){		//     , int saiseiJikan
 		final String TAG = "pointKousin";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity]";
 //			new Thread(new Runnable() {				//ワーカースレッドの生成
 //				public void run() {
 //					String dbMsg= "thread id = " + Thread.currentThread().getId();/////////////////////////////////////
@@ -1177,10 +1192,18 @@ public class MaraSonActivity extends AppCompatActivity
 //							final String TAG = "runOnUiThread[pointKousin]";
 //							String dbMsg= "開始";/////////////////////////////////////
 		try{
-//								dbMsg= "thread id = " + Thread.currentThread().getId();/////////////////////////////////////
-			dbMsg +="再生時間=" +saiseiJikan;
-			totalTimePTF.setText(ORGUT.sdf_mss.format(saiseiJikan).toString());
-			saiseiSeekMP.setMax((int) saiseiJikan);		//DURATION;
+			dbMsg +="mcPosition =" + mcPosition;
+			int saiseiJikan = saiseiSeekMP.getMax();
+			dbMsg +="/ " + saiseiJikan;
+			if( saiseiJikan < mcPosition ){
+				saiseiJikan = getPrefInt("pref_duration" , 0, MaraSonActivity.this);		//sharedPref.getInt("pref_duration" , 0);
+				dbMsg +=">再生時間>" +saiseiJikan;
+				if( saiseiJikan < mcPosition ){
+					return;
+				}else{
+					setSeekMax((int) saiseiJikan);		//DURATION;
+				}
+			}
 			dbMsg +="[再生ポジション=" + mcPosition + "/";
 			saiseiSeekMP.setProgress((int) mcPosition);
 			saiseiPositionPTF.setText(ORGUT.sdf_mss.format(mcPosition).toString());	   		//再生画面の経過時間枠
@@ -1440,9 +1463,6 @@ public class MaraSonActivity extends AppCompatActivity
 				saiseiSeekMP.setSecondaryProgress(0);
 				saiseiSeekMP.setProgressDrawable(dofoltSBDrawable);
 			}
-//			dbMsg +=",mcPosition=" + mcPosition + "/" + saiseiJikan ;
-////			saiseiSeekMP.setMax((int) saiseiJikan);		//DURATION;
-////			saiseiSeekMP.setProgress((int) mcPosition);
 			lyric_tv.setText(songLyric);					//歌詞表示
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -1489,7 +1509,6 @@ public class MaraSonActivity extends AppCompatActivity
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
-
 
 	public SQLiteDatabase retDB() {			//全曲dbを返す
 		final String TAG = "retDB[MaraSonActivity]";
@@ -6037,11 +6056,12 @@ public class MaraSonActivity extends AppCompatActivity
 
 			int sMax = saiseiSeekMP.getMax();
 			dbMsg += ",sMax=" + sMax + "[ms]";
-			if(sMax == 0){            //起動時
-				int mcPosition = getPrefInt("pref_position" , 0, MaraSonActivity.this);		//sharedPref.getInt("pref_position" , 0);
+			if(sMax < 1000){            //起動時
 				int saiseiJikan = getPrefInt("pref_duration" , 0, MaraSonActivity.this);		//sharedPref.getInt("pref_duration" , 0);
+				setSeekMax( saiseiJikan );
+				int mcPosition = getPrefInt("pref_position" , 0, MaraSonActivity.this);		//sharedPref.getInt("pref_position" , 0);
 				dbMsg += ">>mcPosition=" +  mcPosition + "/" +  saiseiJikan + "mS]";
-				pointKousin(mcPosition,saiseiJikan);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
+				pointKousin(mcPosition);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
 			}
 
 			dbMsg +="shigot_bangou;" + shigot_bangou;/////////////////////////////////////
