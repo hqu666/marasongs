@@ -774,7 +774,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				int Duration = getPrefInt( "pref_duration" ,0 , MusicPlayerService.this);
 				dbMsg += "[" + mIndex + "]" + dataFN + "." + mcPosition + "/" + Duration +"[ms]" ;
 				dbMsg +=",現在nowList[" + nowList_id + "]" + nowList + ";" +dataFN ;
-				b_dataFN = dataFN;
+//				b_dataFN = dataFN;
 				int listEnd =  mItems.size();
 				dbMsg += ",dataFN="+dataFN;
 				dbMsg +=",リスト中" + mIndex + "/" + listEnd;/////////////////////////////////////
@@ -1138,8 +1138,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	  		if( player != null ){
 				saiseiJikan = player.getDuration();
 				dbMsg +="[" +  saiseiJikan + "]";/////////////////////////////////////
-				String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);
-				dbMsg +=dataFN;/////////////////////////////////////
+//				String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);
+//				dbMsg +=dataFN;/////////////////////////////////////
 //20150601;java.lang.IllegalStateException: Timer was canceled
 
 			//	myLog(TAG,dbMsg);
@@ -1180,7 +1180,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									intent.putExtra("mcPosition", mcPosition);
 									ruikeikasannTime = mcPosition;			//累積加算時間
 									intent.putExtra("saiseiJikan", saiseiJikan);
-									intent.putExtra("data", dataFN);
+//									intent.putExtra("data", "");							//タイトルなどの書き換えを行わない
 									intent.putExtra("mIndex", mIndex);
 									dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
 									intent.putExtra("IsSeisei", IsSeisei);
@@ -2121,6 +2121,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			}
 
 			if ( b_dataFN != dataFN ) {                  					//0706戻す            	b_state != action)
+//				b_dataFN = dataFN;
 				intent.putExtra("data", dataFN);
 				intent.putExtra("mcPosition", mcPosition);
 				intent.putExtra("saiseiJikan", saiseiJikan);
@@ -2172,7 +2173,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						myLog(TAG,dbMsg);
 						player.seekTo(mcPosition);
 					}
-					b_dataFN = dataFN;
 					b_state = action;
 				}
 
@@ -2395,7 +2395,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "dataUketori";
 		String dbMsg="[MusicPlayerService]";/////////////////////////////////////
 		try{
-			b_dataFN = "";
+//			b_dataFN = "";
 			String b_list = nowList;
 			int rInt = 0;
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MusicPlayerService.this);

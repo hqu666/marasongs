@@ -3549,74 +3549,76 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							String state = intent.getStringExtra("state");
 							dbMsg += ",state=" + state;
 							String action = intent.getStringExtra("action");
-							dbMsg += ",b_action=" + action + ">>" + action;
-							if(b_action != action){
-								int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
-								dbMsg += "[再生ポジション=" + mcPosition + "/";
-								saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-									dbMsg += "[" + mcPosition  + "/" + saiseiJikan +"]";					//  playingItem.duration
-								backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
-								long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
-								dbMsg += " , current:" + current;
-								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-								lp_chronometer.setText(dataFormat.format(mcPosition));
-								IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
-								dbMsg +=",IsPlaying= "+ IsPlaying;/////////////////////////////////////
-								int playPauseRes = R.drawable.pouse_notif;			//操作ボタン	...509 / ...510
-								if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
-									lp_chronometer.start();
-								}else{
-									playPauseRes = R.drawable.play_notif;			//操作ボタン	...509 / ...510
-									lp_chronometer.stop();
-								}
-								dbMsg +=",playPauseRes=" + playPauseRes;/////////////////////////////////////
-								lp_ppPButton.setImageResource(playPauseRes);
-
-								if( mItems == null) {
-									mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-									mItems = Item.getItems( MuList.this);
-								}
-								String saisei_fname =intent.getStringExtra("data");		//			intent.putExtra("data", saisei_fname);
-								dbMsg += ",受信ファイル；" + saisei_fname + " を　";
-								if(saisei_fname == null || saisei_fname.equals("")){
-									String pefName = context.getResources().getString(R.string.pref_main_file);
-//									sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//									myEditor = sharedPref.edit();
-//									saisei_fname = sharedPref.getString("dataFN" , "");
-//									dbMsg +=  ">pref1>" + saisei_fname;////////////////////////////////////////////////////////////////////////////
-//									if(saisei_fname.equals("")){
-										saisei_fname = sharedPref.getString("saisei_fname" , "");
-										dbMsg +=  ">pref2>" + saisei_fname;////////////////////////////////////////////////////////////////////////////
-//									}
-								}
-								dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
-								if(! saisei_fname.equals(b_saisei_fname) ||  b_saisei_fname.equals("")){
-									dbMsg += saisei_fname + "に変更";
-									mIndex = intent.getIntExtra("mIndex", 0);
-									dbMsg +="[mIndex=" + mIndex + "]";
-									playingItem = mItems.get(mIndex);
-									dbMsg +=";" + playingItem.artist;/////////////////////////////////////
-									lp_artist.setText( playingItem.artist);
-									dbMsg +=";" + playingItem.album;/////////////////////////////////////
-									lp_album.setText( playingItem.album);
-									dbMsg +=";" + playingItem.title;/////////////////////////////////////
-									lp_title.setText( playingItem.title);
-									b_saisei_fname = saisei_fname;
-									String album_art =intent.getStringExtra("album_art") +"";		//			intent.putExtra("data", saisei_fname);
-									dbMsg +=",album_art=" + album_art;
-									if(! album_art.equals("")){
-										OrgUtil ORGUT = new OrgUtil();				//自作関数集
-										WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
-										Display disp = wm.getDefaultDisplay();
-										ImageView rc_Img = (ImageView) findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-										int width = rc_Img.getWidth();
-										width = width*9/10;
-										Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-										rc_Img.setImageBitmap(mDummyAlbumArt);
+							if(action != null){
+								dbMsg += ",b_action=" + action + ">>" + action;
+								if(b_action != action){
+									int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
+									dbMsg += "[再生ポジション=" + mcPosition + "/";
+									saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
+										dbMsg += "[" + mcPosition  + "/" + saiseiJikan +"]";					//  playingItem.duration
+									backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
+									long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
+									dbMsg += " , current:" + current;
+									SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+									lp_chronometer.setText(dataFormat.format(mcPosition));
+									IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
+									dbMsg +=",IsPlaying= "+ IsPlaying;/////////////////////////////////////
+									int playPauseRes = R.drawable.pouse_notif;			//操作ボタン	...509 / ...510
+									if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
+										lp_chronometer.start();
+									}else{
+										playPauseRes = R.drawable.play_notif;			//操作ボタン	...509 / ...510
+										lp_chronometer.stop();
 									}
-								}							//if(! saisei_fname.equals(b_saisei_fname) ){
-								b_action = action;
-								myLog(TAG, dbMsg);
+									dbMsg +=",playPauseRes=" + playPauseRes;/////////////////////////////////////
+									lp_ppPButton.setImageResource(playPauseRes);
+
+									if( mItems == null) {
+										mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+										mItems = Item.getItems( MuList.this);
+									}
+									String saisei_fname =intent.getStringExtra("data");		//			intent.putExtra("data", saisei_fname);
+									dbMsg += ",受信ファイル；" + saisei_fname + " を　";
+									if(saisei_fname == null || saisei_fname.equals("")){
+										String pefName = context.getResources().getString(R.string.pref_main_file);
+	//									sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+	//									myEditor = sharedPref.edit();
+	//									saisei_fname = sharedPref.getString("dataFN" , "");
+	//									dbMsg +=  ">pref1>" + saisei_fname;////////////////////////////////////////////////////////////////////////////
+	//									if(saisei_fname.equals("")){
+											saisei_fname = sharedPref.getString("saisei_fname" , "");
+											dbMsg +=  ">pref2>" + saisei_fname;////////////////////////////////////////////////////////////////////////////
+	//									}
+									}
+									dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
+									if(! saisei_fname.equals(b_saisei_fname) ||  b_saisei_fname.equals("")){
+										dbMsg += saisei_fname + "に変更";
+										mIndex = intent.getIntExtra("mIndex", 0);
+										dbMsg +="[mIndex=" + mIndex + "]";
+										playingItem = mItems.get(mIndex);
+										dbMsg +=";" + playingItem.artist;/////////////////////////////////////
+										lp_artist.setText( playingItem.artist);
+										dbMsg +=";" + playingItem.album;/////////////////////////////////////
+										lp_album.setText( playingItem.album);
+										dbMsg +=";" + playingItem.title;/////////////////////////////////////
+										lp_title.setText( playingItem.title);
+										b_saisei_fname = saisei_fname;
+										String album_art =intent.getStringExtra("album_art") +"";		//			intent.putExtra("data", saisei_fname);
+										dbMsg +=",album_art=" + album_art;
+										if(! album_art.equals("")){
+											OrgUtil ORGUT = new OrgUtil();				//自作関数集
+											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
+											Display disp = wm.getDefaultDisplay();
+											ImageView rc_Img = (ImageView) findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+											int width = rc_Img.getWidth();
+											width = width*9/10;
+											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
+											rc_Img.setImageBitmap(mDummyAlbumArt);
+										}
+									}							//if(! saisei_fname.equals(b_saisei_fname) ){
+									b_action = action;
+									myLog(TAG, dbMsg);
+								}
 							}
 						} catch (Exception e) {
 							myErrorLog(TAG,dbMsg+"で"+e);
