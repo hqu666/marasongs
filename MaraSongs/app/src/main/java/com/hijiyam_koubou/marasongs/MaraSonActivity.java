@@ -1327,95 +1327,100 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "url2FSet";
 		String dbMsg= "[MaraSonActivity];";
 		try{
-			dbMsg+="検索対象；" + urlStr;/////////////////////////////////////
-			start = System.currentTimeMillis();		// 開始時刻の取得
-			dbMsg += "(List_id=" + "nowList_id=" + nowList_id +")" + nowList ;
-			toolbar.setTitle(nowList);
-			if( mItems == null){
-				Item.itemsClear();
-				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-				mItems = Item.getItems( this);
-			}
-			mIndex = Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
-			dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
-			if(mIndex < 0 ){					//読み込んだリストに該当する曲が無ければ
-//				sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//				myEditor = sharedPref.edit();
-//				myEditor.putString( "nowList",  getResources().getString(R.string.listmei_zemkyoku));			//全曲リストで読み直し
-//				myEditor.putString( "nowList_id", String.valueOf("-1"));
-//				Boolean kakikomi = myEditor.commit();	// データの保存
-//				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
-				Item.itemsClear();
-				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-				mItems = Item.getItems( this);
+			dbMsg += "検索対象；" + urlStr;
+			dbMsg += "、mIndex；" + mIndex;
+			if(urlStr == null || urlStr.equals("")) {
+			}else{
+				if( -1 < mIndex){
+				start = System.currentTimeMillis();		// 開始時刻の取得
+				dbMsg += "(List_id=" + "nowList_id=" + nowList_id +")" + nowList ;
+				toolbar.setTitle(nowList);
+				if( mItems == null){
+					Item.itemsClear();
+					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+					mItems = Item.getItems( this);
+				}
 				mIndex = Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
 				dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
-//				if(mIndex < 0 ){					//全曲リストに該当する曲が無ければ
-//					String dataFN = mItems.get(0).data;
-//					myEditor.putString( "pref_saisei_fname", String.valueOf(dataFN));		//再生中のファイル名
-//					kakikomi = myEditor.commit();	// データの保存
-//				}
-			}
-			songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
-//			if( rp_pp ){				//2点間リピート中
-//				songIDTotal = 1;
-//			}else{
-//				songIDTotal = mItems.size();							//20160113; + 1
-//			}
-			dbMsg +="/" + songIDTotal +"曲";//// pref_saisei_fname //////
-			titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
-			playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
-		//	mIndex = (int) playingItem._id;									//Mediastore.dataのレコードID
-			dbMsg += "/" + mItems.size() + "]";/////////////////////////////////////
-			albumArtist = playingItem.album_artist;	//アルバムアーティスト名
-			dbMsg +=" ,アルバムアーティスト= " + albumArtist;/////////////////////////////////////		this.album_artist = album_artist;
-			creditArtistName = playingItem.artist;	//クレジットされているアーティスト名
-			dbMsg +=" ,クレジット⁼ " + creditArtistName;
-			artist_tv.setText(creditArtistName);
-			albumName = playingItem.album;			//アルバム名
-			dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-			alubum_tv.setText(albumName);											//アルバム
-//			trackNo =String.valueOf(playingItem.track);
-//			dbMsg +="[" + trackNo +"]";/////////////////////////////////////		this.track = track;
-			titolName =playingItem.title;		//曲名
-			dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-			titol_tv.setText(titolName);					//タイトル
-			dbMsg += "/titol=" + mItems.size();//////////////////////////////////////////
+				if(mIndex < 0 ){					//読み込んだリストに該当する曲が無ければ
+	//				sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+	//				myEditor = sharedPref.edit();
+	//				myEditor.putString( "nowList",  getResources().getString(R.string.listmei_zemkyoku));			//全曲リストで読み直し
+	//				myEditor.putString( "nowList_id", String.valueOf("-1"));
+	//				Boolean kakikomi = myEditor.commit();	// データの保存
+	//				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
+					Item.itemsClear();
+					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+					mItems = Item.getItems( this);
+					mIndex = Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
+					dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
+	//				if(mIndex < 0 ){					//全曲リストに該当する曲が無ければ
+	//					String dataFN = mItems.get(0).data;
+	//					myEditor.putString( "pref_saisei_fname", String.valueOf(dataFN));		//再生中のファイル名
+	//					kakikomi = myEditor.commit();	// データの保存
+	//				}
+				}
+				songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
+	//			if( rp_pp ){				//2点間リピート中
+	//				songIDTotal = 1;
+	//			}else{
+	//				songIDTotal = mItems.size();							//20160113; + 1
+	//			}
+				dbMsg +="/" + songIDTotal +"曲";//// pref_saisei_fname //////
+				titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
+				playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
+			//	mIndex = (int) playingItem._id;									//Mediastore.dataのレコードID
+				dbMsg += "/" + mItems.size() + "]";/////////////////////////////////////
+				albumArtist = playingItem.album_artist;	//アルバムアーティスト名
+				dbMsg +=" ,アルバムアーティスト= " + albumArtist;/////////////////////////////////////		this.album_artist = album_artist;
+				creditArtistName = playingItem.artist;	//クレジットされているアーティスト名
+				dbMsg +=" ,クレジット⁼ " + creditArtistName;
+				artist_tv.setText(creditArtistName);
+				albumName = playingItem.album;			//アルバム名
+				dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+				alubum_tv.setText(albumName);											//アルバム
+	//			trackNo =String.valueOf(playingItem.track);
+	//			dbMsg +="[" + trackNo +"]";/////////////////////////////////////		this.track = track;
+				titolName =playingItem.title;		//曲名
+				dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+				titol_tv.setText(titolName);					//タイトル
+				dbMsg += "/titol=" + mItems.size();//////////////////////////////////////////
 
-			dbMsg +="、ジャケット写真=" + albumArt ;/////////////////////////////////////
-			if ( albumArt ==null ) {
-				albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
-				dbMsg +=">>" + albumArt ;/////////////////////////////////////
+				dbMsg +="、ジャケット写真=" + albumArt ;/////////////////////////////////////
+				if ( albumArt ==null ) {
+					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
+					dbMsg +=">>" + albumArt ;/////////////////////////////////////
+				}
+				if( b_albumArt == null ){
+					b_albumArt = "";
+				}
+				if( ! b_albumArt.equals(albumArt)){
+					MaraSonActivity.this.jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
+					b_albumArt = albumArt;
+					dbMsg +=">b_albumArt>" + b_albumArt ;/////////////////////////////////////
+				}
+				listBetuSettei( nowList );					//リスト毎のヘッダー部変更
+				if( rp_pp ){			//2点間リピート中
+					String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start).toString();				//二点間再生開始点(mmss000)
+					dbMsg +=", " + pp_startStr;
+					String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end).toString();			//二点間再生終了点(mmss000)
+					dbMsg +="～" + pp_endStr + "のリピート";
+					pp_pp_ll.setVisibility(View.VISIBLE);
+					pp_pp_start_tf.setText(pp_startStr);				//二点間再生開始点
+					pp_pp_end_tf.setText(pp_endStr);							//二点間再生終了点
+					saiseiSeekMP.setSecondaryProgress(MaraSonActivity.this.pp_end);
+					Drawable drawable = getResources().getDrawable(R.drawable.pp_progress);
+					saiseiSeekMP.setProgressDrawable(drawable);
+					saiseiSeekMP.setProgress(pp_start);
+	//				mcPosition = pp_start;
+				}else{
+					pp_pp_ll.setVisibility(View.GONE);
+					saiseiSeekMP.setSecondaryProgress(0);
+					saiseiSeekMP.setProgressDrawable(dofoltSBDrawable);
+				}
+				lyric_tv.setText(songLyric);					//歌詞表示
 			}
-			if( b_albumArt == null ){
-				b_albumArt = "";
 			}
-			if( ! b_albumArt.equals(albumArt)){
-				MaraSonActivity.this.jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
-				b_albumArt = albumArt;
-				dbMsg +=">b_albumArt>" + b_albumArt ;/////////////////////////////////////
-			}
-			listBetuSettei( nowList );					//リスト毎のヘッダー部変更
-			if( rp_pp ){			//2点間リピート中
-				String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start).toString();				//二点間再生開始点(mmss000)
-				dbMsg +=", " + pp_startStr;
-				String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end).toString();			//二点間再生終了点(mmss000)
-				dbMsg +="～" + pp_endStr + "のリピート";
-				pp_pp_ll.setVisibility(View.VISIBLE);
-				pp_pp_start_tf.setText(pp_startStr);				//二点間再生開始点
-				pp_pp_end_tf.setText(pp_endStr);							//二点間再生終了点
-				saiseiSeekMP.setSecondaryProgress(MaraSonActivity.this.pp_end);
-				Drawable drawable = getResources().getDrawable(R.drawable.pp_progress);
-				saiseiSeekMP.setProgressDrawable(drawable);
-				saiseiSeekMP.setProgress(pp_start);
-				dbMsg +=",rp_pp=" + rp_pp;
-				myLog(TAG,dbMsg);
-			}else{
-				pp_pp_ll.setVisibility(View.GONE);
-				saiseiSeekMP.setSecondaryProgress(0);
-				saiseiSeekMP.setProgressDrawable(dofoltSBDrawable);
-			}
-			lyric_tv.setText(songLyric);					//歌詞表示
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5640,22 +5645,6 @@ public class MaraSonActivity extends AppCompatActivity
 					dbMsg += ",Locale=" + Locale.getDefault ();/////////////////////////////////////
 					setADSens();	////////////////////////////////////////////////広告表示////
 					setNend();
-//20190615コメントアウト
-//					if( ! IsPlaying){
-//						ppPBT.setImageResource(R.drawable.pl_r_btn);
-//						ppPBT.setContentDescription(getResources().getText(R.string.pause));			//play
-//					}else {
-//						ppPBT.setImageResource(R.drawable.pousebtn);
-//						ppPBT.setContentDescription(getResources().getText(R.string.play));			//pause
-//					}
-//					String rStr = String.valueOf(MaraSonActivity.this.titol_tv.getText());			//前曲名
-//					dbMsg += "、書き込まれている曲名="+ rStr + " を　";
-//					if( rStr.equals(titolName) ){
-//						dbMsg +=",titolName=" + titolName +"に";
-//						dbMsg +=",dataFN=" + dataFN ;
-//						dbMsg +=",mIndex=" + mIndex ;
-//						url2FSet(dataFN , mIndex);		//urlからプレイヤーの書き込みを行う		albumArtist
-//					}
 				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {

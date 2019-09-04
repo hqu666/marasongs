@@ -137,7 +137,7 @@
     <string name="menu_syuusei_lisuto_hyouji">修正リスト表示</string>
     <!-- リストコンテキストメニュー -->
     <string name="menu_item_plist_saikin_tuika">最近追加リストの更新</string>
-    <string name="menu_item_plist_saikin_tuika_dm">最近追加されたアルバムを何枚抽出するか選択して下さい</string>
+    <string name="menu_item_plist_saikin_tuika_dm">最近追加されたアルバムを何日前のものまで抽出するか選択して下さい</string>
     <string name="menu_item_plist_saikin_sisei">最近再生リストの更新</string>
 
     <!-- リストアップ調整 -->

@@ -1,7 +1,7 @@
-#Mon Jul 01 00:31:02 JST 2019
-base.0=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+#Thu Sep 05 00:29:59 JST 2019
+base.0=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex
 path.1=classes.dex
 renamed.1=classes2.dex
 path.0=classes.dex
 renamed.0=classes.dex
-base.1=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
+base.1=H\:\\develop\\an\\workspace\\marasong\\MaraSongs\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
