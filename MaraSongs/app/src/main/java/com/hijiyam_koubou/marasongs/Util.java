@@ -7,20 +7,28 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Surface;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class Util {
+	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+	public SimpleDateFormat sdffiles = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 
 	//ファイル操作///////////////////
 	/**
@@ -476,8 +484,193 @@ public class Util {
 			return false;
 		}
 	}
+//
+//	public boolean isInListString(List<String> groups , String tStr){		//渡された文字が既にリストに登録されていればtrueを返す
+//		boolean retBool =false;
+//		final String TAG = "isInListString[OrgUtil]";
+//		String dbBlock= groups.size() + "件目で" + tStr;//////////////////////////////////////////
+//		try{
+//			int i=1;
+//			for(String tName:groups){		//
+////			for(i=0;i< groups.size()-1 ;i++){
+////				String tName = groups.get(i);
+//				dbBlock= i +"/" +groups.size()+";" + tStr +"/" +tName ;////////////////////////////////////////////////////////
+//				if(tStr.equals(tName)){							//tStr.equals(tName) || tName.equals(tStr)
+//					retBool = true;
+//					break;
+////				} else if( tStr.startsWith(tName) ){			//先に出てきた名前のみを優先
+////					retBool = true;
+////					break;
+////				} else if( tStr.contains(tName) ){
+////					retBool = true;
+////					break;
+//				}
+//			}
+//			dbBlock= dbBlock + ",retBool=" + retBool  ;//////////////////////////////////////////
+////			dbBlock="tStr=" + tStr +"が"+ groups.get(0) + "～" + groups.get(groups.size()-1) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
+//				myLog(TAG,dbBlock);
+//		} catch (Exception e) {
+//			myErrorLog(TAG, dbBlock +"で"+e.toString());
+//		}
+//		return retBool;
+//	}
 
-	  /**文字プリファレンスの読込み*/
+
+
+	public void musicColumnCheck( Cursor carsor , int index) {
+		final String TAG = "musicColumnCheck";
+		String dbMsg = "[util]";
+		try {
+			dbMsg += index +  "/" + carsor.getCount() + "件";
+			if(carsor.moveToPosition(index)){
+				int colCount = carsor.getColumnCount();
+				dbMsg = "," + colCount + "列";
+//				colNames =  "id INTEGER PRIMARY KEY AUTOINCREMENT,";
+
+				for (int i = 0; i < colCount; i++) {
+					dbMsg += "(" + i + ")";
+					String colName = carsor.getColumnName(i);
+					dbMsg += colName ;
+					String data = carsor.getString(i);
+					int iType = carsor.getType(i);;  //1は数字、3は文字
+					dbMsg += ",type=" + iType ;  //1は数字、3は文字
+					if(iType == 0) {  //	null
+					}else if(colName.equals("_size")) {  //			MediaStore.Audio.Media.SIZE
+						dbMsg += ";SIZE";
+					}else if(colName.equals("mime_type")) {//				MediaStore.Audio.Media.MIME_TYPE
+						dbMsg += ";MIME_TYPE";
+					}else if(colName.equals("is_drm")) {
+					}else if(colName.equals("artist_key")) { 	//	MediaStore.Audio.Media.ARTIST_KEY
+						dbMsg += ";ARTIST_KEY";
+					}else if(colName.equals("album_key")) {      //						MediaStore.Audio.Media.ALBUM_KEY
+						dbMsg += ";ALBUM_KEY";
+//					}else if(colName.equals("album_key")) {      //						MediaStore.Audio.Media.ALBUM_KEY
+//						dbMsg += ";ALBUM_KEY";
+					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)) {
+						dbMsg += ";IS_MUSIC";
+					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_ALARM)) {
+						dbMsg += ";IS_ALARM";
+					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_NOTIFICATION)) {
+						dbMsg += ";IS_NOTIFICATION";
+					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_PODCAST)) {
+						dbMsg += ";IS_PODCAST";
+					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_RINGTONE)) {
+						dbMsg += ";IS_RINGTONE";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)))){
+						dbMsg += ";ARTIST_ID";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ARTIST)))){
+						dbMsg += ";ARTIST";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)))){
+						dbMsg += ";ALBUM_ID";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ALBUM)))){
+						dbMsg += ";ALBUM";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TRACK)))){
+						dbMsg += ";TRACK";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY)))){
+						dbMsg += ";TITLE_KEY";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TITLE)))){
+						dbMsg += ";TITLE";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media._ID)))){
+						dbMsg += ";_ID";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DATA)))){
+						dbMsg += ";DATA";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.YEAR)))){
+						dbMsg += ";YEAR";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DURATION)))){
+						dbMsg += ";DURATION";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)))){
+						dbMsg += ";DISPLAY_NAME";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)))){         			//リッピングした日
+						dbMsg += ";DATE_MODIFIED";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)))){						//更新した日
+						dbMsg += ";DATE_ADDED";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.CONTENT_TYPE)))){
+						dbMsg += ";CONTENT_TYPE";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.COMPOSER)))){
+						dbMsg += ";COMPOSER";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.WIDTH)))){
+						dbMsg += ";WIDTH";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.RECORD_SOUND_ACTION)))){
+						dbMsg += ";RECORD_SOUND_ACTION";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.WIDTH)))){
+						dbMsg += ";WIDTH";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.SIZE)))){
+						dbMsg += ";SIZE";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.HEIGHT)))){
+						dbMsg += ";HEIGHT";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.EXTRA_MAX_BYTES)))){
+						dbMsg += ";EXTRA_MAX_BYTES";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)))){
+						dbMsg += ";ENTRY_CONTENT_TYPE";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DEFAULT_SORT_ORDER)))){
+						dbMsg += ";DEFAULT_SORT_ORDER";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK)))){
+						dbMsg += ";BOOKMARK";
+					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media._COUNT)))){
+						dbMsg += ";_COUNT";
+					}else{
+						dbMsg += ";該当無し";
+					}
+					if(colName.equals("date_added") || colName.equals("date_modified")){
+						String mod = sdffiles.format(new Date(Long.valueOf(data)*1000));
+//						data = mod.substring(0, 7);
+//						mod = sdf.format(new Date(Long.valueOf(mod)*1000*1000));
+						dbMsg +=">>"+ mod;
+					}
+
+					dbMsg += ">>" + data + "\n";
+
+//					colNames += colName  + " STRING";
+//					if(i < (colCount  - 1)){
+//						colNames += ",";
+////					}else{
+////						colNames += ")";
+//					}
+				}
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	public String getAlbumArtist( Cursor carsor ) {
+		final String TAG = "getAlbumArtist";
+		String dbMsg = "[util]";
+		String albumArtist = "";
+		String b_Artist = "";
+		try {
+			if(carsor.moveToFirst()){
+				do{
+					dbMsg += carsor.getPosition() + "/" + carsor.getCount() + "件";
+					String artistName = carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+					dbMsg += ",artistName=" + artistName;
+					if ( 1 == carsor.getPosition() ) {
+						albumArtist = artistName;
+					} else {
+						if ( !artistName.equals(albumArtist) ) {
+							if ( artistName.startsWith(albumArtist) ) {
+								dbMsg += ",初めが同じ";
+							} else if ( artistName.endsWith(albumArtist) ) {
+								dbMsg += ",後ろが同じ";
+							} else if ( b_Artist.equals(artistName) ) {
+								dbMsg += "連続して違っても前と同じ";
+								albumArtist = artistName;
+							}
+						}
+					}
+					b_Artist = artistName;
+				}while(carsor.moveToNext());
+			}
+			dbMsg += ",albumArtist=" + albumArtist;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return albumArtist;
+	}
+
+	/**文字プリファレンスの読込み*/
 	public static String getPrefStr(String keyNmae , String defaultVal ,Context context) {
 		String retStr = "";
 		final String TAG = "getPrefStr";
