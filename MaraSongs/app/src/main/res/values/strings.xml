@@ -45,7 +45,9 @@
     <string name="comon_nasi">無し</string>
     <string name="comon_suru">する</string>
     <string name="comon_sinai">しない</string>
-   <string name="comon_kyoku">曲</string>
+	<string name="common_kakikomi">書込み</string>
+	<string name="common_reading">読込み</string>
+	<string name="comon_kyoku">曲</string>
     <string name="comon_kyokume">曲目</string>
     <string name="comon_jikkou">実行</string>
    <string name="comon_sakusei">作成</string>
@@ -118,7 +120,7 @@
     <string name="comon_tukau">使う</string>
     <string name="comon_tukawanai">使わない</string>
     <string name="common_artist_list">アーティストリスト</string>
-
+	<string name="common_nitibun">日分</string>
     <!-- プレイヤーアクティビティメニュー -->
     <string name="menu_func">機能</string>
     <string name="menu_item_randumplay">ランダム再生</string>
@@ -190,7 +192,7 @@
     <string name="pref_titol_plist_artist_bunnri">アーティストリストの分離</string>
     <string name="pref_msg_plist_artist_bunnri">この曲数を超えたらアーティストリストを1画面目、2画面目アルバムとタイトルリストを階層化して読み込みを高速化します。</string>
     <string name="pref_titol_plist_saikin_tuika">最近追加リストへの登録設定</string>
-    <string name="pref_msg_plist_saikin_tuika">最少アルバム枚数</string>
+    <string name="pref_msg_plist_saikin_tuika">抽出日数</string>
     <string name="pref_saisei">レジューム再生情報</string>
     <string name="pref_saisei_fname">再生中のファイル名</string>
     <string name="pref_saisei_jikan">再開ポジション</string>
@@ -285,7 +287,8 @@
     <!-- プレイリスト -->
     <string name="playlist_namae_saikinsisei">最近再生した曲</string>
    <string name="playlist_namae_saikintuika">最近追加したアルバム</string>
-    <string name="comon_kara">から</string>
+	<string name="playlist_saikintuika_filename" translatable="false">new_songs.db</string>
+	<string name="comon_kara">から</string>
     <string name="pref_playlist">プレイリスト</string>
     <string name="pl_nasi_meg">ご指定のプレイリストは曲が登録されていないか、読み込めませんでした。</string>
     <string name="list_contex_make_playlist">新規リストを作成して追加</string>
@@ -324,7 +327,6 @@
     <string name="playlist_namae_randam">ランダム再生</string>
     <string name="menu_item_plist_randam_dm">ランダム再生準備</string>
     <string name="menu_item_plist_randam_dm0">最近再生した曲を確認しています。</string>
-	<string name="common_kakikomi">書込み</string>
     <string name="menu_item_plist_randam_dm1">乱数生成</string>
     <string name="pref_rundam_list_size">ランダム再生の設定曲数</string>
     <string name="pref_rundam_list_size_dm">ランダム再生用にリストアップする曲数を設定してください。</string>

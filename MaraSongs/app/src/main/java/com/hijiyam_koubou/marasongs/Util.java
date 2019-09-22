@@ -484,37 +484,31 @@ public class Util {
 			return false;
 		}
 	}
-//
-//	public boolean isInListString(List<String> groups , String tStr){		//渡された文字が既にリストに登録されていればtrueを返す
-//		boolean retBool =false;
-//		final String TAG = "isInListString[OrgUtil]";
-//		String dbBlock= groups.size() + "件目で" + tStr;//////////////////////////////////////////
-//		try{
-//			int i=1;
-//			for(String tName:groups){		//
-////			for(i=0;i< groups.size()-1 ;i++){
-////				String tName = groups.get(i);
-//				dbBlock= i +"/" +groups.size()+";" + tStr +"/" +tName ;////////////////////////////////////////////////////////
-//				if(tStr.equals(tName)){							//tStr.equals(tName) || tName.equals(tStr)
-//					retBool = true;
-//					break;
-////				} else if( tStr.startsWith(tName) ){			//先に出てきた名前のみを優先
-////					retBool = true;
-////					break;
-////				} else if( tStr.contains(tName) ){
-////					retBool = true;
-////					break;
-//				}
-//			}
-//			dbBlock= dbBlock + ",retBool=" + retBool  ;//////////////////////////////////////////
-////			dbBlock="tStr=" + tStr +"が"+ groups.get(0) + "～" + groups.get(groups.size()-1) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
-//				myLog(TAG,dbBlock);
-//		} catch (Exception e) {
-//			myErrorLog(TAG, dbBlock +"で"+e.toString());
-//		}
-//		return retBool;
-//	}
 
+	public void dbColumnCheck( Cursor carsor , int index) {
+		final String TAG = "dbColumnCheck";
+		String dbMsg = "[util]";
+		try {
+			dbMsg += index +  "/" + carsor.getCount() + "件";
+			if(carsor.moveToPosition(index)) {
+				int colCount = carsor.getColumnCount();
+				dbMsg += "," + colCount + "列";
+	//				colNames =  "id INTEGER PRIMARY KEY AUTOINCREMENT,";
+				for ( int i = 0 ; i < colCount ; i++ ) {
+					dbMsg += "\n(" + i + ")";
+					String colName = carsor.getColumnName(i);
+					dbMsg += colName;
+					String data = carsor.getString(i);
+					int iType = carsor.getType(i);	;  //1は数字、3は文字
+					dbMsg += ",type=" + iType;  //1は数字、3は文字
+					dbMsg += ":" + data;  //1は数字、3は文字
+				}
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			  myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
 
 
 	public void musicColumnCheck( Cursor carsor , int index) {
@@ -524,9 +518,8 @@ public class Util {
 			dbMsg += index +  "/" + carsor.getCount() + "件";
 			if(carsor.moveToPosition(index)){
 				int colCount = carsor.getColumnCount();
-				dbMsg = "," + colCount + "列";
+				dbMsg += "," + colCount + "列";
 //				colNames =  "id INTEGER PRIMARY KEY AUTOINCREMENT,";
-
 				for (int i = 0; i < colCount; i++) {
 					dbMsg += "(" + i + ")";
 					String colName = carsor.getColumnName(i);
@@ -642,10 +635,10 @@ public class Util {
 		try {
 			if(carsor.moveToFirst()){
 				do{
-					dbMsg += carsor.getPosition() + "/" + carsor.getCount() + "件";
+					dbMsg += "(" + carsor.getPosition() + "/" + carsor.getCount() + ")";
 					String artistName = carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-					dbMsg += ",artistName=" + artistName;
-					if ( 1 == carsor.getPosition() ) {
+					dbMsg += artistName;
+					if ( 0 == carsor.getPosition() ) {
 						albumArtist = artistName;
 					} else {
 						if ( !artistName.equals(albumArtist) ) {
@@ -662,7 +655,7 @@ public class Util {
 					b_Artist = artistName;
 				}while(carsor.moveToNext());
 			}
-			dbMsg += ",albumArtist=" + albumArtist;
+			dbMsg += ">>albumArtist=" + albumArtist;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

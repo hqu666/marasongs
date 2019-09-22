@@ -1330,6 +1330,20 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += "検索対象；" + urlStr;
 			dbMsg += "、mIndex；" + mIndex;
 			if(urlStr == null || urlStr.equals("")) {
+				if(0 < mIndex) {
+					urlStr = playingItem.data;
+				}
+			}
+			dbMsg += ">>" + urlStr;
+			if(urlStr == null || urlStr.equals("")) {
+				urlStr = getPrefStr( "saisei_fname" ,"" , MaraSonActivity.this);
+				dbMsg += ">saisei_fname>" + urlStr;
+			}
+			if(urlStr == null || urlStr.equals("")) {
+				urlStr = getPrefStr( "dataURL" ,"" , MaraSonActivity.this);
+				dbMsg += ">dataURL>" + urlStr;
+			}
+			if(urlStr == null || urlStr.equals("")) {
 			}else{
 				if( -1 < mIndex){
 				start = System.currentTimeMillis();		// 開始時刻の取得
@@ -4195,13 +4209,13 @@ public class MaraSonActivity extends AppCompatActivity
 	 * */
 	public void callListView(int reqCode ,String selName ,int mcPosition ){								//リストビューを読出し
 		final String TAG = "callListView";
-		String dbMsg= "[MaraSonActivity];";/////////////////////////////////////
+		String dbMsg= "[MaraSonActivity];";
 		try{
-			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg +=ORGUT.nowTime(true,true,true);
 			Intent intent = new Intent(MaraSonActivity.this, MuList.class);			//
 			dbMsg +="reqCode="+ reqCode;//;アルバム=195
 			intent.putExtra("reqCode",reqCode);
-			dbMsg +="[プレイリストID= " + nowList_id;//全曲= -1]
+			dbMsg +="[プレイリストID= " + nowList_id;
 			intent.putExtra("nowList_id", nowList_id);
 			dbMsg +="]" + nowList;//			// 全曲リスト
 			intent.putExtra("nowList", nowList);
@@ -4210,7 +4224,12 @@ public class MaraSonActivity extends AppCompatActivity
 				intent.putExtra("nowList_data", nowList_data);
 			}
 			int mIndex = getPrefInt("mIndex" , 0, MaraSonActivity.this);
-			dbMsg +="mIndex="+ mIndex;			// リストの一曲目=0
+			int rINdex = Item.getMPItem(selName);
+			dbMsg +="[mIndex="+ mIndex;			// リストの一曲目=0
+			if(mIndex != rINdex ){
+				mIndex = rINdex;
+				dbMsg +=">>"+ mIndex;			// リストの一曲目=0
+			}
 			intent.putExtra("mIndex",mIndex);
 			dbMsg +="]選択アイテム="+selName;	//			// ]選択アイテム=10cc
 			if( reqCode == MuList.MENU_MUSCK_PLIST ){
@@ -4238,6 +4257,9 @@ public class MaraSonActivity extends AppCompatActivity
 			intent.putExtra("mcPosition", mcPosition);
 			dbMsg +=",再生中か= " + IsPlaying;												// ,再生中か= false,
 			intent.putExtra("IsPlaying", IsPlaying);
+//			if(!IsPlaying){
+//
+//			}
 			dbMsg +=",生成中= " + IsSeisei;			// 生成中= false
 			intent.putExtra("IsSeisei", IsSeisei);
 			setResult(RESULT_OK, intent);                //20190518

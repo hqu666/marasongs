@@ -1883,6 +1883,8 @@ string common_artist_list
 string common_google_play_services_unknown_issue
 string common_kakikomi
 string common_kakunincyuu
+string common_nitibun
+string common_reading
 string common_sansyou
 string common_sousa
 string common_syouryaku
@@ -2113,6 +2115,7 @@ string playlist_namae_request
 string playlist_namae_saikinsisei
 string playlist_namae_saikintuika
 string playlist_namehennkou_dt
+string playlist_saikintuika_filename
 string pp_artist
 string pp_keika
 string pp_kyoku

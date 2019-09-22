@@ -2148,77 +2148,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public int sousaRecordId;		//操作対象レコードのID
 	public int sousaCount;			//操作カウント
 	public Cursor playLists;
-	public void reNewPL() {								//プレイリストが無ければ新規作成、有れば内容消去
-//		final String TAG = "reNewPL[ZenkyokuList]";
-//		String dbMsg= "開始";/////////////////////////////////////
-//		try{
-//			sousalistName = getResources().getString(R.string.listmei_zemkyoku);				// 全曲リスト
-//			dbMsg= "新規リスト名=" + sousalistName ;
-//			sousalistUri = null;
-//			sousalistID = -1;
-//			Uri uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
-//			String[] columns = null;				//{ idKey, nameKey };
-//			String c_selection = MediaStore.Audio.Playlists.NAME +" = ? ";
-//			String[] selectionArgs= { String.valueOf(sousalistName) };		//⑥引数groupByには、groupBy句を指定します。
-//			cursor = this.getContentResolver().query(uri, columns, c_selection, selectionArgs, null);
-//			dbMsg= ">>" + cursor.getCount() + "件有り";
-//			if( cursor.moveToFirst() ){
-//				sousalistID =  Integer.valueOf(cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Playlists._ID)));/////////////////////////////////////
-//				sousalistUri = MediaStore.Audio.Playlists.Members.getContentUri("external", sousalistID);
-//				dbMsg= dbMsg+",削除するプレイリスト=" + ZenkyokuList.this.sousalistUri ;
-//				String c_orderBy = null;				//MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-//				playLists = this.getContentResolver().query(sousalistUri, columns, null, null, c_orderBy );
-//				int pmCount = playLists.getCount();
-//				dbMsg +=","+ pmCount +"件";
-//				if( playLists.moveToFirst() ){
-//					reqCode = pt_delPList;			//pt_CompList+1;プレイリスト更新中
-//					if(reTry==0){
-//						sousaCount = 0;			//操作カウント
-//						pd2CoundtVal++;
-//						pdMessage_stok = pdMessage_stok + "\n\n" +String.valueOf(pd2CoundtVal) + ";" +
-//							this.cContext.getString(R.string.menu_item_plist)+ this.cContext.getString(R.string.comon_kousinn) + getResources().getString(R.string.comon_jyunnbi)+"\n"+	//プレイリスト更新準備
-//							String.valueOf(pmCount) + this.cContext.getString(R.string.pp_kyoku);		//コンピレーション	以外○○曲				dbMsg=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
-//					}else{
-//						pdMessage_stok = pdMessage_stok;
-//					}
-//					pdCoundtVal = 0;
-//					pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage_stok , playLists ,null , null , null );		//,jikkouStep,totalStep,calumnInfo
-//				}else{
-//					/*デバッグ用		
-//					Uri playlist_uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;			//URI
-//					String where = MediaStore.Audio.Playlists._ID + " = ?";					//"_id = ?";
-//					String[] selectionArgs2 = { String.valueOf(sousalistID) };
-//					int retInt = getContentResolver().delete(playlist_uri, where, selectionArgs2);
-//					dbMsg +=",削除=" + retInt;		//listId=42533,retInt=1
-//					 */
-//					playLists.close();
-//					CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)
-//			//		makePL();		//プレイリスト作成
-//				}
-//			}else{
-//				cursor.close();
-//				ContentValues contentvalues = null;
-//				contentvalues = new ContentValues();
-//				contentvalues.put("name", sousalistName);
-//				sousalistUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;			//URI
-//				Uri result_uri = getContentResolver().insert(sousalistUri, contentvalues);		//追加
-//				dbMsg +=",result_uri=" + result_uri;	//result_uri=content://media/external/audio/playlists/42529
-//				if(result_uri == null){			//NG
-//					dbMsg= dbMsg+">>失敗 add playlist : " + sousalistName + ", is null";
-//				}else if((sousalistID = (int)ContentUris.parseId(result_uri)) == -1){			//NG
-//					dbMsg= dbMsg+ ">>失敗 add playlist : " + sousalistName + ", " + result_uri.toString();
-//				}else{			//OK
-//					dbMsg= dbMsg+ ">>作成成功 listName＝ " + sousalistName + ",playlist_id=" + sousalistID;
-//					//add playlist : プレイリスト2015-12-03 14:16:37,42529
-//				}
-//				CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)
-//		//		makePL();		//プレイリスト作成
-//			}
-//			myLog(TAG,dbMsg);
-//		}catch (Exception e) {
-//			myErrorLog(TAG,dbMsg +"で"+e.toString());
-//		}
-	}
+
 
 	public Cursor reNewPLbody(Cursor cursor) {								//プレイリストが無ければ新規作成、有れば内容消去
 //		final String TAG = "reNewPLbody[ZenkyokuList]";

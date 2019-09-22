@@ -479,7 +479,7 @@ public class OrgUtil  extends Activity{				//
 				}
 			}
 			dbBlock= dbBlock + ",retBool=" + retBool  ;//////////////////////////////////////////
-			dbBlock="tStr=" + tStr +"が"+ groups.get(0) + "～" + groups.get(groups.size()-1) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
+//			dbBlock="tStr=" + tStr +"が"+ groups.get(0) + "～" + groups.get(groups.size()-1) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
 		//	myLog(TAG,dbBlock);
 		} catch (Exception e) {
 			myErrorLog(TAG, dbBlock +"で"+e.toString());

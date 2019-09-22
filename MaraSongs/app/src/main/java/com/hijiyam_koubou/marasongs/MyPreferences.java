@@ -45,11 +45,11 @@ public class MyPreferences extends PreferenceActivity {
 
 	public String pref_compBunki = "40";			//コンピレーション設定[%]
 	public String pref_gyapless = null;			//クロスフェード時間
-	public boolean pref_list_simple =true;				//シンプルなリスト表示（サムネールなど省略）
+	public boolean pref_list_simple = false;				//シンプルなリスト表示（サムネールなど省略）
 	public boolean pref_pb_bgc = true;				//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
 
 	public String pref_artist_bunnri = "100";		//アーティストリストを分離する曲数
-	public String pref_saikin_tuika = null;			//最近追加リストのデフォルト枚数
+	public String pref_saikin_tuika = "30";			//最近追加リストのデフォルト日数
 	public String pref_saikin_sisei = null;		//最近再生加リストのデフォルト枚数
 	public String pref_rundam_list_size =null;	//ランダム再生リストアップ曲数
 	public int repeatType;							//リピート再生の種類
@@ -706,7 +706,7 @@ public class MyPreferences extends PreferenceActivity {
 									dbMsg +=  "アーティストリストを分離する曲数=" + pref_artist_bunnri ;
 								}else if(key.equals("pref_saikin_tuika")){
 									pref_saikin_tuika = String.valueOf(keys.get(key).toString());
-									dbMsg +=  "最近追加リストのデフォルト枚数=" + pref_saikin_tuika ;////////////////////////////////////////////////////////////////////////////
+									dbMsg +=  "最近追加リストのデフォルト日数=" + pref_saikin_tuika  + "日";
 								}else if(key.equals("pref_saikin_sisei")){
 									pref_saikin_sisei = String.valueOf(keys.get(key).toString());
 									dbMsg +=  ",最近再生リストのデフォルト曲数=" + pref_saikin_sisei ;////////////////////////////////////////////////////////////////////////////
@@ -1313,8 +1313,8 @@ public class MyPreferences extends PreferenceActivity {
 					atai = pref_artist_bunnri;
 				}else if(keyName.equals("pref_saikin_tuika")){							//最近追加リストのデフォルト枚数
 					pref_saikin_tuika = String.valueOf(pTF_prefsaikin_tuika.retValue(Integer.valueOf(atai)));
-					dbMsg +=",最近追加リストのデフォルト枚数=" + pref_saikin_tuika;
-					pTF_prefsaikin_tuika.setSummary(pref_saikin_tuika +  getResources().getString(R.string.pp_mai));
+					dbMsg +=",最近追加リストのデフォルト日数=" + pref_saikin_tuika;
+					pTF_prefsaikin_tuika.setSummary(pref_saikin_tuika +  getResources().getString(R.string.common_nitibun));
 					atai = pref_saikin_tuika;
 				}else if(keyName.equals("pref_saikin_sisei")){							//最近再生リストのデフォルト曲数
 					pref_saikin_sisei = String.valueOf(pTF_prefsaikin_sisei.retValue(Integer.valueOf(atai)));

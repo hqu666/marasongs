@@ -60,60 +60,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	//		id++;						//20140629暫定
 			dbMsg= "id= " + id;/////////////////////////////////////
 			retUri = Uri.parse(items.get(id).data);
-
-
-//			String[] c_selectionArgs= { String.valueOf(id) };   			//⑥引数groupByには、groupBy句を指定します。
-//			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			Map<String, ?> keys = sharedPref.getAll();
-//			int nowList_id = Integer.valueOf(keys.get("nowList_id").toString());	//
-//			dbMsg +=  ">再生中のプレイリストID=" +  String.valueOf(nowList_id)  ;
-//			if(0 < nowList_id){
-//				String nowList_data = String.valueOf(keys.get("nowList_data").toString());
-//				dbMsg +=  ">再生中のプレイリストの保存場所=" +  String.valueOf(nowList_data)  ;
-//				String ieKubunn = "internal";
-//				String extV = Environment.getExternalStorageDirectory().toString() ;
-//				dbMsg +=  ",外付け=" + extV ;
-//				String inV = context.getFilesDir().toString() ;
-//				dbMsg +=  ",内蔵=" + inV ;
-//
-////				File path = new File(nowList_data);
-////				boolean isExternal = Environment.isExternalStorageRemovable(path );
-////				dbMsg +=  ",isExternal=" + isExternal ;
-////				if(isExternal){
-//					ieKubunn = "external";
-//		//		}
-//				dbMsg +=",内外区分＝" + ieKubunn  ;
-//				Uri uri = MediaStore.Audio.Playlists.Members.getContentUri(ieKubunn, nowList_id);
-//				String[] columns = null;			//{ idKey, nameKey };
-//				String c_selection = MediaStore.Audio.Playlists.Members._ID +" = ?";
-//				String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-//				cursor = context.getContentResolver().query(uri, columns, c_selection  , c_selectionArgs , c_orderBy );
-//				dbMsg +="," + cursor +"件" ;
-//				myLog(TAG,dbMsg );
-//				if(cursor.moveToFirst()){
-//					retUri = Uri.parse(cursor.getString(cursor.getColumnIndex("data")));								//data
-//				}
-//			}else{
-//				String fn = context.getResources().getString(R.string.zenkyoku_file);			//全曲リスト
-//				File dbF = context.getDatabasePath(fn);			//☆初回時は未だDBが作られていないのでgetApplicationContext()
-//				fn = dbF.getPath();
-//		//		dbMsg = "db=" + fn ;
-//				ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context , fn);		//全曲リストの定義ファイル		.
-//				SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();						//全曲リストファイルを読み書きモードで開く
-//		//		dbMsg += ">>" + zenkyokuHelper.toString();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-//				String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲のテーブル名
-//		//		dbMsg += "；アーティストリストテーブル=" + zenkyokuTName;
-//				String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-//				String c_selection = "_id = ?";			//MediaStore.Audio.Media.ARTIST +" LIKE ? AND " + MediaStore.Audio.Media.ALBUM +" = ?";
-//				String c_orderBy= null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
-//				cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
-//				dbMsg += "；" + cursor.getCount() + "件";
-//				if(cursor.moveToFirst()){
-//					retUri = Uri.parse(cursor.getString(cursor.getColumnIndex( "DATA" )));			//MediaStore.Audio.Media.TRACK
-//				}
-//				Zenkyoku_db.close();
-//			}
-//			cursor.close();
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
@@ -190,17 +136,20 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			Cursor cursor = null;
 			int nowList_id = 0;
-		//	dbMsg = "context=" + context ;
 			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-		//	dbMsg +=  ",sharedPref=" + sharedPref  ;
 			Map<String, ?> keys = sharedPref.getAll();
-//			boolean kAri = sharedPref.contains("nowList_id");
-//		//	dbMsg = ",nowList_id有り=" + kAri  ;
-//			if(kAri){
+			dbMsg += ",keys=" + keys.size() + "件" ;				//in16.pla=29236
+
+			boolean kAri = sharedPref.contains("nowList_id");
+			dbMsg = ",nowList_id有り=" + kAri  ;
+			if(kAri){
 				String rVal = sharedPref.getString("nowList_id", "-1");
 				dbMsg += ",prefのプレイリスト[" + rVal ;				//in16.pla=29236
 				nowList_id = Integer.valueOf(rVal);			//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
-	//		}
+//				nowList_id =sharedPref.getInt("nowList_id", -1);		//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
+			}
+			dbMsg += ",prefのプレイリスト[" + nowList_id ;				//in16.pla=29236
+
 			String nowList = String.valueOf(keys.get("nowList"));                  //20190506;[-1でjava.lang.NullPointerException:
 			if(nowList == null ){
 				nowList_id = -1;
@@ -230,63 +179,11 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			}
 	//		myLog(TAG,dbMsg );
 			if(items .size() ==0){
-				if( ! nowList.equals( context.getResources().getString(R.string.listmei_zemkyoku)) && -1 < nowList_id){					//全曲リストでなければ	
-					String ieKubunn = "internal";
-//					String extV = Environment.getExternalStorageDirectory().toString() ;
-////					dbMsg +=",nowList_data＝" + nowList_data  ;
-//					String nowList_data = String.valueOf(sharedPref.getString("nowList_data","").toString());
-//					dbMsg +=  ">保存場所=" +  String.valueOf(nowList_data)  ;
-//					if(nowList_data.contains(extV)){
-						ieKubunn = "external";
-//					}
-					dbMsg +=",内外区分＝" + ieKubunn  ;
-					Uri uri = MediaStore.Audio.Playlists.Members.getContentUri(ieKubunn, nowList_id);
-					String[] columns = null;			//{ idKey, nameKey };
-					String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-					cursor = context.getContentResolver().query(uri, columns, null, null, c_orderBy );
-					dbMsg +="," + cursor.getCount() +"件" ;
-					if(cursor.moveToFirst()){
-						do{
-							int play_order =cursor.getPosition();
-							dbMsg = play_order + "/" + cursor.getCount() + "曲目";
-							int rIndex = cursor.getColumnIndex("play_order");		
-							if(-1 < rIndex){				//読み出すカラムが有れば
-								play_order = Integer.parseInt(cursor.getString(cursor.getColumnIndex("play_order")));
-							}
-							dbMsg += ",play_order=" + play_order;
-							if(play_order != cursor.getPosition()){
-								play_order = cursor.getPosition();
-								int sousaID = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));				//_idか？
-								dbMsg += ",id=" + sousaID +",PLAY_ORDER= " + play_order;
-								ContentValues contentvalues = new ContentValues();
-								Uri playlist_uri = MediaStore.Audio.Playlists.Members.getContentUri("external", nowList_id);
-								contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, play_order);
-								String where = MediaStore.Audio.Playlists.Members._ID +" = ?";
-								String[] selectionArgs = {String.valueOf(sousaID)};
-								int result = context.getContentResolver().update(playlist_uri, contentvalues, where, selectionArgs);
-								dbMsg += ",result=" + result;
-		//						myLog(TAG,dbMsg );
-							}
-							items.add(new Item(
-								nowList_id,
-								play_order,	
-								cursor.getString(cursor.getColumnIndex("artist")),								//
-								cursor.getString(cursor.getColumnIndex("album_artist")),					//
-								cursor.getString(cursor.getColumnIndex("album")),								//
-								cursor.getInt(cursor.getColumnIndex("track")),		//
-								cursor.getString(cursor.getColumnIndex("title")),								//
-								Long.valueOf(cursor.getString(cursor.getColumnIndex("duration"))),		//
-								cursor.getString(cursor.getColumnIndex("_data"))								//data
-							));
-	//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
-							dbMsg= dbMsg+"["+items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
-									items.get(items.size()-1).album +"[" + items.get(items.size()-1).track +"]"+items.get(items.size()-1).title+" >> "+items.get(items.size()-1).data;/////////////////////////////////////
-			//				myLog(TAG,dbMsg );
-						}while(cursor.moveToNext());
-					}
-				}else{
+				if( nowList.equals( context.getResources().getString(R.string.listmei_zemkyoku)) ){
+					dbMsg += ",全曲リスト="  ;
 					sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file),android.content.Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 					String fn = context.getResources().getString(R.string.zenkyoku_file);			//全曲リスト
+
 					File dbF = context.getDatabasePath(fn);			//☆初回時は未だDBが作られていないのでgetApplicationContext()
 					fn = dbF.getPath();
 					dbMsg += "db=" + fn ;
@@ -306,19 +203,19 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							do{
 								dbMsg = cursor.getPosition() + "/" + cursor.getCount() + "曲目";
 								items.add(new Item(
-									nowList_id,
-									idCount,				//id	Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))
-									cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
-									cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
-									cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
-									Integer.parseInt(cursor.getString(cursor.getColumnIndex("TRACK"))),		//track
-									cursor.getString(cursor.getColumnIndex("TITLE")),								//title
-									Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
-									cursor.getString(cursor.getColumnIndex("DATA"))								//data
+										nowList_id,
+										idCount,				//id	Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))
+										cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
+										cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
+										cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
+										Integer.parseInt(cursor.getString(cursor.getColumnIndex("TRACK"))),		//track
+										cursor.getString(cursor.getColumnIndex("TITLE")),								//title
+										Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
+										cursor.getString(cursor.getColumnIndex("DATA"))								//data
 								));
-		//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
+								//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
 								dbMsg= items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
-										items.get(items.size()-1).album +"[" + items.get(items.size()-1).track +"]"+items.get(items.size()-1).title+" >> "+items.get(items.size()-1).data;/////////////////////////////////////
+											   items.get(items.size()-1).album +"[" + items.get(items.size()-1).track +"]"+items.get(items.size()-1).title+" >> "+items.get(items.size()-1).data;/////////////////////////////////////
 								dbMsg += ",YEAR=" + cursor.getString(cursor.getColumnIndex("YEAR"));
 								dbMsg += ",LAST_YEAR=" + cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
 								idCount++;
@@ -326,7 +223,101 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 						}
 						Zenkyoku_db.close();
 					}
+				}else if(nowList.equals(context.getResources().getString(R.string.playlist_namae_saikintuika)) ){
+					String fn = String.valueOf(context.getResources().getString(R.string.playlist_saikintuika_filename));
+					dbMsg +=  "、ファイル=" + fn ;
+					File chFile = new File(fn);
+					dbMsg += ",exists=" + chFile.exists();
+//					if(chFile.exists()){
+						ZenkyokuHelper newSongHelper = new ZenkyokuHelper(context , fn);        //周防会作成時はここでonCreatが走る
+						dbMsg += ">>" + newSongHelper.toString();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+						SQLiteDatabase newSongDb = newSongHelper.getReadableDatabase();
+						String saikintuikaTablename = fn.replace(".db" , "");    //最近追加のリストテーブル名
+						dbMsg +=  "、テーブル=" + saikintuikaTablename ;
+						String c_orderBy= null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
+						cursor = newSongDb.query(saikintuikaTablename, null, null, null , null, null, c_orderBy);	//リString table, String[] columns,new String[] {MotoN, albamN}
+						dbMsg += "；" + cursor.getCount() + "件";
+						int idCount =0;
+						if(cursor.moveToFirst()){
+							do{
+								dbMsg = cursor.getPosition() + "/" + cursor.getCount() + "曲目";
+								items.add(new Item(
+										nowList_id,
+										idCount,				//id	Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))
+										cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
+										cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
+										cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
+										Integer.parseInt(cursor.getString(cursor.getColumnIndex("TRACK"))),		//track
+										cursor.getString(cursor.getColumnIndex("TITLE")),								//title
+										Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
+										cursor.getString(cursor.getColumnIndex("DATA"))								//data
+								));
+								//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
+								dbMsg= items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
+											   items.get(items.size()-1).album +"[" + items.get(items.size()-1).track +"]"+items.get(items.size()-1).title+" >> "+items.get(items.size()-1).data;/////////////////////////////////////
+								dbMsg += ",YEAR=" + cursor.getString(cursor.getColumnIndex("YEAR"));
+								dbMsg += ",LAST_YEAR=" + cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
+								idCount++;
+							}while(cursor.moveToNext());
+						}
+						newSongDb.close();
+//					}
+				}else{
+					String ieKubunn = "internal";
+//					String extV = Environment.getExternalStorageDirectory().toString() ;
+////					dbMsg +=",nowList_data＝" + nowList_data  ;
+//					String nowList_data = String.valueOf(sharedPref.getString("nowList_data","").toString());
+//					dbMsg +=  ">保存場所=" +  String.valueOf(nowList_data)  ;
+//					if(nowList_data.contains(extV)){
+					ieKubunn = "external";
+//					}
+					dbMsg +=",内外区分＝" + ieKubunn  ;
+					Uri uri = MediaStore.Audio.Playlists.Members.getContentUri(ieKubunn, nowList_id);
+					String[] columns = null;			//{ idKey, nameKey };
+					String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+					cursor = context.getContentResolver().query(uri, columns, null, null, c_orderBy );
+					dbMsg +="," + cursor.getCount() +"件" ;
+					if(cursor.moveToFirst()){
+						do{
+							int play_order =cursor.getPosition();
+							dbMsg = play_order + "/" + cursor.getCount() + "曲目";
+							int rIndex = cursor.getColumnIndex("play_order");
+							if(-1 < rIndex){				//読み出すカラムが有れば
+								play_order = Integer.parseInt(cursor.getString(cursor.getColumnIndex("play_order")));
+							}
+							dbMsg += ",play_order=" + play_order;
+							if(play_order != cursor.getPosition()){
+								play_order = cursor.getPosition();
+								int sousaID = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));				//_idか？
+								dbMsg += ",id=" + sousaID +",PLAY_ORDER= " + play_order;
+								ContentValues contentvalues = new ContentValues();
+								Uri playlist_uri = MediaStore.Audio.Playlists.Members.getContentUri("external", nowList_id);
+								contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, play_order);
+								String where = MediaStore.Audio.Playlists.Members._ID +" = ?";
+								String[] selectionArgs = {String.valueOf(sousaID)};
+								int result = context.getContentResolver().update(playlist_uri, contentvalues, where, selectionArgs);
+								dbMsg += ",result=" + result;
+								//						myLog(TAG,dbMsg );
+							}
+							items.add(new Item(
+									nowList_id,
+									play_order,
+									cursor.getString(cursor.getColumnIndex("artist")),								//
+									cursor.getString(cursor.getColumnIndex("album_artist")),					//
+									cursor.getString(cursor.getColumnIndex("album")),								//
+									cursor.getInt(cursor.getColumnIndex("track")),		//
+									cursor.getString(cursor.getColumnIndex("title")),								//
+									Long.valueOf(cursor.getString(cursor.getColumnIndex("duration"))),		//
+									cursor.getString(cursor.getColumnIndex("_data"))								//data
+							));
+							//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
+							dbMsg= dbMsg+"["+items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
+										   items.get(items.size()-1).album +"[" + items.get(items.size()-1).track +"]"+items.get(items.size()-1).title+" >> "+items.get(items.size()-1).data;/////////////////////////////////////
+							//				myLog(TAG,dbMsg );
+						}while(cursor.moveToNext());
+					}
 				}
+
 				cursor.close();
 				dbMsg +=",書換え結果";
 			}

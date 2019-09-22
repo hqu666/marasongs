@@ -61,7 +61,7 @@
 			android:key="pref_saikin_tuika"
 			android:title="@string/pref_titol_plist_saikin_tuika"
 			android:summary="@string/pref_msg_plist_saikin_tuika"
-			android:defaultValue="1"
+			android:defaultValue="30"
 			/>
 
 		<com.hijiyam_koubou.marasongs.NumberPickerPreference
