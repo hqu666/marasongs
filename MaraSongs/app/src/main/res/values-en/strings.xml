@@ -253,11 +253,11 @@
    <string name="playlist_idou_ue">previously</string>
     <string name="playlist_idou_sita">next</string>
     <string name="playlist_namehennkou_dt">I change the name of the playlist</string>
-    <string name="playlist_namae_saikintuika">Added recently Album</string>
-    <string name="menu_item_plist_saikin_tuika">Update Added recently Album</string>
-    <string name="pref_titol_plist_saikin_tuika">The number of the Added recently Album</string>
+    <string name="playlist_namae_saikintuika">Added recently Songs</string>
+    <string name="menu_item_plist_saikin_tuika">Update Added recently Songs</string>
+    <string name="pref_titol_plist_saikin_tuika">The number of the Added recently Songs</string>
     <string name="pref_msg_plist_saikin_tuika">The extraction days</string>
-    <string name="menu_item_plist_saikin_tuika_dm">Please select whether you extract an added album to a thing how many days ago recently</string>
+    <string name="menu_item_plist_saikin_tuika_dm">Please select whether you extract an added Songs to a thing how many days ago recently</string>
     <string name="playlist_namae_saikinsisei">The number of the  reproduced recently</string>
     <string name="menu_item_plist_saikin_sisei">It is updated the play list recently</string>
     <string name="pref_titol_plist_saikin_sisei">Registration setting to these days play list</string>

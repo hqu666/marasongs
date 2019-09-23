@@ -286,7 +286,7 @@
 
     <!-- プレイリスト -->
     <string name="playlist_namae_saikinsisei">最近再生した曲</string>
-   <string name="playlist_namae_saikintuika">最近追加したアルバム</string>
+   <string name="playlist_namae_saikintuika">最近追加した曲</string>
 	<string name="playlist_saikintuika_filename" translatable="false">new_songs.db</string>
 	<string name="comon_kara">から</string>
     <string name="pref_playlist">プレイリスト</string>
