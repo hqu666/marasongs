@@ -30,6 +30,7 @@ animator mtrl_fab_transformation_sheet_expand_spec
 array artist_tuika
 array effect_rev
 array effect_vi
+array settingDays
 array tone_names
 attr actionBarDivider
 attr actionBarItemBackground

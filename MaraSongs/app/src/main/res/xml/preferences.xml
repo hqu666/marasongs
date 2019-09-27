@@ -44,7 +44,7 @@
 			android:enabled="true"/>
 	</PreferenceScreen>
 
-	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	<PreferenceScreen
 	    android:key="pref_plist"
 	    android:title="@string/pref_playlist"
 	    android:selectable="true" android:enabled="true"
@@ -61,7 +61,7 @@
 			android:key="pref_saikin_tuika"
 			android:title="@string/pref_titol_plist_saikin_tuika"
 			android:summary="@string/pref_msg_plist_saikin_tuika"
-			android:defaultValue="30"
+			android:defaultValue="7"
 			/>
 
 		<com.hijiyam_koubou.marasongs.NumberPickerPreference
@@ -92,7 +92,7 @@
 
 	</PreferenceScreen>
 
-	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	<PreferenceScreen
 	    android:key="pref_effect"
 	    android:title="@string/pref_effect"
 	    android:selectable="true" android:enabled="true"

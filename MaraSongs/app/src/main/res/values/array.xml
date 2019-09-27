@@ -31,5 +31,18 @@
 		<item>@string/comon_tukawanai</item>			<!-- 使わない -->
 	</string-array>
 
+	<string-array name="settingDays">
+		<item>"1"</item>
+		<item>"2"</item>
+		<item>"3"</item>
+		<item>"7"</item>
+		<item>"14"</item>
+		<item>"30"</item>
+		<item>"60"</item>
+		<item>"182"</item>
+		<item>"365"</item>
+		<item>"730"</item>
+	</string-array>
+
 
 </resources>

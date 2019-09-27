@@ -49,7 +49,7 @@ public class MyPreferences extends PreferenceActivity {
 	public boolean pref_pb_bgc = true;				//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
 
 	public String pref_artist_bunnri = "100";		//アーティストリストを分離する曲数
-	public String pref_saikin_tuika = "30";			//最近追加リストのデフォルト日数
+	public String pref_saikin_tuika = "7";			//最近追加リストのデフォルト日数
 	public String pref_saikin_sisei = null;		//最近再生加リストのデフォルト枚数
 	public String pref_rundam_list_size =null;	//ランダム再生リストアップ曲数
 	public int repeatType;							//リピート再生の種類
@@ -125,7 +125,7 @@ public class MyPreferences extends PreferenceActivity {
 
 	public PreferenceScreen pPS_pref_plist;			//プレイリスト設定
 	public NumberPickerPreference pTF_pref_artist_bunnri;		//アーティストリストを分離する曲数
-	public NumberPickerPreference pTF_prefsaikin_tuika;		//最近追加リストのデフォルト枚数
+	public NumberPickerPreference pTF_prefsaikin_tuika;		//最近追加リストのデフォルト日数
 	public NumberPickerPreference pTF_prefsaikin_sisei;		//最近再生リストのデフォルト曲数
 	public NumberPickerPreference pTF_rundam_list_size;				//ランダム再生の設定曲数
 	public EditTextPreference  pref_nitenka_memo;								//二点間再生状況
@@ -263,8 +263,8 @@ public class MyPreferences extends PreferenceActivity {
 			pCB_pref_cyakusinn_fukki = (SwitchPreference) findPreference("pref_cyakusinn_fukki");		//終話後に自動再生
 
 			pPS_sonota =  (PreferenceScreen)findPreference("pref_sonota");				//その他　のプリファレンススクリーン
-				pCB_pref_reset = (SwitchPreference) findPreference("pref_reset");		//設定消去
-				pCB_pref_listup_reset = (SwitchPreference) findPreference("pref_listup_reset");		//調整リストのリセット
+			pCB_pref_reset = (SwitchPreference) findPreference("pref_reset");		//設定消去
+			pCB_pref_listup_reset = (SwitchPreference) findPreference("pref_listup_reset");		//調整リストのリセット
 			pref_memo= (EditTextPreference) findPreference("pref_memo");							//その他の項目列記
 			pref_filse= (EditTextPreference) findPreference("pref_filse");
 
@@ -896,7 +896,7 @@ public class MyPreferences extends PreferenceActivity {
 				pref_saikin_tuika = "1";
 				dbMsg +=  "最近追加リストのデフォルト枚数=" + pref_saikin_tuika ;////////////////////////////////////////////////////////////////////////////
 				myEditor.putString ("pref_saikin_tuika", pref_saikin_tuika);
-				pref_saikin_sisei = "100";
+				pref_saikin_sisei = "7";
 				dbMsg +=  "最近再生リストのデフォルト曲数=" + pref_saikin_sisei ;////////////////////////////////////////////////////////////////////////////
 				myEditor.putString ("pref_saikin_sisei", pref_saikin_sisei);
 				pref_rundam_list_size = "100";
@@ -1319,7 +1319,7 @@ public class MyPreferences extends PreferenceActivity {
 				}else if(keyName.equals("pref_saikin_sisei")){							//最近再生リストのデフォルト曲数
 					pref_saikin_sisei = String.valueOf(pTF_prefsaikin_sisei.retValue(Integer.valueOf(atai)));
 					dbMsg +=",最近再生リストのデフォルト曲数=" + pref_saikin_sisei;
-					pTF_prefsaikin_sisei.setSummary(pref_saikin_sisei + getResources().getString(R.string.comon_kyoku));
+					pTF_prefsaikin_sisei.setSummary(pref_saikin_sisei + getResources().getString(R.string.common_nitibun));
 					atai = pref_saikin_sisei;
 				}else if(keyName.equals("pref_rundam_list_size")){							//ランダム再生の設定曲数
 					pref_rundam_list_size = String.valueOf(pTF_rundam_list_size.retValue(Integer.valueOf(atai)));

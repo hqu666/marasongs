@@ -5754,10 +5754,10 @@ public class MaraSonActivity extends AppCompatActivity
 //					}
 //				}
 				int mIndex = extras.getInt("mIndex");
-				dbMsg += "["+ mIndex +"]";
-				if(mIndex == 0){
+				dbMsg += "[mIndex"+ mIndex +"]";
+				if(mIndex <= 0){
 					mIndex = Item.getMPItem( dataFN );			//インデックスの逆検索	, mItems  ,getApplicationContext()
-					dbMsg += ">>["+ mIndex +"]";
+					dbMsg += ">>[mIndex;"+ mIndex +"]";
 				}
 				Item playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
 				int reqCode = extras.getInt("reqCode");
