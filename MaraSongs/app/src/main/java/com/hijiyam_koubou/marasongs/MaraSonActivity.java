@@ -2258,8 +2258,6 @@ public class MaraSonActivity extends AppCompatActivity
 				flMenu.findItem(R.id.pref_nitenkan_start_dt).setEnabled(true);		//二点間再生開始点
 				flMenu.findItem(R.id.pref_nitenkan_end_dt).setVisible(true);		//二点間再生終了点
 				flMenu.findItem(R.id.pref_nitenkan_end_dt).setEnabled(true);		//二点間再生終了点
-				dbMsg +=",rp_pp=" + rp_pp;
-				myLog(TAG,dbMsg);
 			}else{
 				flMenu.findItem(R.id.menu_item_repeatplay).setEnabled(true);			//リピート再生
 				flMenu.findItem(R.id.menu_item_repeatplay).setVisible(true);			//リピート再生
@@ -2440,8 +2438,6 @@ public class MaraSonActivity extends AppCompatActivity
 				myEditor.putString( "pref_nitenkan_end", String.valueOf(MaraSonActivity.this.pp_end));
 				Boolean kakikomi = myEditor.commit();	// データの保存
 				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
-				dbMsg +=",rp_pp=" + rp_pp;
-				myLog(TAG,dbMsg);
 			}
 			Intent intent = new Intent(MaraSonActivity.this, MuList.class);			//
 			int reqCode = CONTEXT_runum_sisei ;			//ランダム再生
@@ -4130,8 +4126,6 @@ public class MaraSonActivity extends AppCompatActivity
 				MPSIntent.putExtra("rp_pp",rp_pp);					//2点間リピート中
 				MPSIntent.putExtra("pp_start",pp_start);			//リピート区間開始点
 				MPSIntent.putExtra("pp_end",pp_end);				//リピート区間終了点
-				dbMsg +=",rp_pp=" + rp_pp;
-				myLog(TAG,dbMsg);
 			}
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MaraSonActivity.this);
 			dbMsg +=">> " + mcPosition +"ms)";
@@ -5398,8 +5392,6 @@ public class MaraSonActivity extends AppCompatActivity
 							rp_pp =bundle.getBoolean("rp_pp");
 							dbMsg +=">>"+rp_pp;/////////////////////////////////////
 							if( ! rp_pp && mot_pp){					//二点間リピートから解除された
-								dbMsg +=",rp_pp=" + rp_pp;
-								myLog(TAG,dbMsg);
 								repeatePlaykijyo();
 							}
 

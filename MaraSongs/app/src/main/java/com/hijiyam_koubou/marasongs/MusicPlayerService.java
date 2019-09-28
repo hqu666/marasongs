@@ -364,17 +364,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			} else {
 				processPauseRequest();
 			}
-//			if ( 21 <= android.os.Build.VERSION.SDK_INT) {
-//				lpNotificationMake(playingItem.artist , playingItem.album , playingItem.title , album_art);
-//			}else if ( 14 <= android.os.Build.VERSION.SDK_INT  && pref_notifplayer) {								//&&  android.os.Build.VERSION.SDK_INT < 21
-//				dbMsg +=",action=" + action ;///////////////////////////////////
-//				if(! action.equals(ACTION_SYUURYOU) && ! action.equals(ACTION_SYUURYOU_NOTIF)){
-//					updateNotification(mPlayer);				//Updates the notification
-//					updateLockScreenP();					//ロックスクリーン更新
-//				}
-//			}
-
-			//	myLog(TAG,dbMsg);
+		//	myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
@@ -492,8 +482,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		//		myLog(TAG,dbMsg);
 				if( mcPosition > 3000 ){					//3秒以上なら
 					if(rp_pp){						//2点間リピート中で//リピート区間終了点
-						dbMsg +=",rp_pp=" + rp_pp;
-						myLog(TAG,dbMsg);
 						mcPosition = pp_start;		//リピート区間開始点
 					}else {
 						mcPosition = 0;
@@ -546,8 +534,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +=">>" + playingItem;/////////////////////////////////////
 				int mcPosition = 0;
 				if(rp_pp){						//2点間リピート中で//リピート区間終了点
-					dbMsg +=",rp_pp=" + rp_pp;
-					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
 				}
 				int duration = (int)playingItem.duration;
@@ -1081,8 +1067,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +=">>" + mVisualizer;/////////////////////////////////////
 			}
 			if( rp_pp ){						//2点間リピート中で//リピート区間終了点
-				dbMsg +=",rp_pp=" + rp_pp;
-				myLog(TAG,dbMsg);
 				mcPosition =pp_start;									//前に再生していた曲の再生ポジションを消去
 			}
 			myLog(TAG,dbMsg);
@@ -1277,8 +1261,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += ",累積曲数" + ruikeikyoku +"曲";
 				int mcPosition = 0;
 				if(rp_pp){						//2点間リピート中で//リピート区間終了点
-					dbMsg +=",rp_pp=" + rp_pp;
-					myLog(TAG,dbMsg);
 					mcPosition = pp_start;		//リピート区間開始点
 					mIndex--;
 				}
@@ -2166,11 +2148,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 					dbMsg +=" , mState=" + mState.toString();////////////////////////////ノティフィケーション送る
 					intent.putExtra("state", mState.toString());
+					dbMsg += ",2点間リピート中" + rp_pp ;/////////////////////////////////////
 					if( rp_pp ){			//2点間リピート中
 						mcPosition = pp_start;			//リピート区間開始点
 						dbMsg +=">>"+ mcPosition;/////////////////////////////////////
-						dbMsg +=",rp_pp=" + rp_pp;
-						myLog(TAG,dbMsg);
 						player.seekTo(mcPosition);
 					}
 					b_state = action;

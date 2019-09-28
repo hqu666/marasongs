@@ -7078,7 +7078,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					final String TAG = "onValueChange";
 					String dbMsg = "[MuList]";
 					try{
-						dbMsg +=  "oldVal=" + oldVal + ">>=" + newVal;
+						dbMsg +=  "oldVal=" + oldVal + ">newVal>=" + newVal;
 						MuList.this.sousaSuu = Integer.parseInt(MuList.this.settingDays[newVal - 1]);
 						dbMsg +=  "=" + String.valueOf(MuList.this.sousaSuu) + "日";
 						myLog(TAG, dbMsg);
@@ -7094,10 +7094,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			Dlg.setView(view) .setPositiveButton( getResources().getString(R.string.comon_kakutei),new DialogInterface.OnClickListener() {
 				@Override public void onClick(DialogInterface dialog, int which) {
 					final String TAG = "onClick[saikin_tuika.MuList]";
-					String dbMsg = "[MuList]";
+					String dbMsg = "[MuList]which=" + which;
 					try{
+						dbMsg += "," + MuList.this.pref_saikin_tuika + "日の設定" ;
 						MuList.this.pref_saikin_tuika = String.valueOf(MuList.this.sousaSuu);
-						dbMsg += ">>" + MuList.this.pref_saikin_tuika + "日の設定" + ">>" + String.valueOf(MuList.this.sousaSuu) + "日を指定";
+						dbMsg +=  ">>" + String.valueOf(MuList.this.sousaSuu) + "日を指定";
 						if( MuList.this.sousaSuu != Integer.parseInt( MuList.this.pref_saikin_tuika) ){
 							MuList.this.pref_saikin_tuika = String.valueOf(MuList.this.sousaSuu);
 							dbMsg +=  ">>" + MuList.this.pref_saikin_tuika + "日に変更";
