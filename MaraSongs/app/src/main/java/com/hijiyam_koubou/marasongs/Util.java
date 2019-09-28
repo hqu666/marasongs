@@ -28,7 +28,7 @@ import java.util.List;
 public class Util {
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 	public SimpleDateFormat sdffiles = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+	public SimpleDateFormat stf = new SimpleDateFormat("mm:ss SSS");		//02;03 414=123414
 
 	//ファイル操作///////////////////
 	/**
@@ -511,8 +511,8 @@ public class Util {
 	}
 
 
-	public void musicColumnCheck( Cursor carsor , int index) {
-		final String TAG = "musicColumnCheck";
+	public void dBaceColumnCheck( Cursor carsor , int index) {
+		final String TAG = "dBaceColumnCheck";
 		String dbMsg = "[util]";
 		try {
 			dbMsg += index +  "/" + carsor.getCount() + "件";
@@ -523,11 +523,20 @@ public class Util {
 				for (int i = 0; i < colCount; i++) {
 					dbMsg += "(" + i + ")";
 					String colName = carsor.getColumnName(i);
-					dbMsg += colName ;
-					String data = carsor.getString(i);
-					int iType = carsor.getType(i);;  //1は数字、3は文字
-					dbMsg += ",type=" + iType ;  //1は数字、3は文字
-					if(iType == 0) {  //	null
+					dbMsg += colName;
+					String data = "";
+					int iType = carsor.getType(i);  //1は数字、3は文字
+					dbMsg += ",type=" + iType;  //1は数字、3は文字
+					if ( carsor.FIELD_TYPE_STRING == iType ) {
+						data = carsor.getString(i);
+					} else if ( carsor.FIELD_TYPE_INTEGER == iType ) {
+						data = carsor.getInt(i) + "";
+					} else if ( carsor.FIELD_TYPE_FLOAT == iType ) {
+						data = carsor.getFloat(i) + "";
+					}
+			/*
+					if(colName.equals("datetaken")) {  //	null
+						dbMsg += ";datetaken";
 					}else if(colName.equals("_size")) {  //			MediaStore.Audio.Media.SIZE
 						dbMsg += ";SIZE";
 					}else if(colName.equals("mime_type")) {//				MediaStore.Audio.Media.MIME_TYPE
@@ -537,8 +546,10 @@ public class Util {
 						dbMsg += ";ARTIST_KEY";
 					}else if(colName.equals("album_key")) {      //						MediaStore.Audio.Media.ALBUM_KEY
 						dbMsg += ";ALBUM_KEY";
-//					}else if(colName.equals("album_key")) {      //						MediaStore.Audio.Media.ALBUM_KEY
-//						dbMsg += ";ALBUM_KEY";
+					}else if(colName.equals("is_audiobook")) {
+						dbMsg += ";is_audiobook";
+					}else if(colName.equals("volume_name")) {
+						dbMsg += ";volume_name";
 					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC)) {
 						dbMsg += ";IS_MUSIC";
 					}else if(i == carsor.getColumnIndex(MediaStore.Audio.Media.IS_ALARM)) {
@@ -559,8 +570,8 @@ public class Util {
 						dbMsg += ";ALBUM";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TRACK)))){
 						dbMsg += ";TRACK";
-					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY)))){
-						dbMsg += ";TITLE_KEY";
+//					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY)))){
+//						dbMsg += ";TITLE_KEY";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.TITLE)))){
 						dbMsg += ";TITLE";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media._ID)))){
@@ -577,26 +588,26 @@ public class Util {
 						dbMsg += ";DATE_MODIFIED";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)))){						//更新した日
 						dbMsg += ";DATE_ADDED";
-					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.CONTENT_TYPE)))){
-						dbMsg += ";CONTENT_TYPE";
+//					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.CONTENT_TYPE)))){    //Couldn't read row 0, col -1 from CursorWindow.  Make sure the Cursor is initialized correctly before accessing data from it.
+//						dbMsg += ";CONTENT_TYPE";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.COMPOSER)))){
 						dbMsg += ";COMPOSER";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.WIDTH)))){
 						dbMsg += ";WIDTH";
-					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.RECORD_SOUND_ACTION)))){
-						dbMsg += ";RECORD_SOUND_ACTION";
+//					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.RECORD_SOUND_ACTION)))){
+//						dbMsg += ";RECORD_SOUND_ACTION";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.WIDTH)))){
 						dbMsg += ";WIDTH";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.SIZE)))){
 						dbMsg += ";SIZE";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.HEIGHT)))){
 						dbMsg += ";HEIGHT";
-					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.EXTRA_MAX_BYTES)))){
-						dbMsg += ";EXTRA_MAX_BYTES";
-					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)))){
-						dbMsg += ";ENTRY_CONTENT_TYPE";
-					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DEFAULT_SORT_ORDER)))){
-						dbMsg += ";DEFAULT_SORT_ORDER";
+//					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.EXTRA_MAX_BYTES)))){
+//						dbMsg += ";EXTRA_MAX_BYTES";
+//					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.ENTRY_CONTENT_TYPE)))){
+//						dbMsg += ";ENTRY_CONTENT_TYPE";
+//					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.DEFAULT_SORT_ORDER)))){
+//						dbMsg += ";DEFAULT_SORT_ORDER";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK)))){
 						dbMsg += ";BOOKMARK";
 					}else if(data.equals(carsor.getString(carsor.getColumnIndex(MediaStore.Audio.Media._COUNT)))){
@@ -604,21 +615,19 @@ public class Util {
 					}else{
 						dbMsg += ";該当無し";
 					}
-					if(colName.equals("date_added") || colName.equals("date_modified")){
-						String mod = sdffiles.format(new Date(Long.valueOf(data)*1000));
-//						data = mod.substring(0, 7);
-//						mod = sdf.format(new Date(Long.valueOf(mod)*1000*1000));
-						dbMsg +=">>"+ mod;
+			 */
+					dbMsg += " = " + data ;
+					if ( carsor.FIELD_TYPE_INTEGER == iType ) {
+						int rInt = carsor.getInt(i);
+						if ( 24 * 60 * 60 * 1000 < rInt ) {	//	"date_added") || colName.equals("date_modified"         //86,400,000‬         ,      1,569,599,212>>2019-09-28 00:46:52
+							String mod = sdffiles.format(new Date(Long.valueOf(data) * 1000));
+							dbMsg += ">>" + mod;
+						}else if ( 1000 < rInt && 1000 < (12 * 60*60*1000)) {
+							String moh = stf.format(new Date(Long.valueOf(data)));
+							dbMsg += ">>" + moh;
+						}
 					}
-
-					dbMsg += ">>" + data + "\n";
-
-//					colNames += colName  + " STRING";
-//					if(i < (colCount  - 1)){
-//						colNames += ",";
-////					}else{
-////						colNames += ")";
-//					}
+					dbMsg += "\n";
 				}
 			}
 			myLog(TAG, dbMsg);
