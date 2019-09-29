@@ -661,29 +661,45 @@ public class MyPreferences extends PreferenceActivity {
 	public void readPrif(Context context){		//プリファレンスの読込み
 		final String TAG = "readPrif";
 		String dbMsg="[MyPreferences]";
-		try{
-			ORGUT = new OrgUtil();		//自作関数集
+		try {
+			ORGUT = new OrgUtil();        //自作関数集
 			MSA = new MaraSonActivity();
-			Visualizer_type_wave = MSA.Visualizer_type_wave;		//189;Visualizerはwave表示
-			Visualizer_type_FFT =  MSA.Visualizer_type_wave;		//190;VisualizerはFFT
-			Visualizer_type_none =  MSA.Visualizer_type_wave;;		//191;Visualizerを使わない
+			Visualizer_type_wave = MSA.Visualizer_type_wave;        //189;Visualizerはwave表示
+			Visualizer_type_FFT = MSA.Visualizer_type_wave;        //190;VisualizerはFFT
+			Visualizer_type_none = MSA.Visualizer_type_wave;
+			;        //191;Visualizerを使わない
 
 			String pefName = context.getResources().getString(R.string.pref_main_file);
-			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			sharedPref = context.getSharedPreferences(pefName , context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
 			myEditor = sharedPref.edit();
 			String wrStr;
 			String selectStr = null;
-			String stringList = "";											//bundle.getString("list");  //key名が"list"のものを取り出す
-			Siseiothers = "";					//レジューム再生の情報
-			others = "";				//その他の情報
-			Map<String, ?> keys = sharedPref.getAll();
-			dbMsg += "読み込み開始"+keys.size()+"項目;mySharedPref="+sharedPref;
-			pref_apiLv=String.valueOf(Build.VERSION.SDK);									//APIレベル
-			if (0 < keys.size()) {
+			String stringList = "";                                            //bundle.getString("list");  //key名が"list"のものを取り出す
+			Siseiothers = "";                    //レジューム再生の情報
+			others = "";                //その他の情報
+			Map< String, ? > keys = sharedPref.getAll();
+			dbMsg += "読み込み開始" + keys.size() + "項目;mySharedPref=" + sharedPref;
+			pref_apiLv = String.valueOf(Build.VERSION.SDK);                                    //APIレベル
+			dbMsg += ",pref_apiLv=" + pref_apiLv;
+			int now_vercord = 1;
+			pref_file_saisinn = "0";    //最新更新日
+			PackageManager pm = context.getPackageManager();
+			try {
+				PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName() , 0);
+				now_vercord = packageInfo.versionCode;
+			} catch (PackageManager.NameNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			dbMsg += ",アプリのバージョンコード＝" + now_vercord;//////////////////
+			if (   keys.size() <= 4 ) {         //最初から4項目ある？
+				setdPrif(context);
+			}
 				int i=0;
 				for (String key : keys.keySet()) {
 					i++;
-					dbMsg += i+"/"+keys.size()+")"+key+"は "+String.valueOf(keys.get(key));
+					dbMsg += "\n" +i+"/"+keys.size()+")"+key+"は "+ String.valueOf(keys.get(key));
+//					myLog(TAG,dbMsg);
 					try{
 						if(String.valueOf(keys.get(key)) != null){
 //							if( ! String.valueOf(keys.get(key)).equals("null")){
@@ -855,7 +871,12 @@ public class MyPreferences extends PreferenceActivity {
 									dbMsg +=  "ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
 								}else if(key.equals("pref_sonota_vercord")){
 									pref_sonota_vercord = Integer.parseInt(String.valueOf(keys.get(key)));
-									dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
+									dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;
+									if(pref_sonota_vercord != now_vercord ){
+										pref_sonota_vercord = now_vercord;
+										myEditor.putInt ("pref_sonota_vercord", pref_sonota_vercord);
+										myLog(TAG,dbMsg);
+									}
 								}else if(key.equals("pref_reset")){		//">このダイアログを閉じたら設定を初期化します。</string>
 									pref_reset = Boolean.valueOf(keys.get(key).toString());			//設定を初期化
 									dbMsg +=  "このダイアログを閉じたら設定を初期化" ;////////////////////////////////////////////////////////////////////////////
@@ -878,8 +899,68 @@ public class MyPreferences extends PreferenceActivity {
 						myErrorLog(TAG,dbMsg+"；"+e);
 					}
 				}
-			}else{ 				//
-				dbMsg +=  "初期書込み " ;
+
+			pref_file_in = 	context.getFilesDir().getPath();	//内部データ領域
+			dbMsg += ",内蔵メモリ＝" + pref_file_in;////////////////    //storage/emulated/0/Music
+			myEditor.putString ("pref_file_in", pref_file_in);
+			pref_file_ex = "";
+			String status = Environment.getExternalStorageState();
+			if (!status.equals(Environment.MEDIA_MOUNTED)) {
+				pref_file_ex =Environment.getExternalStorageDirectory().getPath();
+				dbMsg += ",メモリーカード＝" + pref_file_ex;//////////////////
+			} else{
+				dbMsg += ",メモリーカード＝無し" ;//////////////////
+			}
+			myEditor.putString ("pref_file_ex", pref_file_ex);
+			pref_file_wr =	context.getFilesDir().getPath();
+			dbMsg += ",設定保存フォルダ＝" + pref_file_wr;//////////////////
+			myEditor.putString ("pref_file_wr", pref_file_wr);
+
+			pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
+			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
+			myEditor.putString ("pref_commmn_music", pref_commmn_music);
+
+			myLog(TAG,dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG,dbMsg+"で"+e);
+		}
+	}
+
+	@SuppressLint("SimpleDateFormat")
+	public void setdPrif(Context context){		//初期書込み
+		final String TAG = "setdPrif";
+		String dbMsg="[MyPreferences]";
+		try{
+			ORGUT = new OrgUtil();		//自作関数集
+			MSA = new MaraSonActivity();
+			Visualizer_type_wave = MSA.Visualizer_type_wave;		//189;Visualizerはwave表示
+			Visualizer_type_FFT =  MSA.Visualizer_type_wave;		//190;VisualizerはFFT
+			Visualizer_type_none =  MSA.Visualizer_type_wave;;		//191;Visualizerを使わない
+
+			String pefName = context.getResources().getString(R.string.pref_main_file);
+			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			myEditor = sharedPref.edit();
+			String wrStr;
+			String selectStr = null;
+			String stringList = "";											//bundle.getString("list");  //key名が"list"のものを取り出す
+			Siseiothers = "";					//レジューム再生の情報
+			others = "";				//その他の情報
+			Map<String, ?> keys = sharedPref.getAll();
+			dbMsg += "読み込み開始"+keys.size() + "項目;mySharedPref=" + sharedPref;
+			pref_apiLv=String.valueOf(Build.VERSION.SDK);									//APIレベル
+			dbMsg += ",pref_apiLv="+ pref_apiLv;
+			int now_vercord = 1;
+			pref_file_saisinn = "0";	//最新更新日
+			PackageManager pm = context.getPackageManager();
+			try{
+				PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);
+				now_vercord = packageInfo.versionCode;
+			}catch(PackageManager.NameNotFoundException e){
+				e.printStackTrace();
+			}
+
+			dbMsg += ",アプリのバージョンコード＝" + now_vercord;//////////////////
+			dbMsg +=  "初期書込み " ;
 				pref_pb_bgc =true;
 				myEditor.putBoolean ("pref_pb_bgc", pref_pb_bgc);            //プレイヤーの背景は白
 				pref_gyapless ="100";
@@ -893,8 +974,8 @@ public class MyPreferences extends PreferenceActivity {
 				pref_artist_bunnri ="100";
 				dbMsg +=  "アーティストリストを分離する曲数=" + pref_artist_bunnri ;
 				myEditor.putString ("pref_artist_bunnri", pref_artist_bunnri);
-				pref_saikin_tuika = "1";
-				dbMsg +=  "最近追加リストのデフォルト枚数=" + pref_saikin_tuika ;////////////////////////////////////////////////////////////////////////////
+				pref_saikin_tuika = "3";
+				dbMsg +=  "最近追加リストのデフォルト日数";
 				myEditor.putString ("pref_saikin_tuika", pref_saikin_tuika);
 				pref_saikin_sisei = "7";
 				dbMsg +=  "最近再生リストのデフォルト曲数=" + pref_saikin_sisei ;////////////////////////////////////////////////////////////////////////////
@@ -918,6 +999,10 @@ public class MyPreferences extends PreferenceActivity {
 				dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
 				myEditor.putBoolean ("pref_notifplayer", pref_notifplayer);
 				b_List = "";
+				dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
+				myEditor.putString ("pref_file_saisinn", pref_file_saisinn);
+				dbMsg += ",最新更新日＝" + pref_file_saisinn;//////////////
+				myEditor.putString ("pref_file_saisinn", pref_file_saisinn);
 				dbMsg +=  ",前に再生していたプレイリスト=" +b_List ;
 				myEditor.putString ("b_List", b_List);
 				b_index = 1;
@@ -1010,15 +1095,11 @@ public class MyPreferences extends PreferenceActivity {
 				prTT_dpad = false;
 				dbMsg +=  "ダイヤルキー=" + prTT_dpad;////////////////////////////////////////////////////////////////////////////
 				myEditor.putBoolean ("pref_sonota_dpad", prTT_dpad);
-				pref_sonota_vercord = 1;
-				PackageManager pm = getApplicationContext().getPackageManager();
-				try{
-					PackageInfo packageInfo = pm.getPackageInfo(getApplicationContext().getPackageName(), 0);
-					pref_sonota_vercord = packageInfo.versionCode;
-				}catch(PackageManager.NameNotFoundException e){
-					e.printStackTrace();
-				}
+				pref_sonota_vercord = now_vercord;
 				dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
+				myEditor.putInt ("pref_sonota_vercord", pref_sonota_vercord);
+
+//				myLog(TAG,dbMsg);
 				pref_reset = false;			//設定を初期化
 				dbMsg +=  "このダイアログを閉じたら設定を初期化"+pref_reset ;////////////////////////////////////////////////////////////////////////////
 				myEditor.putBoolean ("pref_reset", pref_reset);
@@ -1029,7 +1110,6 @@ public class MyPreferences extends PreferenceActivity {
 				pref_apiLv = Build.VERSION.SDK_INT+"";
 				String relese = Build.VERSION.RELEASE;
 				dbMsg +=  "apil;" + pref_apiLv +"relese;" + relese;
-			}
 
 			pref_file_in = 	context.getFilesDir().getPath();	//内部データ領域
 			dbMsg += ",内蔵メモリ＝" + pref_file_in;////////////////    //storage/emulated/0/Music
@@ -1051,7 +1131,7 @@ public class MyPreferences extends PreferenceActivity {
 			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 			myEditor.putString ("pref_commmn_music", pref_commmn_music);
 
-//			myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}

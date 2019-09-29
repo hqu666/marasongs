@@ -145,7 +145,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public int pref_zenkai_saiseKyoku = 0;		//前回の連続再生曲数
 	public long pref_zenkai_saiseijikann = 0;		//前回の連続再生時間
 	public int pref_file_kyoku;					//曲累計
-	public int pref_file_album;				//アルバム累計
+//	public int pref_file_album;				//アルバム累計
 	public String pref_file_saisinn;					//最新更新日
 	public String pref_file_in ="";		//内蔵メモリ
 	public String pref_file_ex ;						//メモリーカードの音楽ファイルフォルダ
@@ -430,6 +430,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
 				if ( isNeedParmissionReqest ) {
 					dbMsg += "::許諾処理へ";
+					MyPreferences myPreferences = new MyPreferences();
+					myPreferences.setdPrif(MuList.this);
 					new AlertDialog.Builder(MuList.this)
 							.setTitle( getResources().getString(R.string.permission_titol) )
 							.setMessage( getResources().getString(R.string.permission_msg))
@@ -542,15 +544,16 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "readPref";
 		String dbMsg = "[MuList]";
 		try {
+			myLog(TAG, dbMsg);
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
 			sharedPref =myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 
-//			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
-//			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
+			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
+			myLog(TAG, dbMsg);
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 //			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
@@ -580,17 +583,26 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += "、総曲数=" + pref_file_kyoku;
 			nowList_data = myPreferences.pref_file_wr;		//設定保存フォルダ
 			dbMsg += "、設定保存フォルダ=" + nowList_data;
-			pref_file_album= Integer.parseInt(myPreferences.pref_file_album);		//総アルバム数
+//			dbMsg += "、総アルバム数=" + myPreferences.pref_file_album);
+//			pref_file_album= Integer.parseInt(myPreferences.pref_file_album);		//
 			pref_file_saisinn= myPreferences.pref_file_saisinn;	//最新更新日
-			dbMsg += "、最新更新日=" + pref_file_saisinn;
-
-			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
-			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
-			play_order = Integer.parseInt(myPreferences.play_order);
+			dbMsg += "、記録している最新更新日=" + pref_file_saisinn;
+			if(!pref_file_saisinn.equals("")){
+				String mod = sdffiles.format(new Date(Long.valueOf(pref_file_saisinn) * 1000));
+				dbMsg += ">>" + mod;
+			}
+			dbMsg += "、再生中のプレイリストID=" + myPreferences.nowList_id;
+			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//	playListID
+			dbMsg += "、再生中のプレイリスト名=" + myPreferences.nowList;
+			nowList = myPreferences.nowList;					//	playlistNAME
+//			dbMsg += "、play_order=" + myPreferences.play_order;
+//			play_order = Integer.parseInt(myPreferences.play_order);
 			//アーティストごとの情報
-			artistID = Integer.parseInt(myPreferences.artistID);
-			//アルバムごとの情報
-			albumID = Integer.parseInt(myPreferences.albumID);
+//			dbMsg += "、artistID=" + myPreferences.artistID;
+//			artistID = Integer.parseInt(myPreferences.artistID);
+//			//アルバムごとの情報
+//			dbMsg += "、artistID=" + myPreferences.albumID;
+//			albumID = Integer.parseInt(myPreferences.albumID);
 			//曲ごとの情報
 //			audioID = myPreferences.audioID;
 //			dataURL = myPreferences.dataURL;
@@ -3527,10 +3539,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ",rp_pp=" + rp_pp;	////////////////
 			dbMsg += ",saisei_fname= "+ saisei_fname ;////////
 			myEditor.putString( "saisei_fname", String.valueOf(saisei_fname));		//再生中のファイル名
+			if( mItems == null) {
+				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+				mItems = Item.getItems( MuList.this);
+			}
 
 //			if( listHenkou ||nowList.equals(getResources().getString(R.string.playlist_namae_randam)) ){
-				mItems = new LinkedList<Item>();			//読み直し
-				mItems = Item.getItems( getApplicationContext() );
 				mIndex = Item.getMPItem(saisei_fname);			//インデックスの逆検索	 ,mItems , getApplicationContext()
 				dbMsg += "[mIndex=" + mIndex + "/" +mItems.size()+"]";/////////////////////////////////////
 			Item cItem = mItems.get(mIndex);
@@ -7544,6 +7558,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			sousalistName = getResources().getString(R.string.playlist_namae_saikintuika);
 			MuList.this.b_artist = "";
 			MuList.this.b_album = "";
+			if( mItems == null) {
+				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+				mItems = Item.getItems( MuList.this);
+			}
+
 			CreatePLListEnd();				//プレイリストの内容取得
 
 ////			MuList.this.plSL =  new ArrayList<String>();				//プレイリスト用簡易リスト
@@ -9550,8 +9569,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
 			dbMsg += ",reqCode;" + reqCode;/////////////////////////////////////
 			myLog(TAG,dbMsg);
-			if(0 < shigot_bangou ){
+//			if(0 < shigot_bangou ){
 				switch(shigot_bangou) {
+					case 0:		//インストール時
+						break;
 					case jyoukyou_bunki:		//204；現在の状態に見合った分岐を行う
 						dbMsg +=",jyoukyouBunkiへ" ;
 						jyoukyouBunki();			//①ⅱ現在の状態に見合った分岐を行う；全曲リストが出来ているか
@@ -9588,7 +9609,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						MuList.this.finish();
 						break;
 				}
-			}
+//			}
 			shigot_bangou = 0;
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());

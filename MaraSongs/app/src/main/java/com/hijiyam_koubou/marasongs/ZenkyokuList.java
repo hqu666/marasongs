@@ -1291,7 +1291,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}else{
 				stmt.bindString(9, "");			// = cur.getColumnIndex(MediaStore.Audio.Media.YEAR);
 			}
-			stmt.bindString(10, dataFPN);			//10.data;					//URI
+			dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+			stmt.bindString(10, dataFPN);
 			String tuikabi = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
 			dbMsg +=" , 追加日="+ tuikabi;/////////////////////////////////////////////////////////////////////////////////////////////
 			String kousinnbi = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED));	//The time the file was last modified
@@ -1921,7 +1922,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 			}
 //			if( ! artist_name.equals(albumName) ){
-//				myLog(TAG,dbMsg );
+				myLog(TAG,dbMsg );
 //			}
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -3062,7 +3063,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}else{
 				stmt.bindString(8, "");			// = cur.getColumnIndex(MediaStore.Audio.Media.YEAR);
 			}
-			stmt.bindString(9, rData);			//DATA
+			stmt.bindString(9, cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA)));			//DATA
+//			stmt.bindString(9, rData);			//DATA
 			stmt.bindString(10, cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)));			//MODIFIED
 
 			readStr = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
