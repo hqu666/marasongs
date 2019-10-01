@@ -510,6 +510,23 @@ public class Util {
 		}
 	}
 
+	public String checKTrack( String checkStr) {
+		final String TAG = "checKTrack";
+		String dbMsg = "[util]";
+		String rStr = checkStr;
+		try {
+			dbMsg += "," + rStr;
+			if (checkStr.contains("/")){
+				String[] tStrs = checkStr.split("/");
+				rStr = tStrs[0];
+				dbMsg += ">>" + rStr;
+				myLog(TAG, dbMsg);
+			}
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return rStr;
+	}
 
 	public void dBaceColumnCheck( Cursor carsor , int index) {
 		final String TAG = "dBaceColumnCheck";

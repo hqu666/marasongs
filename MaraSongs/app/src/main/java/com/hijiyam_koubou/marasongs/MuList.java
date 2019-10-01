@@ -3117,6 +3117,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					Zenkyoku_db.close();
 				}
 			}
+			nowList_id = -1;
+			sousalistID =  nowList_id;
+			nowList = getResources().getString(R.string.listmei_zemkyoku);
+			sousalistName = nowList;
+			setPrefStr( "nowList", String.valueOf(sousalistName),  MuList.this);     			//他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
+			setPrefStr( "nowList_id", String.valueOf(sousalistID),  MuList.this);
+
+			dbMsg +=  "nowList[" + nowList_id + "]" + nowList +"→操作中のリスト[" + sousalistID + "]" + sousalistName ;	////////////////
 			dbMsg += "シンプル表示か" + pref_list_simple;/////////////////////////////////////
 			if( mItems == null){
 				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
@@ -3391,8 +3399,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					try{
 						MuList.this.titolMap = new HashMap<String, Object>();			//タイトルリスト用
 						String aName = null;
-						String tr = cursor.getString(cursor.getColumnIndex( "TRACK" ));			//MediaStore.Audio.Media.TRACK
-						dbMsg +=" [ "+ tr + " ] ";/////////////////////////////////////////////////////////////////////////////////////////////
+						String track = cursor.getString(cursor.getColumnIndex( "TRACK" ));			//MediaStore.Audio.Media.TRACK
+						dbMsg +=" [ "+ track + " ] ";
+						Util UTIL = new Util();
+						track = UTIL.checKTrack( track);
+
 						aName = cursor.getString(cursor.getColumnIndex( "TITLE" ));			//MediaStore.Audio.Media.TITLE
 						dbMsg +=aName;/////////////////////////////////////////////////////////////////////////////////////////////
 						titolList.add(aName);
@@ -3948,6 +3959,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ",シンプルなリスト表示="+pref_list_simple+ ":position="+position+",[id="+id+"]";////////"リスト；parent="+parent+",view="+view+
 			dbMsg += ",artist="+sousa_artist+ ":album="+sousa_alubm + ",titol=" + sousa_titol;
 			dbMsg += ",プレイリスト="+sousalistName;////////"リスト；parent="+parent+",view="+view+
+			setPrefStr( "nowList", String.valueOf(sousalistName),  MuList.this);     			//他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
+			setPrefStr( "nowList_id", String.valueOf(sousalistID),  MuList.this);
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				dbMsg +=",reqCode=" + reqCode;
 				switch(reqCode) {
@@ -5428,6 +5441,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			int audioID = Integer.valueOf((String)MuList.this.plAL.get(i).get(MediaStore.Audio.Playlists.Members.AUDIO_ID ));
 			dbMsg +=  ",audioID="+audioID;
 			String track = String.valueOf(MuList.this.plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
+			Util UTIL = new Util();
+			track = UTIL.checKTrack( track);
 			dbMsg +=  ",track="+track;
 			String dataURL = String.valueOf(MuList.this.plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
 			dbMsg +=  ",dataURL="+dataURL;
@@ -5697,6 +5712,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=  ",audioID="+audioID;
 			String track = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
 			dbMsg +=  ",track="+track;
+			Util UTIL = new Util();
+			track = UTIL.checKTrack( track);
 			String dataURL = String.valueOf(plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
 			dbMsg +=  ",dataURL="+dataURL;
 			String duration = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.DURATION ));
@@ -5803,6 +5820,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ",audioID="+audioID;
 			String track = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
 //			dbMsg +=  ",track="+track;
+			Util UTIL = new Util();
+			track = UTIL.checKTrack( track);
 			String dataURL = String.valueOf(plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
 			dbMsg +=  ",dataURL="+dataURL;
 			String duration = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.DURATION ));
@@ -7437,7 +7456,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					MuList.this.objMap.put("year" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR)) );
 					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER , playOrder +"" );
 					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.AUDIO_ID ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)) );
-					MuList.this.objMap.put("track" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)) );
+					String track = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+//					Util UTIL = new Util();
+					track = UTIL.checKTrack( track);
+					MuList.this.objMap.put("track" , track);
 					MuList.this.objMap.put("duration" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) );
 
 					MuList.this.plAL.add( objMap);
@@ -7449,7 +7471,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					values.put("ARTIST",artist);	//3.artist;クレジットアーティスト名
 					values.put("ALBUM_ARTIST",artist);		//4.album_artist
 					values.put("ALBUM",cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));				//5.album
-					values.put("TRACK",cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)));				//6.track;					//トラックNo,
+					values.put("TRACK", track);				//6.track;					//トラックNo,
 					values.put("TITLE",cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));				//7.title;					//タイトル
 					values.put("DURATION",cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));		//8.duration;				//再生時間
 					values.put("YEAR",cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR)));			//9.MediaStore.Audio.Media.YEAR
@@ -7645,7 +7667,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					if(0 == playOrder){
 						MuList.this.listTopFname = dataVal;							//リストの先頭ファイル名（プレイリスト作成時など）
 					}
-					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.TRACK ,  cursor.getString(cursor.getColumnIndex("TRACK")) );
+					String track = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+//					Util UTIL = new Util();
+					track = UTIL.checKTrack( track);
+					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.TRACK , track );
 					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.DURATION ,  cursor.getString(cursor.getColumnIndex("DURATION")) );
 //					dbMsg += "," + albumArtist ;
 

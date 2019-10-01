@@ -915,12 +915,10 @@ public class MyPreferences extends PreferenceActivity {
 			pref_file_wr =	context.getFilesDir().getPath();
 			dbMsg += ",設定保存フォルダ＝" + pref_file_wr;//////////////////
 			myEditor.putString ("pref_file_wr", pref_file_wr);
-
 			pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
 			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 			myEditor.putString ("pref_commmn_music", pref_commmn_music);
-
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
@@ -1098,8 +1096,6 @@ public class MyPreferences extends PreferenceActivity {
 				pref_sonota_vercord = now_vercord;
 				dbMsg += "このアプリのバージョンコード＝" + pref_sonota_vercord;//////////////////
 				myEditor.putInt ("pref_sonota_vercord", pref_sonota_vercord);
-
-//				myLog(TAG,dbMsg);
 				pref_reset = false;			//設定を初期化
 				dbMsg +=  "このダイアログを閉じたら設定を初期化"+pref_reset ;////////////////////////////////////////////////////////////////////////////
 				myEditor.putBoolean ("pref_reset", pref_reset);
@@ -1131,7 +1127,7 @@ public class MyPreferences extends PreferenceActivity {
 			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 			myEditor.putString ("pref_commmn_music", pref_commmn_music);
 
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}

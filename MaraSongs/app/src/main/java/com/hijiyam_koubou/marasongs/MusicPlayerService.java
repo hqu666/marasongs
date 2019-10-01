@@ -2558,7 +2558,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 			String c_selection = "DATA = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
 			String[] c_selectionArgs= { dataURL };   			// {"%" + artistMei + "%" , albumMei };
-			String c_orderBy= null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
+			String c_orderBy= null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			Cursor cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			dbMsg += ",getCount=" + cursor.getCount() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 			if( cursor.moveToFirst() ){

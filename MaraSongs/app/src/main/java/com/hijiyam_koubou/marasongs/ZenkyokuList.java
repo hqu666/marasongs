@@ -44,6 +44,8 @@ import android.widget.TextView;
 
 public class ZenkyokuList extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
 	OrgUtil ORGUT;				//自作関数集
+	Util UTIL;
+
 	MaraSonActivity MSA;
 	public Context cContext ;
 	public plogTaskCallback callback;
@@ -200,6 +202,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		try{
 			startPart = System.currentTimeMillis();		// 開始時刻の取得
 			ORGUT = new OrgUtil();				//自作関数集
+			UTIL = new Util();
+
 			dbMsg+="cContext=" + this.cContext;/////////////////////////////////////
 			if(this.cContext == null){
 				this.cContext = ZenkyokuList.this;
@@ -580,10 +584,15 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 				kakikae = false;
 				String rStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+				rStr = UTIL.checKTrack( rStr);
 				dbMsg = dbMsg + " ,[MediaStoreで " + rStr ;
 				String trackNo = map.get( "trackNo" );
 				dbMsg = dbMsg + ",MediaStoreから" + rStr + "/ファイル名から" + trackNo;
 				if( trackNo != null ){
+					if (trackNo.contains("/")){
+						String[] tStrs = trackNo.split("/");
+						trackNo = tStrs[0];
+					}
 					if( ! trackNo.equals(rStr) ){				//if(kakikae && trackNo != null ){
 						dbMsg = dbMsg + ">>" + trackNo;/////////////////////////////////////////////////////////////////////////////////////////////
 						ContentValues cv = new ContentValues();
@@ -855,10 +864,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					}
 				}
 			}
+			trackNo = UTIL.checKTrack( trackNo);
 			dbMsg=dbMsg + "[" + trackNo + "]";
 			trackNoList.add(trackNo);
 			ContentValues cv = new ContentValues();
-				cv.put(MediaStore.Audio.Media.TRACK, trackNo);
+			cv.put(MediaStore.Audio.Media.TRACK, trackNo);
 			String[] selectionArgs = {ｒID};
 			int rows = context.getContentResolver().update(uri, cv , where, selectionArgs);
 			dbMsg = dbMsg + "処理" + rows +"件";/////////////////////////////////////////////////////////////////////////////////////////////
@@ -1266,6 +1276,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				dbMsg += ">>" + readStr + "]" ;
 				readStr = String.valueOf(trackCount);
 			}
+			readStr = UTIL.checKTrack( readStr);
+			if (readStr.contains("/")){
+				String[] tStrs = readStr.split("/");
+				readStr = tStrs[0];
+			}
 			if(readStr.length() == 1){				//一桁なら
 				readStr="0"+readStr;				//先頭に0を付加
 			}
@@ -1530,7 +1545,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				String artistName;
 				do{
 					artistName =String.valueOf( tCursor.getString(tCursor.getColumnIndex("ALBUM_ARTIST")));		//最短アーティスト名		ALBUM_ARTIST	SORT_NAME"));	
-					String track = String.valueOf( tCursor.getString(tCursor.getColumnIndex("TRACK")));			//6.track;トラックNo,	
+					String track = String.valueOf( tCursor.getString(tCursor.getColumnIndex("TRACK")));			//6.track;トラックNo,
+					track = UTIL.checKTrack( track);
 					if(bArtistN.equals(artistName)){
 						onajiCount++;
 					}else{
@@ -3030,6 +3046,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					rTRACK="0"+rTRACK;
 				}
 				dbMsg += ">>ら" + rTRACK;
+			} else{
+				rTRACK = UTIL.checKTrack( rTRACK);
 			}
 			if( rStr == null){
 				kakikae = true ;

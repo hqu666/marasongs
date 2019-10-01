@@ -24,9 +24,10 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 	public int albumPosition;
 	public String sucssesPass;			//実際に読み出せたアルバムアートのパス
 
+
 	public MyTreeAdapter(ArrayList<MyTreeAdapter> tList) {
 		final String TAG = "MyTreeAdapter[MyTreeAdapter]";
-		String dbMsg= "開始";/////////////////////////////////////
+		String dbMsg= "開始";
 		try{
 			if(tList != null){
 				if(0 < tList.size()){
@@ -47,9 +48,9 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final String TAG = "getView[MyTreeAdapter]";
-		String dbMsg= "開始";/////////////////////////////////////
+		String dbMsg= "[MyTreeAdapter]";
 		try{
-			dbMsg= "position= " + position;
+			dbMsg += "position= " + position;
 		//	dbMsg +=",convertView= " + convertView;
 	//		dbMsg +=",parent= " + parent;
 			if(convertView == null) {
@@ -60,7 +61,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 			}
 			TreeEntry treeEntry = (TreeEntry)getItem(position);
 			ImageView lrow_image = (ImageView) convertView.findViewById(R.id.iconView);						//mIconView = (ImageView) findViewById(R.id.lrow_image);
-			dbMsg= "mIconView=" + lrow_image;
+			dbMsg += "mIconView=" + lrow_image;
 			TextView mainText = (TextView) convertView.findViewById(R.id.titleView);					//mTitleView = (TextView) findViewById(R.id.row_main_tv);
 			TextView subText = (TextView) convertView.findViewById(R.id.descriptionView);		//mDescriptionView = (TextView) findViewById(R.id.row_sub_tv);
 			TextView nomText = (TextView) convertView.findViewById(R.id.noView);							//番号表示
@@ -119,12 +120,12 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					String listMei = treeEntry.getPlaylistNAME();
 					if( listMei.equals(String.valueOf(parent.getResources().getString(R.string.playlist_namae_saikintuika))) ){				//最近追加
 						String date_modified = treeEntry.getModified();
-						dbMsg=dbMsg+ ",date_modified="+date_modified;
+						dbMsg +=  ",date_modified="+date_modified;
 						if( date_modified != null ){
 							SimpleDateFormat sdffiles = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 							date_modified = sdffiles.format(new Date(Long.valueOf(date_modified)*1000));
 							date_modified  = parent.getContext().getResources().getString(R.string.pref_file_saisinn) + " ; "  + date_modified;
-							dbMsg=dbMsg+ ">>"+date_modified;
+							dbMsg +=  ">>"+date_modified;
 							str = date_modified  + "\n";
 						}
 					}
@@ -132,13 +133,13 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					if( albumYear != null ){
 						if( ! albumYear.equals("null") ){
 							albumYear  = parent.getContext().getResources().getString(R.string.fie_year) + " ; "  + albumYear;
-							dbMsg=dbMsg+ ",albumYear="+albumYear;
+							dbMsg +=  ",albumYear="+albumYear;
 							str = str + albumYear;
 						}
 					}
 					subText.setText(str);
 					albumID = treeEntry.getAlbumID();
-					dbMsg=dbMsg+ ",albumID="+albumID;
+					dbMsg +=  ",albumID="+albumID;
 					setIMG(  parent ,  albumID , lrow_image);						//アルバムアート描画
 					break;
 				default:
@@ -152,18 +153,18 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				mainText.setBackgroundColor(Color.rgb(0, 0, 0));
 //				mainText.setBackgroundColor(color.black);
 				String albumArtistName = treeEntry.getAlbumArtistName();
-				dbMsg=dbMsg+ ",albumArtistName="+albumArtistName;
+				dbMsg +=  ",albumArtistName="+albumArtistName;
 				String ArtistName = treeEntry.getArtistName();
-				dbMsg=dbMsg+ ",ArtistName="+ArtistName;
+				dbMsg +=  ",ArtistName="+ArtistName;
 				
 	//			int pOrder = position + 1;
 				String rStr = " " + String.valueOf(pOrder)+",";
 				String duration = treeEntry.getDuration();
-				dbMsg=dbMsg+ ",duration="+duration;
+				dbMsg +=  ",duration="+duration;
 				if(duration != null){
 					SimpleDateFormat sdf_ms = new SimpleDateFormat("mm:ss");
 					duration = sdf_ms.format(new Date(Long.valueOf(duration)));
-					dbMsg=dbMsg+ ",duration="+duration;
+					dbMsg +=  ",duration="+duration;
 				}
 				String artistInfo = null;
 				if(! albumArtistName.equals(ArtistName)){
@@ -193,23 +194,25 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					dbMsg +="[" + rStr +"]";
 			//		nomText.setText(rStr);
 					rStr = rStr + ")"+treeEntry.getArtistName();
-					dbMsg +=",Artist=" + rStr ;
+					dbMsg += ",Artist=" + rStr ;
 					if(duration != null){
 						rStr = rStr + "  [ "+duration +" ]";
 					}
 					subText.setText(rStr);
 					albumID = treeEntry.getAlbumID();
-					dbMsg=dbMsg+ ",albumID="+albumID;
+					dbMsg += ",albumID="+albumID;
 					setIMG(  parent ,  albumID , lrow_image);						//アルバムアート描画
 					break;
 				default:
 					dbMsg +=",albumPosition= " + albumPosition ;
 					int rInt = position - albumPosition;
 					String playlistNAME = treeEntry.getPlaylistNAME();
-					dbMsg=dbMsg+ ",playlistNAME="+playlistNAME;
+					dbMsg += ",playlistNAME="+playlistNAME;
 					if(playlistNAME.equals(String.valueOf(parent.getContext().getResources().getString(R.string.listmei_zemkyoku)))){	// 全曲リスト
 						String track = treeEntry.getTrack();
-						dbMsg=dbMsg+ ",track="+track;
+						dbMsg +=  ",track="+track;
+						Util UTIL = new Util();
+						track = UTIL.checKTrack( track);
 						rInt = Integer.valueOf(track);
 					}
 					rStr = " " + String.valueOf(rInt)+",";
@@ -219,9 +222,9 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					nomText.setText(rStr);
 					leftPad = 45;								//rowDepth * 45;
 					int playListID = treeEntry.getPlayListID();
-					dbMsg=dbMsg+ ",playListID="+playListID;
+					dbMsg +=  ",playListID="+playListID;
 					int playOrder = treeEntry.getPlayOrder();
-					dbMsg=dbMsg+ ",playOrder="+playOrder;
+					dbMsg += ",playOrder="+playOrder;
 					str = "";
 					if(! albumArtistName.equals(ArtistName)){
 						str =ArtistName;

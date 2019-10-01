@@ -1838,7 +1838,7 @@ public class MaraSonActivity extends AppCompatActivity
 								dbMsg=dbMsg+",album="+MaraSonActivity.this.albumMei;		//アルバム名
 								String c_selection = "ALBUM_ARTIST = ? AND ALBUM = ?";			// LIKE
 								String[] c_selectionArgs= { MaraSonActivity.this.artistMei , MaraSonActivity.this.albumMei };   			//	 {"%" + artistMei + "%" , albumMei };
-								String c_orderBy= null;		//"TRACK";				//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+								String c_orderBy= null;					//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 								Cursor cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, c_orderBy);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
 								titolTotal = cursor.getCount();
 								dbMsg += "；" + MaraSonActivity.this.titolTotal + "件" + titolName +"を検索";
@@ -5745,12 +5745,12 @@ public class MaraSonActivity extends AppCompatActivity
 //						dbMsg +=  ">pref2>" + dataFN;////////////////////////////////////////////////////////////////////////////
 //					}
 //				}
-				int mIndex = extras.getInt("mIndex");
-				dbMsg += "[mIndex"+ mIndex +"]";
-				if(mIndex <= 0){
-					mIndex = Item.getMPItem( dataFN );			//インデックスの逆検索	, mItems  ,getApplicationContext()
-					dbMsg += ">>[mIndex;"+ mIndex +"]";
-				}
+				int mIndex = Item.getMPItem( dataFN );			//extras.getInt("mIndex");
+				dbMsg += "[mIndex"+ mIndex + "/"+ mItems.size() +"]";
+//				if(mIndex <= 0){
+//					mIndex = Item.getMPItem( dataFN );			//インデックスの逆検索	, mItems  ,getApplicationContext()
+//					dbMsg += ">>[mIndex;"+ mIndex +"]";
+//				}
 				Item playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
 				int reqCode = extras.getInt("reqCode");
 				dbMsg +=",reqCode="+ reqCode ;
