@@ -111,6 +111,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
 	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 	public OrgUtil ORGUT;						//自作関数集
+	public Util UTIL;
+
 	public MaraSonActivity MSA ;				//メインアクティビティ
 	public Locale locale;							// アプリで使用されているロケール情報を取得
 
@@ -5264,6 +5266,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						MuList.this.objMap.put("DATA" ,cVal );
 						MuList.this.saisei_fnameList.add(cVal);
 						dbMsg2=dbMsg2+ "="+cVal;
+					}else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
+						String cVal = playLists.getString(i);
+						cVal = UTIL.checKTrack( cVal);
+						MuList.this.objMap.put(cName ,cVal );
 					}else{
 						String cVal = playLists.getString(i);
 						if(cVal != null){
@@ -5292,7 +5298,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 			MuList.this.objMap.put("img" , ORGUT.retAlbumArtUri( getApplicationContext() , ArtistName , AlbumName ) );			//アルバムアートUriだけを返す
 			MuList.this.plAL.add( objMap);
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + " の " + dbMsg2 + "で" + e);
 		}
@@ -5300,7 +5306,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	/**取得されたPlayListのメンバーを条件に合わせてリストに書き込む*/
-	public void CreatePLListEnd() {		//プレイリストの内容取得
+	public void CreatePLListEnd() {		//プレイリストの内容取得            指定
 		final String TAG = "CreatePLListEnd";
 		String dbMsg = "[MuList]";
 		try{
@@ -5712,7 +5718,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=  ",audioID="+audioID;
 			String track = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
 			dbMsg +=  ",track="+track;
-			Util UTIL = new Util();
 			track = UTIL.checKTrack( track);
 			String dataURL = String.valueOf(plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
 			dbMsg +=  ",dataURL="+dataURL;
@@ -9792,7 +9797,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						dbMsg += "全曲リスト";
 						//		dbMsg +=  dbMsg  +">mItems>" + mItems;/////////////////////////////////////
 						dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
-						if(mItems !=null){
+						if(mItems != null){
 							Item.itemsClear();		//要素を全消去
 						}
 						mItems = Item.getItems( getApplicationContext());
@@ -9973,9 +9978,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							sousalistID = nowList_id;
 							sousalistName = nowList;
 							dbMsg += "[" + sousalistID + "]" + sousalistName;
-
-//							String pdMessage = pdMessage + "\n\n" + nowListSub;
-							CreatePLList(Long.valueOf(nowList_id) , nowList);									//プレイリストの内容取得
+							if(mItems == null){
+								mItems = Item.getItems( getApplicationContext());
+							}
+							mIndex = Item.getMPItem( senntakuItem );
+							dbMsg += "[" + mIndex + "/" + mItems.size() + "件]";
+							if(treeAdapter == null){
+								CreatePLList(Long.valueOf(nowList_id) , nowList);									//プレイリストの内容取得
+							}
 
 						}else if(nowList.equals(String.valueOf(getResources().getString(R.string.playlist_namae_saikinsisei)))){
 							dbMsg += ",最近再生";
@@ -10051,6 +10061,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			shigot_bangou = 0;
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
+			UTIL = new Util();
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
 			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
 			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点
