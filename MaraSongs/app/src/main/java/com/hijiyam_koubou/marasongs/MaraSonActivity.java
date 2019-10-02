@@ -1329,19 +1329,34 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg += "検索対象；" + urlStr;
 			dbMsg += "、mIndex；" + mIndex;
-			if(urlStr == null || urlStr.equals("")) {
-				if(0 < mIndex) {
-					urlStr = playingItem.data;
-				}
+			if( mItems == null){
+				Item.itemsClear();
+				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+				mItems = Item.getItems( this);
+				dbMsg += "、mItems作り直し；" + mItems.size() + "件";
+
 			}
-			dbMsg += ">>" + urlStr;
-			if(urlStr == null || urlStr.equals("")) {
+
+			if(urlStr == null || urlStr.equals("") ||  urlStr.equals("null")) {
+				urlStr = null;
 				urlStr = getPrefStr( "saisei_fname" ,"" , MaraSonActivity.this);
 				dbMsg += ">saisei_fname>" + urlStr;
-			}
-			if(urlStr == null || urlStr.equals("")) {
-				urlStr = getPrefStr( "dataURL" ,"" , MaraSonActivity.this);
-				dbMsg += ">dataURL>" + urlStr;
+				if(urlStr == null || urlStr.equals("")) {
+					urlStr = getPrefStr( "dataURL" ,"" , MaraSonActivity.this);
+					dbMsg += ">dataURL>" + urlStr;
+					if(urlStr == null || urlStr.equals("")) {
+						if( -1 < mIndex){
+							urlStr = Item.getURI(MaraSonActivity.this , mIndex).toString();
+						}
+						dbMsg += ">dataURL>" + urlStr;
+							if(urlStr == null || urlStr.equals("")) {
+							if(playingItem != null) {
+								urlStr = playingItem.data;
+								dbMsg += ">>" + urlStr;
+							}
+						}
+					}
+				}
 			}
 			if(urlStr == null || urlStr.equals("")) {
 			}else{
@@ -1349,11 +1364,6 @@ public class MaraSonActivity extends AppCompatActivity
 				start = System.currentTimeMillis();		// 開始時刻の取得
 				dbMsg += "(List_id=" + "nowList_id=" + nowList_id +")" + nowList ;
 				toolbar.setTitle(nowList);
-				if( mItems == null){
-					Item.itemsClear();
-					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-					mItems = Item.getItems( this);
-				}
 				mIndex = Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
 				dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
 				if(mIndex < 0 ){					//読み込んだリストに該当する曲が無ければ

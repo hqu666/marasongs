@@ -55,7 +55,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		this.data = data;
 	}
 
-	public Uri getURI(Context context , int id) {		//playNextSong[MusicPlayerService]でsetDataSource
+	public static Uri getURI(Context context , int id) {		//playNextSong[MusicPlayerService]でsetDataSource
 		final String TAG = "getURI[Item]";
 		String dbMsg= "開始;";/////////////////////////////////////
 		Uri retUri = null;
