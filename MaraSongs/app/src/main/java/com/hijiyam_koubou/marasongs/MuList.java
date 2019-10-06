@@ -7511,9 +7511,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String albumArtist = UTIL.getAlbumArtist(cursor);
 			dbMsg +=",albumArtist="+ albumArtist;
 			String dataFN = getPrefStr( "saisei_fname" ,"" , MuList.this);
-			ZenkyokuHelper workHelper = new ZenkyokuHelper(MuList.this , workTable);        //周防会作成時はここでonCreatが走る
+			ZenkyokuHelper workHelper = new ZenkyokuHelper(MuList.this , workTable);
 			SQLiteDatabase workDb = workHelper.getWritableDatabase();
 			workHelper.onCreate(workDb);
+			String artistID = "";
+			String alubmID = "";
 
 			if(cursor.moveToFirst()){
 				do{
@@ -7542,15 +7544,17 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						composer = albumArtist;
 					}
 					String lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));				//13.MediaStore.Audio.Albums.LAST_YEAR
-
+					if(0 == cursor.getPosition()){
+						artistID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+						alubmID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+					}
 					workDb.insert(workTable, null, UTIL.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );////データベース書込み//
-//					newSongDb.insert(workTable, null,  UTIL.writetOneDBRecord(playOrder,audio_id,albumArtist,artistName,albumName,titolName,dataVal,track,duration , year , composer ,lastYear) );////データベース書込み//
 				}while(cursor.moveToNext());		// && listUpCount < listUpDates
 			}
 			cursor.close();
 			cursor = workDb.query(workTable , null , null , null , null , null , c_orderBy);
 			rCount = cursor.getCount();
-			dbMsg +="\n;" + workTable + "に" + rCount + "件";
+			dbMsg +="\n;" + workTable + "に" + rCount + "件;trackで再ソート";
 
 			if(cursor.moveToFirst()){
 				do{
@@ -7561,8 +7565,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					dbMsg += "を"+ playOrder + "曲目に";
 					String track = cursor.getString(cursor.getColumnIndex("TRACK"));
 					dbMsg += "["+ track + "]";
-//					track = UTIL.checKTrack( track);
-//					dbMsg += ">>"+ track + "]";
 					String dataVal = cursor.getString(cursor.getColumnIndex("DATA"));
 					dbMsg += ",dataVal="+ dataVal;
 					String artistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
@@ -7581,7 +7583,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					String composer = cursor.getString(cursor.getColumnIndex("COMPOSER"));
 					String lastYear = cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
 
-					MuList.this.plAL.add( UTIL.writetOneListRecord( playOrder, audioID, albumArtist,artistName, albumName, titolName, dataVal, track, duration, year, modified) );
+					MuList.this.plAL.add( UTIL.writetOneListRecord( playOrder, audioID, albumArtist,artistName, albumName, titolName, dataVal, track, duration, year, modified,artistID,alubmID) );
 					//データベース書込み/////////////////////////////////////////////////
 					newSongDb.insert(MuList.this.saikintuikaTablename, null,  UTIL.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );
 					/////////////////////////////////////////////////データベース書込み//

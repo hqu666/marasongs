@@ -673,7 +673,7 @@ public class Util {
 
 	/**
 	 *  プレイリスト用の1レコード**/
-	public HashMap< String, Object > writetOneListRecord(int playOrder,String audioID,String albumArtist,String artistName,String albumName,String titolName,String dataVal,String track,String duration,String year,String modified) {
+	public HashMap< String, Object > writetOneListRecord(int playOrder,String audioID,String albumArtist,String artistName,String albumName,String titolName,String dataVal,String track,String duration,String year,String modified,String artistID,String alubmID) {
 		final String TAG = "writetOneListRecord";
 		String dbMsg = "[util]";
 		HashMap< String, Object > objMap = new HashMap< String, Object >();
@@ -689,8 +689,8 @@ public class Util {
 			objMap.put(MediaStore.Audio.Playlists.Members.TRACK ,  track );
 			dbMsg += ",duration=" + duration;
 			objMap.put(MediaStore.Audio.Playlists.Members.DURATION , duration);
-//			objMap.put("artist_id" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)) );
-//			objMap.put("album_id" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) );
+			objMap.put("artist_id" ,artistID);
+			objMap.put("album_id" , alubmID);
 			dbMsg += ",modified=" + modified;
 			objMap.put("date_modified" ,modified);
 			objMap.put("year" ,year);
