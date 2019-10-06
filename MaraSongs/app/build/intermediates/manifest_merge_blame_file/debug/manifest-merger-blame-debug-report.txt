@@ -58,7 +58,7 @@
 32        android:allowTaskReparenting="true"
 32-->H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:27:3-38
 33        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
-33-->[com.android.support:support-compat:28.0.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\dd1cf78f22bdd94f550130b281f27c97\support-compat-28.0.0\AndroidManifest.xml:22:18-91
+33-->[com.android.support:support-compat:28.0.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\ccf94a4f227dfa4f17156620e28a8b98\support-compat-28.0.0\AndroidManifest.xml:22:18-91
 34        android:debuggable="true"
 35        android:icon="@drawable/ic_launcher"
 35-->H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:25:3-39
@@ -270,7 +270,7 @@
 141            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
 141-->H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:111:4-113
 142            android:exported="false"
-142-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\e911aa4b885f4c84fa5ed24d0442f908\play-services-ads-lite-17.2.0\AndroidManifest.xml:32:13-37
+142-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\f9abf787ad0d9a940b794b68a84001fe\play-services-ads-lite-17.2.0\AndroidManifest.xml:32:13-37
 143            android:theme="@android:style/Theme.Translucent" />
 143-->H:\develop\an\workspace\marasong\MaraSongs\app\src\main\AndroidManifest.xml:112:4-52
 144        <activity
@@ -282,15 +282,15 @@
 147        </activity>
 148
 149        <provider
-149-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\e911aa4b885f4c84fa5ed24d0442f908\play-services-ads-lite-17.2.0\AndroidManifest.xml:35:9-39:39
+149-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\f9abf787ad0d9a940b794b68a84001fe\play-services-ads-lite-17.2.0\AndroidManifest.xml:35:9-39:39
 150            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
-150-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\e911aa4b885f4c84fa5ed24d0442f908\play-services-ads-lite-17.2.0\AndroidManifest.xml:36:13-76
+150-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\f9abf787ad0d9a940b794b68a84001fe\play-services-ads-lite-17.2.0\AndroidManifest.xml:36:13-76
 151            android:authorities="com.hijiyam_koubou.marasongs.mobileadsinitprovider"
-151-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\e911aa4b885f4c84fa5ed24d0442f908\play-services-ads-lite-17.2.0\AndroidManifest.xml:37:13-73
+151-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\f9abf787ad0d9a940b794b68a84001fe\play-services-ads-lite-17.2.0\AndroidManifest.xml:37:13-73
 152            android:exported="false"
-152-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\e911aa4b885f4c84fa5ed24d0442f908\play-services-ads-lite-17.2.0\AndroidManifest.xml:38:13-37
+152-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\f9abf787ad0d9a940b794b68a84001fe\play-services-ads-lite-17.2.0\AndroidManifest.xml:38:13-37
 153            android:initOrder="100" />
-153-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\e911aa4b885f4c84fa5ed24d0442f908\play-services-ads-lite-17.2.0\AndroidManifest.xml:39:13-36
+153-->[com.google.android.gms:play-services-ads-lite:17.2.0] H:\develop\an\.gradle\caches\transforms-2\files-2.1\f9abf787ad0d9a940b794b68a84001fe\play-services-ads-lite-17.2.0\AndroidManifest.xml:39:13-36
 154    </application>
 155
 156</manifest>

@@ -918,7 +918,7 @@ public class MyPreferences extends PreferenceActivity {
 			pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
 			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 			myEditor.putString ("pref_commmn_music", pref_commmn_music);
-//			myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
@@ -1127,7 +1127,7 @@ public class MyPreferences extends PreferenceActivity {
 			dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 			myEditor.putString ("pref_commmn_music", pref_commmn_music);
 
-//			myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}

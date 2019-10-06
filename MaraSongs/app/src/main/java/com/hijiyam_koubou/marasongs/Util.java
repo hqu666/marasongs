@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Util {
@@ -520,8 +521,25 @@ public class Util {
 				String[] tStrs = checkStr.split("/");
 				rStr = tStrs[0];
 				dbMsg += ">>" + rStr;
-				myLog(TAG, dbMsg);
+//				myLog(TAG, dbMsg);
 			}
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return rStr;
+	}
+
+	public String setTrackStr( String checkStr ,int discNo) {
+		final String TAG = "checKTrack";
+		String dbMsg = "[util]";
+		String rStr = checKTrack(checkStr);;
+		try {
+			dbMsg += "," + rStr;
+			int trNo= Integer.parseInt(rStr);
+			trNo = 1000 * discNo + trNo;
+			rStr = trNo +"";
+				dbMsg += ">>" + rStr;
+//				myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -653,6 +671,70 @@ public class Util {
 		}
 	}
 
+	/**
+	 *  プレイリスト用の1レコード**/
+	public HashMap< String, Object > writetOneListRecord(int playOrder,String audioID,String albumArtist,String artistName,String albumName,String titolName,String dataVal,String track,String duration,String year,String modified) {
+		final String TAG = "writetOneListRecord";
+		String dbMsg = "[util]";
+		HashMap< String, Object > objMap = new HashMap< String, Object >();
+		try {
+			dbMsg += ",albumArtist=" + albumArtist;
+			objMap.put("album_artist" ,albumArtist );
+			dbMsg += ",artistName=" + artistName;
+			objMap.put(MediaStore.Audio.Playlists.Members.ARTIST ,  artistName );
+			objMap.put("album" ,albumName ); //					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.ALBUM , AlbumName);
+			objMap.put("title" ,titolName); //					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.TITLE , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)) );
+			objMap.put("_data" ,dataVal );
+			dbMsg += ",track=" + track;
+			objMap.put(MediaStore.Audio.Playlists.Members.TRACK ,  track );
+			dbMsg += ",duration=" + duration;
+			objMap.put(MediaStore.Audio.Playlists.Members.DURATION , duration);
+//			objMap.put("artist_id" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)) );
+//			objMap.put("album_id" ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) );
+			dbMsg += ",modified=" + modified;
+			objMap.put("date_modified" ,modified);
+			objMap.put("year" ,year);
+			dbMsg += ",playOrder=" + playOrder;
+			objMap.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER , playOrder +"" );
+			objMap.put(MediaStore.Audio.Playlists.Members.AUDIO_ID ,audioID);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return objMap;
+	}
+
+	/**
+	 *  デーエタベース用の1レコード**/
+	public ContentValues writetOneDBRecord(int pOrder,String audioID,String albumArtist,String artistName,String albumName,String titolName,String dataVal,String track,String duration,String year,String modified,String composer,String lastYear) {
+		final String TAG = "writetOneDBRecord";
+		String dbMsg = "[util]";
+		ContentValues values = new ContentValues();
+		try {
+//			values.put("_id",  pOrder);     			//作成したリストの連番
+			values.put("AUDIO_ID",audioID);		//1.元々のID
+//					String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			values.put("SORT_NAME",albumArtist);	//2.ALBUM_ARTISTを最短化して大文字化
+			values.put("ARTIST",artistName);	//3.artist;クレジットアーティスト名
+			values.put("ALBUM_ARTIST",albumArtist);		//4.album_artist
+			values.put("ALBUM",albumName);				//5.album
+			values.put("TRACK", setTrackStr( track , 1));				//6.track;					//トラックNo,
+			values.put("TITLE",titolName);				//7.title;					//タイトル
+			values.put("DURATION",duration);		//8.duration;				//再生時間
+			values.put("YEAR",year);			//9.MediaStore.Audio.Media.YEAR
+			values.put("DATA",dataVal );						//10.data;	cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))				//URI
+			values.put("MODIFIED",modified);					//MODIFIED11.idkousinnbi = cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
+			values.put("COMPOSER",composer);							//12.idcomposer = cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER);
+			values.put("LAST_YEAR",lastYear);
+
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return values;
+	}
+
+
+	/**
+	 *  誰名義のアルバムかを返す**/
 	public String getAlbumArtist( Cursor carsor ) {
 		final String TAG = "getAlbumArtist";
 		String dbMsg = "[util]";
@@ -668,6 +750,13 @@ public class Util {
 						albumArtist = artistName;
 					} else {
 						if ( !artistName.equals(albumArtist) ) {
+							if ( -1 < albumArtist.indexOf(artistName) ) {
+								dbMsg += ",albumArtistに含まれる";
+								albumArtist = artistName;
+							}else if(albumArtist.equals("")|| albumArtist.contains("アーティスト情報")){
+								dbMsg += ",albumArtist情報なし";
+								albumArtist = artistName;
+							}
 							if ( artistName.startsWith(albumArtist) ) {
 								dbMsg += ",初めが同じ";
 							} else if ( artistName.endsWith(albumArtist) ) {

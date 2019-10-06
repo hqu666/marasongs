@@ -26,7 +26,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 public class Item implements Comparable<Object> {	// 外部ストレージ上の音楽をあらわすクラス。
-
 	//プリファレンス
 	public static SharedPreferences sharedPref;
 	public Editor myEditor ;
@@ -130,41 +129,42 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	public static List<Item> dbRecordAddItems(Cursor cursor , int nowList_id ,int idCount , List<Item> items) {
 		final String TAG = "dbRecordAddItems";
 		String dbMsg = "[Item];";
-		String dbMsg2 = "";
 		try{
-			dbMsg = "," + cursor.getPosition() + "/" + cursor.getCount() + "曲目,idCount=" + idCount;
-			String ARTIST = cursor.getString(cursor.getColumnIndex("ARTIST"));
-			dbMsg += ",ARTIST=" + ARTIST;
-			String ALBUM_ARTIST = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
-			dbMsg += ",ALBUM_ARTIST=" + ALBUM_ARTIST;
-			String ALBUM = cursor.getString(cursor.getColumnIndex("ALBUM"));
-			dbMsg += ",ALBUM=" + ALBUM;
-			String TRACK = cursor.getString(cursor.getColumnIndex("TRACK"));
-			dbMsg += ",TRACK=" + TRACK;
-			if (TRACK.contains("/")){
-				String[] tStrs = TRACK.split("/");
-				TRACK = tStrs[0];
-			}
-			String TITLE = cursor.getString(cursor.getColumnIndex("TITLE"));
-			dbMsg += ",TITLE=" + TITLE;
-			String DURATION = cursor.getString(cursor.getColumnIndex("DURATION"));
-			dbMsg += ",DURATION=" + DURATION;
-//									String moh = stf.format(new Date(Long.valueOf(DURATION)));
-//									dbMsg += ">>" + moh;
+			dbMsg += "," + cursor.getPosition() + "/" + cursor.getCount() + "曲目,idCount=" + idCount;
+			String ArtistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
+			dbMsg += ",ARTIST=" + ArtistName;
+			String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+			dbMsg += " : " + albumArtist;
+			String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+			dbMsg += ",ALBUM=" + albumName;
+			String trackVar = cursor.getString(cursor.getColumnIndex("TRACK"));
+			dbMsg += ",TRACK=" + trackVar;
+			Util UTIL = new Util();
+			trackVar = UTIL.checKTrack(trackVar);
+//			if (trackVar.contains("/")){
+//				String[] tStrs = trackVar.split("/");
+//				trackVar = tStrs[0];
+//			}
+			String titleNeme = cursor.getString(cursor.getColumnIndex("TITLE"));
+			dbMsg += ",TITLE=" + titleNeme;
+			String duration = cursor.getString(cursor.getColumnIndex("DURATION"));
+			dbMsg += ",DURATION=" + duration;
+			String moh = UTIL.stf.format(new Date(Long.valueOf(duration)));
+			dbMsg += "=" + moh;
 				//I'll Be Alright
-			String DATA = cursor.getString(cursor.getColumnIndex("DATA"));
-			dbMsg += ",DATA=" + DURATION;
+			String dataUrl = cursor.getString(cursor.getColumnIndex("DATA"));
+			dbMsg += ",DATA=" + dataUrl;
 
 			items.add(new Item(
 					nowList_id,
 					idCount,				//id	Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))
-					cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
-					cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
-					cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
-					Integer.parseInt(TRACK),		//track
-					cursor.getString(cursor.getColumnIndex("TITLE")),								//title
-					Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
-					cursor.getString(cursor.getColumnIndex("DATA"))								//data
+					ArtistName,						//cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
+					albumArtist,				//cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
+					albumName,					//cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
+					Integer.parseInt(trackVar),		//track
+					titleNeme,				//cursor.getString(cursor.getColumnIndex("TITLE")),								//title
+					Long.valueOf(duration),					//Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
+					dataUrl								//cursor.getString(cursor.getColumnIndex("DATA"))								//data
 			));
 				//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
 //								dbMsg2 += items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
@@ -173,7 +173,9 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 //								dbMsg2 += ",LAST_YEAR=" + cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
 
 //			}
-//			myLog(TAG,dbMsg );
+			if(!ArtistName.equals(albumArtist) && !albumArtist.equals("コンピレーション")){
+				myLog(TAG,dbMsg );
+			}
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 			Util UTIL = new Util();
@@ -288,22 +290,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							do{
 								dbMsg2 = cursor.getPosition() + "/" + cursor.getCount() + "曲目";
 								items = dbRecordAddItems(cursor , nowList_id ,idCount , items);
-//								items.add(new Item(
-//										nowList_id,
-//										idCount,				//id	Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))
-//										cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
-//										cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
-//										cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
-//										Integer.parseInt(cursor.getString(cursor.getColumnIndex("TRACK"))),		//track
-//										cursor.getString(cursor.getColumnIndex("TITLE")),								//title
-//										Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
-//										cursor.getString(cursor.getColumnIndex("DATA"))								//data
-//								));
-//								//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
-//								dbMsg2 += items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
-//											   items.get(items.size()-1).album +"[" + items.get(items.size()-1).track +"]"+items.get(items.size()-1).title+" >> "+items.get(items.size()-1).data;/////////////////////////////////////
-//								dbMsg2 += ",YEAR=" + cursor.getString(cursor.getColumnIndex("YEAR"));
-//								dbMsg2 += ",LAST_YEAR=" + cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
 								idCount++;
 							}while(cursor.moveToNext());
 						}

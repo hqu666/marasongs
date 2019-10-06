@@ -5721,7 +5721,15 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ",extrasから" ;/////////////////////////////////////
 				receiverHaki();		//レシーバーを破棄
 				String dataFN = getPrefStr( "saisei_fname" ,"" , MaraSonActivity.this);
-				dbMsg +=  "," + dataFN ;////////////////////////////////////////////////////////////////////////////
+				dbMsg +=  "," + dataFN ;
+				if(dataFN == null){
+					dataFN = getPrefStr( "data" ,"" , MaraSonActivity.this);
+					dbMsg +=  ">data>" + dataFN ;
+					if(dataFN == null){
+						dataFN = getPrefStr( "pref_saisei_fname" ,"" , MaraSonActivity.this);
+						dbMsg +=  ">pref_saisei_fname>" + dataFN ;
+					}
+				}
 				if( mItems != null ){
 					dbMsg += ",mItems="+mItems.size() +"件";
 				} else {
