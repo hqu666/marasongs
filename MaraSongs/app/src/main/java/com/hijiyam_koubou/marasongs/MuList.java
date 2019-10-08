@@ -5748,6 +5748,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg +=  "[" +i +"/" + plAL.size() + "]";///////////////////////////////////////////////////////////////////////////////////////////
+//			if(i == 0){
+//				MuList.this.b_artist =  "";
+//			}
 			String AlbumArtistName =  (String) plAL.get(i).get("album_artist");
 			dbMsg +=  ",AlbumArtist="+AlbumArtistName;
 			String ArtistName =  (String) plAL.get(i).get(MediaStore.Audio.Playlists.Members.ARTIST );
@@ -5757,18 +5760,30 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				if(ArtistName == null){
 					AlbumArtistName = getResources().getString(R.string.bt_unknown);			//不明
 					ArtistName = getResources().getString(R.string.bt_unknown);			//不明
-				}else{
-					if(-1 < ArtistName.indexOf(MuList.this.b_artist) ) {	//クレジットされたアーティスト名に前曲のアルバムアーティスト名が含まれれば
+				}else if(MuList.this.b_artist !=  null){
+					dbMsg += ",b_artist=" + MuList.this.b_artist;
+					if(i == 0) {
+						AlbumArtistName = ArtistName;					//次のアーティスト
+					}else if(-1 < ArtistName.indexOf(MuList.this.b_artist)) {	//クレジットされたアーティスト名に前曲のアルバムアーティスト名が含まれれば
 						AlbumArtistName = MuList.this.b_artist;				//アルバム名義は同一
 					} else{                                              //それでも無ければ
 						AlbumArtistName = ArtistName;					//次のアーティスト
 					}
+				}else if(ArtistName !=  null){                                         //それでも無ければ
+					AlbumArtistName = ArtistName;					//次のアーティスト
 				}
-				dbMsg += ">>"+AlbumArtistName;
-//			}else{
-//				AlbumArtistName = ArtistName;
-//				dbMsg +=  ">>AlbumArtist="+AlbumArtistName;
+				dbMsg += ">AlbumArtist>" + AlbumArtistName;
+			}else if(ArtistName !=  null){                                         //それでも無ければ
+				if(i == 0) {
+					AlbumArtistName = ArtistName;					//次のアーティスト
+				}else if(-1 < ArtistName.indexOf(MuList.this.b_artist)) {	//クレジットされたアーティスト名に前曲のアルバムアーティスト名が含まれれば
+					AlbumArtistName = MuList.this.b_artist;				//アルバム名義は同一
+				} else{                                              //それでも無ければ
+					AlbumArtistName = ArtistName;					//次のアーティスト
+				}
+				dbMsg +=  ">>AlbumArtist="+AlbumArtistName;
 			}
+
 			String AlbumName =  (String) plAL.get(i).get(MediaStore.Audio.Playlists.Members.ALBUM );
 			dbMsg +=  ",Album="+AlbumName;
 			if( AlbumName == null ){
