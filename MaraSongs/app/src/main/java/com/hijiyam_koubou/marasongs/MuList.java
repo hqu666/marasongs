@@ -3813,6 +3813,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
 				mReceiver = new MusicReceiver();
 				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
+				//that was originally registered here. Are you missing a call to unregisterReceiver()?
 				dbMsg +=">生成>=" + mReceiver;////////////////////////
 //				showMyPlayer(mItems);					//プレイヤー表示
 			} else{
@@ -5740,7 +5741,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	/**
-	 * 3階層プレイリストの作成
+	 * 3階層プレイリストの作成 ; plALから読取り
 	 * */
 	public void plWrightBody(int i) {		//プレイリストの描画
 		final String TAG = "plWrightBody";
@@ -5751,12 +5752,17 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=  ",AlbumArtist="+AlbumArtistName;
 			String ArtistName =  (String) plAL.get(i).get(MediaStore.Audio.Playlists.Members.ARTIST );
 			dbMsg +=  ",Artist="+ArtistName;
+
 			if(AlbumArtistName == null){
 				if(ArtistName == null){
 					AlbumArtistName = getResources().getString(R.string.bt_unknown);			//不明
 					ArtistName = getResources().getString(R.string.bt_unknown);			//不明
 				}else{
-					AlbumArtistName = ArtistName;
+					if(-1 < ArtistName.indexOf(MuList.this.b_artist) ) {	//クレジットされたアーティスト名に前曲のアルバムアーティスト名が含まれれば
+						AlbumArtistName = MuList.this.b_artist;				//アルバム名義は同一
+					} else{                                              //それでも無ければ
+						AlbumArtistName = ArtistName;					//次のアーティスト
+					}
 				}
 				dbMsg += ">>"+AlbumArtistName;
 //			}else{
@@ -5840,7 +5846,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			MuList.this.titolLayer.addOther( playListID, playOrder , artistID, albumID , audioID , track , duration , dataURL , playlistNAME , AlbumArtistName , ArtistName , MuList.this.lyer_titol , MuList.this.listType_3ly );
 //			tList.add(MuList.this.treeAdapter);
 //			dbMsg +=">tList>" +tList.size() ;	///////////////////////////////////////////////////////////////////////////////////////////
-//			myLog(TAG, dbMsg);
+			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
