@@ -146,7 +146,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public int pref_zenkai_saiseKyoku = 0;		//前回の連続再生曲数
 	public long pref_zenkai_saiseijikann = 0;		//前回の連続再生時間
 	public int pref_file_kyoku;					//曲累計
-//	public int pref_file_album;				//アルバム累計
 	public String pref_file_saisinn;					//最新更新日
 	public String pref_file_in ="";		//内蔵メモリ
 	public String pref_file_ex ;						//メモリーカードの音楽ファイルフォルダ
@@ -209,7 +208,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public List<String> listItems=null;					//メインリストアイテム
 	public List<String> imgItems=null;					//サムネール
 	public List<String> subItems=null;					//付加情報
-//	public List<String> dataList = null;					//データURI;titolALのみ
 	public List<String> saisei_fnameList = null;		//uri配列
 	public List<CustomData> isList = null;			//ヘッドイメージとサブテキストを持ったリストアイテム
 	public String senntakuItem=null;					//選択しておくアイテムアイテム
@@ -9150,44 +9148,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-//	public class siteiMati implements Runnable{
-//		//http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html
-
-//	public void prefKakikomi(boolean saisyuu){												//終了前にプリファレンスを書き込む	playPouse,quitMe
-//		final String TAG = "prefKakikomi";
-//		String dbMsg = "[MuList]";
-//		try{
-//			dbMsg +=  "saisyuu=" + saisyuu;/////////////////////////////////////
-//			myEditor = sharedPref.edit();
-////			dbMsg +=";" + saisei_fname;/////////////////////////////////////
-////			if(saisei_fname !=null){
-////				myEditor.putString( "pref_data_url", String.valueOf(saisei_fname));				//レジュームするファイル
-////			}
-////			if(albumArtist != null){
-////				String[] nameSet = pref_data_url.split(File.separator);	//URLから
-////				creditArtistName = nameSet[nameSet.length-3];	//アーティスト名などを読み取る
-////			}
-////			if(saisyuu){
-////				dbMsg += ",クロスフェード時間=";/////////////////////////////////////
-////				myEditor.putString( "pref_gyapless", String.valueOf(crossFeadTime));
-////				dbMsg +=crossFeadTime;/////////////////////////////////////
-////				dbMsg +="プレイヤーの背景は白";/////////////////////////////////////
-////				myEditor.putString( "pref_pb_bgc", String.valueOf(pref_pb_bgc));
-////				dbMsg +="=" + pref_pb_bgc ;/////////////////////////////////////
-//				dbMsg +="シンプルなリスト表示";/////////////////////////////////////
-//				myEditor.putString( "pref_list_simple", String.valueOf(pref_list_simple));
-//				dbMsg +="=" + pref_list_simple ;/////////////////////////////////////
-//				//			myLog(TAG,dbMsg);
-//				myEditor.commit();	// データの保存
-////			}else{
-////				myEditor.commit();	// データの保存
-////			}
-//			myLog(TAG, dbMsg);
-//		}catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}	//このアプリを終了する/////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * 第一引数;タスク開始時:doInBackground()に渡す引数の型,
 	 * 第二引数;進捗率を表示させるとき:onProgressUpdate()に使う型,
@@ -9901,7 +9861,41 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	@Override
+	//プレーヤーの表示設定
+	public void setListPlayer(String artistMei , String albumMei , String titolMei,String albumArt){
+		final String TAG = "setListPlayer";
+		String dbMsg = "[MuList]";
+		try{
+			dbMsg +=",artistMei= " + artistMei;
+			dbMsg +=",albumMei= " + albumMei;
+			dbMsg +=",titolMei= " + titolMei;
+			lp_artist.setText(creditArtistName);									//プレイヤーのアーティスト表示
+			lp_album.setText(albumName);									//プレイヤーのアルバム表示
+			lp_title.setText(titolName);										//プレイヤーのタイトル表示
+			dbMsg +=",albumArt= " + albumArt;
+			if( albumArt != null  ){
+				ImageView rc_Img = (ImageView) findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+				Drawable drawable = new BitmapDrawable(getResources(), albumArt);
+				Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
+				dbMsg +=",orgBitmap="+orgBitmap;
+				rc_Img.setImageBitmap(orgBitmap);
+//				int width = rc_Img.getWidth();
+////				width = width*9/10;
+//				dbMsg +=",width= " + width;
+////				Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, width, width, false);										//100x100の大きさにリサイズ
+////				dbMsg +=",resizedBitmap="+resizedBitmap;
+////				drawable = new BitmapDrawable(getResources(), resizedBitmap);
+////				rc_Img.setImageDrawable(drawable);
+			}
+
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
+			@Override
 	protected void onActivityResult (int requestCode, int resultCode, Intent intent) { // startActivityForResult で起動させたアクティビティがfinish() により破棄されたときにコールされる
 		super.onActivityResult (requestCode, resultCode, intent);
 		final String TAG = "onActivityResult";
@@ -10026,7 +10020,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						sousa_titol = titolName;
 						dbMsg +=",曲名=" + titolName;/////////////////////////////////////
 						albumArt = bundle.getString("albumArt");
-						dbMsg +=",アルバムアートのURI=" + albumArt;/////////////////////////////////////
+						dbMsg +=",albumArt;アルバムアートのURI=" + albumArt;/////////////////////////////////////
 						IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
 						dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
 						dbMsg +=  ",MPSIntent=" + MPSIntent;
@@ -10052,10 +10046,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
 						pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
 						dbMsg += ",/シンプルなリスト表示= " + pref_list_simple;
-						lp_artist.setText(creditArtistName);									//プレイヤーのアーティスト表示
-						lp_album.setText(albumName);									//プレイヤーのアルバム表示
-						lp_title.setText(titolName);										//プレイヤーのタイトル表示
-//						myLog(TAG, dbMsg);
+						setListPlayer( creditArtistName , albumMei , titolName, albumArt);
 						b_artist = b_artist + "";
 						b_album = b_album + "";
 						makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
