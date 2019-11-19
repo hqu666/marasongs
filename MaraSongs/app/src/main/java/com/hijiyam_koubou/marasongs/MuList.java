@@ -3700,6 +3700,61 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public IntentFilter mFilter;
 	public String b_action ="";
 
+	public boolean isActionChange(String action ){			///リストからの戻り処理
+		final String TAG = "isActionChange";
+		String dbMsg = "[MuList]";
+		boolean retBool = true;
+		try{
+			dbMsg +=",action= "+ action;
+			String btDescription = lp_ppPButton.getContentDescription().toString();
+			dbMsg +=",btDescription= "+ btDescription;
+			if (btDescription == null) {           //再生中か
+				retBool = false;
+			}else if (btDescription.equals(getResources().getText(R.string.play)) && action.equals( "com.example.android.remotecontrol.ACTION_PLAY")) {           //再生中か
+				retBool = false;
+			}else if (btDescription.equals(getResources().getText(R.string.pause)) && action.equals( "com.example.android.remotecontrol.ACTION_PAUSE")) {
+				retBool = false;
+			} else{
+				dbMsg +=",retBool= "+ retBool;
+				myLog(TAG, dbMsg);
+			}
+		} catch (Exception e) {		//汎用
+			myErrorLog(TAG,"で"+e.toString());
+		}
+		return retBool;
+	}
+
+	/**
+	 *  Chronometerの値を更新し、、再生中はカウントアップ
+	* **/
+	public void setChronometer(int mcPosition , boolean IsPlaying ){			///リストからの戻り処理
+		final String TAG = "setChronometer";
+		String dbMsg = "[MuList]";
+		try{
+			backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
+			long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
+			dbMsg += " , current:" + current;
+			dbMsg += " , mcPosition:" + mcPosition;
+			lp_chronometer.setBase(current);             //long
+			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+			String  mcPositionStr = dataFormat.format(mcPosition);
+			dbMsg += " , mcPosition:" + mcPositionStr;
+
+//			lp_chronometer.setText(mcPositionStr);
+			dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
+//									int playPauseRes = R.drawable.pouse_notif;			//操作ボタン	...509 / ...510
+			if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
+				lp_chronometer.start();
+			}else{
+//										playPauseRes = R.drawable.play_notif;			//操作ボタン	...509 / ...510
+				lp_chronometer.stop();
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {		//汎用
+			myErrorLog(TAG,"で"+e.toString());
+		}
+	}
+
 	//②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
 	public class MusicReceiver extends BroadcastReceiver{
 			@Override
@@ -3714,32 +3769,26 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							String state = intent.getStringExtra("state");
 							dbMsg += ",state=" + state;
 							String action = intent.getStringExtra("action");
-							if(action != null){
-								dbMsg += ",b_action=" + action + ">>" + action;
-								if(b_action != action){
-									b_action = action;
-									int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
-									dbMsg += "[再生ポジション=" + mcPosition + "/";
-									saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-										dbMsg += "[" + mcPosition  + "/" + saiseiJikan +"]";					//  playingItem.duration
-									backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
-									long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
-									dbMsg += " , current:" + current;
-									SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-									lp_chronometer.setText(dataFormat.format(mcPosition));
-									IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
-									dbMsg +=",IsPlaying= "+ IsPlaying;/////////////////////////////////////
-									int playPauseRes = R.drawable.pouse_notif;			//操作ボタン	...509 / ...510
-									if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
-										lp_chronometer.start();
-									}else{
-										playPauseRes = R.drawable.play_notif;			//操作ボタン	...509 / ...510
-										lp_chronometer.stop();
-									}
-									dbMsg +=",playPauseRes=" + playPauseRes;/////////////////////////////////////
-									lp_ppPButton.setImageResource(playPauseRes);
+							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
+							dbMsg += "[再生ポジション=" + mcPosition + "/";
+							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
+							dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
+							if(action == null){
+								if(IsPlaying){
+									action =  "com.example.android.remotecontrol.ACTION_PLAY";
+								}else{
+									action =  "com.example.android.remotecontrol.ACTION_PAUSE";
 								}
 							}
+							if(isActionChange(action)){
+								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+								String  mcPositionStr = dataFormat.format(mcPosition);
+								dbMsg += " , mcPosition:" + mcPositionStr;            //この文字では設定できない
+//									lp_chronometer.setText(mcPositionStr);
+								MuList.this.setChronometer(mcPosition ,  IsPlaying );
+								b_action = action;
+							}
+							dbMsg += ",b_action=" + action + ">>" + action;
 
 							if( mItems == null) {
 								mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
@@ -3776,6 +3825,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 										Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
 										rc_Img.setImageBitmap(mDummyAlbumArt);
 									}
+									setListPlayer( playingItem.artist, playingItem.album, playingItem.title, album_art);
 									myLog(TAG, dbMsg);
 								}
 							}
@@ -9091,35 +9141,36 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			b_album = albumName;			//それまで参照していたアルバム名
 			dbMsg +=" , クリックされたのは" + v.getId();
 			if (v == lp_ppPButton) {
-				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying + ",MPSIntent=" + MPSIntent;
+				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
 				if(mFilter == null){
 					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 					dbMsg +=  ">>psSarviceUri=" + psSarviceUri.toString();
 					mFilter = new IntentFilter();
 					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
 					registerReceiver(mReceiver, mFilter);
-					dbMsg +=">>" + psSarviceUri.toString();
+//					dbMsg +=">>" + psSarviceUri.toString();
 				}
 				if( MPSIntent == null){
 					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-					dbMsg +=  ">>" + MPSIntent;
+//					dbMsg +=  ">>" + MPSIntent;
 				}
 				dbMsg +=")" +dataFN;
-				MPSIntent.putExtra("dataFN",dataFN);	//再生ポジション
+				MPSIntent.putExtra("dataFN",dataFN);
 				dbMsg +=",nowList_id" +nowList_id;
-				MPSIntent.putExtra("nowList_id",nowList_id);	//再生ポジション
+				MPSIntent.putExtra("nowList_id",nowList_id);
 				dbMsg +=",mIndex" +mIndex;
 				MPSIntent.putExtra("mIndex",mIndex);
 				MPSIntent.putExtra("continu_status","toPlay");
-				if (IsPlaying) {			//再生中か
+				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
 					dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
 					dbMsg +=  ">>startService";
-					MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+					MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 					dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
 					lp_ppPButton.setImageResource(R.drawable.play_notif);
-					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
+					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
+					lp_chronometer.stop();
 					IsPlaying = false;
 				} else {
 					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
@@ -9127,7 +9178,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PLAY));
 					dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
 					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
-					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));			//pause
+					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
+					lp_chronometer.start();
 					IsPlaying = true;
 				}
 			} else if (v == rc_fbace) {	//プレイヤーフィールド部の土台
@@ -9887,6 +9939,20 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 ////				drawable = new BitmapDrawable(getResources(), resizedBitmap);
 ////				rc_Img.setImageDrawable(drawable);
 			}
+			dbMsg +=",IsPlaying= " + IsPlaying;
+			if(!IsPlaying) {			//停止していれば
+				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+				MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+				dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
+				lp_ppPButton.setImageResource(R.drawable.play_notif);
+				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
+			} else {
+//							MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PLAY));
+//							dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
+				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
+				lp_ppPButton.setContentDescription(getResources().getText(R.string.play));			//pause
+			}
 
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -9894,8 +9960,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-
-			@Override
+	@Override
 	protected void onActivityResult (int requestCode, int resultCode, Intent intent) { // startActivityForResult で起動させたアクティビティがfinish() により破棄されたときにコールされる
 		super.onActivityResult (requestCode, resultCode, intent);
 		final String TAG = "onActivityResult";
@@ -10028,20 +10093,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
 							dbMsg +=  ">>" + MPSIntent;
 						}
-						if(!IsPlaying) {			//停止していれば
-							MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
-							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
-							dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
-//							lp_ppPButton.setImageResource(R.drawable.play_notif);
-//							lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
-						} else {
-////							MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
-////							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PLAY));
-////							dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
-//							lp_ppPButton.setImageResource(R.drawable.pouse_notif);
-//							lp_ppPButton.setContentDescription(getResources().getText(R.string.play));			//pause
-						}
-
+						setChronometer(mcPosition , IsPlaying ) ;
 						IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
 						dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
 						pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
@@ -10279,6 +10331,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			lp_album = (TextView)list_player.findViewById(R.id.album);									//プレイヤーのアルバム表示
 			lp_title = (TextView)list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
 			lp_chronometer = (Chronometer)list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
+
+//			lp_chronometer.setFormat("mm:ss");
 			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
 			lp_chronometer.setText(dataFormat.format(0));
 
