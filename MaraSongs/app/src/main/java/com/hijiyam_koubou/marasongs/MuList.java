@@ -3706,18 +3706,24 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		boolean retBool = true;
 		try{
 			dbMsg +=",action= "+ action;
-			String btDescription = lp_ppPButton.getContentDescription().toString();
-			dbMsg +=",btDescription= "+ btDescription;
-			if (btDescription == null) {           //再生中か
-				retBool = false;
-			}else if (btDescription.equals(getResources().getText(R.string.play)) && action.equals( "com.example.android.remotecontrol.ACTION_PLAY")) {           //再生中か
-				retBool = false;
-			}else if (btDescription.equals(getResources().getText(R.string.pause)) && action.equals( "com.example.android.remotecontrol.ACTION_PAUSE")) {
-				retBool = false;
+			if(action != null){
+				String btDescription = lp_ppPButton.getContentDescription() + "";			//.toString();
+				dbMsg +=",btDescription= "+ btDescription;
+				if (btDescription == null) {           //再生中か
+					retBool = false;
+				}else if (btDescription.equals(getResources().getText(R.string.play)) && action.equals( "com.example.android.remotecontrol.ACTION_PLAY")) {           //再生中か
+					retBool = false;
+				}else if (btDescription.equals(getResources().getText(R.string.pause)) && action.equals( "com.example.android.remotecontrol.ACTION_PAUSE")) {
+					retBool = false;
+				} else{
+					dbMsg +=",retBool= "+ retBool;
+					myLog(TAG, dbMsg);
+				}
 			} else{
-				dbMsg +=",retBool= "+ retBool;
-				myLog(TAG, dbMsg);
+				retBool = false;
 			}
+//			if(retBool){
+//			}
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,"で"+e.toString());
 		}
@@ -3731,24 +3737,27 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "setChronometer";
 		String dbMsg = "[MuList]";
 		try{
-			backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
-			long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
-			dbMsg += " , current:" + current;
-			dbMsg += " , mcPosition:" + mcPosition;
-			lp_chronometer.setBase(current);             //long
-			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-			String  mcPositionStr = dataFormat.format(mcPosition);
-			dbMsg += " , mcPosition:" + mcPositionStr;
+			dbMsg += " , isFocusNow=" + isFocusNow;
+//			if(isFocusNow){
+				backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
+				long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
+				dbMsg += " , current:" + current;
+				dbMsg += " , mcPosition:" + mcPosition;
+				lp_chronometer.setBase(current);             //long
+				SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+				String  mcPositionStr = dataFormat.format(mcPosition);
+				dbMsg += " , mcPosition:" + mcPositionStr;
 
 //			lp_chronometer.setText(mcPositionStr);
-			dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
+				dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
 //									int playPauseRes = R.drawable.pouse_notif;			//操作ボタン	...509 / ...510
-			if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
-				lp_chronometer.start();
-			}else{
+				if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
+					lp_chronometer.start();
+				}else{
 //										playPauseRes = R.drawable.play_notif;			//操作ボタン	...509 / ...510
-				lp_chronometer.stop();
-			}
+					lp_chronometer.stop();
+				}
+//			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,"で"+e.toString());
@@ -3764,71 +3773,72 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						final String TAG = "onReceive[MuList";
 						String dbMsg = ".MusicReceiver]";
 						try{
-//							dbMsg += "MPSIntent=" + intent;
-					//		dbMsg += "context=" + intent.toString() + ";"+this.toString();
-							String state = intent.getStringExtra("state");
-							dbMsg += ",state=" + state;
-							String action = intent.getStringExtra("action");
-							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
-							dbMsg += "[再生ポジション=" + mcPosition + "/";
-							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
-							dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
-							if(action == null){
-								if(IsPlaying){
-									action =  "com.example.android.remotecontrol.ACTION_PLAY";
-								}else{
-									action =  "com.example.android.remotecontrol.ACTION_PAUSE";
-								}
-							}
-							if(isActionChange(action)){
-								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-								String  mcPositionStr = dataFormat.format(mcPosition);
-								dbMsg += " , mcPosition:" + mcPositionStr;            //この文字では設定できない
-//									lp_chronometer.setText(mcPositionStr);
-								MuList.this.setChronometer(mcPosition ,  IsPlaying );
-								b_action = action;
-							}
-							dbMsg += ",b_action=" + action + ">>" + action;
-
-							if( mItems == null) {
-								mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-								mItems = Item.getItems( MuList.this);
-							}
-
-							String saisei_fname =intent.getStringExtra("pref_data_url");
-							dbMsg += ",受信ファイル；" + saisei_fname + " を　";
-							if(saisei_fname == null || saisei_fname.equals("")) {
-							}else{
-								String pefName = context.getResources().getString(R.string.pref_main_file);
-								dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
-								if(! saisei_fname.equals(b_saisei_fname)){
-									dbMsg += saisei_fname + "に変更";
-									b_saisei_fname = saisei_fname;
-									mIndex = intent.getIntExtra("mIndex", 0);
-									dbMsg +="[mIndex=" + mIndex + "]";
-									playingItem = mItems.get(mIndex);
-									dbMsg +=";" + playingItem.artist;/////////////////////////////////////
-									lp_artist.setText( playingItem.artist);
-									dbMsg +=";" + playingItem.album;/////////////////////////////////////
-									lp_album.setText( playingItem.album);
-									dbMsg +=";" + playingItem.title;/////////////////////////////////////
-									lp_title.setText( playingItem.title);
-									String album_art =intent.getStringExtra("album_art") +"";
-									dbMsg +=",album_art=" + album_art;
-									if(! album_art.equals("")){
-										OrgUtil ORGUT = new OrgUtil();				//自作関数集
-										WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
-										Display disp = wm.getDefaultDisplay();
-										ImageView rc_Img = (ImageView) findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-										int width = rc_Img.getWidth();
-										width = width*9/10;
-										Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-										rc_Img.setImageBitmap(mDummyAlbumArt);
+							dbMsg += " , isFocusNow=" + isFocusNow;
+//							if(isFocusNow) {
+								String state = intent.getStringExtra("state");
+								dbMsg += ",state=" + state;
+								String action = intent.getStringExtra("action");
+								int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
+								dbMsg += "[再生ポジション=" + mcPosition + "/";
+								IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
+								dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
+								if(action == null){
+									if(IsPlaying){
+										action =  "com.example.android.remotecontrol.ACTION_PLAY";
+									}else{
+										action =  "com.example.android.remotecontrol.ACTION_PAUSE";
 									}
-									setListPlayer( playingItem.artist, playingItem.album, playingItem.title, album_art);
-									myLog(TAG, dbMsg);
 								}
-							}
+								if(isActionChange(action)){
+									SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+									String  mcPositionStr = dataFormat.format(mcPosition);
+									dbMsg += " , mcPosition:" + mcPositionStr;            //この文字では設定できない
+//									lp_chronometer.setText(mcPositionStr);
+									MuList.this.setChronometer(mcPosition ,  IsPlaying );
+									b_action = action;
+								}
+								dbMsg += ",b_action=" + action + ">>" + action;
+
+								if( mItems == null) {
+									mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
+									mItems = Item.getItems( MuList.this);
+								}
+
+								String saisei_fname =intent.getStringExtra("pref_data_url");
+								dbMsg += ",受信ファイル；" + saisei_fname + " を　";
+								if(saisei_fname == null || saisei_fname.equals("")) {
+								}else{
+									String pefName = context.getResources().getString(R.string.pref_main_file);
+									dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
+									if(! saisei_fname.equals(b_saisei_fname)){
+										dbMsg += saisei_fname + "に変更";
+										b_saisei_fname = saisei_fname;
+										mIndex = intent.getIntExtra("mIndex", 0);
+										dbMsg +="[mIndex=" + mIndex + "]";
+										playingItem = mItems.get(mIndex);
+										dbMsg +=";" + playingItem.artist;/////////////////////////////////////
+										lp_artist.setText( playingItem.artist);
+										dbMsg +=";" + playingItem.album;/////////////////////////////////////
+										lp_album.setText( playingItem.album);
+										dbMsg +=";" + playingItem.title;/////////////////////////////////////
+										lp_title.setText( playingItem.title);
+										String album_art =intent.getStringExtra("album_art") +"";
+										dbMsg +=",album_art=" + album_art;
+										if(! album_art.equals("")){
+											OrgUtil ORGUT = new OrgUtil();				//自作関数集
+											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
+											Display disp = wm.getDefaultDisplay();
+											ImageView rc_Img = (ImageView) findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+											int width = rc_Img.getWidth();
+											width = width*9/10;
+											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
+											rc_Img.setImageBitmap(mDummyAlbumArt);
+										}
+										setListPlayer( playingItem.artist, playingItem.album, playingItem.title, album_art);
+										myLog(TAG, dbMsg);
+									}
+								}
+//							}
 						} catch (Exception e) {
 							myErrorLog(TAG,"で"+e);
 						}
@@ -10170,12 +10180,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	public boolean isFocusNow = false;
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {	 //<onCreate ヘッドのイメージは実際にローディンされた時点で設定表示と同時にウィジェットの高さや幅を取得したいときは大抵ここで取る。
 		final String TAG = "onWindowFocusChanged";
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg +=  "hasFocus=;" + hasFocus;/////////////////////////////////////
+			isFocusNow = hasFocus;
 			if(hasFocus){
 				dbMsg +=",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
 				dbMsg +=",reqCode;" + reqCode;
