@@ -2133,6 +2133,7 @@ string pref_commmn_music
 string pref_compBunki
 string pref_compBunki_msg
 string pref_cyakusinn_fukki
+string pref_data_url
 string pref_effect
 string pref_effect_vi
 string pref_effect_vi_fft
@@ -2182,7 +2183,6 @@ string pref_rundam_list_size
 string pref_rundam_list_size_dm
 string pref_saisei
 string pref_saisei_come1
-string pref_saisei_fname
 string pref_saisei_jikan
 string pref_saisei_nagasa
 string pref_sonota

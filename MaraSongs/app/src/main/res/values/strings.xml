@@ -194,7 +194,7 @@
     <string name="pref_titol_plist_saikin_tuika">最近追加リストへの登録設定</string>
     <string name="pref_msg_plist_saikin_tuika">抽出日数</string>
     <string name="pref_saisei">レジューム再生情報</string>
-    <string name="pref_saisei_fname">再生中のファイル名</string>
+    <string name="pref_data_url">再生中のファイル名</string>
     <string name="pref_saisei_jikan">再開ポジション</string>
     <string name="pref_saisei_nagasa">再生時間</string>
     <string name="pref_zenkai_saiseijikann">前回の連続再生時間</string>

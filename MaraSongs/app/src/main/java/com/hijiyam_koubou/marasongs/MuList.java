@@ -3755,6 +3755,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					lp_chronometer.start();
 				}else{
 //										playPauseRes = R.drawable.play_notif;			//操作ボタン	...509 / ...510
+//					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
 					lp_chronometer.stop();
 				}
 //			}
@@ -6456,8 +6457,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				Dlg .setPositiveButton( getResources().getString(R.string.comon_sakujyo),	//削除
 					new DialogInterface.OnClickListener() {
 					@Override public void onClick(DialogInterface dialog, int which) {
-						final String TAG = "deletPlayList[MuList]";
-						String dbMsg = "[MuList]";
+						final String TAG = "onClick";
+						String dbMsg = "[MuList.deletPlayList]";
 						try{
 							dbMsg +=  "tuikaSakiListID=" + MuList.this.tuikaSakiListID;
 							reqCode = CONTEXT_del_playlist;
@@ -9162,7 +9163,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				}
 				if( MPSIntent == null){
 					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-//					dbMsg +=  ">>" + MPSIntent;
+					dbMsg +=  ",MPSIntent=null";
+//					MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
+					MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+					MPSIntent.putExtra("mIndex",mIndex);
+					MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
+					MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
 				}
 				dbMsg +=")" +dataFN;
 				MPSIntent.putExtra("dataFN",dataFN);
@@ -9184,8 +9190,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					IsPlaying = false;
 				} else {
 					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
 					dbMsg +=  ">>startService";
-					MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PLAY));
+					MPSName = startService(MPSIntent);	//
+//					MPSName = startService(new Intent(MusicPlayerService.ACTION_PLAY));             //startService(MPSIntent);	//
 					dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
 					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
 					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));

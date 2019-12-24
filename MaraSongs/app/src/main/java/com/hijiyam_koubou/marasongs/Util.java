@@ -806,12 +806,13 @@ public class Util {
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			try {
 				retInt = sharedPref.getInt(keyNmae , defaultVal);
-				dbMsg +=  ",retIn="  + retInt;
+				dbMsg +=  ",retIn(getInt)="  + retInt;
 			} catch (Exception e) {
+				dbMsg += ",Exception";
 				myErrorLog(TAG ,  dbMsg + "で" + e);
-				String sStr = sharedPref.getString(keyNmae, String.valueOf(defaultVal));
-				dbMsg +=  ",sStr="  + sStr;
-				retInt = Integer.parseInt(sStr);
+//				String sStr = sharedPref.getString(keyNmae, String.valueOf(defaultVal));
+//				dbMsg +=  ",sStr="  + sStr;
+//				retInt = Integer.parseInt(sStr);
 			}
 			dbMsg +=  ",retInt="  + retInt;
 //			myLog(TAG, dbMsg);

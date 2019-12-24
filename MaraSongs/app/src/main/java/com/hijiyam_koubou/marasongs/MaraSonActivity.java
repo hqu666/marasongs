@@ -4170,7 +4170,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	private void sendPlaying( Intent intent ,String dataFN ,int mcPosition ,int mIndex ) {						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
+	public void sendPlaying( Intent intent ,String dataFN ,int mcPosition ,int mIndex ) {						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 		final String TAG = "sendPlaying";
 		String dbMsg= "[MaraSonActivity];";
 		try{

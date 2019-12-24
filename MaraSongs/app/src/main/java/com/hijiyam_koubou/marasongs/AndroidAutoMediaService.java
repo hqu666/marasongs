@@ -134,12 +134,12 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
 			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
 			play_order = myPreferences.play_order;
-			//アーティストごとの情報
-			artistID = myPreferences.artistID;
-			//アルバムごとの情報
-			albumID = myPreferences.albumID;
-			//曲ごとの情報
-			audioID = myPreferences.audioID;
+//			//アーティストごとの情報
+//			artistID = myPreferences.artistID;
+//			//アルバムごとの情報
+//			albumID = myPreferences.albumID;
+//			//曲ごとの情報
+//			audioID = myPreferences.audioID;
 			dataURL = myPreferences.dataURL;
 			pref_toneList = myPreferences.pref_toneList;		//プリファレンス保存用トーンリスト
 			tone_name = myPreferences.tone_name;				//トーン名称
@@ -188,10 +188,10 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 //								dbMsg += "は"+(keys.get(key)).toString()+ ">>シンプルなリスト表示（サムネールなど省略）"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
 //								pref_list_simple = Boolean.valueOf((String) keys.get(key)) ;
 //								dbMsg +=  ">>"+pref_list_simple;////////////////////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_saisei_fname")){
+//							}else if(key.equals("pref_data_url")){
 //								dbMsg +=  ">>再生中のファイル名" ;////////////////////////////////////////////////////////////////////////////
 //								dataFN = String.valueOf(keys.get(key));							//再生中のファイル名//DATA;The data stream for the file ;Type: DATA STREAM
-//								dbMsg =">>再生中のファイル名" + dataFN ;//// pref_saisei_fname //////
+//								dbMsg =">>再生中のファイル名" + dataFN ;
 //								File chFile = new File(dataFN);
 //								dbMsg += " , " + dataFN +"="+chFile.exists();//////////////////
 //								if(! chFile.exists() ){
@@ -205,7 +205,7 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 //								dbMsg += ">>再生中音楽ファイルの再開時間" ;//////////////////
 //								mcPosition = Integer.valueOf(String.valueOf(keys.get(key)));				//選択中選択ポジション
 //								dbMsg += "["+ORGUT.sdf_mss.format(mcPosition) + "/";////////////////////////////////////////////////////////////////////////////
-//							}else if(key.equals("pref_saisei_nagasa")){
+//							}else if(key.equals("pref_duration")){
 //								dbMsg += ">>再生中音楽ファイルの長さ";//////////////////
 //								saiseiJikan = Integer.valueOf(String.valueOf(keys.get(key)));				//再生時間
 //							}else if(key.equals("pref_cyakusinn_fukki")){			//着信後の復帰
