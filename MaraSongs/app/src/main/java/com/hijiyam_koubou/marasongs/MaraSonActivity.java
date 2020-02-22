@@ -5761,18 +5761,6 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg +=",再生中のプレイリスト名=" + nowList;/////////////////////////////////////
 				dataFN = getPrefStr("pref_data_url" , "" , getApplicationContext());
 				dbMsg +=  ",dataFN=" + dataFN;////////////////////////////////////////////////////////////////////////////
-
-//				dataFN =extras.getString("dataFN");
-//				dbMsg +=",dataFN="+ dataFN ;/////////////////////////////////////
-//				if(dataFN == null || dataFN.equals("")){
-//					MyPreferences myPreferences  = new MyPreferences();
-//					dataFN = myPreferences.dataURL;   //
-//					dbMsg +=  ">pref1>" + dataFN;////////////////////////////////////////////////////////////////////////////
-//					if(dataFN.equals("")){
-//						dataFN = getPrefStr("pref_data_url" , "" , getApplicationContext());
-//						dbMsg +=  ">pref2>" + dataFN;////////////////////////////////////////////////////////////////////////////
-//					}
-//				}
 				int mIndex = Item.getMPItem( dataFN );
 				dbMsg += "[mIndex"+ mIndex + "/"+ mItems.size() +"]";
 //				if(mIndex <= 0){

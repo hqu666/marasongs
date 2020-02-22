@@ -454,10 +454,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					dbMsg += "::readPrefへ";
 					readPref();
 				}
-			} else{
-				dbMsg += "::readPrefへ";
-				readPref();
 			}
+//			else{
+//				dbMsg += "::readPrefへ";
+//				readPref();
+//			}
 			myLog(TAG , dbMsg);
 		} catch (Exception er) {
 			myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -553,7 +554,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
 			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
-			myLog(TAG, dbMsg);
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 //			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
@@ -574,12 +574,13 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //			dbMsg += "、再生中のファイル名=" + pref_data_url;
 			pref_zenkai_saiseKyoku = Integer.parseInt(myPreferences.pref_zenkai_saiseKyoku);			//前回の連続再生曲数
 			pref_zenkai_saiseijikann =Integer.parseInt(myPreferences.pref_zenkai_saiseijikann);			//前回の連続再生時間
+			dbMsg += "、前回=" + pref_zenkai_saiseKyoku + "曲、" + pref_zenkai_saiseijikann + "時間";
 
 			pref_commmn_music=myPreferences.pref_commmn_music;		//共通音楽フォルダ
 			pref_file_in =myPreferences.pref_file_in;		//内蔵メモリ
 			pref_file_ex=myPreferences.pref_file_ex;		//メモリーカード
 			pref_file_wr= myPreferences.pref_file_wr;		//設定保存フォルダ
-			pref_file_kyoku= Integer.parseInt(myPreferences.pref_file_kyoku);		//総曲数
+			pref_file_kyoku= Integer.parseInt(myPreferences.pref_file_kyoku + 0);		//総曲数
 			dbMsg += "、総曲数=" + pref_file_kyoku;
 			nowList_data = myPreferences.pref_file_wr;		//設定保存フォルダ
 			dbMsg += "、設定保存フォルダ=" + nowList_data;
@@ -592,7 +593,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += ">>" + mod;
 			}
 			dbMsg += "、再生中のプレイリストID=" + myPreferences.nowList_id;
-			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//	playListID
 			dbMsg += "、再生中のプレイリスト名=" + myPreferences.nowList;
 			nowList = myPreferences.nowList;					//	playlistNAME
 //			dbMsg += "、play_order=" + myPreferences.play_order;
@@ -636,6 +636,36 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}																	//設定読込・旧バージョン設定の消去
 
+
+	public String setFarstSong(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
+		final String TAG = "setFarstSong";
+		String dbMsg = "[MuList]";
+		long start = System.currentTimeMillis();		// 開始時刻の取得
+		String dataFN = "";
+		try{
+			dbMsg += "取得済みリスト読み込み" ;
+			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String c_selection =  null;		//MediaStore.Audio.Media.DATE_ADDED +">=?" ;			//ファイル更新日
+			String[] c_selectionArgs=  null;			// {String.valueOf(saikinTuikaLimt)};   			//⑥引数groupByには、groupBy句を指定します。
+			String c_orderBy = null;		//MediaStore.Audio.Media.DATE_ADDED   + " DESC " ;
+			Cursor carsol = getContentResolver().query(cUri , c_columns , c_selection , c_selectionArgs , c_orderBy);
+			dbMsg += carsol.getCount() + "件";
+			if(carsol.moveToFirst()){
+				dataFN = carsol.getString(carsol.getColumnIndex(MediaStore.Audio.Media.DATA));						//10.data;					//URI
+				dbMsg += ">MediaStore>" + dataFN;
+				setPrefStr("pref_data_url" ,dataFN , MuList.this);
+				mIndex=1;
+				setPrefInt("pref_mIndex" ,1 , MuList.this);
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return dataFN;
+	}
+
+
 	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
 		final String TAG = "setteriYomikomi";
 		String dbMsg = "[MuList]";
@@ -662,21 +692,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ">再生中のリストは[" + nowList_id + "]" + nowList ;
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MuList.this);
 			dbMsg += ",dataFN = " + dataFN;
-			if(dataFN == null){
-				dataFN = getPrefStr( "dataURL" ,"" , MuList.this);
-				dbMsg += ">dataURL>" + dataFN;
+			if(dataFN.equals("")){
+				dataFN = null;
 			}
-			if(dataFN == null){
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
-				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-				String c_selection =  null;		//MediaStore.Audio.Media.DATE_ADDED +">=?" ;			//ファイル更新日
-				String[] c_selectionArgs=  null;			// {String.valueOf(saikinTuikaLimt)};   			//⑥引数groupByには、groupBy句を指定します。
-				String c_orderBy = null;		//MediaStore.Audio.Media.DATE_ADDED   + " DESC " ;
-				Cursor carsol = getContentResolver().query(cUri , c_columns , c_selection , c_selectionArgs , c_orderBy);
-				if(carsol.moveToFirst()){
-					dataFN = carsol.getString(carsol.getColumnIndex(MediaStore.Audio.Media.DATA));						//10.data;					//URI
-					dbMsg += ">MediaStore>" + dataFN;
-				}
+			if(dataFN == null || mIndex < 1){
+				dataFN = setFarstSong();
 			}
 
 			if(null == nowList ){																	//初期の未設定時など
@@ -711,8 +731,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //				setPrefStr( "nowList_id", String.valueOf(nowList_id),  MuList.this);
 				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
 				mItems = Item.getItems( this );
+//				dbMsg += "," + mIndex + "曲目";
 				mIndex = Item.getMPItem( dataFN);
-					dbMsg += ",mIndex=" + mIndex + "曲目";
+				dbMsg += ",mIndex=" + mIndex + "曲目";
 			}
 			sousalistName = nowList;		//操作対象リスト名
 			sousalistID = nowList_id;		//操作対象リストID
@@ -10260,6 +10281,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			IsPlaying = false;
 			ORGUT = new OrgUtil();		//自作関数集
 			UTIL = new Util();
+			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
 			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
 			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点
@@ -10416,7 +10438,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg += ":"+String.valueOf(ORGUT.sdf_mss.format(end-start))+"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;
 			myLog(TAG, dbMsg);
-			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
+//			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
