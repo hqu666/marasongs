@@ -570,8 +570,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 
-//			pref_data_url =myPreferences.pref_data_url;				//
-//			dbMsg += "、再生中のファイル名=" + pref_data_url;
+			String pref_data_url =myPreferences.saisei_fname;				//
+			dbMsg += "、再生中のファイル名=" + pref_data_url;
 			pref_zenkai_saiseKyoku = Integer.parseInt(myPreferences.pref_zenkai_saiseKyoku);			//前回の連続再生曲数
 			pref_zenkai_saiseijikann =Integer.parseInt(myPreferences.pref_zenkai_saiseijikann);			//前回の連続再生時間
 			dbMsg += "、前回=" + pref_zenkai_saiseKyoku + "曲、" + pref_zenkai_saiseijikann + "時間";
@@ -628,8 +628,15 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //			prTT_dpad = myPreferences.prTT_dpad;		//ダイヤルキーの有無
 //			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
 //			others =myPreferences.others;				//その他の情報
-			setteriYomikomi();			//状況に応じた分岐を行う
-
+			boolean isCont = false;
+			if(nowList == null  || nowList.equals("") ||
+					pref_data_url == null || pref_data_url.equals("") ||
+					saisinnFileKakuninn( pref_file_kyoku + "" , pref_file_saisinn )
+			){
+				preRead(MaraSonActivity.syoki_Yomikomi , null);            //syoki_start_up
+			}else {
+				setteriYomikomi();            //状況に応じた分岐を行う
+			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2369,41 +2376,43 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "jyoukyouBunki";
 		String dbMsg = "[MuList]";
 		try{
-			String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE ,
-					Manifest.permission.WRITE_EXTERNAL_STORAGE ,
-			};
-			boolean isNeedParmissionReqest = false;
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MuList.this);
+			dbMsg ="プリファレンス；端末内にあるファイル数=" + pref_file_kyoku + ",更新日=" + pref_file_saisinn;
+//			String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE ,
+//					Manifest.permission.WRITE_EXTERNAL_STORAGE ,
+//			};
+//			boolean isNeedParmissionReqest = false;
 
-			for ( String permissionName : PERMISSIONS ) {
-				dbMsg += "," + permissionName;
-				int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
-				dbMsg += "=" + checkResalt;
-				if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
-					isNeedParmissionReqest = true;
-				}
-			}
-			dbMsg += "isNeedParmissionReqest=" + isNeedParmissionReqest;
-			if ( isNeedParmissionReqest ) {
-				dbMsg += "::許諾処理へ";
-				new AlertDialog.Builder(MuList.this).setTitle( getResources().getString(R.string.permission_file_titol) )
-						.setMessage( getResources().getString(R.string.permission_file_msg))
-						.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog , int which) {
-								requestPermissions(PERMISSIONS , REQUEST_PREF);
-								return;
-							}
-						})
-						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog , int which) {
-								quitMe();
-							}
-						})
-						.create().show();
-			}else{
-				dbMsg ="プリファレンス；端末内にあるファイル数=" + pref_file_kyoku + ",更新日=" + pref_file_saisinn;
+//
+//			for ( String permissionName : PERMISSIONS ) {
+//				dbMsg += "," + permissionName;
+//				int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
+//				dbMsg += "=" + checkResalt;
+//				if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
+//					isNeedParmissionReqest = true;
+//				}
+//			}
+//			dbMsg += "isNeedParmissionReqest=" + isNeedParmissionReqest;
+//			if ( isNeedParmissionReqest ) {
+//				dbMsg += "::許諾処理へ";
+//				new AlertDialog.Builder(MuList.this).setTitle( getResources().getString(R.string.permission_file_titol) )
+//					.setMessage( getResources().getString(R.string.permission_file_msg))
+//					.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface dialog , int which) {
+//							requestPermissions(PERMISSIONS , REQUEST_PREF);
+//							return;
+//						}
+//					})
+//					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface dialog , int which) {
+//							quitMe();
+//						}
+//					})
+//					.create().show();
+//			}else{
+
 				if( 0< pref_file_kyoku && ! pref_file_saisinn.equals("")){
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 					String modified = sdf.format(new Date(Long.valueOf(pref_file_saisinn)*1000));
@@ -2574,7 +2583,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				 }else{
 					 dbMsg += "、mItems = null" ;
 				 }
-			}
+//			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

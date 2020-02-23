@@ -977,25 +977,26 @@ public class MyPreferences extends PreferenceActivity {
 
 			dbMsg += ",アプリのバージョンコード＝" + now_vercord;//////////////////
 			dbMsg +=  "初期書込み " ;
-			saisei_fname = "";						//再生中のファイル名
-			dbMsg +=  "再生中のファイル名" + saisei_fname;////////////////////////////////////////////////////////////////////////////
-			myEditor.putString ("pref_data_url", saisei_fname);
-			pref_saisei_jikan = "0";		//再開時間		Integer.valueOf(keys.get(key).toString());
-			dbMsg += "再生中音楽ファイルの再開時間" ;//////////////////
-			wrStr = ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_jikan));
-			dbMsg += "再生ポジション；" + pref_saisei_jikan +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
-			myEditor.putString ("pref_position", pref_saisei_jikan);
-			pref_saisei_nagasa = "0";		//pTF_pref_saisei_nagasa;		//再生中音楽ファイルの再生時間
-			dbMsg += "再生中音楽ファイルの長さ＝" + pref_saisei_nagasa;//////////////////
-			wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_nagasa));
-			dbMsg += "再生時間；" +pref_saisei_nagasa +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
-			myEditor.putString ("pref_duration", pref_saisei_nagasa);
-			nowList_id = "-1";
-			dbMsg +=  "、nowList["  + nowList_id +"]";	//再生中のプレイリストID	playListID
-			myEditor.putString ("nowList_id", nowList_id);
-			nowList = String.valueOf(context.getResources().getText(R.string.listmei_zemkyoku));
-			dbMsg +=  "プレイリスト名="  + nowList;////////////////////////////////////////////////////////////////////////////
-			myEditor.putString ("nowList", nowList);
+//			20200223:前回に再生したファイル、プレイリストが無いことでインストール直後であることを判定：
+//			saisei_fname = "";						//再生中のファイル名
+//			dbMsg +=  "再生中のファイル名" + saisei_fname;////////////////////////////////////////////////////////////////////////////
+//			myEditor.putString ("pref_data_url", saisei_fname);
+//			pref_saisei_jikan = "0";		//再開時間		Integer.valueOf(keys.get(key).toString());
+//			dbMsg += "再生中音楽ファイルの再開時間" ;//////////////////
+//			wrStr = ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_jikan));
+//			dbMsg += "再生ポジション；" + pref_saisei_jikan +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			myEditor.putString ("pref_position", pref_saisei_jikan);
+//			pref_saisei_nagasa = "0";		//pTF_pref_saisei_nagasa;		//再生中音楽ファイルの再生時間
+//			dbMsg += "再生中音楽ファイルの長さ＝" + pref_saisei_nagasa;//////////////////
+//			wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_nagasa));
+//			dbMsg += "再生時間；" +pref_saisei_nagasa +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			myEditor.putString ("pref_duration", pref_saisei_nagasa);
+//			nowList_id = "-1";
+//			dbMsg +=  "、nowList["  + nowList_id +"]";	//再生中のプレイリストID	playListID
+//			myEditor.putString ("nowList_id", nowList_id);
+//			nowList = String.valueOf(context.getResources().getText(R.string.listmei_zemkyoku));
+//			dbMsg +=  "プレイリスト名="  + nowList;////////////////////////////////////////////////////////////////////////////
+//			myEditor.putString ("nowList", nowList);
 			play_order ="0";
 			dbMsg +=  "(play_order=" + play_order +")";////////////////////////////////////////////////////////////////////////////
 			myEditor.putString ("play_order", play_order);

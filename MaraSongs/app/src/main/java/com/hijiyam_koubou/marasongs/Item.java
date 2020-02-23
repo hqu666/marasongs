@@ -215,7 +215,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 
 			String nowList = String.valueOf(keys.get("nowList"));                  //20190506;[-1でjava.lang.NullPointerException:
 			dbMsg += "、nowList=" + nowList  ;
-			if(nowList == null ){
+			if(nowList == null || nowList.equals("null")){
 //				nowList_id = -1;
 //				dbMsg += ">>" + nowList_id  ;
 //				nowList = context.getResources().getString(R.string.listmei_zemkyoku);					//全曲リストでなければ
