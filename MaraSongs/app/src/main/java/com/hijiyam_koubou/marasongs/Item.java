@@ -216,11 +216,12 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			String nowList = String.valueOf(keys.get("nowList"));                  //20190506;[-1でjava.lang.NullPointerException:
 			dbMsg += "、nowList=" + nowList  ;
 			if(nowList == null || nowList.equals("null")){
-//				nowList_id = -1;
-//				dbMsg += ">>" + nowList_id  ;
-//				nowList = context.getResources().getString(R.string.listmei_zemkyoku);					//全曲リストでなければ
-//				dbMsg +=  ">>全曲リストに補正" ;
-			}else {
+				nowList_id = -1;
+				dbMsg += ">>" + nowList_id  ;
+				nowList = context.getResources().getString(R.string.listmei_zemkyoku);					//全曲リストでなければ
+				dbMsg +=  ">>全曲リストに補正" ;
+			}
+//			else {
 				if (items != null) {
 					dbMsg += ",items=" + items.size() + "件";
 					if (0 < items.size()) {                                        //既に読み込んでいたら
@@ -357,7 +358,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					}
 					dbMsg += ",書換え結果";
 				}
-			}
+//			}
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg +="["+context.getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]"+items.size() +context.getResources().getString(R.string.comon_ken);		//	<string name="">所要時間</string>
 			myLog(TAG,dbMsg );

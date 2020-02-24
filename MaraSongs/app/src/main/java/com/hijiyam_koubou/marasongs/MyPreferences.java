@@ -900,15 +900,20 @@ public class MyPreferences extends PreferenceActivity {
 					}
 				}
 				//まだ作成できていないパラメータの作成
-//				myEditor.clear();
-//				if (nowList_id == null || nowList_id.equals("0")) {
-//					nowList_id = "-1";
-//					myEditor.putString("nowList_id", nowList_id);
-//					nowList = String.valueOf(context.getResources().getText(R.string.listmei_zemkyoku));
-//					myEditor.putString("nowList", nowList);
-//					dbMsg += ">>プレイリスト[" + nowList_id + "]" + nowList;                //in16.pla=29236
-//
-//				}
+				myEditor.clear();
+				if (nowList_id == null || nowList_id.equals("0")) {
+					nowList_id = "-1";
+					myEditor.putString("nowList_id", nowList_id);
+
+				}
+				if (nowList == null || nowList.equals("")) {
+//					if (nowList_id.equals("-1")) {
+						nowList = String.valueOf(context.getResources().getText(R.string.listmei_zemkyoku));
+						myEditor.putString("nowList", nowList);
+						dbMsg += ">>プレイリスト[" + nowList_id + "]" + nowList;                //in16.pla=29236
+//					}
+				}
+
 //
 //				pref_file_in = context.getFilesDir().getPath();    //内部データ領域
 //				dbMsg += ",内蔵メモリ＝" + pref_file_in;////////////////    //storage/emulated/0/Music
@@ -928,10 +933,10 @@ public class MyPreferences extends PreferenceActivity {
 //				pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
 //				dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 //				myEditor.putString("pref_commmn_music", pref_commmn_music);
-//				if (myEditor != null) {
-//					myEditor.commit();
-//					dbMsg += "に設定";
-//				}
+				if (myEditor != null) {
+					myEditor.commit();
+					dbMsg += "に設定";
+				}
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
