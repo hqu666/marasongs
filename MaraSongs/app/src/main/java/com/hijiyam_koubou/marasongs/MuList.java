@@ -630,14 +630,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //			Siseiothers =myPreferences.Siseiothers;				//レジューム再生の情報
 //			others =myPreferences.others;				//その他の情報
 			boolean isCont = false;
-			if(nowList == null  || nowList.equals("") ||
-					pref_data_url == null || pref_data_url.equals("") ||
-					saisinnFileKakuninn( pref_file_kyoku + "" , pref_file_saisinn )
-			){
-				preRead(MaraSonActivity.syoki_Yomikomi , null);            //syoki_start_up
-			}else {
+//			if(nowList == null  || nowList.equals("") ||
+//					pref_data_url == null || pref_data_url.equals("") ||
+//					saisinnFileKakuninn( pref_file_kyoku + "" , pref_file_saisinn )
+//			){
+//				preRead(MaraSonActivity.syoki_Yomikomi , null);            //syoki_start_up
+//			}else {
 				setteriYomikomi();            //状況に応じた分岐を行う
-			}
+//			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

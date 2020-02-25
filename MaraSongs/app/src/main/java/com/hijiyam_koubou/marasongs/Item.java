@@ -174,7 +174,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 
 //			}
 			if(!ArtistName.equals(albumArtist) && !albumArtist.equals("コンピレーション")){
-				myLog(TAG,dbMsg );
+//				myLog(TAG,dbMsg );
 			}
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
