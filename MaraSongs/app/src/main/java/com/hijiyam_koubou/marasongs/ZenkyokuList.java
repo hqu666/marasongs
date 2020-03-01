@@ -42,6 +42,15 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+
 public class ZenkyokuList extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
 	OrgUtil ORGUT;				//自作関数集
 	Util UTIL;
@@ -160,7 +169,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public String compSelection ;			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 	public String[] compList;				//全曲リスト末尾にまとめるもの
 	public int compCount;
-	public int comCount;			//コンピレーションなど末尾につける匿名
+	public int comCount;					//コンピレーションなど末尾につける匿名
+	public String all_songs_file_name ;		//全曲リストの汎用リスト
+	public String album_artist_file_name ;			//アーティスト名の汎用リスト
 
 
 	public void readPref() {        //プリファレンスの読込み
@@ -181,13 +192,18 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order = Integer.parseInt(myPreferences.play_order);
-			myLog(TAG, dbMsg);
+
+			all_songs_file_name = cContext.getString(R.string.all_songs_file_name);
+			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;
+			album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
+//			album_artist = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name);
+			dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;
+
+					myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}																	//設定読込・旧バージョン設定の消去
-
-
 
 	/**
  * 起動時に２系統プログレスのxlm読み込み
@@ -1508,7 +1524,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public String compIndex;
 	public ContentValues cv;
 	public String udIdName;							//アップデートする名前
-//	public ArrayList<String> anamedList;				//アルバム内のアーティストリスト
+    public String allSonglist = "";
 
 	/**
 	 * コンピレーションの抽出とアルバムアーティスト名の重複処理
@@ -1915,6 +1931,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			String sort_name;
 			String artist_name = null;
 			String albumName = null;
+            String titolName = null;
+            String dataUri = null;
 			pdCoundtVal = ｃursor.getPosition();
 			dbMsg += reqCode + ": "+  pdCoundtVal + "/" + pdMaxVal + "曲目";
 			int cCount = 0;
@@ -1925,7 +1943,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				dbMsg += "," + cCount+")" + cName;
 				String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
 				dbMsg += " = "+ cVal;
-				if( cName.equals("_id") ){
+				if( cName.equals("_id") ) {
+                }else if( cName.equals("TITLE")){
+                    titolName = cVal;
+                }else if( cName.equals("DATA")){
+                    dataUri = cVal;
 				} else {
 					stmt.bindString(cCount, String.valueOf(cVal));
 					if( cName.equals("SORT_NAME") ){
@@ -1937,9 +1959,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					}
 				}
 			}
-//			if( ! artist_name.equals(albumName) ){
-				myLog(TAG,dbMsg );
-//			}
+            allSonglist += titolName + "," + dataUri +"\n";
+//			myLog(TAG,dbMsg );
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
@@ -2016,6 +2037,19 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //									"[" +this.cContext.getString(R.string.common_syouryaku)  + "]";	//コンピレーション無し[省略]
 //				CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)
 //			}
+
+            try {
+                dbMsg += " , 全曲リストファイル書き込み= " + all_songs_file_name;
+                FileOutputStream fos = openFileOutput(all_songs_file_name, MODE_PRIVATE);
+                OutputStreamWriter osw = new OutputStreamWriter(fos);
+                BufferedWriter writer = new BufferedWriter(osw);
+                writer.write(allSonglist);
+                writer.close();
+                dbMsg += " >>成功";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 			myLog(TAG,dbMsg );
 			addCompList();		//全曲リストにコンピレーション追加
 		}catch(IllegalArgumentException e){
@@ -2447,6 +2481,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public String albumMei = "";
 	public String artURL = null;
 	public List<String> aArtistList;		//アルバムアーティスト
+	public String artistlist = "";
 	public SQLiteStatement stmtWrite(Cursor cursor  , SQLiteStatement stmt , String fName , int rfNo) throws IOException{
 		int retInt = -1;					//	 ,SQLiteStatement stmt
 		final String TAG = "stmtWrite";
@@ -2741,6 +2776,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				titolCo = titolCo + kyoku;
 				dbMsg += + titolCo +"曲";
 	//		}
+			artistlist += aArtist + "\n";
 			dbMsg += "、リスト" + ZenkyokuList.this.aArtistList.size() +"件";
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -2857,9 +2893,24 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //					albamCo + this.cContext.getString(R.string.pp_mai) +souKyokuSuu + this.cContext.getString(R.string.pp_kyoku) ;			//○枚○曲
 			pdMessage_stok = pdMessage_stok +"[" +dousaJikann + "mS]";		//所要時間
 			dbMsg +=  pdMessage_stok ;
-			myLog(TAG,dbMsg );
 			reqCode = pt_end;
 			cursor.close();
+
+			try {
+				dbMsg += " , アーティストリストファイル書き込み= " + album_artist_file_name;
+				FileOutputStream fos = openFileOutput(album_artist_file_name, MODE_PRIVATE);
+				OutputStreamWriter osw = new OutputStreamWriter(fos);
+				BufferedWriter writer = new BufferedWriter(osw);
+				writer.write(artistlist);
+				writer.close();
+				dbMsg += " >>成功";
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			myLog(TAG,dbMsg );
+
+
 			totalEnd( pdMessage_stok );									//データベースを閉じて終了処理
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());

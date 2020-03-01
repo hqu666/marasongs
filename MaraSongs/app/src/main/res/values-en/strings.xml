@@ -15,6 +15,9 @@
 	<string name="kari_file">kari.db</string>
 	<string name="zenkyoku_file">zenkyoku.db</string>
 	<string name="zenkyoku_table">zenkyoku_table</string>
+	<string name="all_songs_file_name">all_songs.m3a</string>
+	<string name="album_artist_file_name">album_artist.txt</string>
+
 	<string name="zenkyoku_end_msg">Thank you for waiting.</string><!--お待たせしました。-->
 
 	<string name="comon_ari">Available</string>

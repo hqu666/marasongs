@@ -18,11 +18,15 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 		final String TAG = "ZenkyokuHelper";
 		String dbMsg= "[ZenkyokuHelper]";
 		try{
-			dbMsg +="getPackageCodePath="+context.getPackageCodePath();
+//			dbMsg +="getPackageCodePath= "+context.getPackageCodePath();
+			//	/mnt/user/0
+			//
 			rContext = context;						//第１引数; context ;読出し元;データベースを所有するコンテキストオブジェクトを指定します。
 			dbName = dFn;							//第２引数; fileName ;データベースファイルの名前です。この引数にnullを指定すると、データベースはメモリー上に作られます。
-			dbMsg += " , db=" + dbName;
-			dbMsg +=",バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
+			dbMsg += " , db= " + dbName;
+			//	/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db が
+			//	/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+			dbMsg +=" ,バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());

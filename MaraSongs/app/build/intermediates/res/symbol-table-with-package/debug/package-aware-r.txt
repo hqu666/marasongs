@@ -1848,6 +1848,8 @@ string action_settings
 string activity_sample_device_admin
 string add_playlist_msg
 string add_playlist_titol
+string album_artist_file_name
+string all_songs_file_name
 string app_name
 string appbar_scrolling_view_behavior
 string artist_file

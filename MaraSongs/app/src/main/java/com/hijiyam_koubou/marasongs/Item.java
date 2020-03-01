@@ -185,6 +185,44 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	}
 
 
+	public SQLiteDatabase retDB(Context context) {			//全曲dbを返す
+		final String TAG = "retDB[MaraSonActivity]";
+		String dbMsg = "[Item];";
+		SQLiteDatabase Zenkyoku_db = null;
+		try{
+			String fn = context.getString(R.string.zenkyoku_file);			//全曲リスト名
+			dbMsg = "fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+			ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context , fn);		//全曲リストの定義ファイル		.
+			File dbF = context.getDatabasePath(fn);			//Environment.getExternalStorageDirectory().getPath();		new File(fn);		//cContext.
+			dbMsg += ",dbF=" + dbF;
+			dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+			if(dbF.exists() ){
+				if(Zenkyoku_db != null){
+					dbMsg += ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+					if(! Zenkyoku_db.isOpen()){
+						if(dbF.exists()){
+							dbMsg += ">>delF=" + dbF.getPath();
+							Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
+							dbMsg += ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+						}
+					}
+				} else {
+					if(dbF.exists()){
+						Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
+						dbMsg += ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+					}
+				}
+			}														//if(dbF.exists() ){
+//			dbMsg = "検索するのは" + dataFN;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return Zenkyoku_db;
+	}
+
+
+
 	/**
 	 * *ストレージ上から音楽を探してリストを返す。
 	 *  @param context コンテキスト
@@ -245,22 +283,45 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 				//		myLog(TAG,dbMsg );
 				if (items.size() == 0) {
 					if (nowList.equals(context.getResources().getString(R.string.listmei_zemkyoku))) {
-						dbMsg += ",全曲リストを読み込み";
 						sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file), android.content.Context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
-						String fn = context.getResources().getString(R.string.zenkyoku_file);            //全曲リスト
-						File dbF = context.getDatabasePath(fn);            //☆初回時は未だDBが作られていないのでgetApplicationContext()
-						fn = dbF.getPath();
-						dbMsg += "db=" + fn;
-						File chFile = new File(fn);
-						dbMsg += ",exists=" + chFile.exists();
-						if (chFile.exists()) {
-							ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+						dbMsg += ",全曲リストを読み込み";
+
+						String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+						File databasePath = context.getDatabasePath(fn);
+						dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+
+
+//						File f = validateFilePath(fn, false);
+						ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+						dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+//						File dbF = context.getDatabasePath(zenkyokuHelper.getDatabaseName());
+//						String saveDir = context.getExternalFilesDir(null).toString();						//メモリカードに保存フォルダ
+//						dbMsg += "、saveDir="+ saveDir;
+////						String[] rDir = saveDir.split(File.separator);
+////						dbMsg += "、rDir="+ rDir;
+//						File dbF = new File(saveDir + "/databases/" + fn);
+////						File dbF = new File("/data/data/com.hijiyam_koubou.marasongs/databases/" + fn);
+						File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+						//☆初回時は未だDBが作られていないのでgetApplicationContext()
+						dbMsg += ",dbF=" + dbF;
+						dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+//						fn = dbF.getPath();
+//						dbMsg += "db= " + fn;
+//						File chFile = new File(dbF);
+//						dbMsg += " ,exists=" + chFile.exists();
+						if (dbF.exists()) {
+//						if (chFile.exists()) {
 							SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
-							dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
-							String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);            //全曲のテーブル名
-							dbMsg += "；アーティストリストテーブル=" + zenkyokuTName;
-							String c_orderBy = null;            //⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
-							cursor = Zenkyoku_db.query(zenkyokuTName, null, null, null, null, null, c_orderBy);    //リString table, String[] columns,new String[] {MotoN, albamN}
+							dbMsg += ",Zenkyoku_db=" + Zenkyoku_db.getPageSize() +"件";
+							String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+							dbMsg += "；全曲リストテーブル名=" + zenkyokuTName;
+							String c_selection = null;
+							String[] c_selectionArgs= null;
+							String c_orderBy= null;
+							cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, c_orderBy);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
+
+//							String c_orderBy = null;            //⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
+//							cursor = Zenkyoku_db.query(zenkyokuTName, null, null, null, null, null, c_orderBy);    //リString table, String[] columns,new String[] {MotoN, albamN}
 							dbMsg += "；" + cursor.getCount() + "件";
 							int idCount = 0;
 							if (cursor.moveToFirst()) {
@@ -353,8 +414,10 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							} while (cursor.moveToNext());
 						}
 					}
-					if (!cursor.isClosed()) {
-						cursor.close();
+					if(cursor != null){
+						if (!cursor.isClosed()) {
+							cursor.close();
+						}
 					}
 					dbMsg += ",書換え結果";
 				}
