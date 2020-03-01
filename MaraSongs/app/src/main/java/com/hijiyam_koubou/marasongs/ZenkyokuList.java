@@ -193,10 +193,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order = Integer.parseInt(myPreferences.play_order);
 
-			all_songs_file_name = cContext.getString(R.string.all_songs_file_name);
-			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;
-			album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
-//			album_artist = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name);
+			all_songs_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name);
+			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
+			album_artist_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
 			dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;
 
 					myLog(TAG, dbMsg);
@@ -2040,9 +2039,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
             try {
                 dbMsg += " , 全曲リストファイル書き込み= " + all_songs_file_name;
-                FileOutputStream fos = openFileOutput(all_songs_file_name, MODE_PRIVATE);
-                OutputStreamWriter osw = new OutputStreamWriter(fos);
+                FileOutputStream fos = new FileOutputStream(new File(all_songs_file_name));
+                //openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
+                OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
                 BufferedWriter writer = new BufferedWriter(osw);
+//                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
                 writer.write(allSonglist);
                 writer.close();
                 dbMsg += " >>成功";
@@ -2898,7 +2899,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 			try {
 				dbMsg += " , アーティストリストファイル書き込み= " + album_artist_file_name;
-				FileOutputStream fos = openFileOutput(album_artist_file_name, MODE_PRIVATE);
+                FileOutputStream fos = new FileOutputStream(new File(album_artist_file_name));
 				OutputStreamWriter osw = new OutputStreamWriter(fos);
 				BufferedWriter writer = new BufferedWriter(osw);
 				writer.write(artistlist);
