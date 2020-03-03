@@ -36,7 +36,7 @@
     <string name="zenkyoku_table">zenkyoku_table</string>
     <string name="shyuusei_file">shyuusei.db</string>
     <string name="shyuusei_table">shyuusei_table</string>
-    <string name="all_songs_file_name">all_songs.m3a</string>
+    <string name="all_songs_file_name">all_songs.m3u</string>
     <string name="album_artist_file_name">album_artist.txt</string>
 
 

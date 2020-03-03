@@ -494,13 +494,15 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		try{
 			dbMsg=  "data=" + data ;/////////////////////////////////////
 			dbMsg +="を" + items.size() +"件から検索";/////////////////////////////////////
-			for( int i = 0 ;i< items.size() ; i++){
-	//	イテレータ	for( Item i : items){はjava.util.ConcurrentModificationException発生
-				String rStr = items.get(i).data;
-				if(rStr.equals( String.valueOf(data) )){
-					retInt = items.get(i)._id;
-					dbMsg +="[" + retInt + "]に" + rStr + "有り";
-					break;
+			if(data != null){
+				for( int i = 0 ;i< items.size() ; i++){
+					//	イテレータ	for( Item i : items){はjava.util.ConcurrentModificationException発生
+					String rStr = items.get(i).data;
+					if(rStr.equals( String.valueOf(data) )){
+						retInt = items.get(i)._id;
+						dbMsg +="[" + retInt + "]に" + rStr + "有り";
+						break;
+					}
 				}
 			}
 			dbMsg +=",retInt=" + retInt ;/////////////////////////////////////

@@ -7,7 +7,7 @@
     <string name="add_playlist_msg">Title of a musical composition to add</string>
     <string name="add_playlist_titol">Additional former list</string>
     <string name="album_artist_file_name">album_artist.txt</string>
-    <string name="all_songs_file_name">all_songs.m3a</string>
+    <string name="all_songs_file_name">all_songs.m3u</string>
     <string name="app_name">MaraSongs</string>
     <string name="artist_file">artist.db</string>
     <string name="artist_reW_file">artist_rw.db</string>
