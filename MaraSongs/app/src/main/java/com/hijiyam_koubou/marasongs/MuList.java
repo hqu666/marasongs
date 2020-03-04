@@ -657,8 +657,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 ////			){
 //				preRead(MaraSonActivity.syoki_Yomikomi , null);            //syoki_start_up
 //			}else {
-//				setteriYomikomi();            //状況に応じた分岐を行う
 ////			}
+			setteriYomikomi();            //状況に応じた分岐を行う
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -10279,6 +10279,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg +=",reqCode;" + reqCode;
 				switch(shigot_bangou) {
 					case reTryMse:				//全曲リスト作成から戻ってメッセージ表示
+						dbMsg +=",reTryMse;";
 						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 						alertDialogBuilder.setTitle(dtitol);
 						alertDialogBuilder.setMessage(dMessege);
