@@ -130,7 +130,12 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		final String TAG = "dbRecordAddItems";
 		String dbMsg = "[Item];";
 		try{
-			dbMsg += "," + cursor.getPosition() + "/" + cursor.getCount() + "曲目,idCount=" + idCount;
+			int cPosition = cursor.getPosition();
+			dbMsg += "," + cPosition + "/" + cursor.getCount() + "曲目,idCount=" + idCount;
+			Util UTIL = new Util();
+//			UTIL.dBaceColumnCheck( cursor ,  cPosition);
+
+
 			String ArtistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
 			dbMsg += ",ARTIST=" + ArtistName;
 			String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
@@ -139,7 +144,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			dbMsg += ",ALBUM=" + albumName;
 			String trackVar = cursor.getString(cursor.getColumnIndex("TRACK"));
 			dbMsg += ",TRACK=" + trackVar;
-			Util UTIL = new Util();
 			trackVar = UTIL.checKTrack(trackVar);
 //			if (trackVar.contains("/")){
 //				String[] tStrs = trackVar.split("/");
@@ -153,7 +157,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			dbMsg += "=" + moh;
 				//I'll Be Alright
 			String dataUrl = cursor.getString(cursor.getColumnIndex("DATA"));
-			dbMsg += ",DATA=" + dataUrl;
+//			dbMsg += ",DATA=" + dataUrl;
 
 			items.add(new Item(
 					nowList_id,
@@ -173,6 +177,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 //								dbMsg2 += ",LAST_YEAR=" + cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
 
 //			}
+			dbMsg += ",DATA=" + items.get(0).data;
 			if(!ArtistName.equals(albumArtist) && !albumArtist.equals("コンピレーション")){
 //				myLog(TAG,dbMsg );
 			}
@@ -312,7 +317,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 						if (dbF.exists()) {
 //						if (chFile.exists()) {
 							SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
-							dbMsg += ",Zenkyoku_db=" + Zenkyoku_db.getPageSize() +"件";
+							dbMsg += ",Zenkyoku_db:PageSiz=" + Zenkyoku_db.getPageSize();
 							String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 							dbMsg += "；全曲リストテーブル名=" + zenkyokuTName;
 							String c_selection = null;
@@ -331,6 +336,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 								} while (cursor.moveToNext());
 							}
 							Zenkyoku_db.close();
+							dbMsg +=","+ items.get(0) + "〜"+ items.get(items.size() -1).data;
 						} else {
 							dbMsg += ",全曲リスト未作成";
 						}
@@ -420,10 +426,13 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 						}
 					}
 					dbMsg += ",書換え結果";
+
+
 				}
 //			}
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg +="["+context.getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]"+items.size() +context.getResources().getString(R.string.comon_ken);		//	<string name="">所要時間</string>
+
 			myLog(TAG,dbMsg );
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + dbMsg2 + "で"+e.toString());

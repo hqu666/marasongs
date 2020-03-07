@@ -692,7 +692,7 @@ public class MyPreferences extends PreferenceActivity {
 			}
 
 			dbMsg += ",アプリのバージョンコード＝" + now_vercord;//////////////////
-			if (   keys.size() <= 6 ) {         //最初から6項目ある？
+			if ( keys.size() <= 6 ) {         //最初から6項目ある？
 				dbMsg += ",初期設定へ" ;//////////////////
 				setdPrif(context);
 			}else {

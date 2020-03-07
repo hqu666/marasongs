@@ -789,7 +789,7 @@ public class Util {
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			retStr = (String)sharedPref.getString(keyNmae , defaultVal);
 			dbMsg +=  ",retStr="  + retStr;
-//			myLog(TAG, dbMsg);
+			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}

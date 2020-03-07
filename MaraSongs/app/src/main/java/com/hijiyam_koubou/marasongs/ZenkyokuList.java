@@ -1,4 +1,9 @@
 package com.hijiyam_koubou.marasongs;
+/**
+ *
+ * 20200307:TITLE,DATA,COMPOSER が転記されていない
+ * 202002;m3u書き出し
+ * **/
 
 import java.io.File;
 import java.io.IOException;
@@ -1943,13 +1948,14 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
 				dbMsg += " = "+ cVal;
 				if( cName.equals("_id") ) {
-                }else if( cName.equals("TITLE")){
-                    titolName = cVal;
-                }else if( cName.equals("DATA")){
-                    dataUri = cVal;
 				} else {
 					stmt.bindString(cCount, String.valueOf(cVal));
-					if( cName.equals("SORT_NAME") ){
+					if( cName.equals("_id") ) {
+					}else if( cName.equals("TITLE")){
+						titolName = cVal;
+					}else if( cName.equals("DATA")){
+						dataUri = cVal;
+					} else if( cName.equals("SORT_NAME") ){
 						sort_name = String.valueOf(cVal);
 					}else if( cName.equals("ARTIST") ){
 						artist_name = String.valueOf(cVal);
@@ -2043,7 +2049,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
                 //openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
                 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
                 BufferedWriter writer = new BufferedWriter(osw);
-//                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
                 writer.write(allSonglist);
                 writer.close();
                 dbMsg += " >>成功";

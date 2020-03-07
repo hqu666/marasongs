@@ -226,9 +226,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(this);
+			myPreferences.readPrif(MusicPlayerService.this);
 			sharedPref =myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
+			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
+			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
+			dbMsg += "nowList= " + nowList;
+			String dataURL = myPreferences.saisei_fname;
+			dbMsg += ",dataURL= " + dataURL;
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
 			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
@@ -243,8 +248,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
-			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
-			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
 			play_order =myPreferences.play_order;
 //			//アーティストごとの情報
 //			artistID = myPreferences.artistID;
@@ -252,12 +255,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //			albumID = myPreferences.albumID;
 //			//曲ごとの情報
 //			audioID = myPreferences.audioID;
-//			dataURL = myPreferences.dataURL;
 			pref_toneList = myPreferences.pref_toneList;		//プリファレンス保存用トーンリスト
 			toneSeparata = myPreferences.toneSeparata;
 			tone_name = myPreferences.tone_name;				//トーン名称
 			bBoot = myPreferences.bBoot;					//バスブート
 			reverbBangou = myPreferences.reverbBangou;				//リバーブ効果番号
+
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

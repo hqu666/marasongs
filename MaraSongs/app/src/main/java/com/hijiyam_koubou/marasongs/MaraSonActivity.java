@@ -113,6 +113,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public Context rContext ;
 	OrgUtil ORGUT;		//自作関数集
 	OrgUtilFile OGFil;	//ファイル関連関数
+	MyPreferences myPreferences;
 	ZenkyokuList ZKL;
 	MuList MLIST;
 	public SimpleDateFormat convertFormat;						//時差抜き時分秒表示フォーマット
@@ -422,7 +423,7 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "readPref";
 		String dbMsg = "[MaraSonActivity]";
 		try {
-			MyPreferences myPreferences = new MyPreferences();
+			myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
 			dbMsg += "完了";
@@ -5751,15 +5752,18 @@ public class MaraSonActivity extends AppCompatActivity
 				}
 //				nowList_id = extras.getInt("nowList_id");					//何のリストか
 				dbMsg +="{"+ nowList_id ;/////////////////////////////////////
-//				String rStr=extras.getString("nowList");
-//				dbMsg +="]rStr="+ rStr ;/////////////////////////////////////
-//				if( rStr !=null ){
-//					if( ! rStr.equals("null") ){
-//						nowList = rStr;
-//					}
-//				}
+				String rStr=extras.getString("nowList");
+				dbMsg +="]rStr="+ rStr ;/////////////////////////////////////
+				if( rStr !=null ){
+					if( ! rStr.equals("null") ){
+						nowList = rStr;
+						dbMsg +=">>"+ nowList ;
+					}
+				}
 				dbMsg +=",再生中のプレイリスト名=" + nowList;/////////////////////////////////////
-				String dataFN = getPrefStr("pref_data_url" , "" , getApplicationContext());
+			String dataFN = myPreferences.saisei_fname;
+//			String dataFN = sharedPref.getString("pref_data_url","");
+//			String dataFN = getPrefStr("pref_data_url" , "" , MaraSonActivity.this);	//getApplicationContext()
 				dbMsg +=  ",dataFN=" + dataFN;////////////////////////////////////////////////////////////////////////////
 				int mIndex = Item.getMPItem( dataFN );
 				dbMsg += "[mIndex"+ mIndex + "/"+ mItems.size() +"]";
