@@ -60,11 +60,11 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				convertView = inflater.inflate(R.layout.custom_item_layout, null);			//	convertView = inflater.inflate(R.layout.row, null);
 			}
 			TreeEntry treeEntry = (TreeEntry)getItem(position);
-			ImageView lrow_image = (ImageView) convertView.findViewById(R.id.iconView);						//mIconView = (ImageView) findViewById(R.id.lrow_image);
+			ImageView lrow_image = convertView.findViewById(R.id.iconView);						//mIconView = (ImageView) findViewById(R.id.lrow_image);
 			dbMsg += "mIconView=" + lrow_image;
-			TextView mainText = (TextView) convertView.findViewById(R.id.titleView);					//mTitleView = (TextView) findViewById(R.id.row_main_tv);
-			TextView subText = (TextView) convertView.findViewById(R.id.descriptionView);		//mDescriptionView = (TextView) findViewById(R.id.row_sub_tv);
-			TextView nomText = (TextView) convertView.findViewById(R.id.noView);							//番号表示
+			TextView mainText = convertView.findViewById(R.id.titleView);					//mTitleView = (TextView) findViewById(R.id.row_main_tv);
+			TextView subText = convertView.findViewById(R.id.descriptionView);		//mDescriptionView = (TextView) findViewById(R.id.row_sub_tv);
+			TextView nomText = convertView.findViewById(R.id.noView);							//番号表示
 //			TextView mainText = (TextView)convertView.findViewById(R.id.row_main_tv);
 //			TextView subText = (TextView)convertView.findViewById(R.id.row_sub_tv);
 //			TextView nomText = (TextView)convertView.findViewById(R.id.nol_tv);
@@ -77,9 +77,9 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 	//		dbMsg +=",getDepth= " + rowDepth + "階層";
 			int leftPad = 0;
 			int pOrder = position + 1;
-			String pOrderStr = " " + String.valueOf(pOrder)+",";
+			String pOrderStr = " " + pOrder +",";
 			if(9 < pOrder ){
-				pOrderStr =  String.valueOf(pOrder)+",";
+				pOrderStr = pOrder +",";
 			}
 
 			int layerName = treeEntry.getLayerName();
@@ -118,7 +118,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					break;
 				case MuList.listType_info:					//sub情報付き
 					String listMei = treeEntry.getPlaylistNAME();
-					if( listMei.equals(String.valueOf(parent.getResources().getString(R.string.playlist_namae_saikintuika))) ){				//最近追加
+					if( listMei.equals(parent.getResources().getString(R.string.playlist_namae_saikintuika)) ){				//最近追加
 						String date_modified = treeEntry.getModified();
 						dbMsg +=  ",date_modified="+date_modified;
 						if( date_modified != null ){
@@ -158,7 +158,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				dbMsg +=  ",ArtistName="+ArtistName;
 				
 	//			int pOrder = position + 1;
-				String rStr = " " + String.valueOf(pOrder)+",";
+				String rStr = " " + pOrder +",";
 				String duration = treeEntry.getDuration();
 				dbMsg +=  ",duration="+duration;
 				if(duration != null){
@@ -175,7 +175,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					subText.setVisibility(View.GONE);
 					nomText.setVisibility(View.VISIBLE);
 					if(9 < pOrder ){
-						rStr =  String.valueOf(pOrder)+",";
+						rStr = pOrder +",";
 					}
 					dbMsg +="[" + rStr +"]";
 					nomText.setText(rStr);
@@ -189,7 +189,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					subText.setVisibility(View.VISIBLE);
 					nomText.setVisibility(View.GONE);
 					if(9 < pOrder ){
-						rStr =  String.valueOf(pOrder)+",";
+						rStr = pOrder +",";
 					}
 					dbMsg +="[" + rStr +"]";
 			//		nomText.setText(rStr);
@@ -208,16 +208,16 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					int rInt = position - albumPosition;
 					String playlistNAME = treeEntry.getPlaylistNAME();
 					dbMsg += ",playlistNAME="+playlistNAME;
-					if(playlistNAME.equals(String.valueOf(parent.getContext().getResources().getString(R.string.listmei_zemkyoku)))){	// 全曲リスト
+					if(playlistNAME.equals(parent.getContext().getResources().getString(R.string.listmei_zemkyoku))){	// 全曲リスト
 						String track = treeEntry.getTrack();
 						dbMsg +=  ",track="+track;
 						Util UTIL = new Util();
 						track = UTIL.checKTrack( track);
 						rInt = Integer.valueOf(track);
 					}
-					rStr = " " + String.valueOf(rInt)+",";
+					rStr = " " + rInt +",";
 					if(9 < rInt ){
-						rStr =  String.valueOf(rInt)+",";
+						rStr = rInt +",";
 					}
 					nomText.setText(rStr);
 					leftPad = 45;								//rowDepth * 45;
@@ -255,15 +255,12 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 			Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Albums._ID +" = ?";
-			;
-			String[] c_selectionArgs= { String.valueOf(albumID) };   			//⑥引数groupByには、groupBy句を指定します。
+            String[] c_selectionArgs= { String.valueOf(albumID) };   			//⑥引数groupByには、groupBy句を指定します。
 			String c_orderBy=null ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
-			;
-			Cursor cursor = parent.getContext().getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
+            Cursor cursor = parent.getContext().getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
 			dbMsg +=",該当="+ cursor.getCount() + "件";///////////////////////////////////////////////////////////////////////////////////////////
 			String album_art = null;
-			;
-			if(cursor.moveToFirst()){
+            if(cursor.moveToFirst()){
 				dbMsg +=",ALBUM="+ cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));///////////////////////////////////////////////////////////////////////////////////////////
 				album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 				dbMsg +=",album_art="+ album_art;///////////////////////////////////////////////////////////////////////////////////////////

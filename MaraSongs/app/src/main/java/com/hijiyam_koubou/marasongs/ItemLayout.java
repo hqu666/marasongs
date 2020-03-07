@@ -41,11 +41,11 @@ public class ItemLayout extends LinearLayout {							//Custom View
 		final String TAG = "onFinishInflate[ItemLayout]";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
-			mIconView = (ImageView) findViewById(R.id.iconView);						//mIconView = (ImageView) findViewById(R.id.lrow_image);
+			mIconView = findViewById(R.id.iconView);						//mIconView = (ImageView) findViewById(R.id.lrow_image);
 			dbMsg= "mIconView=" + mIconView;
-			mTitleView = (TextView) findViewById(R.id.titleView);					//mTitleView = (TextView) findViewById(R.id.row_main_tv);
-			mDescriptionView = (TextView) findViewById(R.id.descriptionView);		//mDescriptionView = (TextView) findViewById(R.id.row_sub_tv);
-			noView = (TextView) findViewById(R.id.noView);							//番号表示
+			mTitleView = findViewById(R.id.titleView);					//mTitleView = (TextView) findViewById(R.id.row_main_tv);
+			mDescriptionView = findViewById(R.id.descriptionView);		//mDescriptionView = (TextView) findViewById(R.id.row_sub_tv);
+			noView = findViewById(R.id.noView);							//番号表示
 	//		myLog(TAG,dbMsg);
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,dbMsg+"で"+e.toString());

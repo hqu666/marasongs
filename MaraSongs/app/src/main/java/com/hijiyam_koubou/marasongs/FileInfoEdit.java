@@ -114,7 +114,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(ｒContext);
-			sharedPref =myPreferences.sharedPref;
+			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -351,26 +351,26 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 	//		requestWindowFeature(Window.FEATURE_NO_TITLE);	        // (これしないとグレーのタイトルが付く)
 			setContentView(R.layout.file_info_edit);	        // layout.xml を利用する
 	//		fie_albam_artist_name_sp = (Spinner) findViewById(R.id.fie_albam_artist_name_sp);		//（アルバムをまとめる）アーティスト名
-			fe_sousa_taisyou = (RadioGroup) findViewById(R.id.fe_sousa_taisyou);			//操作対象選択
-			fie_sousa_taisyou_artist = (RadioButton) findViewById(R.id.fie_sousa_taisyou_artist);			//操作対象アーティスト
-			fie_sousa_taisyou_album = (RadioButton) findViewById(R.id.fie_sousa_taisyou_album);			//操作対象アルバム
-			fie_sousa_taisyou_kyoku = (RadioButton) findViewById(R.id.fie_sousa_taisyou_kyoku);			//操作対象タイトル
-			fie_albam_artist_list_bt = (ImageButton) findViewById(R.id.fie_albam_artist_list_bt);	//アーティスト名リスト表示
-			fie_albam_artist_name_et = (EditText) findViewById(R.id.fie_albam_artist_name_et);		//（アルバムをまとめる）アーティスト名
-			fie_credit_artist_name_et = (EditText) findViewById(R.id.fie_credit_artist_name_et);	//（アルバムに表記されている）アーティスト名
-			fie_albam_name_et = (EditText) findViewById(R.id.fie_albam_name_et);					//アルバム名
-			fie_year_et = (EditText) findViewById(R.id.fie_year_et);								//アルバムの(制作もしくは録音)年
-			fie_taisyou_track = (EditText) findViewById(R.id.fie_taisyou_track);					//トラック番号
-			fie_taisyou_titol = (EditText) findViewById(R.id.fie_taisyou_titol);					//タイトル
-			fie_taisyou_folder = (TextView) findViewById(R.id.fie_taisyou_folder);					//データUri
-			fie_nega_btn = (Button) findViewById(R.id.fie_nega_btn);								//中止ボタン
-			fie_posi_btn = (Button) findViewById(R.id.fie_posi_btn);								//確定ボタン
-			fie_kakuninn_btn = (Button) findViewById(R.id.fie_kakuninn_btn);							//確認ボタン
+			fe_sousa_taisyou = findViewById(R.id.fe_sousa_taisyou);			//操作対象選択
+			fie_sousa_taisyou_artist = findViewById(R.id.fie_sousa_taisyou_artist);			//操作対象アーティスト
+			fie_sousa_taisyou_album = findViewById(R.id.fie_sousa_taisyou_album);			//操作対象アルバム
+			fie_sousa_taisyou_kyoku = findViewById(R.id.fie_sousa_taisyou_kyoku);			//操作対象タイトル
+			fie_albam_artist_list_bt = findViewById(R.id.fie_albam_artist_list_bt);	//アーティスト名リスト表示
+			fie_albam_artist_name_et = findViewById(R.id.fie_albam_artist_name_et);		//（アルバムをまとめる）アーティスト名
+			fie_credit_artist_name_et = findViewById(R.id.fie_credit_artist_name_et);	//（アルバムに表記されている）アーティスト名
+			fie_albam_name_et = findViewById(R.id.fie_albam_name_et);					//アルバム名
+			fie_year_et = findViewById(R.id.fie_year_et);								//アルバムの(制作もしくは録音)年
+			fie_taisyou_track = findViewById(R.id.fie_taisyou_track);					//トラック番号
+			fie_taisyou_titol = findViewById(R.id.fie_taisyou_titol);					//タイトル
+			fie_taisyou_folder = findViewById(R.id.fie_taisyou_folder);					//データUri
+			fie_nega_btn = findViewById(R.id.fie_nega_btn);								//中止ボタン
+			fie_posi_btn = findViewById(R.id.fie_posi_btn);								//確定ボタン
+			fie_kakuninn_btn = findViewById(R.id.fie_kakuninn_btn);							//確認ボタン
 
-			fie_albam_tv = (TextView) findViewById(R.id.fie_albam_tv);					//アルバム
-			fie_year_tv = (TextView) findViewById(R.id.fie_year_tv);					//制作もしくは録音年
-			fie_nen_tv = (TextView) findViewById(R.id.fie_nen_tv);						//年
-			fie_titol_tv = (TextView) findViewById(R.id.fie_titol_tv);					//タイトル
+			fie_albam_tv = findViewById(R.id.fie_albam_tv);					//アルバム
+			fie_year_tv = findViewById(R.id.fie_year_tv);					//制作もしくは録音年
+			fie_nen_tv = findViewById(R.id.fie_nen_tv);						//年
+			fie_titol_tv = findViewById(R.id.fie_titol_tv);					//タイトル
 
 			fie_albam_artist_name_et.setText(artistName);		//（アルバムをまとめる）アーティスト名
 			fie_credit_artist_name_et.setText(creditArtistName);	//（アルバムに表記されている）アーティスト名
@@ -437,7 +437,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 
 				fe_sousa_taisyou.setOnCheckedChangeListener( this);
 	//			fie_albam_artist_name_et.setOnEditorActionListener(l);;		//（アルバムをまとめる）アーティスト名
-				fie_albam_artist_list_bt = (ImageButton) findViewById(R.id.fie_albam_artist_list_bt);
+				fie_albam_artist_list_bt = findViewById(R.id.fie_albam_artist_list_bt);
 
 				 fie_albam_artist_list_bt.setOnClickListener( new View.OnClickListener() {	//アーティスト名リスト表示
 			            @Override
@@ -763,7 +763,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 			int cCount = artistCursor.getCount();
 			dbMsg += "；" + cCount + "件";
 			if(artistCursor.moveToFirst()){
-				String aTuika[] = ｒContext.getResources().getStringArray(R.array.artist_tuika);
+				String[] aTuika = ｒContext.getResources().getStringArray(R.array.artist_tuika);
 				dbMsg += "；追加=" + aTuika.length + "件";
 				myLog(TAG,dbMsg);
 				listItems = new String[cCount + aTuika.length];

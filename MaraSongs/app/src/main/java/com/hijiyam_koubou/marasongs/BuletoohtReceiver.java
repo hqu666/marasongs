@@ -179,7 +179,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 						} else if (action.equals(Intent.ACTION_MEDIA_BUTTON)) {
 							dbMsg += "、ACTION_MEDIA_BUTTON:";
 							AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-							KeyEvent event = (KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+							KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 							if (audioManager.isBluetoothA2dpOn()) {								// Bluetoothで再生中
 								dbMsg += "、Bluetoothで再生中";
 								int keyCord = event.getKeyCode();

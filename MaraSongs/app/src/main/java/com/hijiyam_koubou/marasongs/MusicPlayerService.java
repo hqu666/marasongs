@@ -115,7 +115,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		Preparing,	// media player is preparing...
 		Playing, 	// playback active (media player ready!). (but the media player may actually be paused in this state if we don't have audio focus. But we stay in this state so that we know we have to resume playback once we get focus back) playback paused (media player ready!)
 		Paused		// playback paused (media player ready!)
-	};
+	}
+
 	private State mState = State.Retrieving;
 	boolean mStartPlayingAfterRetrieve = false;// if in Retrieving mode, this flag indicates whether we should start playing immediately when we are ready or not.
 	enum AudioFocus {	// do we have audio focus?
@@ -227,7 +228,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(MusicPlayerService.this);
-			sharedPref =myPreferences.sharedPref;
+			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
 			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
@@ -298,8 +299,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 								mcPosition = mPlayer.getCurrentPosition();
 								saiseiJikan = mPlayer.getDuration();
 							}
-							mainEditor.putInt("pref_position",(int)mcPosition);		//再生ポジション
-							mainEditor.putInt("pref_duration",(int)saiseiJikan);	//再生時間
+							mainEditor.putInt("pref_position", mcPosition);		//再生ポジション
+							mainEditor.putInt("pref_duration", saiseiJikan);	//再生時間
 //							mainEditor.putString( "pref_position", String.valueOf(mcPosition));		//再生ポジション
 //							mainEditor.putString( "pref_duration", String.valueOf(saiseiJikan));					//再生時間
 							dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
@@ -796,13 +797,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 							Map<String, ?> keys = sharedPref.getAll();
 							nowList_id = Integer.valueOf(keys.get("maeList_id").toString());	//
 							dbMsg +="[" + nowList_id +"]" ;
-							nowList = String.valueOf(keys.get("maeList").toString());
+							nowList = keys.get("maeList").toString();
 							dbMsg +="]" + nowList +"" ;
 							dataFN = String.valueOf(keys.get("maeDatFN"));							//再生中のファイル名//DATA;The data stream for the file ;Type: DATA STREAM
 							dbMsg +=" の　" + dataFN +"に戻す。" ;
 							mainEditor.putString( "nowList", String.valueOf(nowList));
 							mainEditor.putString( "nowList_id", String.valueOf(nowList_id));		//☆intで書き込むとcannot be cast
-							mainEditor.putString( "pref_data_url", String.valueOf(dataFN));		//再生中のファイル名
+							mainEditor.putString( "pref_data_url", dataFN);		//再生中のファイル名
 							mainEditor.putString( "maeList", null);
 							mainEditor.putString( "maeList_id", String.valueOf(-1));		//☆intで書き込むとcannot be cast
 							mainEditor.putString( "maeDatFN", null);		//再生中のファイル名
@@ -869,7 +870,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}else{
 
 				}
-				Uri dataUri = playingItem.getURI( getApplicationContext() , mIndex );
+				Uri dataUri = Item.getURI( getApplicationContext() , mIndex );
 				dataFN = String.valueOf(dataUri);
 				dbMsg +=",読込確認；dataFN=" +dataFN;/////////////////////////////////////
 				if( ! yomiKomiCheck(dataFN)){
@@ -929,7 +930,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					Class<?> cSubtitleController = Class.forName( "android.media.SubtitleController" );
 					Class<?> iSubtitleControllerAnchor = Class.forName( "android.media.SubtitleController$Anchor" );
 					Class<?> iSubtitleControllerListener = Class.forName( "android.media.SubtitleController$Listener" );
-					Constructor constructor = cSubtitleController.getConstructor(new Class[]{Context.class, cMediaTimeProvider, iSubtitleControllerListener});
+					Constructor constructor = cSubtitleController.getConstructor(Context.class, cMediaTimeProvider, iSubtitleControllerListener);
 					Object subtitleInstance = constructor.newInstance(context, null, null);
 					Field f = cSubtitleController.getDeclaredField("mHandler");
 					f.setAccessible(true);
@@ -1180,7 +1181,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									intent.putExtra("IsSeisei", IsSeisei);
 									dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
 									intent.putExtra("IsPlaying", IsPlaying);
-									int nokori = (int) (saiseiJikan - mcPosition-kankaku);
+									int nokori = saiseiJikan - mcPosition-kankaku;
 									dbMsg +="," + titolName +"再生中の残" + nokori + "/" + crossFeadTime + "mSで次曲へ";/////////////////////////////////////
 	//								dbMsg +="mBluetoothAdapter=" +mBluetoothAdapter;
 									if(stateBaseStr != null && b_stateStr != null){
@@ -1366,7 +1367,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +="KeyArtist =" + keyArtist;
 				dbMsg +=",keyAlbum =" + keyAlbum;
 				dbMsg +=",keyTitle =" + keyTitle;
-				Drawable drawable =  getApplicationContext().getResources().getDrawable(R.drawable.no_image);;
+				Drawable drawable =  getApplicationContext().getResources().getDrawable(R.drawable.no_image);
 				Bitmap artwork  = BitmapFactory.decodeResource( getResources() , R.drawable.no_image);
 				dbMsg +=",albumArt =" + albumArt;
 				if(albumArt != null){
@@ -1513,7 +1514,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				nBuilder.addAction( generateAction( android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND ));				//.addAction(android.R.drawable.ic_media_rew, "prev", retreivePlaybackAction(3))			// Add some playback controls		//retreivePlaybackAction(3)
 				nBuilder.addAction(generateAction(ppIcon , ppTitol , ACTION_PLAYPAUSE ));			//.addAction(android.R.drawable.ic_media_pause, "pause", retreivePlaybackAction(1))			//retreivePlaybackAction(1)
 				nBuilder.addAction( generateAction( android.R.drawable.ic_media_ff, "Next", ACTION_SKIP ));					//.addAction(android.R.drawable.ic_media_ff, "next", retreivePlaybackAction(2))				//retreivePlaybackAction()
-				nBuilder.addAction( generateAction( android.R.drawable.ic_lock_power_off, "Qite", ACTION_SYUURYOU_NOTIF ));;		//ノティフィケーションから終了	ロックスクリーンでは4つ目のアイコンでsetLargeIconが表示されなくなる	☆終了不能に陥る?
+				nBuilder.addAction( generateAction( android.R.drawable.ic_lock_power_off, "Qite", ACTION_SYUURYOU_NOTIF ));//ノティフィケーションから終了	ロックスクリーンでは4つ目のアイコンでsetLargeIconが表示されなくなる	☆終了不能に陥る?
 				nBuilder.setContentIntent(contentIntent);																		//タップで起動する画面
 				//		.setAutoCancel(true)																					//タップで通知領域から削除する＞＞setContentIntentと合わせて削除せずにノティフィケーションだけを閉じさせる　＝　ノティフィケーションを閉じてアクテイビティを表示
 				lpNotification = nBuilder.build();																						//生成
@@ -1741,7 +1742,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 								}
 								dbMsg += "thread id = " + Thread.currentThread().getId();
 								dbMsg += ";" +  MusicPlayerService.this.playingItem.artist;				//creditArtistName;/////////////////////////////////////
-								ntfViews.setTextViewText(R.id.artist,  MusicPlayerService.this.playingItem.artist);;	//クレジットアーティスト名
+								ntfViews.setTextViewText(R.id.artist,  MusicPlayerService.this.playingItem.artist);//クレジットアーティスト名
 								dbMsg += "(" + b_Album+ ">>"+ MusicPlayerService.this.playingItem.album;				// albumName;/////////////////////////////////////
 								ntfViews.setTextViewText(R.id.album,  MusicPlayerService.this.playingItem.album);	//アルバム名
 								dbMsg += ";" +  MusicPlayerService.this.playingItem.title;				//titolName;/////////////////////////////////////
@@ -2062,7 +2063,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "sendPlayerState";
 		String dbMsg="[MusicPlayerService]";
 		try{
-			dbMsg +=",操作指定=" +  action.toString() + "<<b_state=" + b_state;
+			dbMsg +=",操作指定=" + action + "<<b_state=" + b_state;
 			Intent intent = new Intent(ACTION_STATE_CHANGED);
 			Context context = getApplicationContext();
 			nowList_id = Integer.parseInt(getPrefStr("nowList_id" , "-1" , context));
@@ -2267,7 +2268,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		String dbMsg="[MusicPlayerService]";
 		try{
 			String audio_id = null;
-			String listMei =String.valueOf(getResources().getString(R.string.playlist_namae_saikinsisei));			//最近再生
+			String listMei = getResources().getString(R.string.playlist_namae_saikinsisei);			//最近再生
 	//		MuList ML = new MuList();
 			int playlist_id =siteiListSakusi( listMei);				//指定された名称のリストを作成する
 			dbMsg +="[" + playlist_id + "]" + listMei ;
@@ -2275,7 +2276,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			Uri uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
 			String[] columns = null;			//{ idKey, nameKey };
 			String c_selection0 = MediaStore.Audio.Playlists.NAME +" = ? ";
-			String[] c_selectionArg= { String.valueOf(listMei) };		//⑥引数groupByには、groupBy句を指定します。
+			String[] c_selectionArg= {listMei};		//⑥引数groupByには、groupBy句を指定します。
 			String c_orderBy = null;			//MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 			Cursor playList = getApplicationContext().getContentResolver().query(uri, columns, c_selection0, c_selectionArg, c_orderBy );
 
@@ -2522,7 +2523,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}else {
 					dbMsg +="指定リスト無し";
 					nowList = getResources().getString(R.string.listmei_zemkyoku);		// 全曲リスト
-					mainEditor.putString( "nowList", String.valueOf(nowList));
+					mainEditor.putString( "nowList", nowList);
 					nowList_id = -1;
 					mainEditor.putString( "nowList_id", String.valueOf(nowList_id));
 					nowList_data = null;
@@ -2820,7 +2821,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			if(  mBassBoost.getStrengthSupported() ){
 		//		dbMsg +="mBassBoost=" + mBassBoost;
 				short roundedStrength = mBassBoost.getRoundedStrength();
-				dbMsg +=" roundedStrength = " + Short.toString(roundedStrength);
+				dbMsg +=" roundedStrength = " + roundedStrength;
 				if (bBoot) {					//roundedStrength > 0
 					mBassBoost.setStrength((short) 1000); //effect and 1000 per mille designates the strongest
 				} else {
@@ -2831,7 +2832,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		//		mPlayer.setAuxEffectSendLevel(1.0f);
 		//		mPlayer.prepare();
 				roundedStrength = mBassBoost.getRoundedStrength();
-				dbMsg +=">>" + Short.toString(roundedStrength);
+				dbMsg +=">>" + roundedStrength;
 			}
 	//		myLog(TAG, dbMsg);
 		} catch (UnsupportedOperationException e) {
@@ -2888,7 +2889,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //			am.loadSoundEffects();
 			mPlayer.setAuxEffectSendLevel(1.0f);											//効果のセンドレベル；デフォルトは0.0fなので必要
 			mPresetReverb = new PresetReverb(0, mPlayer.getAudioSessionId());
-			mPresetReverb.setPreset((short)reverbBangou);
+			mPresetReverb.setPreset(reverbBangou);
 			mPresetReverb.setEnabled(true);
 	//		dbMsg +=",getId=" + mPresetReverb.getId();
 	//		mPlayer.attachAuxEffect(mPresetReverb.getId());					//☆次の曲に送ってしまう
@@ -3606,7 +3607,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
 		Util UTIL = new Util();
-		retStr = UTIL.getPrefStr(keyNmae , defaultVal,context);
+		retStr = Util.getPrefStr(keyNmae , defaultVal,context);
 		return retStr;
 	}
 
@@ -3615,7 +3616,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
 		Util UTIL = new Util();
-		retInt = UTIL.getPrefInt(keyNmae , defaultVal,context);
+		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
 		return retInt;
 	}
 
@@ -3624,7 +3625,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "setPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
 		Util UTIL = new Util();
-		retBool = UTIL.setPreStr(keyNmae , wrightVal,context);
+		retBool = Util.setPreStr(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
@@ -3633,7 +3634,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
 		Util UTIL = new Util();
-		retBool = UTIL.setPrefInt(keyNmae , wrightVal,context);
+		retBool = Util.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;
 	}
 

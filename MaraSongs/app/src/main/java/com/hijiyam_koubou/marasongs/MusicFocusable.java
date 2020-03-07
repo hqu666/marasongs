@@ -6,11 +6,11 @@ package com.hijiyam_koubou.marasongs;
  */
 public interface MusicFocusable {
 	/** オーディオフォーカスを取得した際に呼び出される。 */
-	public void onGainedAudioFocus();
+    void onGainedAudioFocus();
 
 	/**
 	 * オーディオフォーカスを失った際に呼び出される。
 	 * @param canDuck docked モード（低ボリューム）であるなら true、そうでないなら false
 	 */
-	public void onLostAudioFocus(boolean canDuck);
+    void onLostAudioFocus(boolean canDuck);
 }

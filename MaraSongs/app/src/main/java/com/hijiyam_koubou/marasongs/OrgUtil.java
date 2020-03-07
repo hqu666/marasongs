@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,9 +79,9 @@ public class OrgUtil  extends Activity{				//
 				String[] oStrs =mStrs[1].split(" ");
 				dbBlock = dbBlock+ oStrs[0]+"[秒]と"+oStrs[1]+"[ms]を";////////////////////////////////////////////////////////////////////////////
 				kekka=Integer.valueOf(oStrs[0])*1000+Integer.valueOf(oStrs[1]);
-				dbBlock =dbBlock+ dbBlock+String.valueOf(kekka)+"⇒";////////////////////////////////////////////////////////////////////////////
+				dbBlock =dbBlock+ dbBlock+ kekka +"⇒";////////////////////////////////////////////////////////////////////////////
 				kekka=Integer.valueOf(mStrs[0])*1000*60+kekka;
-				dbBlock =dbBlock+ String.valueOf(kekka);////////////////////////////////////////////////////////////////////////////
+				dbBlock =dbBlock+ kekka;////////////////////////////////////////////////////////////////////////////
 //				Log.d("reFormartMSS",dbBlock);
 			}
 		} catch (Exception e) {
@@ -108,7 +109,7 @@ public class OrgUtil  extends Activity{				//
 				int scInt = Integer.valueOf(mnStrs[1].substring(0, 2));
 				dbBlock = String.valueOf(scInt);///////////"/////////////////////////////////////
 				kekka=Integer.valueOf(mnStrs[0])*60+scInt;
-				dbBlock = mnStrs[0]+"と"+scInt+"で"+String.valueOf(kekka);///////////"/////////////////////////////////////
+				dbBlock = mnStrs[0]+"と"+scInt+"で"+ kekka;///////////"/////////////////////////////////////
 				kekka=Integer.valueOf(hStrs[0])*60*60+kekka;
 				dbBlock = hStrs[0]+"時を加えて"+Integer.valueOf(kekka);///////////"/////////////////////////////////////
 				kekka=Integer.valueOf(dStrs[0])*60*60*24+kekka;
@@ -387,20 +388,20 @@ public class OrgUtil  extends Activity{				//
 				switch(pNumStr.length()) {
 				case 11:				//携帯電話　090-4567-89ab
 					if(pNumStr.substring(2, 3).equals("0")){
-						wStr = pNumStr.substring(0, 3) +"-"+ pNumStr.substring(3, pNumStr.length()-4) +"-"+ pNumStr.substring(pNumStr.length()-4, pNumStr.length());
+						wStr = pNumStr.substring(0, 3) +"-"+ pNumStr.substring(3, pNumStr.length()-4) +"-"+ pNumStr.substring(pNumStr.length()-4);
 					}
 					break;
 				case 10:				//一般電話　0824-20-1558 1234-56-7890
 					if(pNumStr.substring(0, 4).equals("0120")){			//0120-567-890
-						wStr = pNumStr.substring(0, 4) +"-"+ pNumStr.substring(4, pNumStr.length()-3) +"-"+ pNumStr.substring(pNumStr.length()-3, pNumStr.length());
+						wStr = pNumStr.substring(0, 4) +"-"+ pNumStr.substring(4, pNumStr.length()-3) +"-"+ pNumStr.substring(pNumStr.length()-3);
 					}else if(pNumStr.substring(0, 2).equals("03") || pNumStr.substring(0, 2).equals("06")){
-						wStr = pNumStr.substring(0, 2) +"-"+ pNumStr.substring(2, pNumStr.length()-4) +"-"+ pNumStr.substring(pNumStr.length()-4, pNumStr.length());
+						wStr = pNumStr.substring(0, 2) +"-"+ pNumStr.substring(2, pNumStr.length()-4) +"-"+ pNumStr.substring(pNumStr.length()-4);
 					}else {
-						wStr = pNumStr.substring(0, 3) +"-"+ pNumStr.substring(3, pNumStr.length()-4 ) +"-"+ pNumStr.substring(pNumStr.length()-4 , pNumStr.length());
+						wStr = pNumStr.substring(0, 3) +"-"+ pNumStr.substring(3, pNumStr.length()-4 ) +"-"+ pNumStr.substring(pNumStr.length()-4);
 					}
 					break;
 				default:
-					wStr = pNumStr.substring(0, pNumStr.length()-4 ) +"-"+ pNumStr.substring(pNumStr.length()-4 , pNumStr.length());
+					wStr = pNumStr.substring(0, pNumStr.length()-4 ) +"-"+ pNumStr.substring(pNumStr.length()-4);
 					break;
 				}
 			}
@@ -444,7 +445,7 @@ public class OrgUtil  extends Activity{				//
 				dbMsg=dbMsg +" を含む ";/////////////////////////////////////
 				retStrs = Org.substring(0, Org.indexOf(sep)) + rep;	//
 		//		if(retStrs.length()<3){
-					retStrs = retStrs  + Org.substring( Org.indexOf(sep)+1 , Org.length());
+					retStrs = retStrs  + Org.substring( Org.indexOf(sep)+1);
 		//		}
 				dbMsg=dbMsg +" >> " + retStrs;/////////////////////////////////////
 				Log.d(TAG,dbMsg);
@@ -573,7 +574,7 @@ public class OrgUtil  extends Activity{				//
 			}
 			dbBlock= dbBlock + ",retINt=" + retINt  ;//////////////////////////////////////////
 			if(-1 < retINt){
-				dbBlock="tStr=" + tStr +"が"+ String.valueOf(groups.get(0).get(key)) + "～" + String.valueOf(groups.get(i).get(key))+ "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
+				dbBlock="tStr=" + tStr +"が"+ groups.get(0).get(key) + "～" + groups.get(i).get(key) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
 			}
 	//		myLog(TAG,dbBlock);
 		} catch (Exception e) {
@@ -605,7 +606,7 @@ public class OrgUtil  extends Activity{				//
 			}
 			dbBlock= dbBlock + ",retINt=" + retINt  ;//////////////////////////////////////////
 			if(-1 < retINt){
-				dbBlock="tStr=" + tStr +"が"+ String.valueOf(groups.get(0).get(key)) + "～" + String.valueOf(groups.get(i).get(key))+ "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
+				dbBlock="tStr=" + tStr +"が"+ groups.get(0).get(key) + "～" + groups.get(i).get(key) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
 			}
 	//		myLog(TAG,dbBlock);
 		} catch (Exception e) {
@@ -882,7 +883,7 @@ public class OrgUtil  extends Activity{				//
 				if(0 < retStr.length()){
 					retStr =retStr + " ";
 				}
-				retStr = retStr + checkName.substring(0, 1).toUpperCase() + checkName.substring(1, checkName.length());
+				retStr = retStr + checkName.substring(0, 1).toUpperCase() + checkName.substring(1);
 			}
 			dbBlock = dbBlock+ ">>"+ retStr;
 			myLog(TAG,dbBlock);
@@ -915,7 +916,7 @@ public class OrgUtil  extends Activity{				//
 			output.close(); 		*/			 //BufferedWriterを利用してテキスト書き込み
 					BufferedWriter bw = new BufferedWriter(
 							new OutputStreamWriter(
-							new FileOutputStream(fileName,tuiki), "UTF-8"));	//※FileOutputStreamの第二引数をTrueにすると追加書き込みし、Falseにすると上書き作成します。
+							new FileOutputStream(fileName,tuiki), StandardCharsets.UTF_8));	//※FileOutputStreamの第二引数をTrueにすると追加書き込みし、Falseにすると上書き作成します。
 					bw.write(str);
 					bw.close();					//BufferedWriterをクローズするのを忘れないようにする。
 				}else{
@@ -1225,7 +1226,7 @@ public class OrgUtil  extends Activity{				//
 					fId++;
 					kesiStr = String.valueOf(kesiStr);
 					testName = String.valueOf(testName);
-					if(testName.contains(kesiStr.toString())){			// 渡された配列に確認する文字列を含むものが既に有れば
+					if(testName.contains(kesiStr)){			// 渡された配列に確認する文字列を含むものが既に有れば
 						testName = kesiStr;						//その文字列を記録
 						dbMsg +="("+ fId + ")" + testName;/////////////////////////////////////
 	//					myLog(TAG,dbMsg );
@@ -1294,7 +1295,7 @@ public class OrgUtil  extends Activity{				//
 						dbMsg +=",trackNo= " + trackNo;
 						if(isNum(trackNo)){		//数字ならtrue
 							map.put( "trackNo", trackNo);	//曲順
-							map.put( "titolName", rStr.substring(map.get( "trackNo" ).length() , rStr.length()));	//曲名
+							map.put( "titolName", rStr.substring(map.get( "trackNo" ).length()));	//曲名
 							dbMsg +=">>>[" + map.get( "trackNo" ) + "]";
 						}else{
 							map.put( "trackNo", null);	//曲順
@@ -1531,7 +1532,7 @@ public class OrgUtil  extends Activity{				//
 					hHiritu = dHighet/orgH;
 				}
 				dbMsg +="×高さ"+ hHiritu + "]";///////////////////////////////////////////////////////////////////////////////////////////
-				float max = Math.max((float)hHiritu, (float)wHiritu);
+				float max = Math.max(hHiritu, wHiritu);
 				scale = (float) Math.floor(max);
 
 //				if (hHiritu < wHiritu ){

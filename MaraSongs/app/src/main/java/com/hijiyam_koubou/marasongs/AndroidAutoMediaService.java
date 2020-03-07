@@ -113,7 +113,7 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
-			sharedPref =myPreferences.sharedPref;
+			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]

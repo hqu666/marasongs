@@ -95,7 +95,7 @@ public class ExploreSpinnerAdapter extends BaseAdapter {
 				view.setTag("DROPDOWN");
 				}
 				 
-				TextView textView = (TextView)view.findViewById(android.R.id.text1);
+				TextView textView = view.findViewById(android.R.id.text1);
 				textView.setText(getTitle(position));
 				myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -116,7 +116,7 @@ public class ExploreSpinnerAdapter extends BaseAdapter {
 				parent, false);
 				view.setTag("NON_DROPDOWN");
 				}
-				TextView textView = (TextView) view.findViewById(android.R.id.text1);
+				TextView textView = view.findViewById(android.R.id.text1);
 				textView.setText(getTitle(position));
 				myLog(TAG, dbMsg);
 		}catch (Exception e) {

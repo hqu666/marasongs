@@ -99,7 +99,7 @@ public class wKit extends Activity {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
-			sharedPref =myPreferences.sharedPref;
+			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -138,7 +138,7 @@ public class wKit extends Activity {
 			dbMsg +="ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			setContentView(R.layout.wk_view);
 
-			toolbar = (Toolbar) findViewById(R.id.wk_tool_bar);						//このアクティビティのtoolBar
+			toolbar = findViewById(R.id.wk_tool_bar);						//このアクティビティのtoolBar
 	//		toolbar.setTitle(dataURI);
 			toolbar.inflateMenu(R.menu.wk_menu);										// ツールバーにメニューをインフレート
 			// toolbar（実際はmenu/main.xml）にセットされたアイテムがクリックされた時の処理
@@ -150,14 +150,14 @@ public class wKit extends Activity {
 				}
 			});//
 
-			webView = (WebView) findViewById(R.id.webview);		// Webビューの作成
+			webView = findViewById(R.id.webview);		// Webビューの作成
 			webView.setVerticalScrollbarOverlay(true);					//縦スクロール有効
 //			setProgressBarIndeterminateVisibility(true);
-			wk_bottm_ll = (LinearLayout) findViewById(R.id.wk_bottm_ll);		//最下部のリニアレイアウト
-			wk_rew_bt = (ImageButton) findViewById(R.id.wk_rew_bt);			//戻しボタン
-			wk_pp_bt = (ImageButton) findViewById(R.id.wk_pp_bt);				//再生/ポーズボタン
-			wk_ff_bt = (ImageButton) findViewById(R.id.wk_ff_bt);				//送りボタン
-			wk_koukoku_ll = (LinearLayout) findViewById(R.id.wk_koukoku_ll);		//最下部の広告リニアレイアウト
+			wk_bottm_ll = findViewById(R.id.wk_bottm_ll);		//最下部のリニアレイアウト
+			wk_rew_bt = findViewById(R.id.wk_rew_bt);			//戻しボタン
+			wk_pp_bt = findViewById(R.id.wk_pp_bt);				//再生/ポーズボタン
+			wk_ff_bt = findViewById(R.id.wk_ff_bt);				//送りボタン
+			wk_koukoku_ll = findViewById(R.id.wk_koukoku_ll);		//最下部の広告リニアレイアウト
 
 			settings = webView.getSettings();
 			settings.setSupportMultipleWindows(true);
@@ -287,10 +287,10 @@ public class wKit extends Activity {
 				settings.setLoadWithOverviewMode(true);						//☆setUseWideViewPortに続けて記載必要
 			}
 
-			layout_ad = (LinearLayout) findViewById(R.id.wk_ad_ll);
+			layout_ad = findViewById(R.id.wk_ad_ll);
 			layout_ad.setVisibility(View.GONE);
 			adMobNow = false;				//AdView優先
-			nendAdView = (NendAdView) findViewById(R.id.wk_nend);
+			nendAdView = findViewById(R.id.wk_nend);
 			nenvNow = false;
 	//		myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -880,16 +880,10 @@ public class wKit extends Activity {
 	public boolean onPrepareOptionsMenu(Menu wkMenu) {			//表示直前に行う非表示や非選択設定
 			dbMsg ="MenuItem"+wkMenu + ""+",進み"+webView.canGoForward()+",戻り"+webView.canGoBack();////////////////////////////////////////////////////////////////////////////
 			myLog("onPrepareOptionsMenu",dbMsg);
-			if(webView.canGoForward()){		//戻るページがあれば
-				En_FOR=true;				//1ページ進むを表示
-			}else{
-				En_FOR=false;
-			}
-			if(webView.canGoBack()){		//戻るページがあれば
-				En_BAC=true;				//1ページ戻るを表示
-			}else{
-				En_BAC=false;
-			}
+            //戻るページがあれば
+            En_FOR= webView.canGoForward();				//1ページ進むを表示
+            //戻るページがあれば
+            En_BAC= webView.canGoBack();				//1ページ戻るを表示
 			wkMenu.findItem(R.id.wk_menu_zu).setEnabled(En_ZUP);			//ズームアップ";
 			wkMenu.findItem(R.id.wk_menu_zu).setVisible(En_ZUP);
 			wkMenu.findItem(R.id.wk_menu_zd).setEnabled(En_ZDW);			//ズームダウン";
@@ -1131,7 +1125,7 @@ public class wKit extends Activity {
 					}
 				});
 			}
-		};			//MusicPlayerReceiver
+		}            //MusicPlayerReceiver
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();

@@ -40,7 +40,7 @@ public class OrgUtilFile extends Activity {
 	public static String fn2peareatDirName(String chekFN){		//引数で渡されたパス名の親デレクトリを返す
 		String retFN="";
 		try{
-			String passName[]= chekFN.split(File.separator);		//システムのパスセパレータでパス名を分離
+			String[] passName = chekFN.split(File.separator);		//システムのパスセパレータでパス名を分離
 			//	Log.d("fn2peareatDirName","1;chekFN ="+chekFN+"を"+passName.length+"分割");
 				for(int i=0;i<passName.length-1;i++)
 				{
@@ -78,7 +78,7 @@ public class OrgUtilFile extends Activity {
 	public static String fn2lastNameNFO(String fName){	//ファイルオブジェクトと確定できない名称の最終カラムを返す
 		String lFn="";
 		try{
-			String passName[]= fName.split(File.separator);		//システムのパスセパレータでパス名を分離
+			String[] passName = fName.split(File.separator);		//システムのパスセパレータでパス名を分離
 	//		Log.d("fn2lastNameNFO","1;chekFN ="+fName+"を"+passName.length+"分割");
 			return passName[passName.length-1];
 		} catch (Exception e) {
@@ -112,7 +112,7 @@ public class OrgUtilFile extends Activity {
 					if(key.startsWith(hikakuStr)){
 						String value = entry.getValue().toString();
 						if(Boolean.valueOf(value)){
-							extStr=extStr+key.substring(hikakuStr.length(), key.length())+kuigiriStr;
+							extStr=extStr+key.substring(hikakuStr.length())+kuigiriStr;
 							dbBlock=extStr;/////////////////////////////////////////////////////////////////
 						}
 					}
@@ -363,11 +363,7 @@ public class OrgUtilFile extends Activity {
 			return false;
 		}else if(exStr.equals("/mnt/sdcard/secure/")){
 			return false;
-		}else if(exStr.equals("/mnt/sdcard/.android_secure/")){
-			return false;
-		}else{
-			return true;
-		}
+		}else return !exStr.equals("/mnt/sdcard/.android_secure/");
 	}
 
 	protected String sizeFormat(double chedItem) {		//サイズ取得と、小数第三位で四捨五入して単位変換
@@ -379,19 +375,19 @@ public class OrgUtilFile extends Activity {
 	  	retNum =chedItem / (1024*1024*1024);
 	BigDecimal bi = new BigDecimal(String.valueOf(retNum));
 	retNum = bi.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-	retStr= Double.toString(retNum) + " GB";
+	retStr= retNum + " GB";
 	  } else if ( (1024*1024*1024) >chedItem && chedItem> (1024*1024)) {	//&amp;&ampでは通らないので&&に置換え
 	  	retNum = chedItem /  (1024*1024);
 	BigDecimal bi = new BigDecimal(String.valueOf(retNum));
 	retNum = bi.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-	retStr= Double.toString(retNum) + " MB";
+	retStr= retNum + " MB";
 	  } else if (( (1024*1024) > chedItem )&&( chedItem >= 1024)) {
 	  	retNum = chedItem / 1024;
 	BigDecimal bi = new BigDecimal(String.valueOf(retNum));
 	retNum = bi.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
-	retStr= Double.toString(retNum) + " KB";
+	retStr= retNum + " KB";
 	  } else if ( 1024 > chedItem ) {
-	  	retStr= Long.toString((long) chedItem) + " B";
+	  	retStr= (long) chedItem + " B";
 	  }
 		} catch (Exception e) {
 			myErrorLog("sizeFormat","エラー発生；"+e);
@@ -431,7 +427,7 @@ public class OrgUtilFile extends Activity {
   String dbBlock = "fullName="+fullName;///////////////////////////////////
 		try{
 			if(fullName.contains(File.separator)){
-				String ubFns[]= fullName.split(File.separator);		//\だけでエスケープできないので\\	"\\/"
+				String[] ubFns = fullName.split(File.separator);		//\だけでエスケープできないので\\	"\\/"
 				retStr = ubFns[ubFns.length-1];		//+"/*"
 		  dbBlock ="retStr"+retStr+";"+dbBlock;///////////////////////////////////
 	//			Log.d("GetFileMei",dbBlock);
@@ -450,7 +446,7 @@ public class OrgUtilFile extends Activity {
 		String dbBlock ="fName="+fName;///////////////////////////////////
 		try{
 			if(fName.contains("\\.")){
-				String ubFns[]= fName.split("\\.");
+				String[] ubFns = fName.split("\\.");
 		  dbBlock ="length="+ubFns.length+";"+dbBlock;///////////////////////////////////
 				retStr = ubFns[ubFns.length];		//+"/*"
 		  dbBlock ="retStr"+retStr+";"+dbBlock;///////////////////////////////////

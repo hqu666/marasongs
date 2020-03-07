@@ -61,7 +61,7 @@ public class CreditNameHensyuu extends Activity {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
-			sharedPref =myPreferences.sharedPref;
+			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {

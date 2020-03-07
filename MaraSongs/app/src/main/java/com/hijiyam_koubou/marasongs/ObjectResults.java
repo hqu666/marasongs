@@ -12,7 +12,7 @@ public class ObjectResults  implements Serializable {
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
 			dbMsg= "object=" + object;
-			ObjectResults.this.object = object;
+			ObjectResults.object = object;
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());

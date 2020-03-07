@@ -182,7 +182,7 @@ public class FftView extends View {
 			}
 			// 横
 			int lineNumberY = (int) (Math.ceil(-DISPLAY_MINIMUM_DB / 10));
-			float deltaY = (float) (getHeight() / -DISPLAY_MINIMUM_DB * 10);
+			float deltaY = getHeight() / -DISPLAY_MINIMUM_DB * 10;
 			logGridDataY_ = new float[lineNumberY];
 			int top = getTop();
 			for(int i = 0; i < lineNumberY; ++i){
@@ -191,7 +191,7 @@ public class FftView extends View {
 			// 各々のバンドの座標を計算
 			bandRegionMinX_ = (int) (Math.log10(BAND_MINIMUM_HZ) * logBlockWidth_ - logOffsetX_);
 			bandRegionMaxX_ = (int) (Math.log10(BAND_MAXIMUM_HZ) * logBlockWidth_ - logOffsetX_);
-			bandWidth_ = (int) (bandRegionMaxX_ - bandRegionMinX_) / bandNumber_;
+			bandWidth_ = (bandRegionMaxX_ - bandRegionMinX_) / bandNumber_;
 			int bottom = getBottom();
 			for(int i = 0; i < bandNumber_; ++i){
 				bandRects_[i].bottom = bottom-fontSize;
@@ -304,7 +304,7 @@ public class FftView extends View {
 				dbMsg +=",bandFftData_=" + bandFftData_.length + "件" ;/////////////////////////////////////
 				for(int i = 0; i < bandNumber_; ++i){												// バーの高さを計算して描画
 					float db = (float) (20.0f * Math.log10(bandFftData_[i]/FFT_PEAK_VALUE));
-					float y = (float) (top - db / -DISPLAY_MINIMUM_DB * height );
+					float y = top - db / -DISPLAY_MINIMUM_DB * height;
 					bandRects_[i].top = y;
 					canvas.drawRect(bandRects_[i], fftDataPaint_);
 				}
@@ -325,7 +325,7 @@ public class FftView extends View {
 					dbMsg +=db + "db";/////////////////////////////////////
 					x = (float) (Math.log10(frequency) * logBlockWidth_) - logOffsetX_;				// 描画
 					if(x >= left && x <= right){
-						float y = (float) (top - db / -DISPLAY_MINIMUM_DB * height );
+						float y = top - db / -DISPLAY_MINIMUM_DB * height;
 						canvas.drawLine(x, bottom, x, y, fftDataPaint_);					//fftDataPaint_はinitializeで設定
 					}
 				}

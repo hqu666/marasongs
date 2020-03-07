@@ -1,5 +1,4 @@
 package com.hijiyam_koubou.marasongs;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -500,7 +499,7 @@ public class Util {
 					String colName = carsor.getColumnName(i);
 					dbMsg += colName;
 					String data = carsor.getString(i);
-					int iType = carsor.getType(i);	;  //1は数字、3は文字
+					int iType = carsor.getType(i);    //1は数字、3は文字
 					dbMsg += ",type=" + iType;  //1は数字、3は文字
 					dbMsg += ":" + data;  //1は数字、3は文字
 				}
@@ -532,7 +531,7 @@ public class Util {
 	public String setTrackStr( String checkStr ,int discNo) {
 		final String TAG = "checKTrack";
 		String dbMsg = "[util]";
-		String rStr = checKTrack(checkStr);;
+		String rStr = checKTrack(checkStr);
 		try {
 			dbMsg += "," + rStr;
 			int trNo= Integer.parseInt(rStr);
@@ -786,8 +785,8 @@ public class Util {
 		try {
 			dbMsg +=",context=" + context;
 			String pefName = context.getResources().getString(R.string.pref_main_file);
-			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			retStr = (String)sharedPref.getString(keyNmae , defaultVal);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			retStr = sharedPref.getString(keyNmae , defaultVal);
 			dbMsg +=  ",retStr="  + retStr;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -803,7 +802,7 @@ public class Util {
 		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + defaultVal;
 		try {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
-			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			try {
 				retInt = sharedPref.getInt(keyNmae , defaultVal);
 				dbMsg +=  ",retIn(getInt)="  + retInt;
@@ -823,14 +822,15 @@ public class Util {
 	}
 
 	public static boolean setPreStr(String keyNmae , String wrightVal , Context context) {
-		boolean retBool = false;
+		boolean retBool = true;
 		final String TAG = "setPreStr";
 		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + wrightVal;
 		try {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
-			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			SharedPreferences.Editor myEditor = sharedPref.edit();
 			myEditor.putString( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
+//			myEditor.apply();			//書き込み実行：20200307欠落確認
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;
 //			myLog(TAG, dbMsg);
@@ -842,14 +842,15 @@ public class Util {
 
 	/** 整数プリファレンスの書込み*/
 	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {
-		boolean retBool = false;
+		boolean retBool = true;
 		final String TAG = "setPrefInt";
 		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + wrightVal;
 		try {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
-			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			SharedPreferences.Editor myEditor = sharedPref.edit();
 			myEditor.putInt( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
+//			myEditor.apply();			//書き込み実行：20200307欠落確認
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;
 //			myLog(TAG, dbMsg);
@@ -860,17 +861,14 @@ public class Util {
 	}
 	/** 整数プリファレンスの書込み*/
 	public static boolean setPrefBool(String keyNmae , boolean wrightVal , Context context) {
-		boolean retBool = false;
+		boolean retBool = true;
 		final String TAG = "setPrefInt";
 		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + wrightVal;
 		try {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
-			SharedPreferences sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			SharedPreferences.Editor myEditor = sharedPref.edit();
-//			dbMsg= keyNmae+";"+ keyNmae;
-//			key = String.valueOf( keyNmae );
-//			vStr = String.valueOf( vStr );
-//			dbMsg= ">>" + key+";"+ vStr;
+			myEditor.apply();			//書き込み実行：20200307欠落確認
 			myEditor.putBoolean( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;

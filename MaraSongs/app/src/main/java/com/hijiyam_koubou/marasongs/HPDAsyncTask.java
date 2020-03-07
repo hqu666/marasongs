@@ -216,7 +216,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 			dbMsg= "values="+values[0];///////////////////////////
 			if(progressDialog != null){
 		//		change1stProg ( (int)values[0] );		//		publishProgress( pdCoundtVal );		//MDST.pdCoundtVal
-				int progress = (int)values[0] ;
+				int progress = values[0];
 				dbMsg= "progress= " + progress;
 				progressDialog.progBar1.setProgress(progress);
 				dbMsg +=">> " +progressDialog. progBar1.getProgress();

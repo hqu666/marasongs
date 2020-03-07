@@ -20,7 +20,7 @@ public class MuArrays  implements Comparable<Object>{
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg= "artistAL=" + artistAL.size() +"件書き込み";/////////////////////////////////////
-			this.artistAL = artistAL;
+			MuArrays.artistAL = artistAL;
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -34,7 +34,7 @@ public class MuArrays  implements Comparable<Object>{
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			dbMsg= "artistAL=" + artistAL.size() +"件書き込み";/////////////////////////////////////
-			this.artistAL = artistAL;
+			MuArrays.artistAL = artistAL;
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
 			myLog(TAG,dbMsg);

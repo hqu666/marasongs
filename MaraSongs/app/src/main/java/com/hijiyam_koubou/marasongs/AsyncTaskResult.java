@@ -20,8 +20,8 @@ public class AsyncTaskResult<T> {
 			this.content = content;
 			dbMsg="content = " +this.content;
 			dbMsg += ",reqCode = " +reqCode;
-			this.reqCode = (Integer) content;
-			dbMsg += ">> " +this.reqCode;
+			AsyncTaskResult.reqCode = (Integer) content;
+			dbMsg += ">> " + AsyncTaskResult.reqCode;
 	//		myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -34,7 +34,7 @@ public class AsyncTaskResult<T> {
 
 
 	public int getReqCode() {
-		return this.reqCode;
+		return reqCode;
 	}
 	
 	public static <T> AsyncTaskResult<T> createNormalResult(T content) {	//AsyncTaskが正常終了した場合の結果を作る@param <T> @param content,AsyncTaskで取得したデータを指定する, @return AsyncTaskResult

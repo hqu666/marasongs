@@ -103,12 +103,12 @@ public class VersatilityDBHelper extends SQLiteOpenHelper {
 
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		UTIL.myLog(TAG , dbMsg);
+		Util.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		UTIL.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG , dbMsg);
 	}
 
 }

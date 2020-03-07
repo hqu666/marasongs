@@ -28,6 +28,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -821,7 +822,7 @@ private byte majorVersion = (byte) 0;
 	 * @param filename フルパスファイル名
 	 * @return result 読み出した文字
 	 * */
-	public String file2Str(String filename) throws IOException , FileNotFoundException{			//渡された名称のファイルからStringを読み取る
+	public String file2Str(String filename) throws IOException {			//渡された名称のファイルからStringを読み取る
 		String result =null;
 		final String TAG = "file2Str";
 		String dbMsg= "[TagBrows]";
@@ -877,7 +878,7 @@ private byte majorVersion = (byte) 0;
 	 * @return
 	 * @throws IOException , FileNotFoundException
 	 */
-	public String raf2Str(final File file, final boolean writeable) throws  IOException , FileNotFoundException{		//RandomAccessFileをString変換
+	public String raf2Str(final File file, final boolean writeable) throws  IOException {		//RandomAccessFileをString変換
 		String result =null;
 		final String TAG = "raf2Str";
 		String dbMsg= "[TagBrows]";
@@ -1010,7 +1011,7 @@ private byte majorVersion = (byte) 0;
 				int readEnd = newFile.read(buffer);
 				dbMsg +="," + readEnd + "文字";
 				if ( -1 != readEnd ){
-					result = new String( buffer, "ISO-8859-1" );						////×UTF-8	Shift_JIS	SJIS	EUC_JP	ISO-8859-1
+					result = new String( buffer, StandardCharsets.ISO_8859_1);						////×UTF-8	Shift_JIS	SJIS	EUC_JP	ISO-8859-1
 					dbMsg +=">>" + result.length() + "文字";
 					switch (this.majorVersion) {
 					case 2:
@@ -1052,7 +1053,7 @@ private byte majorVersion = (byte) 0;
 						headReadAac(file);						//AACの処理開始
 					}else {					// tag2.equals("null")	if( tag2 == null )
 						tag3 =  "WMA ?";
-						result_Tag =String.valueOf(tag3);			//	タグ名
+						result_Tag = tag3;			//	タグ名
 						headReadWma(file);						//WMAの処理開始
 					}
 				}
@@ -1074,7 +1075,7 @@ private byte majorVersion = (byte) 0;
 	/**
 	 * Lylic3の処理開始
 	 * */
-	public void headReadLyric3(final File file, final boolean writeable) throws  IOException , FileNotFoundException{		//Lylic3の処理開始
+	public void headReadLyric3(final File file, final boolean writeable) throws  IOException {		//Lylic3の処理開始
 		String result =null;
 		final String TAG = "headReadLylic3";
 		String dbMsg= "[TagBrows]";
@@ -1111,7 +1112,7 @@ private byte majorVersion = (byte) 0;
 	/**
 	 * AACの処理開始
 	 * */
-	public void headReadAac(final File file) throws  IOException , FileNotFoundException{		//AACの処理開始			final RandomAccessFile newFile
+	public void headReadAac(final File file) throws  IOException {		//AACの処理開始			final RandomAccessFile newFile
 		result =null;
 		final String TAG = "headReadAac";
 		String dbMsg= "[TagBrows]";
@@ -1128,7 +1129,7 @@ private byte majorVersion = (byte) 0;
 			int size = 0;
 			byte[] buffer = new byte[(int) fileLen];									//タグヘッダ読込開始
 			int readEnd = newFile.read(buffer);
-			result = new String( buffer, "ISO-8859-1" );						//ISO-8859-1	×ASCII169,ASCII-169,ASCII 169	?//@lir×US_ASCII,UTF-8、S-JIS,Shift-JIS	//文字化け×UTF-16,UTF-16BE,	//unspport×S/JIS,UTF-8 sort,UTF-8-sort,UTF-16 sort
+			result = new String( buffer, StandardCharsets.ISO_8859_1);						//ISO-8859-1	×ASCII169,ASCII-169,ASCII 169	?//@lir×US_ASCII,UTF-8、S-JIS,Shift-JIS	//文字化け×UTF-16,UTF-16BE,	//unspport×S/JIS,UTF-8 sort,UTF-8-sort,UTF-16 sort
 			newFile.close();
 			int readInt = result.length();
 			if(20 < readInt){
@@ -1156,7 +1157,7 @@ private byte majorVersion = (byte) 0;
 			String readStr = result.substring(0,fleamStart-4);
 			dbMsg +="," + rEnd + "="+ readStr ;
 			headReadAacBody(readStr ,  "ftyp");		//AACのQuickTime Tags読取り
-			result = result.substring(readStr.length(), result.length());
+			result = result.substring(readStr.length());
 			resultStock = result;
 			buffer = null;
 			if ( -1 != readEnd ){
@@ -1258,7 +1259,7 @@ private byte majorVersion = (byte) 0;
 			qtSubBox.add("stsz");	//trak>mdia>mdhd>トラックデータ再生単位ごとのデータ長の表。								ID3ｖ2；--	ID3ｖ3；--
 			qtSubBox.add("stss");	//trak>mdia>mdhd>トラックデータのランダムアクセス可能な位置（フレーム番号）の表			ID3ｖ2；--	ID3ｖ3；--
 
-			qtItemListCoar= new ArrayList<String>();;			//QuickTime ItemList Tagsで確実に書き込まれている部分
+			qtItemListCoar= new ArrayList<String>();//QuickTime ItemList Tagsで確実に書き込まれている部分
 			qtItemListCoar.add("covr");	//付属する画像											CoverArt						ID3ｖ2；PIC	ID3ｖ3；APIC	Attached picture
 			qtItemListCoar.add("©gen");	//ユーザ定義ジャンル									GENRE							ID3ｖ2；TCO	ID3ｖ3；TCON	GENRE
 			qtItemListCoar.add("©grp");	//グループ												CONTENTGROUP					ID3ｖ2；?-	ID3ｖ3；TIT1
@@ -1667,7 +1668,7 @@ private byte majorVersion = (byte) 0;
 						dbMsg += ",Major_Brand=" + Major_Brand;
 						startInt = endInt;
 						endInt = readStr.indexOf(Major_Brand)+Major_Brand.length();		//startInt+ 4;
-						readStr = readStr.substring(endInt, readStr.length());
+						readStr = readStr.substring(endInt);
 						dbMsg += ">>" + readStr;
 						endInt = readStr.indexOf(Major_Brand)+Major_Brand.length();		//startInt+ 4;
 						dbMsg += ",2回目のMajor_Brand=" +startInt + "～" + endInt + "まで" + ( endInt - startInt ) + "バイト";
@@ -1680,7 +1681,7 @@ private byte majorVersion = (byte) 0;
 						result_Tag = result_Tag + "\n Minor_Version;"+ Minor_Version ;
 						dbMsg += ",Minor_Version=" + Minor_Version;
 						startInt = readStr.indexOf(Minor_Version)+Minor_Version.length();			//target.length()+ 4;
-						readStr = readStr.substring(startInt, readStr.length());
+						readStr = readStr.substring(startInt);
 //						startInt = target.length()+ 4;
 //						endInt = startInt+ 4;
 						dbMsg += ",残り" + readStr.length() + "文字";
@@ -1887,7 +1888,7 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 				dbMsg +=",pdTitol="+pdTitol;
-				String pdMessage ="AAC ; QuickTime Movie Tags" ; ;																			//歌詞を探しています。</string>
+				String pdMessage ="AAC ; QuickTime Movie Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_moov , kensaku );		//,jikkouStep,totalStep,calumnInfo
@@ -1965,7 +1966,7 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 				dbMsg +=",pdTitol="+pdTitol;
-				String pdMessage ="AAC ; QuickTime Movie >> Meta Tags" ; ;																			//歌詞を探しています。</string>
+				String pdMessage ="AAC ; QuickTime Movie >> Meta Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_movie_meta , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
@@ -2054,7 +2055,7 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",reqCode="+reqCode;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 				dbMsg +=",pdTitol="+pdTitol;
-				String pdMessage ="AAC ; QuickTime QuickTime Movie >> Meta Tags >> ItemList Tags" ; ;																			//歌詞を探しています。</string>
+				String pdMessage ="AAC ; QuickTime QuickTime Movie >> Meta Tags >> ItemList Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_meta_ilst , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
@@ -2112,7 +2113,7 @@ private byte majorVersion = (byte) 0;
 				}
 				int startInt = endInt;					//retEndNullPoint( readStr , endInt );				//渡された文字列の先頭のnullが無くなるポイントを返す
 				dbMsg += ",retEndNullPoint=" + startInt ;
-				readStr = readStr.substring(startInt, readStr.length());						//	☆現物合わせ		readStr.substring(28, readStr.length());
+				readStr = readStr.substring(startInt);						//	☆現物合わせ		readStr.substring(28, readStr.length());
 				/*Tag ID's beginning with the copyright symbol (hex 0xa9) are multi-language text.
 				 * 		UInt8 = 0xA9 // © (copyright sign)で始まれば多言語テキスト
 				 * Alternate language tags are accessed by adding a dash followed by the language/country code to the tag name.
@@ -2497,7 +2498,7 @@ private byte majorVersion = (byte) 0;
 	/**
 	 * WMAの処理開始
 	 * */
-	public void headReadWma(final File file) throws  IOException , FileNotFoundException{		//WMAの処理開始
+	public void headReadWma(final File file) throws  IOException {		//WMAの処理開始
 		String result =null;
 		final String TAG = "headReadWma";
 		String dbMsg= "[TagBrows]";
@@ -2573,7 +2574,7 @@ private byte majorVersion = (byte) 0;
 			dbMsg +=",DISP=" + result.indexOf("DISP") + "文字目";			//<DISP>: 表\示情報\n"
 
 			if( result != null){
-				String pdMessage ="WMA ; Objects Reading..." ; ;																			//歌詞を探しています。</string>
+				String pdMessage ="WMA ; Objects Reading..." ; //歌詞を探しています。</string>
 				reqCode = read_WMA_ITEM ;										//WMAのオブジェクト読取り
 				umekomiTag = null;
 				String target = "ULT";
@@ -3302,7 +3303,7 @@ private byte majorVersion = (byte) 0;
 	/**
 	 * ID3v1の処理
 	 * */
-	public void freamReadID3v1(final File file) throws  IOException , FileNotFoundException{		//ID3v1の処理
+	public void freamReadID3v1(final File file) throws  IOException {		//ID3v1の処理
 		String result =null;
 		final String TAG = "freamReadID3v1";
 		String dbMsg= "[TagBrows]";
@@ -3355,7 +3356,7 @@ private byte majorVersion = (byte) 0;
 					//	AbstractID3v2.decrementPaddingCounter();									//org.farng.mp3.id3.
 					file.read(bufferbDatar, 0, (int) filePointer);								//４文字読んで read the 3 chracter identifier
 					String result = new String(bufferbDatar, 0, (int) filePointer);	//フレーム名として格納
-					int uketori = String.valueOf(result).length();
+					int uketori = result.length();
 					if(20 < uketori){
 						dbMsg= result.substring(5, 20) +  "～";
 					}else{
@@ -3492,7 +3493,7 @@ private byte majorVersion = (byte) 0;
 				testStr = result.substring(startInt, uketori);		//検索対象の文字列を設定
 				int endC = testStr.length();
 				do{
-					uketori = String.valueOf(testStr).length();
+					uketori = testStr.length();
 					dbMsg += ";検索対象" + testStr.length() +  "文字)";
 					fremeMei2 = fremeMeiSyougou( testStr , reqCode);							//検索対象より後の文字列からフレーム名を検索し、該当するフレーム名を返す
 					if( fremeMei2 == null ){										//拾えなければ
@@ -3505,7 +3506,7 @@ private byte majorVersion = (byte) 0;
 					dbMsg +=endInt +  "文字";
 				}while(fremeMei2 != null);
 		//		dbMsg +=">次のfleamStart>"+ endInt;
-				uketori = String.valueOf(testStr).length();
+				uketori = testStr.length();
 				if(target.equals("covr")){
 				} else if(10000 < uketori){							//無関係な情報が混在している可能性がある場合
 //					int ofsetrt = 1000;
@@ -3586,7 +3587,7 @@ private byte majorVersion = (byte) 0;
 				}
 			}
 			dbMsg +=",次は" + backStart;
-			backStr = result.substring(backStart , result.length());	//検索対象より後の文字列を更新
+			backStr = result.substring(backStart);	//検索対象より後の文字列を更新
 			dbMsg +="から；" + backStr.substring(0, 20);
 			dbMsg += "；" + backStr.length() +  "文字)";
 			if(maekNokoriStr != null){
@@ -3605,9 +3606,9 @@ private byte majorVersion = (byte) 0;
 			if( backStr != null ){
 				result = result + backStr;
 			}
-			uketori = String.valueOf(result).length();
+			uketori = result.length();
 			if(20 < uketori){
-				dbMsg += "、処理後=" + result.substring(0, 20) +  "～"+ result.substring( result.length()-20, result.length());
+				dbMsg += "、処理後=" + result.substring(0, 20) +  "～"+ result.substring( result.length()-20);
 			}else{
 				dbMsg += "、処理後=" + result;
 			}
@@ -3689,7 +3690,7 @@ private byte majorVersion = (byte) 0;
 			dbMsg=  filePath + "," +target +  "=";
 			int encFlag = 0;
 			if ( bodyData != null ) {
-				int uketori = String.valueOf(bodyData).length();
+				int uketori = bodyData.length();
 				if(20 < uketori){
 					dbMsg += bodyData.substring(5, 20) +  "～";
 				}else{
@@ -3844,7 +3845,7 @@ private byte majorVersion = (byte) 0;
 					}else if(target.equals("TBPM ") || target.equals("TBP")){		//一分間の拍数													BPM (Beats Per Minute)									ID3ｖ3；TBPM
 						result_TBPM =target + ";" + tuikaMoji;						//BPM (beats per minute)
 					}else if(target.equals("TCOP") || target.equals("TCR")){
-						result_TCOP =target + ";" + tuikaMoji;	;					//著作権情報
+						result_TCOP =target + ";" + tuikaMoji;    //著作権情報
 					}else if(target.equals("TMOO")){
 						result_TMOO =target + ";" + tuikaMoji;					//ムード	ムード	<MOOD>	Mood	ID3v2.4フレーム
 					}else if(target.equals("TRSN ")){
@@ -3862,7 +3863,7 @@ private byte majorVersion = (byte) 0;
 				case FELDE_TYPE_URL_LINK:								//リンクフレーム
 					//文字列情報中に終端文字($00 (00))が含まれていた場合は、それ以後の情報はすべて破棄され、表示されることはない。
 					startInt = target.length() + 3;
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					if(target.equals("WCOP") || target.equals("WCP")){		//著作権/法的情報												Copyright/Legal information								ID3ｖ3；WCOP
 						result_WCOP =tuikaMoji;					// Copyright/Legal information
 					}else if(target.equals("WCOM") || target.equals("WCM")){		//商業上の情報													Commercial information									ID3ｖ3；WCOM
@@ -3885,17 +3886,17 @@ private byte majorVersion = (byte) 0;
 					break;
 				case FELDE_TYPE_USRE_TEIGI_MOJI:					//ユーザー定義テキスト情報フレーム
 					startInt = target.length() + 3;
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_TXXX =tuikaMoji;					//ユーザー定義文字情報フレーム
 					break;
 				case FELDE_TYPE_USRE_TEIGI_URL_LINK:					//WXXX	ユーザー定義URLリンクフレーム
 					startInt = target.length() + 3;
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_WXXX =tuikaMoji;					//User defined URL link frame
 					break;
 				case FELDE_TYPE_KYOURYOKUSYA_ITIRAN:					//5:IPLS	協力者一覧
 					startInt = target.length() + 3;
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_IPLS =tuikaMoji;					//Involved people list]
 					break;
 				case FELDE_TYPE_HIDOPUKI_KASI:							//非同期の歌詞/文章のコピー				headSize = 26;//　����eng��I'm not i～
@@ -3956,7 +3957,7 @@ private byte majorVersion = (byte) 0;
 						break;
 					}
 					dbMsg += ",startInt=" + startInt  ;
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());		//ヘッダーをカット
+					tuikaMoji =  bodyData.substring(startInt);		//ヘッダーをカット
 					dbMsg += ",Encrod=" + motoEncrod  ;		//フラグ？ここから文字？
 					tuikaMoji = getEncordStr( encFlag , motoEncrod ,tuikaMoji);			//フレームに設定されたエンコードフラグを読み、変換した文字を返す
 					mojisuu = tuikaMoji.length();
@@ -3984,8 +3985,8 @@ private byte majorVersion = (byte) 0;
 					 * 				$05  はコード（例：「Bb F Fsus」）
 					 * 				$06  はひとくちメモ（ポップアップインフォメーション）
 					 * 内容に関する情報           <エンコード指定文字列> $00 (00)*/
-					startInt = target.getBytes("ISO-8859-1").length + 7;
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					startInt = target.getBytes(StandardCharsets.ISO_8859_1).length + 7;
+					tuikaMoji =  bodyData.substring(startInt);
 					result_SYLT =tuikaMoji;				//同期 歌詞/文書
 					break;
 				case FELDE_TYPE_ATTACHED_PICTURE:						//APIC;Attached picture
@@ -3997,7 +3998,7 @@ private byte majorVersion = (byte) 0;
 					//バイナリダンプで構成されている。最大は804バイト
 					//これは、4バイトのヘッダで始まり、８バイトの「CD中のトラック」がトラック数だけ続き、そして８バイトの「リードアウト領域」で終わる
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_MCDI =tuikaMoji;					//Music CD identifier
 					break;
 				case FELDE_TYPE_DOUKI_TEMPO_CORD:						//同期テンポコード
@@ -4006,91 +4007,91 @@ private byte majorVersion = (byte) 0;
 					 *タイムスタンプフォーマット	$xx
 					 *テンポデータ					 <binary data> */
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_SYTC =tuikaMoji;					//Synchronized tempo codes
 					break;
 				case FELDE_TYPE_ITITEKISIKIBETUSI:						//一意的なファイル識別子
 					//終了を表すヌル文字以外に一字以上
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_UFID =tuikaMoji;					//一意的なファイル識別子	タグID
 					break;
 				case FELDE_TYPE_IVENT_TIME_CORD:						//イベントタイムコード
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_ETCO =tuikaMoji;					// Event timing codes]
 					break;
 				case FELDE_TYPE_MPRG_LCATION_TABLE:					//MPEG ロケーションルックアップテーブル
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_MLLT =tuikaMoji;					//MPEG location lookup table]
 					break;
 				case FELDE_TYPE_RELEATIVE_VOLUME_ADJUSTMENT:			//Relative volume adjustment
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_RVAD =tuikaMoji;					// Relative volume adjustment]
 					break;
 				case FELDE_TYPE_EQUALISATION:							//Equalisation
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_EQUA =tuikaMoji;					//Equalization
 					break;
 				case FELDE_TYPE_REVERB:									//Reverb
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_RVRB =tuikaMoji;					//Reverb
 					break;
 				case FELDE_TYPE_GENERAL_ENCAPSULATED_OBJECT:			//General encapsulated object
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_GEOB =tuikaMoji;					//General encapsulated object]
 					break;
 				case FELDE_TYPE_PLAY_CONUNTRE:							//Play counter
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_PCNT =tuikaMoji;					//Play counter]
 					break;
 				case FELDE_TYPE_RECOMMENEDED_BUFFFER_SIZE:			//Recommended buffer size
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_RBUF =tuikaMoji;					// Recommended buffer size]
 					break;
 				case FELDE_TYPE_AUDIO_ENCRYOTION:						//Audio encryption
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_AENC =tuikaMoji;					//Audio encryption
 					break;
 				case FELDE_TYPE_LINKED_INFOMATION:						//Linked information
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_LINK =tuikaMoji;					//Linked information]
 					break;
 				case FELDE_TYPE_POSITION_SYNCHRONISATION_FREAME:		//Position synchronisation frame
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_POSS =tuikaMoji;					//Position synchronisation frame]
 				case FELDE_TYPE_TERMS_OF_USE_FREAME:					//Terms of use frame
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_USER =tuikaMoji;					//Terms of use
 				case FELDE_TYPE_OWNERSHIP_FREAME:						//Ownership frame
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_OWNE =tuikaMoji;					//Ownership frame]
 					break;
 				case FELDE_TYPE_COMMERICAL_FREAME:						//Commercial frame
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_COMR =tuikaMoji;					//Commercial frame]
 					break;
 				case FELDE_TYPE_ENCRYPTION_METHOD_REGISTRATION:		//Encryption method registration
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_ENCR =tuikaMoji;					//Encryption method registration
 					break;
 				case FELDE_TYPE_GRUPE_IDENTIFICTION_REGISTRATION:	//Group identification registration
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_GRID =tuikaMoji;					//Group identification registration]
 					break;
 				case FELDE_TYPE_PRIVATE_FREAME:							//Private frame
@@ -4126,13 +4127,13 @@ private byte majorVersion = (byte) 0;
 				case FELDE_TYPE_POPULARIMETER:							//19;Popularimeter
 	//POPMのデータ(bodyData)=��Windows Media ～37文字).retType=19,startInt= 8,buffer[0]=0,[1]=0,[2]=0,[3]=31,[4]=0,[5]=0,[6]=87,[7]=105,[8]=110,[9]=100,[10]=111,書込み=indows Media Player 9 Series��～30文字,tagData19件
 					startInt = target.length() + 3;									//	target.getBytes("ISO-8859-1").length
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					result_POPM =tuikaMoji;					//人気メーター																				//10cc(2')Windows Media Player 9 Seri
 					break;
 				case FELDE_TYPE_Encrypted_META_fREAM:				//ID3v2.2
 					result_CRM =tuikaMoji;			//ID3v2.2
 				default:
-					tuikaMoji =  bodyData.substring(startInt, bodyData.length());
+					tuikaMoji =  bodyData.substring(startInt);
 					break;
 				}			//switch(retType) {
 				if( tuikaMoji != null ){
@@ -4161,7 +4162,7 @@ private byte majorVersion = (byte) 0;
 		String dbMsg= "[TagBrows]";
 		try{
 			dbMsg= startInt + "/" ;
-			char str[] =  result.toCharArray();
+			char[] str = result.toCharArray();
 			dbMsg +=str.length + "文字目から";
 			if( startInt < str.length ){
 				//		dbMsg=  dbMsg +"(検索対象" + str.length +"文字)" ;				//+ bodyStr;
@@ -4170,7 +4171,7 @@ private byte majorVersion = (byte) 0;
 					if( readChar != null ){
 						if( ! readChar.equals("null") ){
 							if( retStr != null ){
-								retStr = retStr + String.valueOf(str[nullPosition]);
+								retStr = retStr + str[nullPosition];
 							}else{
 								retStr =  String.valueOf(str[nullPosition]);
 							}
@@ -4294,10 +4295,10 @@ private byte majorVersion = (byte) 0;
 				character = identifier.charAt(i);
 		//		dbMsg +=",character=" + character;
 				if ( 'A' <= character && character <= 'Z' || ( '0' <= character && character <= '9')) {		//アルファベットの大文字のみストック	//
-					stock = stock + String.valueOf(character);
+					stock = stock + character;
 		//			dbMsg +=i + ")" + stock;
 					if( 4< stock.length()){								//大文字で４文字を超えたら
-						stock =stock.substring(1, stock.length());		//１文字目を消去
+						stock =stock.substring(1);		//１文字目を消去
 					}
 					if( 3< stock.length()){								//大文字で４文字溜まっていたら
 						dbMsg +=i + ")" + stock + ",fleamStart= " + this.fleamStart;
@@ -4733,7 +4734,7 @@ private byte majorVersion = (byte) 0;
 	 * @throws CharacterCodingException デコードに失敗した場合にスローされる
 	 * @see CharsetDecoder#decode(ByteBuffer)
 	 */
-	public static String bytes2StrDecode(String encordingSetName, byte... bytes) throws CharacterCodingException  , IOException{					//char[]
+	public static String bytes2StrDecode(String encordingSetName, byte... bytes) throws IOException{					//char[]
 		String retStr = null;
 		final String TAG = "bytes2StrDecode";
 		String dbMsg= "[TagBrows]";
@@ -5254,11 +5255,11 @@ private byte majorVersion = (byte) 0;
 					}
 					if(result_COMM != null){				//コメント																				//10cc(7')
 						retStr = retStr + "\n" + this.getApplicationContext().getResources().getString(R.string.tag_fn_comm) + ")"
-						+ result_COMM  + this.getApplicationContext().getResources().getString(R.string.comon_ken) ;											;				//件
+						+ result_COMM  + this.getApplicationContext().getResources().getString(R.string.comon_ken) ;                                            //件
 					}
 					if(result_PRIV != null){				//プライベートフレーム									//☆複数出現する；10cc(4)(10)PRIV
 						retStr = retStr + "\n" + this.getApplicationContext().getResources().getString(R.string.tag_fn_priv) + ")" +
-					result_COMM  + this.getApplicationContext().getResources().getString(R.string.comon_ken) ;											;				//件
+					result_COMM  + this.getApplicationContext().getResources().getString(R.string.comon_ken) ;                                            //件
 					}
 					if(result_CRM != null){				//ID3v2.2
 						retStr = retStr + "\n" + this.getApplicationContext().getResources().getString(R.string.tag_fn_priv) + ")  " +
@@ -5315,7 +5316,7 @@ private byte majorVersion = (byte) 0;
 				lylicHTM = retStr;				//html変換した歌詞のフルパス名
 				lylicHTM = lyric2webSouce( retStr );					//歌詞をhtmlに書き出す
 			}
-			dbMsg += ",retStr="+retStr.substring(0, 20) + "～" + retStr.substring(retStr.length()-20, retStr.length()) ;
+			dbMsg += ",retStr="+retStr.substring(0, 20) + "～" + retStr.substring(retStr.length()-20) ;
 			dbMsg += ";="+ retStr.length() +"文字" ;
 //03-05 00:17:36.045: E/JavaBinder(9831): !!! FAILED BINDER TRANSACTION !!!	メモリが累積してIPCの許容を超える
 			if(10000 < retStr.length()){
@@ -5347,7 +5348,7 @@ private byte majorVersion = (byte) 0;
 			dbMsg= "songLyric=";
 			int uketori = String.valueOf(songLyric).length();
 			if(30 < uketori){
-				dbMsg= dbMsg+ songLyric.substring(0, 30) +"～" + songLyric.substring(songLyric.length()-30, songLyric.length());
+				dbMsg= dbMsg+ songLyric.substring(0, 30) +"～" + songLyric.substring(songLyric.length()-30);
 			}else{
 				dbMsg += songLyric +  "～";
 			}
@@ -5357,7 +5358,7 @@ private byte majorVersion = (byte) 0;
 			String hozonnsaki = "/data/data/" + this.getPackageName() + "/files/" + fName;
 			String lyricStr = null;
 			eucjpStr = songLyric.replace("\n", "<br>");			//☆<PRE>では拡大すると横スクロールが発生するので改行を置換え
-			dbMsg= dbMsg+",eucjpStr=" + eucjpStr.substring(0, 30) +"～" + eucjpStr.substring(eucjpStr.length()-30, eucjpStr.length());
+			dbMsg= dbMsg+",eucjpStr=" + eucjpStr.substring(0, 30) +"～" + eucjpStr.substring(eucjpStr.length()-30);
 //			dbMsg= dbMsg+",EUC_JP=" + checkCharacterCode(songLyric, "EUC_JP") ;					//true
 //			dbMsg= dbMsg+",Shift_JIS=" + checkCharacterCode(songLyric, "Shift_JIS") ;			//true
 //			dbMsg= dbMsg+",UTF-8=" + checkCharacterCode(songLyric, "UTF-8") ;					//true
@@ -5558,8 +5559,8 @@ private byte majorVersion = (byte) 0;
 				CharSequence setStr=(CharSequence) params[1];	//1.次の処理に渡すメッセージ;pdMessage
 				if(setStr !=null ){
 					if(! setStr.equals(pdMessage)){
-						pdMessage = (String) setStr;
-						this.pdMessage = (String) setStr;
+						pdMessage = setStr;
+						this.pdMessage = setStr;
 						dbMsg +=",Message = " + pdMessage;
 		//				change2ndText () ;			//ProgBar2の表示値設定
 					}
@@ -5644,7 +5645,7 @@ private byte majorVersion = (byte) 0;
 		public void onProgressUpdate(Integer... values) {			//
 			final String TAG = "onProgressUpdate";
 			String dbMsg="[plogTask.TagBrows]";
-			int progress = (int)values[0] ;
+			int progress = values[0];
 			try{
 				dbMsg= this.reqCode +")progress= " + progress;
 				progressDialog.setProgress(progress);
@@ -5665,7 +5666,7 @@ private byte majorVersion = (byte) 0;
 	 *  doInBackgroundメソッドの実行後にメインスレッドで実行されます。
 	 *  doInBackgroundメソッドの戻り値をこのメソッドの引数として受け取り、その結果を画面に反映させることができます。*/
 		public void onPostExecute(AsyncTaskResult<Integer> ret){	// タスク終了後処理：UIスレッドで実行される AsyncTaskResult<Object>
-			super.onPostExecute((AsyncTaskResult<Integer>) ret);
+			super.onPostExecute(ret);
 				final String TAG = "onPostExecute";
 				String dbMsg="[plogTask.TagBrows]";
 				try{

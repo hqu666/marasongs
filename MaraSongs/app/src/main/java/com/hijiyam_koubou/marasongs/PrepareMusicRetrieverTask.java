@@ -61,7 +61,7 @@ public class PrepareMusicRetrieverTask extends AsyncTask<Context, Void, List<Ite
 	}
 
 	public interface MusicRetrieverPreparedListener {
-		public void onMusicRetrieverPrepared(List<Item> items);
+		void onMusicRetrieverPrepared(List<Item> items);
 	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {

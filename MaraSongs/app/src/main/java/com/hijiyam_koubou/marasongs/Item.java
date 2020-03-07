@@ -242,7 +242,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			Cursor cursor = null;
 			int nowList_id = -1;
-			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) ,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) , Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			Map<String, ?> keys = sharedPref.getAll();
 			dbMsg += ",keys=" + keys.size() + "件" ;				//in16.pla=29236
 
@@ -341,7 +341,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							dbMsg += ",全曲リスト未作成";
 						}
 					} else if (nowList.equals(context.getResources().getString(R.string.playlist_namae_saikintuika))) {
-						String fn = String.valueOf(context.getResources().getString(R.string.playlist_saikintuika_filename));
+						String fn = context.getResources().getString(R.string.playlist_saikintuika_filename);
 						dbMsg += "、ファイル=" + fn;
 						File chFile = new File(fn);
 						dbMsg += ",exists=" + chFile.exists();
@@ -369,8 +369,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					} else {
 						String ieKubunn = "internal";
 						String extV = Environment.getExternalStorageDirectory().toString();
-						String nowList_data = String.valueOf(sharedPref.getString("nowList_data", "").toString());
-						dbMsg += ">保存場所=" + String.valueOf(nowList_data);
+						String nowList_data = String.valueOf(sharedPref.getString("nowList_data", ""));
+						dbMsg += ">保存場所=" + nowList_data;
 						if (nowList_data.contains(extV)) {
 							ieKubunn = "external";
 						}
@@ -507,7 +507,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 				for( int i = 0 ;i< items.size() ; i++){
 					//	イテレータ	for( Item i : items){はjava.util.ConcurrentModificationException発生
 					String rStr = items.get(i).data;
-					if(rStr.equals( String.valueOf(data) )){
+					if(rStr.equals(data)){
 						retInt = items.get(i)._id;
 						dbMsg +="[" + retInt + "]に" + rStr + "有り";
 						break;

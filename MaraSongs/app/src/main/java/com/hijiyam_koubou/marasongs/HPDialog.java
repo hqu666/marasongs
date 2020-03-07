@@ -113,19 +113,19 @@ public class HPDialog extends DialogFragment {
 			dbMsg +=",factory=" + factory;
 			view = factory.inflate(R.layout.pd_log, null);
 			dbMsg= dbMsg  + ",view=" + view.getId();
-			pgd_msg_tv = (TextView) view.findViewById(R.id.pgd_msg_tv);
-			progBar1 = (ProgressBar) view.findViewById(R.id.progBar1);		 //メインプログレスバー
-			pgd_val_tv = (TextView) view.findViewById(R.id.pgd_val_tv);
-			pgd_max_tv = (TextView) view.findViewById(R.id.pgd_max);
-			pgd_par_tv = (TextView) view.findViewById(R.id.pgd_par_tv);
+			pgd_msg_tv = view.findViewById(R.id.pgd_msg_tv);
+			progBar1 = view.findViewById(R.id.progBar1);		 //メインプログレスバー
+			pgd_val_tv = view.findViewById(R.id.pgd_val_tv);
+			pgd_max_tv = view.findViewById(R.id.pgd_max);
+			pgd_par_tv = view.findViewById(R.id.pgd_par_tv);
 			dbMsg= dbMsg  + ",pgd_par_tv=" + pgd_par_tv.getId();
 			_numberFormat = "%d/%d";
 			_percentFormat = NumberFormat.getPercentInstance();
 			_percentFormat.setMaximumFractionDigits(0);
-			ProgBar2 = (ProgressBar) view.findViewById(R.id.ProgBar2);		 //セカンドプログレスバー
-			pgd_val2_tv = (TextView) view.findViewById(R.id.pgd_val2_tv);
-			pgd_max2_tv = (TextView) view.findViewById(R.id.pgd_max2);
-			pgd_par2_tv = (TextView) view.findViewById(R.id.pgd_par2_tv);
+			ProgBar2 = view.findViewById(R.id.ProgBar2);		 //セカンドプログレスバー
+			pgd_val2_tv = view.findViewById(R.id.pgd_val2_tv);
+			pgd_max2_tv = view.findViewById(R.id.pgd_max2);
+			pgd_par2_tv = view.findViewById(R.id.pgd_par2_tv);
 			dbMsg= dbMsg  + ",pgd_par2_tv=" + pgd_par2_tv.getId();
 			_percentFormat.setMaximumFractionDigits(0);
 			prg = new AlertDialog.Builder(cContext);				//AlertDialog

@@ -474,7 +474,7 @@ public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class B
 				if(position == 0) return this; // position=0は自分を返す
 				if(treeEntries == null || !isExpanded) return null;
 				for(int i = 0; position >= 0 && i < treeEntries.size(); ++ i) {
-					TreeEntry entry = (TreeEntry) treeEntries.get(i);
+					TreeEntry entry = treeEntries.get(i);
 					-- position;							// 子について、エントリが取得できない場合、孫をpositionから引く
 					int count = entry.getCount();
 					if(count >= position) {		// 子以降で必ずアイテムが見つかる
