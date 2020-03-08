@@ -774,7 +774,7 @@
     <string name="add_playlist_msg">追加する曲名</string>
     <string name="add_playlist_titol">追加先のリスト</string>
     <string name="album_artist_file_name">album_artist.txt</string>
-    <string name="all_songs_file_name">all_songs.m3u</string>
+    <string name="all_songs_file_name">全曲リスト.m3u</string>
     <string name="app_name">MaraSongs</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="artist_file">artist.db</string>
