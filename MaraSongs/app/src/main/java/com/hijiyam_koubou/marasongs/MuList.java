@@ -1,8 +1,12 @@
 package com.hijiyam_koubou.marasongs;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -266,6 +270,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public String[] compList;
 	public int comCount;
 	public String compSelection ;			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+	public String pStrlist = "";			//汎用プレイリストの内容
 	//サービス
 	public Intent MPSIntent;
 	public String psSarviceUri;
@@ -7320,7 +7325,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //最近追加されたアルバム///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	String[] settingDays;	// = {"1","2", "3" ,"7","15", "30","60", "180", "365","730", "1800"};          //日分
 	long saikinTuikaLimt = 0;
-	/** 最の抽出(指定IF)*/
+	/**
+	 * 最近追加の抽出(指定IF)
+	 *
+	 * */
 	public void saikin_tuika(){				//最近追加された楽曲の抽出(指定IF)
 		final String TAG = "saikin_tuika]";
 		String dbMsg = "[MuList]";
@@ -7392,7 +7400,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 最近追加された楽曲の抽出 */
+	/**
+	 * 最近追加された楽曲の抽出 */
 	public void saikin_tuika_Junbi( int listUpDates){				//最近追加された楽曲の抽出(指定IF)
 		final String TAG = "saikin_tuika_Junbi";
 		String dbMsg = "[MuList]";
@@ -7454,7 +7463,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		   		int preexistCount =  cursor.getCount();
 			   dbMsg += " , 既存=" + preexistCount + "レコード";
 			   if(0 < preexistCount){
-				   dbMsg += " ,作り直し=";
+				   dbMsg += ">>作り直し";
 				   newSongDb.execSQL("DROP TABLE IF EXISTS " + MuList.this.saikintuikaTablename);    			//既存のテーブルを削除して
 				   newSongHelper.onCreate(newSongDb);
 			   }
@@ -7471,7 +7480,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 最近追加された楽曲の抽出 MediaStore.Audio.Media.EXTERNAL_CONTENT_URIからDATE_ADDEDが指定日以降の楽曲を抽出 */
+	/**
+	 *  最近追加された楽曲の抽出 MediaStore.Audio.Media.EXTERNAL_CONTENT_URIからDATE_ADDEDが指定日以降の楽曲を抽出 */
 	public void saikin_tuika_mod(){				//最近追加された楽曲の抽出(指定IF)
 		final String TAG = "saikin_tuika_mod";
 		String dbMsg = "[MuList]";
@@ -7623,11 +7633,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage,retInt ).execute(reqCode,  pdMessage , pdMaxVal  ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
+			myErrorLog(TAG ,  dbMsg + "で");
 		}
 	}
 
-	/** 抽出されたアルバムごとの楽曲の書込み	20190908修正*/
+	/**
+	 *  抽出されたアルバムごとの楽曲の書込み	20190908修正*/
 	public void saikin_tuika_yomi_body( int rIndex){				//最近追加された楽曲の抽出(指定IF)
 		final String TAG = "saikin_tuika_yomi_body";
 		String dbMsg = "[MuList]";
@@ -7688,6 +7699,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						alubmID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 					}
 					workDb.insert(workTable, null, UTIL.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );////データベース書込み//
+					pStrlist += titolName + "," + dataVal +"\n";		//汎用プレイリストの内容
+
 				}while(cursor.moveToNext());		// && listUpCount < listUpDates
 			}
 			cursor.close();
@@ -7759,6 +7772,25 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 
 			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
+
+			try {
+				MyPreferences myPreferences = new MyPreferences();
+				String pl_file_name =  myPreferences.pref_commmn_music + File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
+
+				//   <string name="playlist_namae_saikintuika">最近追加した曲</string>
+				dbMsg += " , 最近追加リストファイル書き込み= " + pl_file_name;
+				FileOutputStream fos = new FileOutputStream(new File(pl_file_name));
+				//openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
+				OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+				BufferedWriter writer = new BufferedWriter(osw);
+				writer.write(pStrlist);
+				writer.close();
+				dbMsg += " >>成功";
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -9391,7 +9423,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 		}
 		//		http://greety.sakura.ne.jp/redo/2011/02/asynctask.html
-		/*最初にUIスレッドで呼び出されます。 , UIに関わる処理をします。
+		/**
+		 * 最初にUIスレッドで呼び出されます。 , UIに関わる処理をします。
 		 * doInBackgroundメソッドの実行前にメインスレッドで実行されます。
 		 * 非同期処理前に何か処理を行いたい時などに使うことができます。 */
 		@Override
