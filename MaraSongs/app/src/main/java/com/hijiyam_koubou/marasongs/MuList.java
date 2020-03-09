@@ -117,6 +117,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 	public OrgUtil ORGUT;						//自作関数集
 	public Util UTIL;
+	public MyPreferences myPreferences;
+
 
 	public MaraSonActivity MSA ;				//メインアクティビティ
 	public Locale locale;							// アプリで使用されているロケール情報を取得
@@ -457,7 +459,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
 				if ( isNeedParmissionReqest ) {
 					dbMsg += "::許諾処理へ";
-					MyPreferences myPreferences = new MyPreferences();
+					myPreferences = new MyPreferences();
 					myPreferences.setdPrif(MuList.this);
 					new AlertDialog.Builder(MuList.this)
 							.setTitle( getResources().getString(R.string.permission_titol) )
@@ -492,7 +494,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/*** Cameraパーミッションが通った時点でstartLocalStream 	 */
+	/**
+	  * パーミッションが通った時点でstartLocalStream 	 */
 	@Override
 	public void onRequestPermissionsResult(int requestCode , String[] permissions , int[] grantResults) {
 		final String TAG = "onRequestPermissionsResult";
@@ -672,35 +675,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}																	//設定読込・旧バージョン設定の消去
 
 
-	public String setFarstSong(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
-		final String TAG = "setFarstSong";
-		String dbMsg = "[MuList]";
-		long start = System.currentTimeMillis();		// 開始時刻の取得
-		String dataFN = "";
-		try{
-			dbMsg += "取得済みリスト読み込み" ;
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
-			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-			String c_selection =  null;		//MediaStore.Audio.Media.DATE_ADDED +">=?" ;			//ファイル更新日
-			String[] c_selectionArgs=  null;			// {String.valueOf(saikinTuikaLimt)};   			//⑥引数groupByには、groupBy句を指定します。
-			String c_orderBy = null;		//MediaStore.Audio.Media.DATE_ADDED   + " DESC " ;
-			Cursor carsol = getContentResolver().query(cUri , c_columns , c_selection , c_selectionArgs , c_orderBy);
-			dbMsg += carsol.getCount() + "件";
-			if(carsol.moveToFirst()){
-				dataFN = carsol.getString(carsol.getColumnIndex(MediaStore.Audio.Media.DATA));						//10.data;					//URI
-				dbMsg += ">MediaStore>" + dataFN;
-				setPrefStr("pref_data_url" ,dataFN , MuList.this);
-				mIndex=1;
-				setPrefInt("pref_mIndex" ,1 , MuList.this);
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return dataFN;
-	}
-
-
 	public void setteriYomikomi(){		//<onCreate	プリファレンスに記録されているデータ読み込み、状況に応じた分岐を行う
 		final String TAG = "setteriYomikomi";
 		String dbMsg = "[MuList]";
@@ -762,15 +736,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				nowList_id = -1;
 				nowList_data = null;
 				dbMsg +=  ">修正結果[" + nowList_id + "]" + nowList + "" + dataFN;
-////				setPrefStr( "nowList", String.valueOf(nowList),  MuList.this);     			//他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
-////				setPrefStr( "nowList_id", String.valueOf(nowList_id),  MuList.this);
-//				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-				mItems = getAllSongItems();	//Item.getItems( this );
-//				if(mItems == null){
-//					preRead(MaraSonActivity.syoki_Yomikomi , null);				//dataURIを読み込みながら欠けデータ確認		//		mediaSTkousinn();						//メディアストアの更新呼出し
-//				}
 
-//				dbMsg += "," + mIndex + "曲目";
 				mIndex = Item.getMPItem( dataFN);
 				dbMsg += ",mIndex=" + mIndex + "曲目";
 			}
@@ -7488,7 +7454,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		try{
 //	java.lang.NullPointerException: Attempt to invoke interface method 'boolean android.database.Cursor.isClosed()' on a null object reference
 
-			if( ! cursor.isClosed() ){
+			if( cursor != null && ! cursor.isClosed() ){
 				cursor.close();
 			}
 			this.listUpDates = Integer.valueOf(pref_saikin_tuika);
@@ -7774,8 +7740,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
 
 			try {
-				MyPreferences myPreferences = new MyPreferences();
-				String pl_file_name =  myPreferences.pref_commmn_music + File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
+				String pl_file_name = getPrefStr( "pref_commmn_music" ,  "" , MuList.this);
+						//myPreferences.pref_commmn_music + File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
+				pl_file_name +=  File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
 
 				//   <string name="playlist_namae_saikintuika">最近追加した曲</string>
 				dbMsg += " , 最近追加リストファイル書き込み= " + pl_file_name;
