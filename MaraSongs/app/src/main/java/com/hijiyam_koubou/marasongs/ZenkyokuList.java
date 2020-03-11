@@ -199,7 +199,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order = Integer.parseInt(myPreferences.play_order);
 
-			all_songs_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name);
+			all_songs_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u";
 			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
 			album_artist_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
 			dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;

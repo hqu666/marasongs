@@ -36,7 +36,7 @@
     <string name="zenkyoku_table">zenkyoku_table</string>
     <string name="shyuusei_file">shyuusei.db</string>
     <string name="shyuusei_table">shyuusei_table</string>
-    <string name="all_songs_file_name">全曲リスト.m3u</string>
+    <string name="all_songs_file_name">全曲リスト</string>
     <string name="album_artist_file_name">album_artist.txt</string>
 
 
@@ -145,6 +145,9 @@
     <string name="menu_item_plist_saikin_tuika">最近追加リストの更新</string>
     <string name="menu_item_plist_saikin_tuika_dm">最近追加されたアルバムを何日前のものまで抽出するか選択して下さい</string>
     <string name="menu_item_plist_saikin_sisei">最近再生リストの更新</string>
+    <string name="play_list_wr_msgi">を他のプレイヤーからも利用できる様にしています</string>
+
+
 
     <!-- リストアップ調整 -->
     <string name="list_contex_title">の操作</string>
