@@ -272,6 +272,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public String[] compList;
 	public int comCount;
 	public String compSelection ;			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+	public String pl_file_name = ""; 		//汎用プレイリストのファイル名
 	public String pStrlist = "";			//汎用プレイリストの内容
 	//サービス
 	public Intent MPSIntent;
@@ -308,6 +309,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public static final int MENU_TAKAISOU = MENU_2KAISOU+1;			//537多階層リスト選択選択中
 	public static final int MENU_TAKAISOU2 = MENU_TAKAISOU+1;			//多階層リスト書き込み中
 	public static final int MENU_infoKaisou = MENU_TAKAISOU2+1;			//情報付きリスト書き込み中
+	public static final int MENU_INFO_KAISOU = MENU_infoKaisou;
 	public static final int MENU_MUSCK_PLIST = MENU_infoKaisou+1;			//プレイリスト選択中
 	public static final int MENU_MUSCK_Artist = MENU_MUSCK_PLIST+10;	//アーティスト選択
 	public static final int MENU_MUSCK_ALBUM = MENU_MUSCK_Artist+10;		//アルバム選択
@@ -658,6 +660,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //			others =myPreferences.others;				//その他の情報
 //			boolean isCont = false;
 			dbMsg += "、再生中のファイル名=" + pref_data_url;
+			pl_file_name = myPreferences.pref_commmn_music +File.separator;; //汎用プレイリストのファイル名のパスまで
+			dbMsg += "、汎用プレイリストのファイル名=" + pl_file_name;
 
 			myLog(TAG, dbMsg);
 			if(pref_data_url == null || pref_data_url.equals("") ||
@@ -5404,7 +5408,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return playLists;
 	}
 
-	/**取得されたPlayListのメンバーを条件に合わせてリストに書き込む*/
+	/**
+	 * 取得されたPlayListのメンバーを条件に合わせてリストに書き込む準備*/
 	public void CreatePLListEnd() {		//プレイリストの内容取得            指定
 		final String TAG = "CreatePLListEnd";
 		String dbMsg = "[MuList]";
@@ -5429,17 +5434,18 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			reqCode = MENU_infoKaisou;								//537;情報付き曲名リスト書き込み中
 			int retInt = plAL.size();
 			String subText = retInt + getResources().getString(R.string.comon_ken);
-			dbMsg += ",retInt="+subText + ":" + pref_artist_bunnri ;
+			dbMsg += ",retInt="+ subText + ":artist_bunnri" + pref_artist_bunnri +"人";
 			dbMsg += ",sousalistName="+sousalistName ;
 			dbMsg += ",単階層指定="+plef_tankaisou ;
 
-			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){		//最近追加アルバム
-
-				reqCode = MENU_TAKAISOU2 ;									//536	;3階層リスト
+			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){		//最近追加
+				reqCode = MENU_TAKAISOU2 ;									//538;3階層リスト
 				dbMsg += ">reqCode="+reqCode;
 				listType = listType_plane;									// 0;//情報なし
-				if( retInt < Integer.valueOf(pref_artist_bunnri) ){		//最近追加
-					reqCode = MENU_infoKaisou;								//537情報付きリスト書き込み中
+				if( retInt < Integer.valueOf(pref_artist_bunnri) ){
+					dbMsg += ",リストが長すぎるので" ;
+//					reqCode =MENU_infoKaisou:
+//					reqCode = MENU_INFO_KAISOU;								//539情報付きリスト書き込み中
 					dbMsg += ">reqCode="+reqCode;
 					if(pref_list_simple){											//シンプルなリスト表示（サムネールなど省略）
 						listType = listType_plane;									// 0;//情報なし
@@ -5448,6 +5454,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					}
 				}
 				dbMsg += ">listType="+listType;
+				pl_file_name = getPrefStr( "pref_commmn_music" ,  "" , MuList.this) +File.separator;
+				//myPreferences.pref_commmn_music + File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
+				pl_file_name +=  MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
+
 			} else if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikinsisei)) ||			//最近再生
 						sousalistName.equals(getResources().getString(R.string.playlist_namae_randam)) 			//="">ランダム再生</string>
 					){
@@ -5483,6 +5493,21 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						artistSL.clear();
 					}
 				}
+			}
+			if(!pStrlist.equals("")){				//汎用プレイリストの内容が書き込まれていたが
+				try {
+					dbMsg += " , " + pl_file_name +" を書き込み";
+					FileOutputStream fos = new FileOutputStream(new File(pl_file_name));
+					//openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
+					OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+					BufferedWriter writer = new BufferedWriter(osw);
+					writer.write(pStrlist);
+					writer.close();
+					dbMsg += " >>成功";
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 			}
 			dbMsg += ">reqCode>"+reqCode + ",listType=" + listType;
 			String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.comon_sakusei);				//プレイリスト 作成>
@@ -6796,7 +6821,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return ret;
 	}
 
-	/**プレイリストへ曲を追加する	 */
+	/**
+	 * プレイリストへ曲を追加する	 */
 	public Uri addMusicToPlaylist(int playlist_id ,int audio_id, String data, int data_hash){		//プレイリストへ曲を追加する
 		Uri result_uri = null;
 		final String TAG = "addMusicToPlaylist";
@@ -7048,7 +7074,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** プレイリストから指定された行を削除する */
+	/**
+	 *  プレイリストから指定された行を削除する */
 	protected void delOneLine(int playlist_id, int delOrder , String delName){				//プレイリストから指定された行を削除する
 		final String TAG = "delOneLine[MuList]";
 		String dbMsg = "[MuList]";
@@ -7126,7 +7153,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**プレイリストから指定された行を削除する*/
+	/**
+	 * プレイリストから指定された行を削除する*/
 	protected int delOneLineBody(Uri listUri, int delId){				//プレイリストから指定された行を削除する
 		int renint =-1;
 		final String TAG = "delOneLineBody";
@@ -7144,7 +7172,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return renint;
 	}
 
-	/*** 再生順を振りなおす */
+	/**
+	 * * 再生順を振りなおす */
 	protected void playOrderSyuusei(int playlist_id, int startId){				//再生順を振りなおす
 		final String TAG = "removeItems[MuList]";
 		String dbMsg = "[MuList]";
@@ -7528,7 +7557,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 最近追加されたアルバムの抽出  " DESC "で最新からソート */
+	/**
+	 *  最近追加されたアルバムの抽出  " DESC "で最新からソート */
 	public Cursor saikin_tuika_mod_body(Cursor cursor){				//最近追加された楽曲の抽出
 		final String TAG = "saikin_tuika_mod_body";
 		String dbMsg = "[MuList]";
@@ -7558,7 +7588,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						MuList.this.modifide = modifide2;													//比較日付を変更
 						MuList.this.modifiedList.add(String.valueOf(alabumName2));
 					}
-					
 				}
 			}
 //			myLog(TAG, dbMsg);
@@ -7583,7 +7612,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 最近追加された楽曲の抽出(指定IF) */
+	/**
+	 *  最近追加された楽曲の抽出(指定IF) */
 	public void saikin_tuika_yomi( ArrayList<String> modifiedList){				//最近追加された楽曲の抽出(指定IF)
 		final String TAG = "saikin_tuika_yomi";
 		String dbMsg = "[MuList]";
@@ -7665,7 +7695,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						alubmID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 					}
 					workDb.insert(workTable, null, UTIL.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );////データベース書込み//
-					pStrlist += titolName + "," + dataVal +"\n";		//汎用プレイリストの内容
+//					pStrlist += titolName + "," + dataVal +"\n";		//汎用プレイリストの内容
 
 				}while(cursor.moveToNext());		// && listUpCount < listUpDates
 			}
@@ -7721,7 +7751,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**最近追加された楽曲の書込み結果の表示 */
+	/**
+	 * 最近追加された楽曲の書込み結果の表示 */
 	public void saikin_tuika_yomi_end( ){				//最近追加された楽曲の書込み結果の表示
 		final String TAG = "saikin_tuika_yomi_end";
 		String dbMsg = "[MuList]";
@@ -7738,26 +7769,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 
 			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
-
-			try {
-				String pl_file_name = getPrefStr( "pref_commmn_music" ,  "" , MuList.this);
-						//myPreferences.pref_commmn_music + File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
-				pl_file_name +=  File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
-
-				//   <string name="playlist_namae_saikintuika">最近追加した曲</string>
-				dbMsg += " , 最近追加リストファイル書き込み= " + pl_file_name;
-				FileOutputStream fos = new FileOutputStream(new File(pl_file_name));
-				//openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
-				OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-				BufferedWriter writer = new BufferedWriter(osw);
-				writer.write(pStrlist);
-				writer.close();
-				dbMsg += " >>成功";
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -7765,13 +7776,15 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 
-	//プレイリストのファイル書込み ///////////////////////////////////////////////////////
+	/**
+	 * *プレイリストのファイル書込み */
 	public void playListWr(int reqCode){
 		final String TAG = "playListWr";
 		String dbMsg = "[MuList]reqCode=" + reqCode;                      //最近追加で651？
 		try{
 			dbMsg += ",現在のプレイリスト" + nowList_id;
 			int retInt = 0;
+			pStrlist ="";		//汎用プレイリストの内容を初期化
 //			if(plAL != null){
 //			}else{
 //				CreatePLList(  nowList_id , nowList);
@@ -7781,7 +7794,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String pdTitol = getResources().getString(R.string.menu_item_plist_randam_dm);												//ランダム再生準備</string>
 			if( reqCode == CONTEXT_saikintuika_Wr ){               								// 最近追加
 				pdTitol = getResources().getString(R.string.menu_item_plist_saikin_tuika);
-
 			}
 			String pdMessage =  getResources().getString(R.string.common_kakikomi) + ";" + retInt + getResources().getString(R.string.pp_kyoku);						// 書込み	曲
 			//	reqCode = CONTEXT_rumdam_wr;									//ランダム再生リストの書込み
@@ -7800,17 +7812,21 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=  MuList.this.tuikaSakiListID + "に("+ ( i + 1 ) + "曲目)";/////////////////////////////////////
 			int audio_id = Integer.valueOf( String.valueOf(MuList.this.plAL.get(i).get(MediaStore.Audio.Playlists.Members.AUDIO_ID )) );
 			dbMsg += "audio_id=" + audio_id ;/////////////////////////////////////
-			String DATA = String.valueOf(MuList.this.plAL.get(i).get(MediaStore.Audio.Media.DATA));			//cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-			dbMsg += ",DATA="+ DATA;
-			Uri result_uri = addMusicToPlaylist( MuList.this.tuikaSakiListID, audio_id, DATA , 0);	//プレイリストへ曲を追加する
+			String dataVal = String.valueOf(MuList.this.plAL.get(i).get(MediaStore.Audio.Media.DATA));			//cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+			dbMsg += ",DATA="+ dataVal;
+			Uri result_uri = addMusicToPlaylist( MuList.this.tuikaSakiListID, audio_id, dataVal , 0);	//プレイリストへ曲を追加する
 			dbMsg += ">>result_uri=" + result_uri ;/////////////////////////////////////
+			String titolName = String.valueOf(MuList.this.plAL.get(i).get(MediaStore.Audio.Media.TITLE));
+			dbMsg += ",titolName="+ titolName;
+			pStrlist += titolName + "," + dataVal +"\n";		//汎用プレイリストの内容に追加
 //			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
 
-	/**最近追加された楽曲の書込み結果の表示 */
+	/**
+	 * 最近追加された楽曲の書込み結果の表示 */
 	public void saikin_tuika_end( ){				//最近追加された楽曲の書込み結果の表示
 		final String TAG = "saikin_tuika_end";
 		String dbMsg = "[MuList]";
@@ -8789,7 +8805,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return cursor;
 	}
 
-	/** 指定された名称のリストを作成する;既に有ればlistIDを返し、無ければ作成してIdを返す */
+	/**
+	 *  指定された名称のリストを作成する;既に有ればlistIDを返し、無ければ作成してIdを返す */
 	public int siteiListSakusi( String listName){				//指定された名称のリストを作成する
 		int listID = 0;
 		final String TAG = "siteiListSakusi";
