@@ -345,6 +345,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	static final int CONTEXT_rumdam_wr = CONTEXT_rumdam_arrayi+1;				//ランダム再生リストの書込み
 	static final int CONTEXT_REPET_CLEAN= CONTEXT_rumdam_wr+1;					//リピート再生リストの既存レコード消去
 	static final int CONTEXT_REPET_WR= CONTEXT_REPET_CLEAN+1;					//リピート再生リストレコード書込み
+	static final int CONTEXT_M3U2_PL= CONTEXT_REPET_WR+1;					//汎用プレイリストを１Androidのプレイリストに転記
+
+
 //	static final int CONTEXT_saikintuika_read = CONTEXT_REPET_WR + 1;			//最近追加リストをデータベースから読み出す
 
 	static final int REQUEST_PREF = 100;                          //Prefarensからの戻り
@@ -906,7 +909,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				hihyoujiArtist();							//非表示アーティスト対策
 				return true;
 			case R.id.menu_item_plist_zenkyoku_kousin:						//全曲リスト更新
-				allSongJunbi();			//test20200311;全曲リスト作成後
+				m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name));		//test20200311;全曲リスト作成後
 //				preRead(MaraSonActivity.syoki_Yomikomi , null);
 				return true;
 				//http://d.hatena.ne.jp/ksk_kbys/20110822/1314028750
@@ -3053,7 +3056,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return retInt;
 	}
 
-	/** cursorで渡されたartist_dbのレコードから"ARTIST"をartistSLに "ALBUM_ARTIST"をaArtistListに格納 詳細表示の場合はartistALを使用 */
+	/**
+	 *  cursorで渡されたartist_dbのレコードから"ARTIST"をartistSLに "ALBUM_ARTIST"をaArtistListに格納 詳細表示の場合はartistALを使用 */
 	public Cursor artistList_yomikomiLoop(Cursor cursor ) throws IOException{		//①ⅵ2；			, String comp
 		final String TAG = "artistList_yomikomiLoop";
 		String dbMsg = "[MuList]";
@@ -3136,7 +3140,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return cursor;
 	}
 
-/**artistSLで階層化しないシンプルなリスト  	 artistALで詳細リストを表示する  * */
+	/**
+ 	* artistSLで階層化しないシンプルなリスト  	 artistALで詳細リストを表示する  * */
 	public int artistList_yomikomiEnd(){							//起動直後はCreateAlbumListへ//①ⅵ4；アーティストリストの終了処理	＜onSuccessplogTaskからの戻り
 		int retInt = -1;
 		final String TAG = "artistList_yomikomiEnd";
@@ -5526,7 +5531,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**情報付き単階層プレイリストの作成 */
+	/**
+	 * 情報付き単階層プレイリストの作成 */
 	public void plInfoSinglBody(int i) {			//情報付き単階層プレイリストの作成
 		final String TAG = "plInfoSinglBody";
 		String dbMsg = "[MuList]";
@@ -5599,7 +5605,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**単階層+2階層プレイリストのアーティスト単階層作成 */
+	/**
+	 * 単階層+2階層プレイリストのアーティスト単階層作成 */
 	public void plOneBody(int i) {		//プレイリストの描画
 		final String TAG = "plOneBody";
 		String dbMsg = "[MuList]";
@@ -5658,7 +5665,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 指定したプレイリストから特定アーティストのアルバムとタイトル内容取得 */
+	/**
+	 *  指定したプレイリストから特定アーティストのアルバムとタイトル内容取得 */
 	public void plAlbumTitol(long playlistId , String artistName){		//指定したプレイリストから特定アーティストのアルバムとタイトル内容取得
 		final String TAG = "plAlbumTitol";
 		String dbMsg = "[MuList]";
@@ -5729,7 +5737,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 指定したプレイリストから特定アーティストのアルバムとタイトル内容取得 */
+	/**
+	 *  指定したプレイリストから特定アーティストのアルバムとタイトル内容取得 */
 	public void plAlbumTitolEnd(){		//playlistIdで指定したMediaStore.Audio.Playlists.Membersの内容取得
 		final String TAG = "plAlbumTitolEnd";
 		String dbMsg = "[MuList]";
@@ -5777,7 +5786,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**単階層+2階層プレイリストの2階層作成 */
+	/**
+	 * 単階層+2階層プレイリストの2階層作成 */
 	public void plTowBody(int i) {
 		final String TAG = "plTowBody";
 		String dbMsg = "[MuList]";
@@ -5985,7 +5995,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**多階層プレイリストをリストビューに書き込みイベント設定 */
+	/**
+	 * 多階層プレイリストをリストビューに書き込みイベント設定 */
 	public void plWrightEnd() {									//プレイリストの描画	reqCode = MENU_TAKAISOU;//多階層リスト選択選択中にセット
 		final String TAG = "plWrightEnd";
 		String dbMsg = "[MuList]";
@@ -6140,7 +6151,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**選択した楽曲からプレイリストを新規作成する */
+	/**
+	 * 選択した楽曲からプレイリストを新規作成する */
 	public void makePlaylist(String fastItem){			//選択した楽曲からプレイリストを新規作成する
 		final String TAG = "makePlaylist";
 		String dbMsg = "[MuList]";
@@ -6186,7 +6198,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**プレイリスト一つ分の内容取得 */
+	/**
+	 * プレイリスト一つ分の内容取得 */
 	public void makePlaylistBody(String listName , String fastItem){			//選択した楽曲からプレイリストを新規作成する
 		final String TAG = "makePlaylistBody";
 		String dbMsg = "[MuList]";
@@ -6249,7 +6262,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 曲名で指定された音楽ファイルのUrlを返す	 * @param listPosition プレイリスト上の位置；play_order*/
+	/**
+	 *  曲名で指定された音楽ファイルのUrlを返す	 * @param listPosition プレイリスト上の位置；play_order*/
 	public String retDataUrl( String itemName , int List_id , int listPosition){			//曲名で指定された音楽ファイルのUrlを返す
 		String itemeFn = null;
 		final String TAG = "retAudioId";
@@ -6291,7 +6305,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return itemeFn;
 	}
 
-	/** データURLで指定された音楽ファイルのaudio_idを返す */
+	/**
+	 *  データURLで指定された音楽ファイルのaudio_idを返す */
 	public int retAudioId( String itemeFn , int List_id , int listPosition){			//データURLで指定された音楽ファイルのaudio_idを返す
 		int audio_id =-1;
 		final String TAG = "retAudioId";
@@ -6349,7 +6364,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return audio_id;
 	}
 
-	/** 既存のプレイリストに選択した曲を追加 */
+	/**
+	 *  既存のプレイリストに選択した曲を追加 */
 	public void kizonListTuika(String tuikaItemName){
 		final String TAG = "kizonListTuika";
 		String dbMsg = "[MuList]";
@@ -6405,7 +6421,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 既存のプレイリストに選択した曲を追加* */
+	/**
+	 *  既存のプレイリストに選択した曲を追加* */
 	public void kizonListTuikaBody(String tuikaItemName ,String tuiukaItemeFn , int audio_id , int sousalistID , String sousalistName){
 		final String TAG = "kizonListTuikaBody";
 		String dbMsg = "[MuList]";
@@ -6440,7 +6457,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	public String menuName;
-	/** リスト一覧を表示してプレイリストを削除/リスト名変更 */
+
+	/**
+	 *  リスト一覧を表示してプレイリストを削除/リスト名変更 */
 	public void playListHnkou(String menuName){			//指定したプレイリストを削除する
 		int retInt =0;
 		final String TAG = "playListHnkou[MuList]";
@@ -6499,7 +6518,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 指定したプレイリストを削除*/
+	/**
+	 *  指定したプレイリストを削除*/
 	public int deletPlayList(String listName){			//指定したプレイリストを削除する
 		int retInt =0;
 		final String TAG = "deletPlayList";
@@ -6551,7 +6571,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return retInt;
 	}
 
-	/**指定したプレイリストの内容削除(プログレス処理への引き継ぎ) */
+	/**
+	 * 指定したプレイリストの内容削除(プログレス処理への引き継ぎ) */
 	public void deletPlayListLoop(int reqCode , int listID){			//指定したプレイリストを削除する
 		int retInt =0;
 		final String TAG = "deletPlayListLoop";
@@ -6601,7 +6622,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 指定したプレイリストを削除(レコードごとの読出し) */
+	/**
+	 *  指定したプレイリストを削除(レコードごとの読出し) */
 	public Cursor deletPlayListBody(Cursor cursor){			//指定したプレイリストを削除する
 		int retInt =0;
 		final String TAG = "deletPlayListBody[MuList]";
@@ -6623,7 +6645,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return cursor;
 	}
 
-	/** 指定したプレイリストを削除(終了処理) */
+	/**
+	 *  指定したプレイリストを削除(終了処理) */
 	public void deletPlayListEnd(){			//指定したプレイリストを削除する
 		int retInt =0;
 		final String TAG = "deletPlayListEnd";
@@ -6671,7 +6694,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return retrbool;
 	}
 
-	/** プレイリストを新規作成する */
+	/**
+	 *  プレイリストを新規作成する */
 	public Uri addPlaylist(String listName, Uri images_uri, String thumb){			//プレイリストを新規作成する
 		Uri result_uri = null;
 		final String TAG = "addPlaylist";
@@ -6714,7 +6738,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return result_uri;
 	}
 
-	/** プレイリストの名前を変更（名前変更ダイアログ表示） */
+	/**
+	 *  プレイリストの名前を変更（名前変更ダイアログ表示） */
 	public void listmeiHenkou(int listID, String motolistName){				//プレイリストの名前を変更する
 		final String TAG = "listmeiHenkou";
 		String dbMsg = "[MuList]";
@@ -6805,7 +6830,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** プレイリストの最大のplay_orderを取得する */
+	/**
+	 *  プレイリストの最大のplay_orderを取得する */
 	public int getUserListMaxPlayOrder(int playlist_id){				//プレイリストの最大のplay_orderを取得する
 		int ret = 0;				//org -1
 		final String TAG = "getUserListMaxPlayOrder";
@@ -6912,7 +6938,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return result_uri;
 	}
 
-/** プレイリストの曲を上下移動させる(指定IF) */
+	/**
+	 *  プレイリストの曲を上下移動させる(指定IF) */
 	public int listEnd = 0;
 	public void plJyouge(int motoPosition , String sousaRecordName){				//プレイリストの曲を上下移動させる
 		final String TAG = "plJyouge[MuList]";
@@ -6983,7 +7010,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** プレイリストの曲を上下移動させる(本体)*/
+	/**
+	 *  プレイリストの曲を上下移動させる(本体)*/
 	public void plJyougeBody( int to){				//プレイリストの曲を上下移動させる
 		final String TAG = "plJyougeBody[MuList]";
 		String dbMsg = "[MuList]";
@@ -7011,7 +7039,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/**(未使用) プレイリストから曲を削除する */
+	/**
+	 * (未使用) プレイリストから曲を削除する */
 	public void removeMusicFromPlaylists(int playlist_id, int[] ids){				//プレイリストから曲を削除する
 		final String TAG = "removeMusicFromPlaylists";
 		String dbMsg = "[MuList]";
@@ -7049,7 +7078,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** (未使用)登録されているアイテムを削除する */
+	/**
+	 *  (未使用)登録されているアイテムを削除する */
 	protected void removeItems(Uri uri, int[] ids){				//登録されているアイテムを削除する
 		final String TAG = "removeItems";
 		String dbMsg = "[MuList]";
@@ -7321,21 +7351,22 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public int listUpCount;
 	public NumberPicker npd_np;			//ナンバーピッカー
 
+
 	/**
-	 * 全曲リスト作成後
+	 * m3UからAndroidのPlayListに転記
 	 * **/
-	public void allSongJunbi(){				//全曲リスト作成後
-		final String TAG = "allSongJunbi";
+	public void m3U2PlayList(String listName){				//getResources().getString(R.string.all_songs_file_name);		//全曲リスト全曲リスト作成後
+		final String TAG = "m3U2PlayList";
 		String dbMsg = "[MuList]";
 		try{
-			//		dbMsg +=  dbMsg  +">mItems>" + mItems;/////////////////////////////////////
+			dbMsg += "listName=" + listName;
+			MuList.this.tuikaSakiListName = listName;
 
 			//リストの一件目に仮設定
 //			dbMsg +=  "、リストアップは=" + listUpDates + "日前から" ;
 			if( plNameSL == null ){
 				plNameSL = getPList();		//プレイリストを取得する
 			}
-			MuList.this.tuikaSakiListName = getResources().getString(R.string.all_songs_file_name);		//全曲リスト
 			MuList.this.tuikaSakiListID = siteiListSakusi( MuList.this.tuikaSakiListName );
 			MuList.this.nowList_id = MuList.this.tuikaSakiListID;
 			dbMsg +=  "[" + tuikaSakiListID + "]" +MuList.this.tuikaSakiListName + "へ";
@@ -7349,7 +7380,16 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			cursor0 = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
 			dbMsg += ">>"+ cursor0.getCount() +"件";
 			cursor0.close();
-			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
+
+			String pdTitol = listName +"" + getResources().getString(R.string.play_list_wr_msgi);		//作成</string>
+			//m3uファイル読み込み
+			int pdMaxVal = playLists.getCount();
+			String pdMessage =  listName + "(" + pdMaxVal + getResources().getString(R.string.pp_kyoku)
+					+ ")" + getResources().getString(R.string.play_list_wr_msgi);						//確認	曲
+			reqCode = CONTEXT_M3U2_PL;					//汎用プレイリストを１Androidのプレイリストに転記
+			dbMsg +=",reqCode="+ reqCode;
+			myLog(TAG,dbMsg);
+			pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage, pdMaxVal ).execute(reqCode,  pdMessage , playLists ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
 
 ////			String platListDBname = getResources().getString(R.string.all_songs_file_name);
 ////			dbMsg +=  "、ファイル=" + platListDBname ;
@@ -7468,6 +7508,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 ////				myLog(TAG, dbMsg);
 //			}
 
+			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -8974,7 +9015,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	//プレイリストユーティリティ////////////////////////////////////////////////////////////////////////////////////////////////リクエストリスト///
-	/** 指定した名前のリストが有ればカーソルを返す; 無ければnullを返す*/
+	/**
+	 *  指定した名前のリストが有ればカーソルを返す; 無ければnullを返す*/
 	public Cursor listUMU(String listName){	//
 		Cursor cursor = null;
 		final String TAG = "listUMU";
@@ -8996,7 +9038,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return cursor;
 	}
 
-	/** 指定した名前のリスト指定した項目のデータが有ればカーソルを返す; 無ければnullを返す* */
+	/**
+	 *  指定した名前のリスト指定した項目のデータが有ればカーソルを返す; 無ければnullを返す* */
 	public Cursor list_dataUMU(long listID , String colName , String chName) {	//指定した名前のリスト指定した項目のデータが有ればカーソルを返す
 		Cursor cursor = null;
 		final String TAG = "list_dataUMU";
@@ -10118,7 +10161,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	/** 全曲リストの場合はプレイヤーでタップされたフィールドに応じてたリストを表示する */
+	/**
+	 *  全曲リストの場合はプレイヤーでタップされたフィールドに応じてたリストを表示する */
 	public void sigotoFuriwake(int reqC , String artistMei , String albumMei , String titolMei,String albumArt){		//表示するリストの振り分け		, List<Map<String, Object>> ItemAL
 		final String TAG = "sigotoFuriwake";
 		String dbMsg = "[MuList]";
