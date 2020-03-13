@@ -1,9 +1,12 @@
 package com.hijiyam_koubou.marasongs;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -909,7 +912,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				hihyoujiArtist();							//非表示アーティスト対策
 				return true;
 			case R.id.menu_item_plist_zenkyoku_kousin:						//全曲リスト更新
-				m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name));		//test20200311;全曲リスト作成後
+				m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name) + ".m3u");		//test20200311;全曲リスト作成後
 //				preRead(MaraSonActivity.syoki_Yomikomi , null);
 				return true;
 				//http://d.hatena.ne.jp/ksk_kbys/20110822/1314028750
@@ -7350,6 +7353,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public int listUpDates;
 	public int listUpCount;
 	public NumberPicker npd_np;			//ナンバーピッカー
+	public ArrayList<String> urls;		//プレイリストのURLのみの配列
 
 
 	/**
@@ -7360,36 +7364,66 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg += "listName=" + listName;
-			MuList.this.tuikaSakiListName = listName;
-
-			//リストの一件目に仮設定
-//			dbMsg +=  "、リストアップは=" + listUpDates + "日前から" ;
-			if( plNameSL == null ){
-				plNameSL = getPList();		//プレイリストを取得する
+			if(listName.contains(".")){
+				dbMsg += ">>";
+				String[] rStrs = listName.split("\\.",0);
+				dbMsg += rStrs.length + "分割>>";
+				listName = rStrs[0];
+				dbMsg += listName;
 			}
-			MuList.this.tuikaSakiListID = siteiListSakusi( MuList.this.tuikaSakiListName );
-			MuList.this.nowList_id = MuList.this.tuikaSakiListID;
-			dbMsg +=  "[" + tuikaSakiListID + "]" +MuList.this.tuikaSakiListName + "へ";
-			final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", tuikaSakiListID);
-			final String[] columns = null;			//{ idKey, nameKey };
-			String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-			Cursor cursor0 = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
-			dbMsg += ",変更前"+ cursor0.getCount() +"件";
-			int renint = getContentResolver().delete(uri , null , null);                //where = nullで全件削除
-			dbMsg += ",renint"+ renint;
-			cursor0 = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
-			dbMsg += ">>"+ cursor0.getCount() +"件";
-			cursor0.close();
+			MuList.this.tuikaSakiListName = listName;
+			String ListFileName = pref_commmn_music + File.separator + listName + ".m3u";
+			dbMsg += ">>" + ListFileName;
+			File rFile = new File(ListFileName);
+			String pdTitol = listName ;
+			String pdMessage =   "該当するファイルは有りません。" ;						//確認	曲
 
-			String pdTitol = listName +"" + getResources().getString(R.string.play_list_wr_msgi);		//作成</string>
-			//m3uファイル読み込み
-			int pdMaxVal = playLists.getCount();
-			String pdMessage =  listName + "(" + pdMaxVal + getResources().getString(R.string.pp_kyoku)
-					+ ")" + getResources().getString(R.string.play_list_wr_msgi);						//確認	曲
-			reqCode = CONTEXT_M3U2_PL;					//汎用プレイリストを１Androidのプレイリストに転記
-			dbMsg +=",reqCode="+ reqCode;
+			if(rFile.exists()){
+				//リストの一件目に仮設定
+				if( plNameSL == null ){
+					plNameSL = getPList();		//プレイリストを取得する
+				}
+				MuList.this.tuikaSakiListID = siteiListSakusi( MuList.this.tuikaSakiListName );
+				MuList.this.nowList_id = MuList.this.tuikaSakiListID;
+				dbMsg +=  "[" + tuikaSakiListID + "]" +MuList.this.tuikaSakiListName + "へ";
+				final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", tuikaSakiListID);
+				final String[] columns = null;			//{ idKey, nameKey };
+				String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+				Cursor cursor0 = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
+				dbMsg += ",変更前"+ cursor0.getCount() +"件";
+				int renint = getContentResolver().delete(uri , null , null);                //where = nullで全件削除
+				dbMsg += ",renint"+ renint;
+				cursor0 = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
+				dbMsg += ">>"+ cursor0.getCount() +"件";
+				cursor0.close();
+				try{
+					FileInputStream in = new FileInputStream( rFile );
+//					FileInputStream in = openFileInput( ListFileName );
+					BufferedReader reader = new BufferedReader( new InputStreamReader( in , "UTF-8") );
+					dbMsg += "：m3uファイル読み込み:" ;
+					String tmp;
+					urls = new ArrayList<String>();
+					while( (tmp = reader.readLine()) != null ){
+						urls.add(tmp);
+	//					str = str + tmp + "\n";
+					}
+					reader.close();
+				}catch( IOException e ){
+					myErrorLog(TAG ,  dbMsg + "で" + e);
+				}
+				dbMsg += ", " + urls.get(0);
+				int pdMaxVal = urls.size();		//playLists.getCount();
+				dbMsg += " 〜 " + urls.get(pdMaxVal - 1);
+				pdMessage =  listName + "(" + pdMaxVal + getResources().getString(R.string.pp_kyoku)
+						+ ")" + getResources().getString(R.string.play_list_wr_msgi);						//確認	曲
+				reqCode = CONTEXT_M3U2_PL;					//汎用プレイリストを１Androidのプレイリストに転記
+				dbMsg +=",reqCode="+ reqCode;
+			}else{
+			}
+			dbMsg += "：" + pdMessage;
+
 			myLog(TAG,dbMsg);
-			pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage, pdMaxVal ).execute(reqCode,  pdMessage , playLists ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
+//			pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage, pdMaxVal ).execute(reqCode,  pdMessage , playLists ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
 
 ////			String platListDBname = getResources().getString(R.string.all_songs_file_name);
 ////			dbMsg +=  "、ファイル=" + platListDBname ;
@@ -7508,7 +7542,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 ////				myLog(TAG, dbMsg);
 //			}
 
-			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
+//			playListWr( CONTEXT_saikintuika_Wr);				//最近追加リストのファイル作成
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -10358,7 +10392,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				switch(requestCode) {
 					case MaraSonActivity.syoki_Yomikomi:		//128；全曲リスト更新
 						dbMsg += "全曲リスト更新後";
-						allSongJunbi();			//全曲リスト作成後
+						m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name));		//test20200311;全曲リスト作成後
 //						//		dbMsg +=  dbMsg  +">mItems>" + mItems;/////////////////////////////////////
 //						dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
 //						if(mItems != null){
