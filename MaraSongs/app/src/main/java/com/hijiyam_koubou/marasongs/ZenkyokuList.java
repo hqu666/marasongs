@@ -199,7 +199,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order = Integer.parseInt(myPreferences.play_order);
 
-			all_songs_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u";
+			all_songs_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
 			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
 			album_artist_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
 			dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;
@@ -1928,6 +1928,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			String sort_name;
 			String artist_name = null;
 			String albumName = null;
+			String album_artist = null;
             String titolName = null;
             String dataUri = null;
 			pdCoundtVal = ｃursor.getPosition();
@@ -1950,14 +1951,17 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 						dataUri = cVal;
 					} else if( cName.equals("SORT_NAME") ){
 						sort_name = cVal;
+						album_artist = cVal;
 					}else if( cName.equals("ARTIST") ){
 						artist_name = cVal;
 					}else if( cName.equals("ALBUM_ARTIST") ){
 						albumName = cVal;
+						album_artist = cVal;
+
 					}
 				}
 			}
-            allSonglist += titolName + "," + dataUri +"\n";
+            allSonglist += titolName + "," + dataUri + "#" + album_artist +"\n";
 //			myLog(TAG,dbMsg );
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -3144,11 +3148,15 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
 			readStr = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK));
 			dbMsg +=",bOOKMARK=" + readStr ;/////////////////////////////////////
+//			readStr = cur.getString(cur.getColumnIndex(MediaStore.MediaColumns.ALBUM_ARTIST));
+//			dbMsg +=",ALBUM_ARTIST=" + readStr ;
+
 			if( readStr != null){
 				stmt.bindString(12, readStr);			//BOOKMARK
 			}else{
 				stmt.bindString(12, "");
 			}
+
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());

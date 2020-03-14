@@ -18,6 +18,8 @@
 					android:title="@string/menu_list_request_reset"/>
 			<item android:id="@+id/menu_hihyoujiArtist"
 					android:title="@string/menu_hihyoujiArtist"/>
+			<item android:id="@+id/menu_m3uRead"
+				android:title="@string/menu_m3uRead" />
 			<item android:id="@+id/menu_item_plist_zenkyoku_kousin"
 				android:title="@string/menu_item_plist_zenkyoku_kousin" />
 		</menu>

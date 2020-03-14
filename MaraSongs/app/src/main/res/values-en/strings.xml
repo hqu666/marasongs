@@ -89,6 +89,8 @@
 	<string name="menu_item_plist_rquest">List of requests</string>
 	<string name="menu_item_plist_a_new">New playlist</string>
 	<string name="menu_item_plist_zenkyoku_kousin">List of all songs update</string>
+	<string name="menu_m3uRead">read general-purpose playlist</string>
+
 	<string name="menu_item_sonota">Others</string>
 	<string name="menu_item_sonota_help">Help indication</string>
 	<string name="menu_item_sonota_settei">Setting</string>

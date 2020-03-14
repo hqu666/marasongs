@@ -113,7 +113,23 @@ import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
 
 import static com.hijiyam_koubou.marasongs.MusicPlayerService.ACTION_SYUURYOU_NOTIF;
 
-
+/**
+ * 2.0
+ * ①Marasongで作った全曲リストや最近追加などのプレイリストを他の音楽再生アプリからもご利用いただけます。
+ * ・AndroidOSの管理するプレイリスト(MediaStore.Audio.Playlists)に登録します。
+ * 　YouTube MusicのデバイスのファイルやGoogle Play Musicのすべてのプレイリストに表示されます。
+ * ・汎用形式のプレイリスト(エンコードUTF-8の拡張子.m3u8)を作成します。
+ * 　AndroidOSの管理するプレイリストに対応していない音楽再生アプリからもMarasongで作成したプレイリストをご利用いただける方法を提供します。
+ * ②　m3u8のプレイリストを読み込んでAndroidOSの管理するプレイリストに登録できます
+ * ③全曲リストもAndroidOSの管理するプレイリストを利用します。
+ * 　全曲リストを作成する時にMediaStore.Audio.Media.ARTIST
+ *
+ * ※読み込めるプレイリストの上限曲数は音楽再生アプリにより異なります。
+ * 　YouTube Musicで4000曲、Google Play Musicで1000曲です。
+ * ※ Google Play Musicの様に.m3u8形式のプレイリストに対応していない音楽再生アプリも有ります。
+ * ※　m3u8形式のファイルは厳密な規定が無いため、読み込めないことも有ります。
+ *
+ * **/
 public class MuList extends AppCompatActivity implements plogTaskCallback, View.OnClickListener , View.OnKeyListener {
 	                                                                 //
 	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
@@ -666,7 +682,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //			others =myPreferences.others;				//その他の情報
 //			boolean isCont = false;
 			dbMsg += "、再生中のファイル名=" + pref_data_url;
-			pl_file_name = myPreferences.pref_commmn_music +File.separator;; //汎用プレイリストのファイル名のパスまで
+			pl_file_name = myPreferences.pref_commmn_music +File.separator;//汎用プレイリストのファイル名のパスまで
 			dbMsg += "、汎用プレイリストのファイル名=" + pl_file_name;
 
 			myLog(TAG, dbMsg);
@@ -911,10 +927,13 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			case R.id.menu_hihyoujiArtist:				//	// 表示されていないアーティスト</string>
 				hihyoujiArtist();							//非表示アーティスト対策
 				return true;
+			case R.id.menu_m3uRead:						//汎用プレイリスト読み込み
+				readm3U2();
+				return true;
 			case R.id.menu_item_plist_zenkyoku_kousin:						//全曲リスト更新
 				shigot_bangou = 0;
-				m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name) + ".m3u");		//test20200311;全曲リスト作成後
-//				preRead(MaraSonActivity.syoki_Yomikomi , null);
+//				m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name) + ".m3u");		//test20200311;全曲リスト作成後
+				preRead(MaraSonActivity.syoki_Yomikomi , null);
 				return true;
 				//http://d.hatena.ne.jp/ksk_kbys/20110822/1314028750
 			case R.id.menu_item_sonota_settei:		//設定
@@ -4099,7 +4118,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					dbMsg +=",titolList=" + titolList.size() +"件";
 					itemStr = titolList.get(position);		//曲名
 					dbMsg += ",itemStr=" + itemStr;/////////////////////////////////////
-					setPrefStr( "nowList", String.valueOf(sousalistName),  MuList.this);     			//他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
+					setPrefStr( "nowList", sousalistName,  MuList.this);     			//他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
 					setPrefStr( "nowList_id", String.valueOf(sousalistID),  MuList.this);
 					sousa_titol = itemStr;
 					contextTitile = sousa_artist +"/"+ sousa_alubm +"/"+ sousa_titol;
@@ -5219,7 +5238,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return plNameSL;
 		//http://jp.androids.help/q17164
 		//Android端末とMP3で苦労したので覚え書き	http://kato-h.cocolog-nifty.com/khweblog/2013/12/androidmp3-d572.html
-		//.M3U	.m3u	ファイルの種類を「M3U8(Unicode)プレイリスト」
+		//..m3u8	ファイルの種類を「M3U8(Unicode)プレイリスト」
 	}
 
 	/** 指定したプレイリストの内容取得 */
@@ -5472,7 +5491,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += ">listType="+listType;
 				pl_file_name = getPrefStr( "pref_commmn_music" ,  "" , MuList.this) +File.separator;
 				//myPreferences.pref_commmn_music + File.separator + MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
-				pl_file_name +=  MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u";
+				pl_file_name +=  MuList.this.getString(R.string.playlist_namae_saikintuika) + ".m3u8";
 
 			} else if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikinsisei)) ||			//最近再生
 						sousalistName.equals(getResources().getString(R.string.playlist_namae_randam)) 			//="">ランダム再生</string>
@@ -7359,31 +7378,93 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public NumberPicker npd_np;			//ナンバーピッカー
 	public ArrayList<String> urls;		//プレイリストのURLのみの配列
 
+	/**
+	 * 汎用プレイリスト選択
+	 * ***/
+	public void readm3U2(){
+		final String TAG = "readm3U2";
+		String dbMsg = "[MuList]";
+		try{
+			dbMsg += "pref_commmn_music=" + pref_commmn_music;
+
+			File fileDir = new File(pref_commmn_music);
+			File [] file_lists = null;
+			try {
+				file_lists = fileDir.listFiles();
+			}catch(Exception e){
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+//			adapter.clear();
+//			adapter.add(new String( ".."));
+			if(file_lists!= null){
+				dbMsg += ",file_lists=" + file_lists.length + "件";
+				dbMsg += ":" + file_lists[0] + "〜" + file_lists[file_lists.length - 1];
+
+				ArrayList<CharSequence> m3Files = new ArrayList<CharSequence>();
+				for (int i = 0; i < file_lists.length ; i++){
+					if (file_lists[i].isDirectory()) {	//ディレクトリの場合
+//						file_lists2.add("/" + file.getName());
+					}else{	//通常のファイル
+						String fNmes = file_lists[i].getName();
+						if(fNmes.contains(".m3u")){
+							m3Files.add(fNmes);
+						}
+					}
+				}
+				int gSize = m3Files.size();
+				dbMsg += ">>" + gSize + "件";
+				if(0 < gSize) {
+					dbMsg += ":" + m3Files.get(0) + "〜" + m3Files.get(gSize - 1);
+					String dTitol = "プレイリスト選択";
+					String dMessage = "読み込むリストファイルを選択して下さい";
+					String PosiBTT = "開始";
+					String NeutBTT = "";
+					String NegaBTT = "キャンセル";
+					Boolean isInput = false;
+					int InType = 1;
+					Boolean isLists = true;
+					Boolean multiChoiceList = false;
+					CharSequence[] listItem = new CharSequence[gSize];
+					for (int i = 0; i < gSize ; i++){
+						listItem[i] = m3Files.get(i);
+					}
+					String[] listID = null;
+					Alart3BT alart3BT = new Alart3BT(MuList.this,
+							 dTitol,dMessage, PosiBTT,NeutBTT, NegaBTT,
+							 isInput, InType, isLists, multiChoiceList, listItem, listID);
+				}
+			}
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
 
 	/**
 	 * m3UからAndroidのPlayListに転記
 	 * **/
-	public void m3U2PlayList(String listName){				//getResources().getString(R.string.all_songs_file_name);		//全曲リスト全曲リスト作成後
+	public void m3U2PlayList(String listFileName){
 		final String TAG = "m3U2PlayList";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg += "listName=" + listName;
-			if(listName.contains(".")){
+			String listName ="";
+			if(listFileName.contains(".")){
 				dbMsg += ">>";
-				String[] rStrs = listName.split("\\.",0);
+				String[] rStrs = listFileName.split("\\.",0);
 				dbMsg += rStrs.length + "分割>>";
 				listName = rStrs[0];
-				dbMsg += listName;
+			}else{
+				listName = listFileName;
+				listFileName = pref_commmn_music + File.separator + listFileName;	// + ".m3u";
 			}
+			dbMsg += "listFileName=" + listFileName;
+			dbMsg += ">>" + listName;
 			MuList.this.tuikaSakiListName = listName;
-			String ListFileName = pref_commmn_music + File.separator + listName + ".m3u";
-			dbMsg += ">>" + ListFileName;
-			File rFile = new File(ListFileName);
+			File rFile = new File(listFileName);
 			String pdTitol = listName ;
 			String pdMessage =   "該当するファイルは有りません。" ;						//確認	曲
 
 			if(rFile.exists()){
-				//リストの一件目に仮設定
 				if( plNameSL == null ){
 					plNameSL = getPList();		//プレイリストを取得する
 				}
@@ -7402,7 +7483,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				cursor0.close();
 				try{
 					FileInputStream in = new FileInputStream( rFile );
-					BufferedReader reader = new BufferedReader( new InputStreamReader( in , "UTF-8") );
+					BufferedReader reader = new BufferedReader( new InputStreamReader( in , StandardCharsets.UTF_8) );
 					dbMsg += "：m3uファイル読み込み:" ;
 					String tmp;
 					urls = new ArrayList<String>();
@@ -7441,6 +7522,18 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=  MuList.this.tuikaSakiListID + "に("+ ( i + 1 ) + "曲目)";/////////////////////////////////////
 			String rURL = urls.get(i);
 			dbMsg +=",rURL="+ rURL;
+			String commentStr = "";
+			if(rURL.contains("#" )){
+				dbMsg += ">>";
+				String[] rStrs = rURL.split("\\,",0);
+				dbMsg += rStrs.length + "分割>>";
+				dbMsg += rURL;
+				dbMsg += "," + rURL;
+				rURL = rStrs[0];
+				commentStr = rStrs[1];
+				dbMsg += "," + commentStr;
+			}
+
 			if(rURL.contains("," )){
 				dbMsg += ">>";
 				String[] rStrs = rURL.split("\\,",0);
@@ -7453,12 +7546,16 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				ContentResolver resolver = MuList.this.getContentResolver();	//c.getContentResolver();
 				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 				String c_selection =  MediaStore.Audio.Media.DATA +" = ? "  ;
+
+
 				String[] c_selectionArgs= {rURL};   			//, null , null , null
 				String c_orderBy = null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 				cursor = resolver.query( cUri , null , c_selection , c_selectionArgs, c_orderBy);
 				if(cursor.moveToFirst()) {
 					int audio_id = Integer.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
 					dbMsg += "audio_id=" + audio_id;
+//					String album_artist = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.ALBUM_ARTIST));
+//					dbMsg += "album_artist=" + album_artist;
 					Uri result_uri = addMusicToPlaylist(MuList.this.tuikaSakiListID, audio_id, rURL, 0);    //プレイリストへ曲を追加する
 					dbMsg += ">>result_uri=" + result_uri;/////////////////////////////////////
 				}else{
@@ -7473,8 +7570,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-
-
+	/**
+	 * 全曲リストを読み込んだ後の処理：アーティストリストを表示する
+	 * **/
 	public void allSongEnd(){
 		final String TAG = "allSongEnd";
 		String dbMsg = "[MuList]";

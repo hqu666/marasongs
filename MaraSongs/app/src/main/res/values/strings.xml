@@ -141,6 +141,7 @@
     <string name="menu_hihyoujiArtist">表示されていないアーティスト</string>
     <string name="menu_hihyoujiArtist_dt">選択したアーティスト名をそのままリストアップします</string>
     <string name="menu_syuusei_lisuto_hyouji">修正リスト表示</string>
+    <string name="menu_m3uRead">汎用プレイリスト読み込み</string>
     <!-- リストコンテキストメニュー -->
     <string name="menu_item_plist_saikin_tuika">最近追加リストの更新</string>
     <string name="menu_item_plist_saikin_tuika_dm">最近追加されたアルバムを何日前のものまで抽出するか選択して下さい</string>
