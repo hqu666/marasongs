@@ -15,9 +15,10 @@ import android.util.Log;
 import android.widget.EditText;
 
 public class Alart3BT extends AlertDialog implements DialogInterface {
-//http://d.hatena.ne.jp/abachibi/20100508/1273355363
 	private AlertDialog alertDialog;
 	private Context ｒContext;		//呼出し元のコンテキスト
+	public OrgUtil ORGUT;						//自作関数集
+
 	private long start=0;
 	private static CharSequence dTitol = null;		//ダイアログタイトル
 	private static CharSequence dMessage = null;		//アラート文
@@ -32,60 +33,81 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 	private static String[] listIDs = null;				//リストアイテムのID
 	boolean[] checkedItems = null;						//選択リストの配列
 	private static String motoN = null;	//元データなど
-//	private static String accName = null;				//登録先名
-//	private static String accType = null;				//登録先タイプ
-//	private static String gID = null;				//書き込み先のグループID
 	private int retInt;
 
-	protected Alart3BT(Context context ,String dTitol ,String dMessage ,String PosiBTT ,String NeutBTT ,String NegaBTT
-			, Boolean isInput ,int InType , Boolean isLists ,Boolean multiChoiceList , CharSequence[] listItem , String[] listID ) {
-		//ダイアログタイトル,アラート文,PositiveButton,NeutralButton,NegativeButton,文字入力か,入力制限,リストか,複数選択リスト,リストアイテム,複数選択リストのアイテムID
+//	@Override protected void onCreate(Bundle icicle) {
+//		super.onCreate(icicle);
+//		final String TAG = "onCreate";
+//		String dbMsg = "[Alart3BT]";
+//		try{
+//			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
+//			Bundle extras = ｒContext.getIntent().getExtras();
+//
+//
+//
+//			myLog(TAG, dbMsg);
+//		}catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
+
+	/****
+	 * パラメータを受け取ってダイアログ表示
+	 * @param context	クラス名.this
+	 * @param dTitol　ダイアログタイトル
+	 * @param dMessage	アラート文
+	 * @param PosiBTT	PositiveButtonボタンのキーフェイス: OK
+	 * @param NeutBTT	NeutralButtonボタン2のキーフェイス: オプション
+	 * @param NegaBTT	NegativeButtonボタン3のキーフェイス: キャンセル
+	 * @param isInput	文字入力か
+	 * @param InType	入力の型制限
+	 * @param isLists	リストか
+	 * @param multiChoiceList	複数選択リストか
+	 * @param listItem	リストアイテム
+	 * @param listID	複数選択リストの戻し用ID
+	 */
+	protected Alart3BT(Context context ,String dTitol ,String dMessage ,
+					   String PosiBTT ,String NeutBTT ,String NegaBTT ,
+					   Boolean isInput ,int InType ,
+					   Boolean isLists ,Boolean multiChoiceList ,
+					   CharSequence[] listItem , String[] listID ) {
 		super(context);
-		final String TAG = "Alart3BT[Alart3BT]";
-		String dbMsg="";
+		final String TAG = "Alart3BT";
+		String dbMsg = "[Alart3BT]";
 		try{
 			start=System.currentTimeMillis();
-
-			
 			Intent rData;
 			ｒContext = context;		//呼出し元のコンテキスト
-//			final Intent rData = new Intent();
-//			Bundle extras = getIntent().getExtras();
-//			rData.putExtras(extras);
-			dTitol= dTitol ;		//extras.getString("dTitol");				//ダイアログタイトル
-			dbMsg="dTitol=" + dTitol;/////////////////////////////////////////////////////////////////////////////////////
+			dTitol = dTitol ;		//extras.getString("dTitol");				//ダイアログタイトル
+			dbMsg += "dTitol=" + dTitol;/////////////////////////////////////////////////////////////////////////////////////
 			dMessage = dMessage ;		//extras.getString("dMessage");			//アラート文
 			Msg1= PosiBTT ;		//extras.getString("Msg1");					//PositiveButtonボタンのキーフェイス
 			Msg2= NeutBTT ;		//extras.getString("Msg2");					//NeutralButtonボタン2のキーフェイス
 			Msg3= NegaBTT ;		//extras.getString("Msg3");					//NegativeButtonボタン3のキーフェイス
-			dbMsg=dbMsg+",dMessage="+dMessage+",Msg1="+Msg1+",Msg2="+Msg2+",Msg3="+Msg3;///////////////////////////////////////
+			dbMsg += ",dMessage="+dMessage+",Msg1="+Msg1+",Msg2="+Msg2+",Msg3="+Msg3;///////////////////////////////////////
 			isIn = isInput ;		//extras.getBoolean("isIn");				//文字入力か
 			InType = InType ;	//extras.getInt("InType");				//入力制限
 			isList = isLists ;	//extras.getBoolean("isList");				//リストか
-	//		motoN = extras.getString("motoN");		//元データなど
-//			accName = extras.getString("accName");	//登録先名
-//			accType = extras.getString("accType");	//登録先タイプ
-//			gID = extras.getString("gID");			//書き込み先のグループID
 			
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( ｒContext );		// アラートダイアログのタイトルを設定します 	getApplicationContext()	
 			final EditText editView = new EditText(ｒContext);
 			alertDialogBuilder.setTitle(dTitol);
 			if(isIn){
-				dbMsg=dbMsg+",isIn="+isIn;/////////////////////////////////////////////////////////////////////////////////////
+				dbMsg += ",isIn="+isIn;
 				alertDialogBuilder.setView(editView);// アラートダイアログのメッセージを設定します
 		//		editView.setHint(dMessage);;
 				editView.setText(dMessage);
 		//		editView.setInputType( InType);
 			}else if(isList){
-				dbMsg=dbMsg+",isList="+isList;/////////////////////////////////////////////////////////////////////////////////////
+				dbMsg += ",isList="+isList;
 				listItems = listItem.clone();		//extras.getStringArray("listItems");				//リストアイテム
-				dbMsg=dbMsg+ ";;" + listItems[0]  + "～" +listItems[listItems.length-1];/////////////////////////////////////////////////////////////////////////////////////
+				dbMsg +=  ":" + listItems[0]  + "～" +listItems[listItems.length-1];
 				if(listID != null){
 					listIDs = listID.clone() ; 		//extras.getStringArray("listIDs");					//リストアイテムのID
-					dbMsg="["+listIDs[0]+"]"+listItems[0]+"～["+listIDs[listIDs.length-1]+"]"+listItems[listItems.length-1];/////////////////////////////////////////////////////////////////////////////////////
+					dbMsg += "["+listIDs[0]+"]"+listItems[0]+"～["+listIDs[listIDs.length-1]+"]"+listItems[listItems.length-1] + "件";
 				}
 				multiChoice = multiChoiceList ;		//extras.getBoolean("multiChoice");		//複数選択リスト
-				dbMsg=dbMsg+",multiChoice="+multiChoice;/////////////////////////////////////////////////////////////////////////////////////
+				dbMsg += ",multiChoice="+multiChoice;
 				if(multiChoice){	//複数選択リスト
 					List<String> retList = new ArrayList<String>();
 					checkedItems = new boolean[listItems.length];
@@ -102,35 +124,32 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 					alertDialogBuilder.setItems(listItems, new OnClickListener() {			//DialogInterface.OnClicｋListener()
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							String TAG ="onClick[リスト]";
-							String dbMsg=motoN + "を";/////////////////////////////////////////////////////////////////////////////////////
+							String TAG = "onClick";
+							String dbMsg = "onClick[Alart3BT.リスト]" + motoN + "を";
 //							if(listIDs != null){
 //								dbMsg +="["+listIDs[which]+"]";/////////////////////////////////////////////////////////////////////////////////////
 //							}
 //							dbMsg +=listItems[which];/////////////////////////////////////////////////////////////////////////////////////
-							Log.i(TAG,dbMsg);
 //							rData.putExtra("retInt", which);
 //							if(motoN != null){
 //								rData.putExtra("key.motoN", motoN);				//元データなど
 //							}
-							dbMsg="[" +which +"]";/////////////////////////////////////////////////////////////////////////////////////
+							dbMsg += "[" +which +"]";
 							String sentakuItem = (String) listItems[which];
-							dbMsg +=sentakuItem +"を選択";/////////////////////////////////////////////////////////////////////////////////////
+							dbMsg += sentakuItem +"を選択";/////////////////////////////////////////////////////////////////////////////////////
 //							rData.putExtra("key.kekka", sentakuItem);	//選択されたアイテム
 //							setResult(RESULT_OK, rData);		//RESULT_OK=1 (0xffffffff)
 //							Alart3BT.this.finish();
+							myLog(TAG, dbMsg);
 							modori( which , sentakuItem, null, null, null);		// 戻し
-				//			dialog.cancel();
-				//			alertDialog.dismiss();
-		//					closeMe();				//ダイアログとこのクラスを破棄
 						}
 					});
 				}
 			}else{
-				dbMsg=dbMsg+",else";/////////////////////////////////////////////////////////////////////////////////////
+				dbMsg += ",else";
 				alertDialogBuilder.setMessage(dMessage);// アラートダイアログのメッセージを設定します
 			}
-			if(null != Msg1){
+			if(null != Msg1){		//PositiveButtonボタン
 				alertDialogBuilder.setPositiveButton(Msg1,new DialogInterface.OnClickListener() {	// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
 					//	@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -158,133 +177,126 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 									modori( android.app.Activity.RESULT_OK ,  editView.getText().toString(), null, null, null);		// 戻し
 								}
 							}
-//							setResult(RESULT_OK, rData);		//RESULT_OK=1 (0xffffffff)
-//							closeMe();				//ダイアログとこのクラスを破棄
-//							return;
 						}
-					});       // アラートダイアログの中立ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
+					});
 			}
-			if(null != Msg2){
+			if(null != Msg2){      // アラートダイアログの中立ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
 				alertDialogBuilder.setNeutralButton(Msg2,new DialogInterface.OnClickListener() {
 					//	@Override
 						public void onClick(DialogInterface dialog, int which) {
 							modori( 9 , null, null, null, null);		// 戻し
-//							retInt = 9;
-//							setResult(9, rData);
-//							closeMe();				//ダイアログとこのクラスを破棄
-//							return;
 						}
 					});// アラートダイアログの否定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
 			}
-			if(null != Msg3){
+			if(null != Msg3){			//NegativeButtonボタン
 				alertDialogBuilder.setNegativeButton(Msg3,new DialogInterface.OnClickListener() {
 				//	@Override
 					public void onClick(DialogInterface dialog, int which) {
 						modori( 3 , null, null, null, null);	// 戻し
-//						retInt = 3;
-//						setResult(RESULT_CANCELED, rData);		//RESULT_CANCELED=0 (0x00000000)
-//						closeMe();				//ダイアログとこのクラスを破棄
-//						return;
 					}
 				});
 			}
-			dbMsg=dbMsg+",setCancelable";/////////////////////////////////////////////////////////////////////////////////////
+			dbMsg += ",setCancelable";/////////////////////////////////////////////////////////////////////////////////////
 			alertDialogBuilder.setCancelable(true);// アラートダイアログのキャンセルが可能かどうかを設定します
-			dbMsg=dbMsg+",show";/////////////////////////////////////////////////////////////////////////////////////
-		//	alertDialogBuilder.show();
-		//	dbMsg=dbMsg+",create";/////////////////////////////////////////////////////////////////////////////////////
+			dbMsg += ",show";/////////////////////////////////////////////////////////////////////////////////////
 			alertDialog = alertDialogBuilder.create();	// アラートダイアログを表示します
 			alertDialog.setCanceledOnTouchOutside(false);	//背景をタップしてもダイアログを閉じない
 			alertDialog.show();
-			Log.i(TAG,dbMsg);
-		} catch (Exception e) {
-			Log.e(TAG, dbMsg + "で"+e);
+			long end=System.currentTimeMillis();		// 終了時刻の取得
+			dbMsg += ";"+ (int)((end - start)) + "m秒で終了";
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
 
-	public void quitMe() {				//ダイアログとこのクラスを破棄
-		final String TAG = "closeMe[Alart3BT]";
-		String dbMsg="発生";
-		try{
-	//		if(alertDialog.isShowing()){
-				alertDialog.dismiss();
-	//		}
-	//		Alart3BT.this.finish();
-		} catch (Exception e) {
-			Log.e(TAG,dbMsg + e);
-		}
-
-	}
-
+	/**
+	 * このクラスからの戻り
+	 * @param retInt	選択されたボタン（リストならインデックス）
+	 * @param retStr　入力結果（選択されたアイテム）
+	 * @param listItems	リストアイテム
+	 * @param listIDs	リストアイテムのID
+	 * @param checkedItems	選択リストの配列
+	 */
 	public void modori(int retInt , String retStr , CharSequence[] listItems ,String[] listIDs ,boolean[] checkedItems) {	// 戻し
-		//選択されたボタン（リストならインデックス）、入力結果（選択されたアイテム）,リストアイテム,リストアイテムのID,選択リストの配列
+		//、,,,
 
 		final String TAG = "modori[Alart3BT]";							//long seleID  ,, int hennkou, String seleItem
-		String dbMsg= "開始;";/////////////////////////////////////
+		String dbMsg = "[Alart3BT]";
 		try{
 			Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
 			Bundle bundle = new Bundle();
 			
 			if(retInt > 0){
-				dbMsg +="retInt=" + retInt + "件" ;/////////////////////////////////////
+				dbMsg += "retInt=" + retInt + "件" ;/////////////////////////////////////
 				bundle.putInt("key.retInt", retInt);			//切り替え先
 			}
 			if(retStr != null){
-				dbMsg +="retStr=" + retStr  ;/////////////////////////////////////
+				dbMsg += "retStr=" + retStr  ;/////////////////////////////////////
 				bundle.putString("key.retStr", retStr);			//切り替え先
 			}
 			data.putExtras(bundle);
-			quitMe();			//
-			long end=System.currentTimeMillis();		// 終了時刻の取得
-			start=System.currentTimeMillis();
-			dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
-			Log.i(TAG,dbMsg);
+			long end = System.currentTimeMillis();		// 終了時刻の取得
+			start = System.currentTimeMillis();
+			dbMsg += ";"+ (int)((end - start)) + "m秒で終了";
+			myLog(TAG, dbMsg);
+			quitMe();
 		}catch (Exception e) {
-			Log.e(TAG,dbMsg + "で"+e.toString());
+			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
 
-	
-//	protected void onRestart() {
-//		super.onRestart();
-//		Log.i("onRestart","onRestartが[Alart3BT]で発生");
-//	}
-
-//	@Override
-//	protected void onResume() {
-//		super.onResume();
-//		Log.i("onResume","onResumeが[Alart3BT]で発生");
-//	}
+	/**
+	 * ダイアログを閉じてこのクラスを破棄
+	 * */
+	public void quitMe() {
+		final String TAG = "quitMe";
+		String dbMsg = "[Alart3BT]";
+		try{
+			//		if(alertDialog.isShowing()){
+			alertDialog.dismiss();
+			//		}
+			//		Alart3BT.this.finish();
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.i("onStart","onStartが[Alart3BT]で発生");
+		final String TAG = "onStart";
+		String dbMsg = "[Alart3BT]";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
 	}
 
-//	@Override
-//	protected void onPause() {
-//		super.onPause();
-//		Log.i("onPause","onPauseが[Alart3BT]で発生");
-//	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.i("onStop","onStopが[Alart3BT]で発生");
+		final String TAG = "onStop";
+		String dbMsg = "[Alart3BT]";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
 	}
+//////////////////////////////////////////////////////////////////////////
+	public static void myLog(String TAG , String dbMsg) {
+	Util UTIL = new Util();
+	Util.myLog(TAG , dbMsg);
+}
 
-//	@Override
-//	protected void onDestroy() {
-//		super.onDestroy();
-//		final String TAG = "onDestroy[Alart3BT]";
-//		String dbMsg="発生";
-//		try{
-//			Log.i(TAG,dbMsg);
-//		} catch (Exception e) {
-//			Log.e(TAG, dbMsg + "で"+e);
-//		}
-//	}
-
+	public static void myErrorLog(String TAG , String dbMsg) {
+		Util UTIL = new Util();
+		Util.myErrorLog(TAG , dbMsg);
+	}
 
 }

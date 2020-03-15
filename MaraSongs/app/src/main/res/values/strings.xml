@@ -148,6 +148,7 @@
     <string name="menu_item_plist_saikin_sisei">最近再生リストの更新</string>
     <string name="play_list_wr_msgi">を他のプレイヤーからも利用できる様にしています</string>
 
+    <string name="m3uRead_mgs">読み込むプレイリストファイルを選択して下さい</string>
 
 
     <!-- リストアップ調整 -->
@@ -293,8 +294,8 @@
 					お時間が無ければ起動を中断します。"一旦終了"を選択して下さい。</string>
 
     <!-- プレイリスト -->
-    <string name="playlist_namae_saikinsisei">最近再生した曲</string>
-   <string name="playlist_namae_saikintuika">最近追加した曲</string>
+    <string name="playlist_namae_saikinsisei">最近再生</string>
+   <string name="playlist_namae_saikintuika">最近追加</string>
 	<string name="playlist_saikintuika_filename" translatable="false">new_songs.db</string>
 	<string name="comon_kara">から</string>
     <string name="pref_playlist">プレイリスト</string>

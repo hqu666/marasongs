@@ -314,6 +314,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public static final int reTrySart = list_wright+1;								//全曲リストを作って再起動
 	public static final int reTryMse = reTrySart+1;							//全曲リスト作成から戻ってメッセージ表示
 	public static final int quite_list = reTryMse+1;							//リストの終了
+//	public static final int m3u_list = quite_list+1;							//m3uファイル選択
 
 	public static final int make_list_head = 500;		//ヘッド作成
 	public static final int MENU_MU_OPTION = make_list_head+10;
@@ -7377,6 +7378,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	public int listUpCount;
 	public NumberPicker npd_np;			//ナンバーピッカー
 	public ArrayList<String> urls;		//プレイリストのURLのみの配列
+	private static CharSequence[] m3Item= null;			//リストアイテム
+	private AlertDialog alertDialog;
+	public List<Map<String, String>> albumArtistLis = new ArrayList<Map<String, String>>();
+
 
 	/**
 	 * 汎用プレイリスト選択
@@ -7394,8 +7399,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}catch(Exception e){
 				myErrorLog(TAG ,  dbMsg + "で" + e);
 			}
-//			adapter.clear();
-//			adapter.add(new String( ".."));
 			if(file_lists!= null){
 				dbMsg += ",file_lists=" + file_lists.length + "件";
 				dbMsg += ":" + file_lists[0] + "〜" + file_lists[file_lists.length - 1];
@@ -7415,23 +7418,40 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += ">>" + gSize + "件";
 				if(0 < gSize) {
 					dbMsg += ":" + m3Files.get(0) + "〜" + m3Files.get(gSize - 1);
-					String dTitol = "プレイリスト選択";
-					String dMessage = "読み込むリストファイルを選択して下さい";
-					String PosiBTT = "開始";
-					String NeutBTT = "";
-					String NegaBTT = "キャンセル";
-					Boolean isInput = false;
-					int InType = 1;
-					Boolean isLists = true;
-					Boolean multiChoiceList = false;
-					CharSequence[] listItem = new CharSequence[gSize];
+					String dTitol = getResources().getString(R.string.m3uRead_mgs);
+					 //読み込むプレイリストファイルを選択して下さい
+					String NegaBTT = getResources().getString(R.string.comon_cyusi);
+					m3Item = new CharSequence[gSize];
 					for (int i = 0; i < gSize ; i++){
-						listItem[i] = m3Files.get(i);
+						m3Item[i] = m3Files.get(i);
 					}
-					String[] listID = null;
-					Alart3BT alart3BT = new Alart3BT(MuList.this,
-							 dTitol,dMessage, PosiBTT,NeutBTT, NegaBTT,
-							 isInput, InType, isLists, multiChoiceList, listItem, listID);
+//					Alart3BT alart3BT = new Alart3BT(MuList.this,
+//							 dTitol,dMessage, PosiBTT,NeutBTT, NegaBTT,
+//							 isInput, InType, isLists, multiChoiceList, m3Item, listID);
+//					alart3BT.setOnDismissListener(onDismissListener);
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( MuList.this );
+					alertDialogBuilder.setTitle(dTitol);	// アラートダイアログのタイトルを設定します 	getApplicationContext()
+					alertDialogBuilder.setItems(m3Item, new DialogInterface.OnClickListener() {			//DialogInterface.OnClicｋListener()
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String TAG = "onClick";
+							String dbMsg = "onClick[MuList.リスト]" + which +"]";
+							String sentakuItem = (String) m3Item[which];
+							dbMsg += sentakuItem +"を選択";/////////////////////////////////////////////////////////////////////////////////////
+							alertDialog.dismiss();
+							m3U2PlayList(sentakuItem);		//test20200311;全曲リスト作成後　pref_commmn_music + File.separator +
+							myLog(TAG, dbMsg);
+						}
+					});
+					alertDialogBuilder.setNegativeButton(NegaBTT,new DialogInterface.OnClickListener() {
+						//	@Override
+						public void onClick(DialogInterface dialog, int which) {
+							alertDialog.dismiss();
+						}
+					});
+					alertDialog = alertDialogBuilder.create();	// アラートダイアログを表示します
+					alertDialog.setCanceledOnTouchOutside(false);	//背景をタップしてもダイアログを閉じない
+					alertDialog.show();
 				}
 			}
 			myLog(TAG, dbMsg);
@@ -7455,8 +7475,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				listName = rStrs[0];
 			}else{
 				listName = listFileName;
-				listFileName = pref_commmn_music + File.separator + listFileName;	// + ".m3u";
 			}
+			listFileName = pref_commmn_music + File.separator + listFileName;	// + ".m3u";
 			dbMsg += "listFileName=" + listFileName;
 			dbMsg += ">>" + listName;
 			MuList.this.tuikaSakiListName = listName;
@@ -7465,6 +7485,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String pdMessage =   "該当するファイルは有りません。" ;						//確認	曲
 
 			if(rFile.exists()){
+				albumArtistLis = new ArrayList<Map<String, String>>();
 				if( plNameSL == null ){
 					plNameSL = getPList();		//プレイリストを取得する
 				}
@@ -7515,30 +7536,135 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	/**
 	 *指定されたインデックスのURLから
 	 * **/
-	public void m3U2PlayList_body(int i){
+	public void m3U2PlayList_body(int index){
 		final String TAG = "m3U2PlayList_body";
 		String dbMsg = "[MuList]";
 		try{
-			dbMsg +=  MuList.this.tuikaSakiListID + "に("+ ( i + 1 ) + "曲目)";/////////////////////////////////////
-			String rURL = urls.get(i);
+			dbMsg +=  MuList.this.tuikaSakiListID + "に("+ ( index + 1 ) + "曲目)";/////////////////////////////////////
+			String rURL = urls.get(index);
 			dbMsg +=",rURL="+ rURL;
 			String commentStr = "";
 			if(rURL.contains("#" )){
 				dbMsg += ">>";
-				String[] rStrs = rURL.split("\\,",0);
+				String[] rStrs = rURL.split("\\#",0);
 				dbMsg += rStrs.length + "分割>>";
 				dbMsg += rURL;
 				dbMsg += "," + rURL;
 				rURL = rStrs[0];
 				commentStr = rStrs[1];
-				dbMsg += "," + commentStr;
-			}
+				dbMsg += ",commentStr=" + commentStr;
+				if(MuList.this.tuikaSakiListName.equals(MuList.this.getResources().getString(R.string.all_songs_file_name))){
+					String[] aas = commentStr.split("\\/",0);
+					dbMsg += aas.length + "分割>>";
+					String album_artist = aas[0];
+					String album = aas[1];
+					boolean isAdd = false;
+					if( 0 < albumArtistLis.size()){
+						Map<String, String> rtMap= albumArtistLis.get(albumArtistLis.size() - 1);
+						String b_album_artist = rtMap.get("album_artist");
+						String b_album = rtMap.get("album");
+						if(!album.equals(b_album)){		//!album_artist.equals(b_album_artist) &&
+							isAdd = true;
+						}
+					}else{
+						isAdd = true;
+					}
+					if(isAdd){
+						dbMsg += "[" + albumArtistLis.size() + "枚目]";
+						dbMsg += album_artist;
+						dbMsg += ",album=" + album;
+						Map<String, String> albumArtistMap= new HashMap<>();
+						albumArtistMap.put("album_artist" , album_artist);
+						albumArtistMap.put("album" , album);
+						albumArtistLis.add(albumArtistMap);
+					}
 
+				}
+			}
+			String recexStr = ",";
 			if(rURL.contains("," )){
-				dbMsg += ">>";
-				String[] rStrs = rURL.split("\\,",0);
+				dbMsg += ">URL>";
+				Boolean isStart = false;
+				String orgStr = rURL;
+
+				String[] rStrs = rURL.split(pref_commmn_music,0);
+				rURL = pref_commmn_music + rStrs[1];
+		/**
+		 * 元ファイルでデータが切れている
+		 * /storage/emulated/0/Music/Eric Clapton/Crossroads Revisited_ Selections From Th/1-09 Funk #
+		 * /storage/emulated/0/Music/Eric Clapton/Crossroads Revisited_ Selections From Th/1-09 Funk 8分割>>[130枚目]49,,album=storage 該当ファイル無し
+		 *
+		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C# Blues (People, People, People).m4a
+		 * #Jimi Hendrix/The Last Experience: His Final Live Performance>>4分割>>C# Blues (People, People, People),
+		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C# Blues (People, People, People).m4a#Jimi Hendrix/The Last Experience: His Final Live Performance,C# Blues (People, People, People),
+		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C# Blues (People, People, People).m4a#Jimi Hendrix/The Last Experience: His Final Live Performance,commentStr= Blues (People, People, People),
+		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C8分割>>[191枚目] Blues (People, People, People),,album=storage 該当ファイル無し
+		 *
+		 * Up the Wall / Airforce #1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce #1.m4a#John Carpenter/SOUNDTRACK-Escape from New York>>4分割>>Up the Wall / Airforce #1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce #1.m4a#John Carpenter/SOUNDTRACK-Escape from New York,Up the Wall / Airforce #1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce #1.m4a#John Carpenter/SOUNDTRACK-Escape from New York,commentStr=1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce 8分割>>[199枚目]1,,album=storage 該当ファイル無し
+		 *
+		 * */
+
+//				rURL = "";
+//				String[] strArray = rURL.split("");
+//				dbMsg += "、" + strArray.length + "文字";
+//				for(String rStr : strArray) {
+////					if(rStr.equals("/")){
+//////						if(rStr.equals(File.separator)){
+////						isStart = true;
+////					}
+////					if(isStart){
+//						rURL += rStr;
+////					}
+//				}
+
+
+//				char[] work = new char[orgStr.length()];
+//				dbMsg += "、" + orgStr.length() + "文字";
+//				for(int i =1 ; i < orgStr.length() ; i++){
+//					String rStr = String.valueOf(orgStr.charAt(i));
+//					if(rStr.startsWith(File.separator)){
+////					if(rStr.equals(File.separator)){
+//						isStart = true;
+//					}
+//					if(isStart){
+//						rURL += rStr;
+//					}
+//				}
+				/*
+		String[] rStrs = rURL.split("\\,",0);
 				dbMsg += rStrs.length + "分割>>";
-				rURL = rStrs[1];
+				rURL = "";
+				for(int i =1 ; i < rStrs.length ; i++){
+					String rStr = rStrs[i];
+					if(rStr.startsWith(File.separator)){
+						isStart = true;
+					}
+					if(isStart){
+						if(1 < i){
+							rURL += recexStr;
+		* /storage/emulated/0/Music/Aerosmith/Pump/08 Don't Get Mad, Get Even.m4a
+		* /storage/emulated/0/Music/Aerosmith/Pump/08 Don't Get Mad, Get Even.m4a 該当ファイル無し
+		*
+		* /storage/emulated/0/Music/Aerosmith/Honkin' On Bobo [Bonus Track]/02 Shame, Shame, Shame.m4a
+		* /storage/emulated/0/Music/Aerosmith/Honkin' On Bobo [Bonus Track]/02 Shame, Shame, Shame.m4a 該当ファイル無し
+		*
+		* /storage/emulated/0/Music/The Beatles/Past Masters, Vol. 1 [2009 Stereo Remast/1-01 Love Me Do [Original Single Ver.m4a
+		* /storage/emulated/0/Music/The Beatles/Past Masters Vol. 1 [2009 Stereo Remast/1-01 Love Me Do [Original Single Ver.m4a 該当ファイル無し
+		*
+		* /storage/emulated/0/Music/The Beatles/The Beatles (White Album) [Disc 2] [2009/2-07 Long, Long, Long.m4a
+		* /storage/emulated/0/Music/The Beatles/The Beatles (White Album) [Disc 2] [2009/2-07 Long, Long, Long.m4a 該当ファイル無し
+		*
+		* /storage/emulated/0/Music/Boston/Life, Love & Hope/02 Didn't Mean To Fall In Love.m4a
+		* /storage/emulated/0/Music/Boston/Life Love & Hope/02 Didn't Mean To Fall In Love.m4a 該当ファイル無し
+		*
+		*
+		* 		* 		*
+		* */
+//							rURL.concat(recexStr);
+//						}
+//						rURL += rStr;
+//					}
+//				}
 				dbMsg += rURL;
 			}
 			File rFile = new File(rURL);
@@ -7553,16 +7679,16 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				cursor = resolver.query( cUri , null , c_selection , c_selectionArgs, c_orderBy);
 				if(cursor.moveToFirst()) {
 					int audio_id = Integer.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
-					dbMsg += "audio_id=" + audio_id;
+					dbMsg += ",audio_id=" + audio_id;
 //					String album_artist = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.ALBUM_ARTIST));
 //					dbMsg += "album_artist=" + album_artist;
 					Uri result_uri = addMusicToPlaylist(MuList.this.tuikaSakiListID, audio_id, rURL, 0);    //プレイリストへ曲を追加する
 					dbMsg += ">>result_uri=" + result_uri;/////////////////////////////////////
 				}else{
-					dbMsg += "該当無し" ;
+					dbMsg += " 該当無し" ;
 				}
 			}else{
-				dbMsg += "該当ファイル無し" ;
+				dbMsg += " 該当ファイル無し" ;
 			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -7577,6 +7703,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		final String TAG = "allSongEnd";
 		String dbMsg = "[MuList]";
 		try{
+
 			dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
 			if(mItems != null){
 				Item.itemsClear();		//要素を全消去
@@ -7595,7 +7722,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 			if( artistSL != null ){
 				artistSL.clear();					//アーティストリスト用簡易リスト
-				dbMsg +=  dbMsg  +",artistSL = " + artistSL;/////////////////////////////////////
+				dbMsg +=  dbMsg  +",artistSL = " + artistSL;
 			}
 			if( artistList != null ){
 				artistList.clear();		//アーティストリスト用ArrayList
@@ -7628,6 +7755,21 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			shigot_bangou =reTryMse;				//全曲リスト作成から戻ってメッセージ表示
 			myLog(TAG, dbMsg);
 
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	public void allSongArtistList(){
+		final String TAG = "allSongArtistList";
+		String dbMsg = "[MuList]";
+		try{
+			if(0 < albumArtistLis.size()){
+				dbMsg +=  dbMsg  +",albumArtistLis = " + albumArtistLis.size() + "件";
+
+
+			}
+			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -9247,8 +9389,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return cursor;
 	}
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////プレイリストユーティリティ//
 
 	//イベント処理////////////////////////////////////////////////////////////////////////////////////////////////////プレイリスト//
@@ -10139,7 +10279,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			case MaraSonActivity.v_titol:						//タイトル
 				break;
 			case CONTEXT_M3U2_PL:		//汎用プレイリストをAndroidのプレイリストに転記
-				allSongEnd( );
+				allSongArtistList();
+//				allSongEnd( );
 				break;
 
 //			default:
@@ -10402,7 +10543,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				switch(requestCode) {
 					case MaraSonActivity.syoki_Yomikomi:		//128；全曲リスト更新
 						dbMsg += "全曲リスト更新後";
-						m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name));		//test20200311;全曲リスト作成後
+						allSongEnd();
+//						m3U2PlayList(MuList.this.getResources().getString(R.string.all_songs_file_name));		//test20200311;全曲リスト作成後
 //						//		dbMsg +=  dbMsg  +">mItems>" + mItems;/////////////////////////////////////
 //						dbMsg += "[mIndex;" + mIndex;/////////////////////////////////////
 //						if(mItems != null){
@@ -10481,6 +10623,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						}
 						break;
 					//		case veiwPlayer:								// 200起動
+//					case m3u_list:		//m3uファイル選択
+//						break;
 					case quite_me:
 						dbMsg += "設定表示";
 						MuList.this.finish();

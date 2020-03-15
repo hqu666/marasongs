@@ -110,6 +110,9 @@
 	<string name="menu_list_allveiw">Thumbnail list indication belonging to</string><!--サムネイル付リスト表示-->
  	<string name="medst_syuusei">Omission data correction of the media store</string><!--メディアストアの欠落データ修正-->
 
+	<string name="m3uRead_mgs">Please choose a playlist file to read</string>
+
+
 	<!-- プリファレンス -->
     <string name="pref_player">Basic  setting on a player and the list</string>
 	<string name="pref_list_artist_simple">Simple indication of the list of artists</string>

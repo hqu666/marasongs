@@ -1955,13 +1955,13 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					}else if( cName.equals("ARTIST") ){
 						artist_name = cVal;
 					}else if( cName.equals("ALBUM_ARTIST") ){
-						albumName = cVal;
 						album_artist = cVal;
-
+					}else if( cName.equals("ALBUM") ){
+						albumName = cVal;
 					}
 				}
 			}
-            allSonglist += titolName + "," + dataUri + "#" + album_artist +"\n";
+            allSonglist += titolName + "," + dataUri + "#" + album_artist + "/" + albumName +"\n";
 //			myLog(TAG,dbMsg );
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
