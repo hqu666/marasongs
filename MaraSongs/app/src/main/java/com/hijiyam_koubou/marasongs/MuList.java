@@ -7543,14 +7543,44 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=  MuList.this.tuikaSakiListID + "に("+ ( index + 1 ) + "曲目)";/////////////////////////////////////
 			String rURL = urls.get(index);
 			dbMsg +=",rURL="+ rURL;
-			String commentStr = "";
-			if(rURL.contains("#" )){
+			String extntionStr = "";
+			if(rURL.contains(".mp3" )){
+				extntionStr = ".mp3";
+			}else if(rURL.contains(".aac" )){
+				extntionStr = ".aac";
+			}else if(rURL.contains(".m4a" )){
+				extntionStr = ".m4a";
+			}else if(rURL.contains(".mp4" )){
+				extntionStr = ".mp4";
+			}else if(rURL.contains(".flac" )){
+				extntionStr = ".flac";
+			}else if(rURL.contains(".wav" )){
+				extntionStr = ".wav";
+			}else if(rURL.contains(".aif" )){
+				extntionStr = ".aif";
+			}else if(rURL.contains(".ogg" )){
+				extntionStr = ".ogg";
+			}else if(rURL.contains(".wma" )){
+				extntionStr = ".wma";
+			}else if(rURL.contains(".mp3" )){
+				extntionStr = ".mp3";
+			}
+			String[] rStrs = rURL.split(extntionStr,0);
+			dbMsg += rStrs.length + "分割>>";
+			rURL = rStrs[0];
+			String commentStr = rStrs[1];
+			rStrs = rURL.split(pref_commmn_music,0);
+			rURL = pref_commmn_music + rStrs[1] + extntionStr;
+			//m3uのセパレータ　
+//			String recexStr = ",";
+//			if(rURL.contains("," )){
+//				String[] rStrs = rURL.split("\\,",0);
+//
+			//m3uのコメント ＃ もファイル名に書き込めてしまうので分離条件に使えない
+			if(commentStr.contains("#" )){
 				dbMsg += ">>";
-				String[] rStrs = rURL.split("\\#",0);
+				rStrs = commentStr.split("\\#",0);
 				dbMsg += rStrs.length + "分割>>";
-				dbMsg += rURL;
-				dbMsg += "," + rURL;
-				rURL = rStrs[0];
 				commentStr = rStrs[1];
 				dbMsg += ",commentStr=" + commentStr;
 				if(MuList.this.tuikaSakiListName.equals(MuList.this.getResources().getString(R.string.all_songs_file_name))){
@@ -7581,99 +7611,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 
 				}
 			}
-			String recexStr = ",";
-			if(rURL.contains("," )){
-				dbMsg += ">URL>";
-				Boolean isStart = false;
-				String orgStr = rURL;
-
-				String[] rStrs = rURL.split(pref_commmn_music,0);
-				rURL = pref_commmn_music + rStrs[1];
-		/**
-		 * 元ファイルでデータが切れている
-		 * /storage/emulated/0/Music/Eric Clapton/Crossroads Revisited_ Selections From Th/1-09 Funk #
-		 * /storage/emulated/0/Music/Eric Clapton/Crossroads Revisited_ Selections From Th/1-09 Funk 8分割>>[130枚目]49,,album=storage 該当ファイル無し
-		 *
-		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C# Blues (People, People, People).m4a
-		 * #Jimi Hendrix/The Last Experience: His Final Live Performance>>4分割>>C# Blues (People, People, People),
-		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C# Blues (People, People, People).m4a#Jimi Hendrix/The Last Experience: His Final Live Performance,C# Blues (People, People, People),
-		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C# Blues (People, People, People).m4a#Jimi Hendrix/The Last Experience: His Final Live Performance,commentStr= Blues (People, People, People),
-		 * /storage/emulated/0/Music/Jimi Hendrix/The Last Experience_ His Final Live Perf/12 C8分割>>[191枚目] Blues (People, People, People),,album=storage 該当ファイル無し
-		 *
-		 * Up the Wall / Airforce #1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce #1.m4a#John Carpenter/SOUNDTRACK-Escape from New York>>4分割>>Up the Wall / Airforce #1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce #1.m4a#John Carpenter/SOUNDTRACK-Escape from New York,Up the Wall / Airforce #1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce #1.m4a#John Carpenter/SOUNDTRACK-Escape from New York,commentStr=1,/storage/emulated/0/Music/John Carpenter/SOUNDTRACK-Escape from New York/02 Up the Wall _ Airforce 8分割>>[199枚目]1,,album=storage 該当ファイル無し
-		 *
-		 * */
-
-//				rURL = "";
-//				String[] strArray = rURL.split("");
-//				dbMsg += "、" + strArray.length + "文字";
-//				for(String rStr : strArray) {
-////					if(rStr.equals("/")){
-//////						if(rStr.equals(File.separator)){
-////						isStart = true;
-////					}
-////					if(isStart){
-//						rURL += rStr;
-////					}
-//				}
-
-
-//				char[] work = new char[orgStr.length()];
-//				dbMsg += "、" + orgStr.length() + "文字";
-//				for(int i =1 ; i < orgStr.length() ; i++){
-//					String rStr = String.valueOf(orgStr.charAt(i));
-//					if(rStr.startsWith(File.separator)){
-////					if(rStr.equals(File.separator)){
-//						isStart = true;
-//					}
-//					if(isStart){
-//						rURL += rStr;
-//					}
-//				}
-				/*
-		String[] rStrs = rURL.split("\\,",0);
-				dbMsg += rStrs.length + "分割>>";
-				rURL = "";
-				for(int i =1 ; i < rStrs.length ; i++){
-					String rStr = rStrs[i];
-					if(rStr.startsWith(File.separator)){
-						isStart = true;
-					}
-					if(isStart){
-						if(1 < i){
-							rURL += recexStr;
-		* /storage/emulated/0/Music/Aerosmith/Pump/08 Don't Get Mad, Get Even.m4a
-		* /storage/emulated/0/Music/Aerosmith/Pump/08 Don't Get Mad, Get Even.m4a 該当ファイル無し
-		*
-		* /storage/emulated/0/Music/Aerosmith/Honkin' On Bobo [Bonus Track]/02 Shame, Shame, Shame.m4a
-		* /storage/emulated/0/Music/Aerosmith/Honkin' On Bobo [Bonus Track]/02 Shame, Shame, Shame.m4a 該当ファイル無し
-		*
-		* /storage/emulated/0/Music/The Beatles/Past Masters, Vol. 1 [2009 Stereo Remast/1-01 Love Me Do [Original Single Ver.m4a
-		* /storage/emulated/0/Music/The Beatles/Past Masters Vol. 1 [2009 Stereo Remast/1-01 Love Me Do [Original Single Ver.m4a 該当ファイル無し
-		*
-		* /storage/emulated/0/Music/The Beatles/The Beatles (White Album) [Disc 2] [2009/2-07 Long, Long, Long.m4a
-		* /storage/emulated/0/Music/The Beatles/The Beatles (White Album) [Disc 2] [2009/2-07 Long, Long, Long.m4a 該当ファイル無し
-		*
-		* /storage/emulated/0/Music/Boston/Life, Love & Hope/02 Didn't Mean To Fall In Love.m4a
-		* /storage/emulated/0/Music/Boston/Life Love & Hope/02 Didn't Mean To Fall In Love.m4a 該当ファイル無し
-		*
-		*
-		* 		* 		*
-		* */
-//							rURL.concat(recexStr);
-//						}
-//						rURL += rStr;
-//					}
-//				}
-				dbMsg += rURL;
-			}
+			dbMsg += rURL;
 			File rFile = new File(rURL);
 			if(rFile.exists()) {
 				ContentResolver resolver = MuList.this.getContentResolver();	//c.getContentResolver();
 				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 				String c_selection =  MediaStore.Audio.Media.DATA +" = ? "  ;
-
-
 				String[] c_selectionArgs= {rURL};   			//, null , null , null
 				String c_orderBy = null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 				cursor = resolver.query( cUri , null , c_selection , c_selectionArgs, c_orderBy);
