@@ -2351,46 +2351,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		}
 	}
 
-	/**
-	 * MediaStore.Audio.Albumsのアーティスト名更新
-	 * Zenkyoku_dbをALBUMでグループ化
-	 * */
-	public void albamKoushin() {								//プレイリストが無ければ新規作成、有れば内容消去
-//		final String TAG = "albamKoushin[ZenkyokuList]";
-//		String dbMsg= "開始";/////////////////////////////////////
-//		try{
-//			reqCode = pt_albam_syuusei;		//アルバムテーブルのアーティスト名変更
-//			pd2CoundtVal++;
-//			dbMsg = pd2CoundtVal + ")" + reqCode;
-//			Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
-//			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-////			boolean distinct = true;					//trueを指定すると検索結果から重複する行を削除します。
-//			String table =zenkyokuTName;				//テーブル名を指定します。
-//			String[] columns = null;					//{  "ALBUM_ARTIST" , "ARTIST"};				// , "ARTIST" 検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-//			String c_selectio =null;				//compSelection;			//☆20151228	何故かコンピレーションが追記されないので後で追加
-//			String[] c_selectionArgs =null;			// compList;		//new String[]{ comp };
-//			String groupBy ="ALBUM";				//,ALBUM , ALBUM_ARTIST	SORT_NAME
-//			String having =null;					//having句を指定します。
-//			String orderBy ="ALBUM";					//,LAST_YEAR DESC		"SORT_NAME"
-//	//		String limit = null;					//検索結果の上限レコードを数を指定します。
-//			cursor = Zenkyoku_db.query( table ,columns, c_selectio,  c_selectionArgs,  groupBy,  having,  orderBy) ;
-//			int retInt = cursor.getCount();
-//			dbMsg += "ループ前" + retInt + "件";
-//	//		myLog(TAG,dbMsg);
-//			if(cursor.moveToFirst()){
-//				sousaCount = 0;			//操作カウント
-//				String fn = this.cContext.getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
-//				dbMsg += "db=" + fn;
-//				pdMessage_stok = pdMessage_stok + "\n\n" +String.valueOf(pd2CoundtVal) + ";" + this.cContext.getString(R.string.medst_album_artist_syuusei) + 		//アルバム情報のアーティスト名を修正
-//									String.valueOf(retInt) + this.cContext.getString(R.string.pp_mai);		//コンピレーション	以外○○曲				dbMsg=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
-//				String pdMessage = pdMessage_stok +  getResources().getString(R.string.comon_kakuninn);	//確認
-//				myLog(TAG,dbMsg);
-//				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
-//			}
-//		}catch (Exception e) {
-//			myErrorLog(TAG,dbMsg +"で"+e.toString());
-//		}
-	}
+
 
 	/**
 	 * MediaStore.Audio.Albumsのアーティスト名更新
