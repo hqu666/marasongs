@@ -60,6 +60,9 @@ import java.io.BufferedWriter;
 public class ZenkyokuList extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
 	OrgUtil ORGUT;				//自作関数集
 	Util UTIL;
+	MusicPlaylist musicPlaylist ;
+	MyPreferences myPreferences;
+
 
 	MaraSonActivity MSA;
 	public Context cContext ;
@@ -96,6 +99,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public boolean pref_lockscreen =true;				//ロックスクリーンプレイヤー</string>
 	public boolean pref_notifplayer =true;				//ノティフィケーションプレイヤー</string>
 	public String myPFN = "ma_pref";
+	public String pref_commmn_music = "";				//音楽ファイルの格納先
 
 	long start;		// 開始時刻の取得
 	long startPart;		// 開始時刻の取得
@@ -177,6 +181,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public int compCount;
 	public int comCount;					//コンピレーションなど末尾につける匿名
 	public String all_songs_file_name ;		//全曲リストの汎用リスト
+	public int allSongsID;
 	public String album_artist_file_name ;			//アーティスト名の汎用リスト
 
 
@@ -184,7 +189,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		final String TAG = "readPref";
 		String dbMsg = "[ZenkyokuList]";
 		try {
-			MyPreferences myPreferences = new MyPreferences();
+			myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
 			myPreferences.readPrif(this);
 			dbMsg += "完了";
@@ -198,10 +203,10 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order = Integer.parseInt(myPreferences.play_order);
-
-			all_songs_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
+			pref_commmn_music = myPreferences.pref_commmn_music;
+			all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
 			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
-			album_artist_file_name = myPreferences.pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
+			album_artist_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
 			dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;
 
 					myLog(TAG, dbMsg);
@@ -224,6 +229,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			startPart = System.currentTimeMillis();		// 開始時刻の取得
 			ORGUT = new OrgUtil();				//自作関数集
 			UTIL = new Util();
+			musicPlaylist = new MusicPlaylist(ZenkyokuList.this);
 
 			dbMsg+="cContext=" + this.cContext;/////////////////////////////////////
 			if(this.cContext == null){
@@ -316,6 +322,10 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		final String TAG = "onResume[ZenkyokuList]";							//long seleID  ,, int hennkou, String seleItem
 		String dbMsg= "プログレスダイアログの表示開始;";/////////////////////////////////////
 		try{
+			if(musicPlaylist == null){
+				musicPlaylist = new MusicPlaylist(ZenkyokuList.this);
+			}
+
 //			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -336,6 +346,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	/**
 	 * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで端末内の音楽データ読み込み
+	 * c_orderBy = MediaStore.Audio.Media.DATA でアーティスチフォルダの降順
 	 * @ 無し
 	 * preReadBodyへ
 	 * reqCode = pt_start
@@ -386,7 +397,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				//			myLog(TAG,dbMsg);
 				pNFVeditor.commit();	// データの保存
 			}
-
+			musicPlaylist.deletPlayList(ZenkyokuList.this.getResources().getString(R.string.all_songs_file_name));
 			pd2CoundtVal=0;
 			pd2MaxVal = pt_end - pt_start;									//このクラスのステップ数
 			dbMsg +="[" +pd2CoundtVal +"/"+ pd2MaxVal +"]";
@@ -440,7 +451,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 								MediaStore.Audio.Media.TRACK  + " = ? OR " +
 								MediaStore.Audio.Media.TITLE  + " = ? " ;
 			String[] c_selectionArgs2= {"0" , "" , "" , "" , "" };   			//, null , null , null
-			c_orderBy=MediaStore.Audio.Media.DATA; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+			c_orderBy = MediaStore.Audio.Media.DATA; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs2, c_orderBy);
 			int keturaku = cursor.getCount();									//redrowIDList.size();
 			dbMsg=dbMsg +";欠落="+ keturaku + "件";
@@ -1867,6 +1878,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			startPart = System.currentTimeMillis();		// 開始時刻の取得
 			dbMsg +=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
 			System.currentTimeMillis();
+			all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
+			ZenkyokuList.this.allSongsID = musicPlaylist.getPlaylistId(cContext.getString(R.string.all_songs_file_name) );
+			dbMsg += "all_songs_file_name=" + all_songs_file_name;
+			dbMsg +="[" + allSongsID + "]";
+
 			cursor.close();
 			dbMsg +=",shyuusei_db.isOpen()=" + shyuusei_db.isOpen();/////////////////////////////////////
 			if( shyuusei_db.isOpen() ){
@@ -1925,6 +1941,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		final String TAG = "CreateZenkyokuBody";
 		String dbMsg= "[ZenkyokuList]";
 		try{
+			int audio_id = -1;
 			String sort_name;
 			String artist_name = null;
 			String albumName = null;
@@ -1942,6 +1959,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
 				dbMsg += " = "+ cVal;
 				if( cName.equals("_id") ) {
+					audio_id= ｃursor.getInt(cursor.getColumnIndex(cName));	//Integer.getInteger(cVal);
 				} else {
 					stmt.bindString(cCount, cVal);
 					if( cName.equals("_id") ) {
@@ -1961,7 +1979,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					}
 				}
 			}
-            allSonglist += titolName + "," + dataUri + "#" + album_artist + "/" + albumName +"\n";
+            allSonglist += titolName + "," + dataUri + "#" + album_artist + "," + albumName +"\n";
+			Uri result_uri = musicPlaylist.addMusicToPlaylist(ZenkyokuList.this.allSongsID, audio_id, dataUri, 0);    //プレイリストへ曲を追加する
+			dbMsg += ">>result_uri=" + result_uri;/////////////////////////////////////
 //			myLog(TAG,dbMsg );
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -2040,18 +2060,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //				CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)
 //			}
 
-            try {
-                dbMsg += " , 全曲リストファイル書き込み= " + all_songs_file_name;
-                FileOutputStream fos = new FileOutputStream(new File(all_songs_file_name));
-                //openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
-                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-                BufferedWriter writer = new BufferedWriter(osw);
-                writer.write(allSonglist);
-                writer.close();
-                dbMsg += " >>成功";
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
 			myLog(TAG,dbMsg );
 			addCompList();		//全曲リストにコンピレーション追加
@@ -2154,14 +2162,21 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pdMessage = String.valueOf(pdMessage_stok) ;
 	//		dbMsg += "；" + pdMessage;
 			if(cursor.moveToFirst()){
+//				stmt = Zenkyoku_db.compileStatement("insert into " + zenkyokuTName +
+//						"(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR) values (?,?,?,?,?,?,?,?,?,?,?,?,?);");
+//
+//				cursor = CreateZenkyokuBody( cursor  , stmt );					//最終リスト作成
+////				int id = stmt.executeInsert();
+//				dbMsg += "文字[" + id +"]に追加";///////////////////		ZenkyokuList.this.
+
 //				pdMessage = pdMessage_stok + "\n\n" + pd2CoundtVal + ":"+  comp +String.valueOf(pdMaxVal) +this.cContext.getString(R.string.pp_kyoku) + ""+
 //						this.cContext.getString(R.string.common_tuika);		///コンピレーション追加
 				fn = cContext.getString(R.string.zenkyoku_file);			//全曲リスト+ File.separator +cContext.getString(R.string.zenkyoku_file)
-		//		myLog(TAG,dbMsg );
+				myLog(TAG,dbMsg );
 				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage_stok , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
 			}else if(comCount < compList.length-1){
 				comCount++;
-				addCompListBody();		//コンピレーション追加ループの中身
+				addCompListBody();		//再帰でループさせる
 			}else{
 				addCompListEnd();		//コンピレーション追加終了
 			}
@@ -2187,6 +2202,19 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				Zenkyoku_db.close();
 				dbMsg +=">>" + Zenkyoku_db.isOpen();/////////////////////////////////////
 			}
+			try {
+				dbMsg += " , 全曲リストファイル書き込み= " + all_songs_file_name;
+				FileOutputStream fos = new FileOutputStream(new File(all_songs_file_name));
+				//openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
+				OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+				BufferedWriter writer = new BufferedWriter(osw);
+				writer.write(allSonglist);
+				writer.close();
+				dbMsg += " >>成功";
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 			myLog(TAG,dbMsg );
 			reTry=0;					//再処理リミット
 			CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)

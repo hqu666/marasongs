@@ -82,6 +82,11 @@ import android.media.session.MediaController.TransportControls;
 @SuppressLint("InlinedApi")
 public class MusicPlayerService  extends Service implements  MusicFocusable,PrepareMusicRetrieverTask.MusicRetrieverPreparedListener  , OnCompletionListener, OnPreparedListener{
 	//	, OnErrorListener,
+	static Context rContext;
+	OrgUtil ORGUT;				//自作関数集
+	MaraSonActivity MUP;								//音楽プレイヤー
+	MusicPlaylist musicPlaylist ;
+
 	public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
 	//public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
 	public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
@@ -125,8 +130,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		Focused			// we have full audio focus
 	}
 	private AudioFocus mAudioFocus = AudioFocus.NoFocusNoDuck;						// do we have audio focus?
-		//			private List<String> artistList ;		//アルバムアーティスト
-					//private List<String> albumList ;		//アルバム名
 	private List<Item> mItems;
 	private int mIndex;						//play_order
 	private int tugiNoKyoku ;
@@ -134,8 +137,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public TimerTask timertask;
 	private long mRelaxTime = System.currentTimeMillis();
 
-	OrgUtil ORGUT;				//自作関数集
-	//RemoteController RC;		//Androidバージョンごとのリモートコントロール
 	//プリファレンス
 	public SharedPreferences sharedPref;
 	public Editor mainEditor ;
@@ -143,7 +144,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String nowList;				//再生中のプレイリスト名
 	public int nowList_id = 0;			//再生中のプレイリストID
 	public String nowList_data = null;		//再生中のプレイリストの保存場所
-//	public String dataFN;						//再生中のファイル名
 	public String siseizumiDataFN;				//前回再生済みのファイル名
 	public String ruikei_artist;				//アーティスト累計
 	public String pref_compBunki = "40";		//コンピレーション分岐点 曲数
@@ -177,8 +177,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	int musicVol ;							//音楽再生音量
 	int imanoJyoutai;
 
-	MaraSonActivity MUP;								//音楽プレイヤー
-	static Context rContext;
 	public Item playingItem;
 	public String album_artist =null;		//リストアップしたアルバムアーティスト名
 	public String creditArtistName ;	//クレジットアーティスト名
@@ -3301,6 +3299,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		String dbMsg="[MusicPlayerService]";
 		dbMsg +="bindServicから開始";/////////「プロセス間通信」（IPC：Inter Process Communication）によるリモートメソッドコールを行う
 		try{
+			if(musicPlaylist == null){
+				musicPlaylist = new MusicPlaylist(MusicPlayerService.this);
+			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -3333,6 +3334,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "onStartCommand";
 		String dbMsg="[MusicPlayerService]";
 		try{
+			if(musicPlaylist == null){
+				musicPlaylist = new MusicPlaylist(MusicPlayerService.this);
+			}
 			onCompletNow = false;			//曲間処理中
 			action = intent.getAction();					//ボタンなどで指定されたアクション
 			nowAction =action;	//現在のアクション
@@ -3571,6 +3575,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "onCreate[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
+			if(musicPlaylist == null){
+				musicPlaylist = new MusicPlaylist(MusicPlayerService.this);
+			}
+
 			dbMsg="nowAction=" + nowAction;/////////onStartCommandで更新
 			mPlayer = null;
 			mPlayer2 = null;

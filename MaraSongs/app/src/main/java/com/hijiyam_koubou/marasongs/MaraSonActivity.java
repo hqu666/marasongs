@@ -113,6 +113,8 @@ public class MaraSonActivity extends AppCompatActivity
 	public Context rContext ;
 	OrgUtil ORGUT;		//自作関数集
 	OrgUtilFile OGFil;	//ファイル関連関数
+	MusicPlaylist musicPlaylist ;
+
 	MyPreferences myPreferences;
 	ZenkyokuList ZKL;
 	MuList MLIST;
@@ -5702,6 +5704,7 @@ public class MaraSonActivity extends AppCompatActivity
 //			int mcPosition = 0;
 			ORGUT = new OrgUtil();		//自作関数集
 			OGFil = new OrgUtilFile();//ファイル関連関数
+			musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
 			NotificationManager mNotificationManager = (NotificationManager)this.getSystemService(Activity.NOTIFICATION_SERVICE);
 			dbMsg += ",NotificationManager="+ mNotificationManager.toString() ;/////////////////////////////////////
 			//スレッド起動確認///////////////////////////////////
@@ -6012,6 +6015,10 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "onResume";
 		String dbMsg= "[MaraSonActivity]←(onPause;アクティビティ再表示)";/////////////////////////////////////
 		try{
+			if(musicPlaylist == null){
+				musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
+			}
+
 			dbMsg = "adView="+ mAdView;//////////////////
 			if( mAdView != null ){
 				dbMsg +=",adWidth["+ adWidth+"×"+ adHight +"]";//////////////////
