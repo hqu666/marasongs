@@ -928,12 +928,6 @@ public class MyPreferences extends PreferenceActivity {
 ////				myEditor.putString("pref_file_in", pref_file_in);
 ////				pref_file_ex = "";
 ////				String status = Environment.getExternalStorageState();
-////				if (!status.equals(Environment.MEDIA_MOUNTED)) {
-////					pref_file_ex = Environment.getExternalStorageDirectory().getPath();
-////					dbMsg += ",メモリーカード＝" + pref_file_ex;//////////////////
-////				} else {
-////					dbMsg += ",メモリーカード＝無し";//////////////////
-////				}
 ////				myEditor.putString("pref_file_ex", pref_file_ex);
 ////				pref_file_wr = context.getFilesDir().getPath();
 ////				dbMsg += ",設定保存フォルダ＝" + pref_file_wr;//////////////////

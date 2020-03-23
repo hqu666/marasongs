@@ -1,5 +1,6 @@
 package com.hijiyam_koubou.marasongs;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -12,9 +13,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +129,7 @@ public class MusicPlaylist {
 
     /**
      *  指定したプレイリストを全削除
+     *  全消去すればmedia/external/audio/playlists/リストIDが変わる/members/
      *  */
     public int deletPlayList(String listName){			//指定したプレイリストを削除する
         int retInt =0;
@@ -145,8 +149,6 @@ public class MusicPlaylist {
                 dbMsg +="[" + tuikaSakiListID +"]" ;/////////////////////////////////////
                 String dMessage = "[" + tuikaSakiListID +"]"+listName;
                 dbMsg +=  "tuikaSakiListID=" + MusicPlaylist.this.tuikaSakiListID;
-//                reqCode = CONTEXT_del_playlist;
-//                deletPlayListLoop(reqCode ,  MusicPlaylist.this.tuikaSakiListID);			//指定したプレイリストを削除する
                 Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", MusicPlaylist.this.tuikaSakiListID);
                 columns = null;			//{ idKey, nameKey };
                 c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
@@ -298,9 +300,6 @@ public class MusicPlaylist {
         return renint;
     }
 
-
-
-
     /**
      *  プレイリストを新規作成する */
     public Uri addPlaylist(String listName, Uri images_uri, String thumb){			//プレイリストを新規作成する
@@ -344,8 +343,6 @@ public class MusicPlaylist {
         }
         return result_uri;
     }
-
-
 
     /**
      *  プレイリストの最大のplay_orderを取得する */
@@ -421,69 +418,89 @@ public class MusicPlaylist {
             if(contentResolver == null){
             }else{
                 int poSetteiti = getUserListMaxPlayOrder(playlist_id);			//プレイリストの最大のplay_orderを取得する
-                dbMsg += "、現在の設定数=" + poSetteiti;
-                contentvalues.put("play_order", poSetteiti);
-                if(isGalaxy()){
-                    kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
-                    contentvalues.put("audio_data", data);
-                    dbMsg += ",data_hash=" + data_hash;
-                    contentvalues.put("audio_data_hashcode", data_hash);
+                dbMsg += "、次は" + poSetteiti + "曲目";
+                contentvalues.put(MediaStore.Audio.Playlists.Members._ID, poSetteiti+ 1);
+                contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, poSetteiti + 1);
+                dbMsg += ",audio_id=" + audio_id;
+                contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
+
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
+                    try {
+                        //  https://codechacha.com/ja/android-mediastore-insert-media-files/
+                        Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_INTERNAL,playlist_id);
+//                        Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
+                        dbMsg += ",書込みuri= " + collection;
+                        result_uri = contentResolver.insert(collection, contentvalues);				//追加
+
+//                    contentResolver.openFileDescriptor(result_uri, "w", null){
+//                        // write something to OutputStream
+//                        FileOutputStream(it!!.fileDescriptor).use { outputStream ->
+//                                val imageInputStream = resources.openRawResource(R.raw.my_image)
+//                            while (true) {
+//                                val data = imageInputStream.read()
+//                                if (data == -1) {
+//                                    break
+//                                }
+//                                outputStream.write(data)
+//                            }
+//                            imageInputStream.close()
+//                            outputStream.close()
+//                        }
+//                    }                        //members/シリアルIDが加算される
+//                          contentvalues.clear();
+//                          contentResolver.update(result_uri, contentvalues, null, null);
+                    } catch (Exception e) {
+                        myErrorLog(TAG , e + "");
+//                    dbMsg = null;
+                    }
+                    if(result_uri == null){					//NG
+                        dbMsg += "失敗 add music :list= " + playlist_id + ", audio_id=" + audio_id + ", is null";
+                    }else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
+                        dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
+                    }else{					//OK
+                        dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
+                    }
                 }else{
-                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-                    dbMsg += ",kakikomiUri=" + kakikomiUri;
-                    dbMsg += ",audio_id=" + audio_id;
-                    contentvalues.put("audio_id", Integer.valueOf(audio_id));
-                }
-                dbMsg += ",uri= " + kakikomiUri;
-                result_uri = contentResolver.insert(kakikomiUri, contentvalues);				//追加
-                dbMsg += ",result_uri=" + result_uri;
-                if(result_uri == null){					//NG
-                    dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
-                }else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
-                    dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-                }else{					//OK
-                    dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-//                    switch(MusicPlaylist.this.reqCode) {
-//                        case CONTEXT_rumdam_wr:
-//                            dbMsg += ",ランダム再生リストの書込み";
-//                            break;
-//                        case CONTEXT_REPET_WR:
-//                            dbMsg += ",リピート再生リストレコード書込み";
-//                            break;
-//                        case CONTEXT_add_request:
-//                            dbMsg += ",リクエストリスト";
-//                            break;
-//                        default:
-//                            dbMsg += ",書込み";
-////						if(artistHTF != null){
-////							artistHTF.setVisibility(View.GONE);
-////						}
-////			//			toolbar.setNavigationIcon(R.drawable.ic_launcher);
-////						if(headImgIV != null){
-////							headImgIV.setVisibility(View.GONE);
-////						}
-////						if(mainHTF != null){
-////							mainHTF.setVisibility(View.GONE);
-////						}
-//                            dbMsg += ",スピナー表示";
-////						pl_sp.setVisibility(View.VISIBLE);
-//                            int ePosition = 0;
-//                            if(plNameSL == null) {                                    //プレイリスト名用簡易リスト
-//                            }
-//                            if(plNameSL != null){									//プレイリスト名用簡易リスト
-//                                dbMsg += ",plNameSL=" + plNameSL.size() + "件";
-//                                dbMsg += "：=" + MusicPlaylist.this.tuikaSakiListName;
-//                                ePosition = plNameSL.indexOf(MusicPlaylist.this.tuikaSakiListName);
-//                            }else{
-//                                dbMsg += ",plNameSL=null";
-//                            }
-//                            dbMsg += ",ePosition=" + ePosition;
-//                            pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
-//                            break;
-//                    }
+                    dbMsg += ",書込みuri= " + kakikomiUri;
+
+                    contentvalues.put("play_order", poSetteiti);
+                    if(isGalaxy()){
+                        dbMsg += "、isGalaxy";
+                        kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
+                        contentvalues.put("audio_data", data);
+                        dbMsg += ",data_hash=" + data_hash;
+                        contentvalues.put("audio_data_hashcode", data_hash);
+                    }else{
+                        kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+
+//                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+                        //これだけだと　java.lang.SecurityException:　発生
+//                    dbMsg += ",Path=" + kakikomiUri.getEncodedPath();
+//                    File kakikomiFN = new File(kakikomiUri.getEncodedPath());
+//                    kakikomiUri = Uri.fromFile(kakikomiFN);
+                    }
+                    try {
+                        //  https://codechacha.com/ja/android-mediastore-insert-media-files/
+                        result_uri = contentResolver.insert(kakikomiUri, contentvalues);				//追加
+                        dbMsg += ",result_uri=" + result_uri;
+                        //members/シリアルIDが加算される
+                    } catch (Exception e) {
+                        myErrorLog(TAG , e + "");
+//                    dbMsg = null;
+                    }
+                    if(result_uri == null){					//NG
+                        dbMsg += "失敗 add music :list= " + playlist_id + ", audio_id=" + audio_id + ", is null";
+                    }else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
+                        dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
+                    }else{					//OK
+                        dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
+                    }
+
                 }
             }
-//			myLog(TAG, dbMsg);
+            if(dbMsg != null){
+                myLog(TAG, dbMsg);
+            }
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }

@@ -2501,13 +2501,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if(playLists.moveToFirst()){
 					dbMsg +=">>指定リスト有り";
 					String ieKubunn = "internal";
-	////			File vFile = new File(volumeName);
-					//	String extV = Environment.getExternalStorageDirectory().toString() ;
-					//	dbMsg +=  ",extV=" + extV ;
-					//	if(volumeName.contains(extV)){
-							ieKubunn = "external";
-					//	}
-				//	dbMsg +=",内外区分="+ieKubunn;
 					uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 					dbMsg +=",uri="+uri.toString();
 					c_selection = MediaStore.Audio.Playlists.Members.DATA + " = ?";
