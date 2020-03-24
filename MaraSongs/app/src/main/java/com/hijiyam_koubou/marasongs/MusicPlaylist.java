@@ -402,7 +402,7 @@ public class MusicPlaylist {
     
     /**
      * プレイリストへ曲を追加する	 */
-    public Uri addMusicToPlaylist(int playlist_id , int audio_id, String data, int data_hash){		//プレイリストへ曲を追加する
+    public Uri addMusicToPlaylist(int playlist_id , int audio_id, String data){		//プレイリストへ曲を追加する
         Uri result_uri = null;
         final String TAG = "addMusicToPlaylist";
         String dbMsg = "[MusicPlaylist]";
@@ -423,79 +423,57 @@ public class MusicPlaylist {
                 contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, poSetteiti + 1);
                 dbMsg += ",audio_id=" + audio_id;
                 contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
-
-                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
-                    try {
-                        //  https://codechacha.com/ja/android-mediastore-insert-media-files/
-                        Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_INTERNAL,playlist_id);
-//                        Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
-                        dbMsg += ",書込みuri= " + collection;
-                        result_uri = contentResolver.insert(collection, contentvalues);				//追加
-
-//                    contentResolver.openFileDescriptor(result_uri, "w", null){
-//                        // write something to OutputStream
-//                        FileOutputStream(it!!.fileDescriptor).use { outputStream ->
-//                                val imageInputStream = resources.openRawResource(R.raw.my_image)
-//                            while (true) {
-//                                val data = imageInputStream.read()
-//                                if (data == -1) {
-//                                    break
-//                                }
-//                                outputStream.write(data)
-//                            }
-//                            imageInputStream.close()
-//                            outputStream.close()
-//                        }
-//                    }                        //members/シリアルIDが加算される
-//                          contentvalues.clear();
-//                          contentResolver.update(result_uri, contentvalues, null, null);
-                    } catch (Exception e) {
-                        myErrorLog(TAG , e + "");
-//                    dbMsg = null;
-                    }
-                    if(result_uri == null){					//NG
-                        dbMsg += "失敗 add music :list= " + playlist_id + ", audio_id=" + audio_id + ", is null";
-                    }else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
-                        dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-                    }else{					//OK
-                        dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-                    }
-                }else{
-                    dbMsg += ",書込みuri= " + kakikomiUri;
-
-                    contentvalues.put("play_order", poSetteiti);
-                    if(isGalaxy()){
-                        dbMsg += "、isGalaxy";
-                        kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
-                        contentvalues.put("audio_data", data);
-                        dbMsg += ",data_hash=" + data_hash;
-                        contentvalues.put("audio_data_hashcode", data_hash);
-                    }else{
-                        kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-
-//                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-                        //これだけだと　java.lang.SecurityException:　発生
-//                    dbMsg += ",Path=" + kakikomiUri.getEncodedPath();
-//                    File kakikomiFN = new File(kakikomiUri.getEncodedPath());
-//                    kakikomiUri = Uri.fromFile(kakikomiFN);
-                    }
-                    try {
-                        //  https://codechacha.com/ja/android-mediastore-insert-media-files/
-                        result_uri = contentResolver.insert(kakikomiUri, contentvalues);				//追加
-                        dbMsg += ",result_uri=" + result_uri;
-                        //members/シリアルIDが加算される
-                    } catch (Exception e) {
-                        myErrorLog(TAG , e + "");
-//                    dbMsg = null;
-                    }
-                    if(result_uri == null){					//NG
-                        dbMsg += "失敗 add music :list= " + playlist_id + ", audio_id=" + audio_id + ", is null";
-                    }else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
-                        dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-                    }else{					//OK
-                        dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-                    }
-
+//				if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
+//					try {
+//						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
+//						Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_INTERNAL,playlist_id);
+////                        Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
+//						dbMsg += ",書込みuri= " + collection;
+//						result_uri = contentResolver.insert(collection, contentvalues);				//追加
+//
+////                    contentResolver.openFileDescriptor(result_uri, "w", null){
+////                        // write something to OutputStream
+////                        FileOutputStream(it!!.fileDescriptor).use { outputStream ->
+////                                val imageInputStream = resources.openRawResource(R.raw.my_image)
+////                            while (true) {
+////                                val data = imageInputStream.read()
+////                                if (data == -1) {
+////                                    break
+////                                }
+////                                outputStream.write(data)
+////                            }
+////                            imageInputStream.close()
+////                            outputStream.close()
+////                        }
+////                    }                        //members/シリアルIDが加算される
+////                          contentvalues.clear();
+////                          contentResolver.update(result_uri, contentvalues, null, null);
+//				} catch (Exception e) {
+//					myErrorLog(TAG , e + "");
+//				}
+//				}else {
+                if (isGalaxy()) {
+                    int data_hash = 0;              //内容不明
+                    kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
+                    contentvalues.put("audio_data", data);
+                    dbMsg += ",data_hash=" + data_hash;
+                    contentvalues.put("audio_data_hashcode", data_hash);
+                } else {
+                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+                    dbMsg += ",kakikomiUri=" + kakikomiUri;
+                    dbMsg += ",audio_id=" + audio_id;
+//					contentvalues.put("audio_id", Integer.valueOf(audio_id));
+                }
+                dbMsg += ",uri= " + kakikomiUri;
+                result_uri = contentResolver.insert(kakikomiUri, contentvalues);                //追加
+//				}
+                dbMsg += ",result_uri=" + result_uri;
+                if(result_uri == null){					//NG
+                    dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
+                }else if(((int)ContentUris.parseId(result_uri)) == -1){					//NG
+                    dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
+                }else{					//OK
+                    dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
                 }
             }
             if(dbMsg != null){

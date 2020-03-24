@@ -1916,6 +1916,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 				fn = cContext.getString(R.string.zenkyoku_file);			//全曲リスト+ File.separator +cContext.getString(R.string.zenkyoku_file)
 				dbMsg += ",db=" + fn;
+//				if(musicPlaylist == null){
+				musicPlaylist = new MusicPlaylist(getApplicationContext());
+//				musicPlaylist = new MusicPlaylist(ZenkyokuList.this.getApplicationContext());
+//					musicPlaylist = new MusicPlaylist(ZenkyokuList.this);
+//				}
+
 				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage_stok , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
 			}
@@ -1981,96 +1987,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
             allSonglist += titolName + "," + dataUri + "#" + album_artist + "," + albumName +"\n";
 			Uri result_uri = null;
-			result_uri = musicPlaylist.addMusicToPlaylist(ZenkyokuList.this.allSongsID, audio_id, dataUri, 0);    //プレイリストへ曲を追加する
+			result_uri = musicPlaylist.addMusicToPlaylist(ZenkyokuList.this.allSongsID, audio_id, dataUri);    //プレイリストへ曲を追加する
 			dbMsg += ">>result_uri=" + result_uri;/////////////////////////////////////
-
-//			ContentResolver contentResolver = cContext.getContentResolver();
-//			ContentValues contentvalues = new ContentValues();
-//			Uri kakikomiUri = null;
-//			int playlist_id = ZenkyokuList.this.allSongsID;
-//
-//			if(contentResolver == null){
-//			}else{
-//				int poSetteiti = musicPlaylist.getUserListMaxPlayOrder(playlist_id);			//プレイリストの最大のplay_orderを取得する
-//				dbMsg += "、次は" + poSetteiti + "曲目";
-//				contentvalues.put(MediaStore.Audio.Playlists.Members._ID, poSetteiti+ 1);
-//				contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, poSetteiti + 1);
-//				dbMsg += ",audio_id=" + audio_id;
-//				contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
-//				if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
-//					try {
-//						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
-//						Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
-//						dbMsg += ",書込みuri= " + collection;
-//						result_uri = contentResolver.insert(collection, contentvalues);				//追加
-//
-////                    contentResolver.openFileDescriptor(result_uri, "w", null){
-////                        // write something to OutputStream
-////                        FileOutputStream(it!!.fileDescriptor).use { outputStream ->
-////                                val imageInputStream = resources.openRawResource(R.raw.my_image)
-////                            while (true) {
-////                                val data = imageInputStream.read()
-////                                if (data == -1) {
-////                                    break
-////                                }
-////                                outputStream.write(data)
-////                            }
-////                            imageInputStream.close()
-////                            outputStream.close()
-////                        }
-////                    }                        //members/シリアルIDが加算される
-////                          contentResolver.update(result_uri, contentvalues, null, null);
-//					} catch (Exception e) {
-//						myErrorLog(TAG , e + "");
-////                    dbMsg = null;
-//					}
-//					if(result_uri == null){					//NG
-//						dbMsg += "失敗 add music :list= " + playlist_id + ", audio_id=" + audio_id + ", is null";
-//					}else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
-//						dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-//					}else{					//OK
-//						dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-//					}
-//				}else{
-//					dbMsg += ",書込みuri= " + kakikomiUri;
-//
-//					contentvalues.put("play_order", poSetteiti);
-//					if(musicPlaylist.isGalaxy()){
-//						dbMsg += "、isGalaxy";
-//						kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
-//						contentvalues.put("audio_data", dataUri);
-//						dbMsg += ",data_hash=" + 0;
-//						contentvalues.put("audio_data_hashcode", 0);
-//					}else{
-//						kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-//					}
-//					try {
-//						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
-//						result_uri = contentResolver.insert(kakikomiUri, contentvalues);				//追加
-//						dbMsg += ",result_uri=" + result_uri;
-//						//members/シリアルIDが加算される
-//					} catch (Exception e) {
-//						myErrorLog(TAG , e + "");
-//					}
-//					if(result_uri == null){					//NG
-//						dbMsg += "失敗 add music :list= " + playlist_id + ", audio_id=" + audio_id + ", is null";
-//					}else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
-//						dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-//					}else{					//OK
-//						dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-//					}
-//
-//				}
-//			}
-//			if(dbMsg != null){
-//				myLog(TAG, dbMsg);
-//			}
-
-
-
-
-
-//			myLog(TAG,dbMsg );
+			myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
