@@ -412,46 +412,18 @@ public class MusicPlaylist {
             dbMsg += "[audio_id=" + audio_id;
             dbMsg += "]追加する曲=" + data;
             ContentResolver contentResolver = cContext.getContentResolver();
+
             ContentValues contentvalues = new ContentValues();
             Uri kakikomiUri = null;
 
             if(contentResolver == null){
-            }else{
-                int poSetteiti = getUserListMaxPlayOrder(playlist_id);			//プレイリストの最大のplay_orderを取得する
+            }else {
+                int poSetteiti = getUserListMaxPlayOrder(playlist_id);            //プレイリストの最大のplay_orderを取得する
                 dbMsg += "、次は" + poSetteiti + "曲目";
-                contentvalues.put(MediaStore.Audio.Playlists.Members._ID, poSetteiti+ 1);
+                contentvalues.put(MediaStore.Audio.Playlists.Members._ID, poSetteiti + 1);
                 contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, poSetteiti + 1);
-                dbMsg += ",audio_id=" + audio_id;
                 contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
-//				if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
-//					try {
-//						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
-//						Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_INTERNAL,playlist_id);
-////                        Uri collection = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
-//						dbMsg += ",書込みuri= " + collection;
-//						result_uri = contentResolver.insert(collection, contentvalues);				//追加
-//
-////                    contentResolver.openFileDescriptor(result_uri, "w", null){
-////                        // write something to OutputStream
-////                        FileOutputStream(it!!.fileDescriptor).use { outputStream ->
-////                                val imageInputStream = resources.openRawResource(R.raw.my_image)
-////                            while (true) {
-////                                val data = imageInputStream.read()
-////                                if (data == -1) {
-////                                    break
-////                                }
-////                                outputStream.write(data)
-////                            }
-////                            imageInputStream.close()
-////                            outputStream.close()
-////                        }
-////                    }                        //members/シリアルIDが加算される
-////                          contentvalues.clear();
-////                          contentResolver.update(result_uri, contentvalues, null, null);
-//				} catch (Exception e) {
-//					myErrorLog(TAG , e + "");
-//				}
-//				}else {
+//                contentvalues.put(MediaStore.Audio.Playlists.Members.DATA, data);
                 if (isGalaxy()) {
                     int data_hash = 0;              //内容不明
                     kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
@@ -459,14 +431,19 @@ public class MusicPlaylist {
                     dbMsg += ",data_hash=" + data_hash;
                     contentvalues.put("audio_data_hashcode", data_hash);
                 } else {
-                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-                    dbMsg += ",kakikomiUri=" + kakikomiUri;
-                    dbMsg += ",audio_id=" + audio_id;
-//					contentvalues.put("audio_id", Integer.valueOf(audio_id));
+                    dbMsg += ",SDK_INT= " + Build.VERSION.SDK_INT;
+                    if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
+                        dbMsg += "=Pai" ;
+                        //						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
+                        kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
+// MuList は.VOLUME_EXTERNAL　でもOK　：content://media/external_primary/audio/playlists/18140/members,
+                    }else{
+                        kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+                    }
                 }
                 dbMsg += ",uri= " + kakikomiUri;
+                dbMsg += ",contentvalues( " + contentvalues.toString() + " )";
                 result_uri = contentResolver.insert(kakikomiUri, contentvalues);                //追加
-//				}
                 dbMsg += ",result_uri=" + result_uri;
                 if(result_uri == null){					//NG
                     dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";

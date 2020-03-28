@@ -466,6 +466,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				pgd_msg_tv.scrollTo(0, pgd_msg_tv.getBottom());
 		//		pdg_scroll.fullScroll(ScrollView.FOCUS_DOWN);
 				String where = MediaStore.Audio.Media._ID + "= ?";
+//				audio_id = Integer.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
+
 				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , cUri , where );		//,jikkouStep,totalStep,calumnInfo
 			}else{
 				c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? AND " +
@@ -1399,6 +1401,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
 //			if( ! artistN.equals(album_artist) ){
 //			}
+//			myLog(TAG,dbMsg);
+
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
@@ -1917,9 +1921,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				fn = cContext.getString(R.string.zenkyoku_file);			//全曲リスト+ File.separator +cContext.getString(R.string.zenkyoku_file)
 				dbMsg += ",db=" + fn;
 //				if(musicPlaylist == null){
-				musicPlaylist = new MusicPlaylist(getApplicationContext());
-//				musicPlaylist = new MusicPlaylist(ZenkyokuList.this.getApplicationContext());
-//					musicPlaylist = new MusicPlaylist(ZenkyokuList.this);
+//				musicPlaylist = new MusicPlaylist(ZenkyokuList.this.getBaseContext());	//cContext=android.app.ContextImpl@244134,
+//				musicPlaylist = new MusicPlaylist(getApplicationContext());
+//				musicPlaylist = new MusicPlaylist(ZenkyokuList.this.getParent());	//cContext=null
+//				musicPlaylist = new MusicPlaylist(ZenkyokuList.this.getApplicationContext());	//cContext=android.app.Application@e7caee2
+					musicPlaylist = new MusicPlaylist(ZenkyokuList.this);	//cContext=com.hijiyam_koubou.marasongs.ZenkyokuList@6013445,
 //				}
 
 				myLog(TAG,dbMsg);
@@ -1950,45 +1956,65 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			int audio_id = -1;
 			String sort_name;
 			String artist_name = null;
-			String albumName = null;
-			String album_artist = null;
-            String titolName = null;
-            String dataUri = null;
 			pdCoundtVal = ｃursor.getPosition();
-			dbMsg += reqCode + ": "+  pdCoundtVal + "/" + pdMaxVal + "曲目";
-			int cCount = 0;
-			String[] columnNames = cursor.getColumnNames();
-			dbMsg +=columnNames.length + "項目";
-			for(String cName:columnNames){
-				cCount = ｃursor.getColumnIndex(cName) ;
-				dbMsg += "," + cCount+")" + cName;
-				String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
-				dbMsg += " = "+ cVal;
-				if( cName.equals("_id") ) {
-					audio_id= ｃursor.getInt(cursor.getColumnIndex(cName));	//Integer.getInteger(cVal);
-				} else {
-					stmt.bindString(cCount, cVal);
-					if( cName.equals("_id") ) {
-					}else if( cName.equals("TITLE")){
-						titolName = cVal;
-					}else if( cName.equals("DATA")){
-						dataUri = cVal;
-					} else if( cName.equals("SORT_NAME") ){
-						sort_name = cVal;
-						album_artist = cVal;
-					}else if( cName.equals("ARTIST") ){
-						artist_name = cVal;
-					}else if( cName.equals("ALBUM_ARTIST") ){
-						album_artist = cVal;
-					}else if( cName.equals("ALBUM") ){
-						albumName = cVal;
-					}
-				}
-			}
-            allSonglist += titolName + "," + dataUri + "#" + album_artist + "," + albumName +"\n";
+			dbMsg += reqCode + "：仮リスト: "+  pdCoundtVal + "/" + pdMaxVal + "曲目";
+			String cAUDIO_ID = String.valueOf(ｃursor.getString(cursor.getColumnIndex("AUDIO_ID")));
+			dbMsg += "[AUDIO_ID= "+ cAUDIO_ID;
+			audio_id= Integer.parseInt(cAUDIO_ID);
+			dbMsg += ",audio_id=" + audio_id;
+
+			String dataUri = String.valueOf(ｃursor.getString(cursor.getColumnIndex("DATA")));
+			dbMsg += "]= "+ dataUri;
+			String titolName  = String.valueOf(ｃursor.getString(cursor.getColumnIndex("TITLE")));
+			dbMsg += ",titolName= "+ titolName;
+			String album_artist = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
+			dbMsg += ",album_artist= "+ album_artist;
+			String albumName = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
+			dbMsg += ",albumName= "+ albumName;
+
+
+//			int cCount = 0;
+//			String[] columnNames = cursor.getColumnNames();
+//			dbMsg +=columnNames.length + "項目";
+//			for(String cName:columnNames){
+//				cCount = ｃursor.getColumnIndex(cName) ;
+//				dbMsg += "," + cCount+")" + cName;
+//				String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
+//				dbMsg += " = "+ cVal;
+////				if( cName.equals(cName.equals(MediaStore.Audio.Media._ID)) ) {
+////				} else {
+//					stmt.bindString(cCount, cVal);
+////					if( cName.equals("AUDIO_ID")){
+////						audio_id= Integer.getInteger(cVal);
+////						dbMsg += ",audio_id=" + audio_id;
+////					}else
+//					if( cName.equals("TITLE")){
+//						titolName = cVal;
+////					}else if( cName.equals("DATA")){
+////						dataUri = cVal;
+//					} else if( cName.equals("SORT_NAME") ){
+//						sort_name = cVal;
+//						album_artist = cVal;
+//					}else if( cName.equals("ARTIST") ){
+//						artist_name = cVal;
+//					}else if( cName.equals("ALBUM_ARTIST") ){
+//						album_artist = cVal;
+//					}else if( cName.equals("ALBUM") ){
+//						albumName = cVal;
+//					}
+////				}
+//			}
+
+			allSonglist += titolName + "," + dataUri + "#" + album_artist + "," + albumName +"\n";
 			Uri result_uri = null;
 			result_uri = musicPlaylist.addMusicToPlaylist(ZenkyokuList.this.allSongsID, audio_id, dataUri);    //プレイリストへ曲を追加する
-			dbMsg += ">>result_uri=" + result_uri;/////////////////////////////////////
+			dbMsg += ">>result_uri=" + result_uri;
+
+			int cCountEnd = cursor.getCount();
+			for(int cCount = 0;cCount < cCountEnd;cCount++) {
+				String cVal = String.valueOf(ｃursor.getString(cCount));
+				stmt.bindString(cCount, cVal);
+			}
 			myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -2000,112 +2026,108 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	/**
 	 * プレイリストへ曲を追加する	 */
-	public Uri addMusicToPlaylist(int playlist_id , int audio_id, String data, int data_hash){		//プレイリストへ曲を追加する
-		Uri result_uri = null;
-		final String TAG = "addMusicToPlaylist";
-		String dbMsg = "[ZenkyokuList]";
-		try{
-			dbMsg+="cContext=" + this.cContext;/////////////////////////////////////
-			dbMsg +=  ",playlist_id=" + playlist_id;
-			dbMsg += "[audio_id=" + audio_id;
-			dbMsg += "]追加する曲=" + data;
-			ContentResolver contentResolver = getContentResolver();
-			ContentValues contentvalues = new ContentValues();
-			Uri kakikomiUri = null;
-
-			if(contentResolver == null){
-			}else{
-				int poSetteiti = musicPlaylist.getUserListMaxPlayOrder(playlist_id);			//プレイリストの最大のplay_orderを取得する
-				dbMsg += "、次は" + poSetteiti + "曲目";
-//                if( 0 == poSetteiti){
-//                    poSetteiti = 1;
-//                }
-				contentvalues.put("play_order", poSetteiti);
-				if(musicPlaylist.isGalaxy()){
-					dbMsg += "、isGalaxy";
-					kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
-					contentvalues.put("audio_data", data);
-					dbMsg += ",data_hash=" + data_hash;
-					contentvalues.put("audio_data_hashcode", data_hash);
-				}else{
-					kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-
-//                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-					//これだけだと　java.lang.SecurityException:　発生
-//                    dbMsg += ",Path=" + kakikomiUri.getEncodedPath();
-//                    File kakikomiFN = new File(kakikomiUri.getEncodedPath());
-//                    kakikomiUri = Uri.fromFile(kakikomiFN);
-
-
-					dbMsg += ",audio_id=" + audio_id;
-					contentvalues.put("audio_id", Integer.valueOf(audio_id));
-				}
-				dbMsg += ",書込みuri= " + kakikomiUri;
-				try {
-					result_uri = contentResolver.insert(kakikomiUri, contentvalues);				//追加
-					dbMsg += ",result_uri=" + result_uri;
-				} catch (Exception e) {
-					myErrorLog(TAG ,  dbMsg + "で" + e);
-//                    dbMsg = null;
-				}
-				if(result_uri == null){					//NG
-					dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
-				}else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
-					dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-				}else{					//OK
-					dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-//                    switch(MusicPlaylist.this.reqCode) {
-//                        case CONTEXT_rumdam_wr:
-//                            dbMsg += ",ランダム再生リストの書込み";
-//                            break;
-//                        case CONTEXT_REPET_WR:
-//                            dbMsg += ",リピート再生リストレコード書込み";
-//                            break;
-//                        case CONTEXT_add_request:
-//                            dbMsg += ",リクエストリスト";
-//                            break;
-//                        default:
-//                            dbMsg += ",書込み";
-////						if(artistHTF != null){
-////							artistHTF.setVisibility(View.GONE);
-////						}
-////			//			toolbar.setNavigationIcon(R.drawable.ic_launcher);
-////						if(headImgIV != null){
-////							headImgIV.setVisibility(View.GONE);
-////						}
-////						if(mainHTF != null){
-////							mainHTF.setVisibility(View.GONE);
-////						}
-//                            dbMsg += ",スピナー表示";
-////						pl_sp.setVisibility(View.VISIBLE);
-//                            int ePosition = 0;
-//                            if(plNameSL == null) {                                    //プレイリスト名用簡易リスト
-//                            }
-//                            if(plNameSL != null){									//プレイリスト名用簡易リスト
-//                                dbMsg += ",plNameSL=" + plNameSL.size() + "件";
-//                                dbMsg += "：=" + MusicPlaylist.this.tuikaSakiListName;
-//                                ePosition = plNameSL.indexOf(MusicPlaylist.this.tuikaSakiListName);
-//                            }else{
-//                                dbMsg += ",plNameSL=null";
-//                            }
-//                            dbMsg += ",ePosition=" + ePosition;
-//                            pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
-//                            break;
-//                    }
-				}
-			}
-			if(dbMsg != null){
-				myLog(TAG, dbMsg);
-			}
-		}catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return result_uri;
-	}
-
-
-
-
+//	public Uri addMusicToPlaylist(int playlist_id , int audio_id, String data, int data_hash){		//プレイリストへ曲を追加する
+//		Uri result_uri = null;
+//		final String TAG = "addMusicToPlaylist";
+//		String dbMsg = "[ZenkyokuList]";
+//		try{
+//			dbMsg+="cContext=" + this.cContext;/////////////////////////////////////
+//			dbMsg +=  ",playlist_id=" + playlist_id;
+//			dbMsg += "[audio_id=" + audio_id;
+//			dbMsg += "]追加する曲=" + data;
+//			ContentResolver contentResolver = getContentResolver();
+//			ContentValues contentvalues = new ContentValues();
+//			Uri kakikomiUri = null;
+//
+//			if(contentResolver == null){
+//			}else{
+//				int poSetteiti = musicPlaylist.getUserListMaxPlayOrder(playlist_id);			//プレイリストの最大のplay_orderを取得する
+//				dbMsg += "、次は" + poSetteiti + "曲目";
+////                if( 0 == poSetteiti){
+////                    poSetteiti = 1;
+////                }
+//				contentvalues.put("play_order", poSetteiti);
+//				if(musicPlaylist.isGalaxy()){
+//					dbMsg += "、isGalaxy";
+//					kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
+//					contentvalues.put("audio_data", data);
+//					dbMsg += ",data_hash=" + data_hash;
+//					contentvalues.put("audio_data_hashcode", data_hash);
+//				}else{
+//					kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+//
+////                    kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+//					//これだけだと　java.lang.SecurityException:　発生
+////                    dbMsg += ",Path=" + kakikomiUri.getEncodedPath();
+////                    File kakikomiFN = new File(kakikomiUri.getEncodedPath());
+////                    kakikomiUri = Uri.fromFile(kakikomiFN);
+//
+//
+//					dbMsg += ",audio_id=" + audio_id;
+//					contentvalues.put("audio_id", Integer.valueOf(audio_id));
+//				}
+//				dbMsg += ",書込みuri= " + kakikomiUri;
+//				try {
+//					result_uri = contentResolver.insert(kakikomiUri, contentvalues);				//追加
+//					dbMsg += ",result_uri=" + result_uri;
+//				} catch (Exception e) {
+//					myErrorLog(TAG ,  dbMsg + "で" + e);
+////                    dbMsg = null;
+//				}
+//				if(result_uri == null){					//NG
+//					dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
+//				}else if(((int) ContentUris.parseId(result_uri)) == -1){					//NG
+//					dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
+//				}else{					//OK
+//					dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
+////                    switch(MusicPlaylist.this.reqCode) {
+////                        case CONTEXT_rumdam_wr:
+////                            dbMsg += ",ランダム再生リストの書込み";
+////                            break;
+////                        case CONTEXT_REPET_WR:
+////                            dbMsg += ",リピート再生リストレコード書込み";
+////                            break;
+////                        case CONTEXT_add_request:
+////                            dbMsg += ",リクエストリスト";
+////                            break;
+////                        default:
+////                            dbMsg += ",書込み";
+//////						if(artistHTF != null){
+//////							artistHTF.setVisibility(View.GONE);
+//////						}
+//////			//			toolbar.setNavigationIcon(R.drawable.ic_launcher);
+//////						if(headImgIV != null){
+//////							headImgIV.setVisibility(View.GONE);
+//////						}
+//////						if(mainHTF != null){
+//////							mainHTF.setVisibility(View.GONE);
+//////						}
+////                            dbMsg += ",スピナー表示";
+//////						pl_sp.setVisibility(View.VISIBLE);
+////                            int ePosition = 0;
+////                            if(plNameSL == null) {                                    //プレイリスト名用簡易リスト
+////                            }
+////                            if(plNameSL != null){									//プレイリスト名用簡易リスト
+////                                dbMsg += ",plNameSL=" + plNameSL.size() + "件";
+////                                dbMsg += "：=" + MusicPlaylist.this.tuikaSakiListName;
+////                                ePosition = plNameSL.indexOf(MusicPlaylist.this.tuikaSakiListName);
+////                            }else{
+////                                dbMsg += ",plNameSL=null";
+////                            }
+////                            dbMsg += ",ePosition=" + ePosition;
+////                            pl_sp.setSelection(ePosition , false);								//☆勝手に動作させない
+////                            break;
+////                    }
+//				}
+//			}
+//			if(dbMsg != null){
+//				myLog(TAG, dbMsg);
+//			}
+//		}catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return result_uri;
+//	}
 	/**
 	 * 全曲リスト作成処理終了
 	 * @ 無し
@@ -2140,41 +2162,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	//		dbMsg +=  pdMessage_stok ;
 //			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
 			Kari_db.close();
-
-//08-27 22:00:00.969: I/Ads(31977): Scheduling ad refresh 60000 milliseconds from now.
-//
-//			fn = cContext.getString(R.string.kari_file);
-//			dbMsg += ",db=" + fn;
-//			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-//			if(Kari_db != null){									//全曲の仮ファイル	kari.db
-//				if(! Kari_db.isOpen()){
-//					zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-//					Kari_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
-//					dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-//				}
-//			}
-//			String comp = String.valueOf(cContext.getString(R.string.comon_compilation));			//コンピレーション
-//			dbMsg +=" : "+ reqCode + "；" + comp ;
-//			String c_selection = "ALBUM_ARTIST = ? ";				//+ "\'"+comp +"\'";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-//			String[] c_selectionArgs = new String[]{ comp };  			//	 {"%" + artistMei + "%" , albumMei };
-//			String c_orderBy= "ALBUM,TRACK";	//ALBUM_ARTIST,YEAR	。	降順はDESC
-//			cursor = Kari_db.query(zenkyokuTName, null, c_selection, c_selectionArgs ,null , null,  c_orderBy ,null);	//リString table, String[] columns,new String[] {MotoN, albamN}
-//			pdMaxVal = cursor.getCount();
-//			dbMsg += "；" + pdMaxVal + "件";
-//	//		myLog(TAG,dbMsg );
-//			pd2CoundtVal++;
-//			if(cursor.moveToFirst()){
-//				pdMessage = pdMessage_stok + "\n\n" + pd2CoundtVal + ":["+  comp +String.valueOf(pdMaxVal) +this.cContext.getString(R.string.pp_kyoku) + "]"+
-//						this.cContext.getString(R.string.comon_compilation)+ this.cContext.getString(R.string.common_tuika);	///コンピレーション追加
-//				fn = cContext.getString(R.string.zenkyoku_file);			//全曲リスト+ File.separator +cContext.getString(R.string.zenkyoku_file)
-//				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
-//			} else {
-//				cursor.close();
-//				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ":"+  comp +this.cContext.getString(R.string.comon_nasi) +
-//									"[" +this.cContext.getString(R.string.common_syouryaku)  + "]";	//コンピレーション無し[省略]
-//				CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)
-//			}
-
 
 			myLog(TAG,dbMsg );
 			addCompList();		//全曲リストにコンピレーション追加
@@ -2452,7 +2439,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				dbMsg +="[" + poSetteiti + "→"+ play_order + "]";
 				contentvalues.put("play_order", play_order);
 					kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", sousalistID);
-					String audio_id= String.valueOf(cursor.getString(cursor.getColumnIndex("AUDIO_ID")));
+					String audio_id= String.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
 					dbMsg= dbMsg+ ",audio_id=" + audio_id;
 					contentvalues.put("audio_id", Integer.valueOf(audio_id));
 			//		contentvalues.put("album_artist", String.valueOf(album_artist));				//☆MediaStore.Audio.Playlists.Membersに無いカラムなのでこの書き込みは無理

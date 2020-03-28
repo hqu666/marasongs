@@ -25,7 +25,8 @@
 
 	<application
 		android:icon="@drawable/ic_launcher"
-		android:label="@string/app_name" android:largeHeap="true"
+		android:label="@string/app_name"
+		android:largeHeap="true"
 		android:allowTaskReparenting="true"
 		android:usesCleartextTraffic="true"
 		android:theme="@style/Theme.AppCompat"
@@ -44,7 +45,8 @@
 			<meta-data android:name="NendDebuggable"
 				android:value="false" />
 	    <activity android:name=".MuList"
-            android:screenOrientation="portrait" android:theme="@style/AppTheme">
+            android:screenOrientation="portrait"
+			android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -59,6 +61,14 @@
 				android:name="com.google.android.gms.ads.APPLICATION_ID"
 				android:value="@string/banner_ad_unit_id"/>
         </activity>
+		<activity android:name="ZenkyokuList"
+			android:theme="@android:style/Theme.Dialog"
+			android:multiprocess="true">
+		</activity>
+		<activity android:name=".CreditNameHensyuu" />
+		<activity android:name=".MyPreferences"
+			android:screenOrientation="portrait">
+		</activity><activity android:name="wKit"></activity>
 
         <receiver android:name=".MusicPlayerReceiver" >
             <intent-filter>
@@ -105,11 +115,6 @@
 			</intent-filter>
 		</receiver>
         <service android:name=".NotifRecever" />
-        <activity android:name="ZenkyokuList" android:theme="@android:style/Theme.Dialog" android:multiprocess="true">
-		</activity>
-		<activity android:name=".CreditNameHensyuu" />
-		<activity android:name=".MyPreferences" android:screenOrientation="portrait">
-		</activity><activity android:name="wKit"></activity>
 
 		<activity android:name="com.google.android.gms.ads.AdActivity"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
