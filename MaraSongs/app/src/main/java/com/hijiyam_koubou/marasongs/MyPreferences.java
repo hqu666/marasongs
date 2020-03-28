@@ -86,6 +86,10 @@ public class MyPreferences extends PreferenceActivity {
 
 	public String nowList_id;				//再生中のプレイリストID	playListID
 	public String nowList;					//再生中のプレイリスト名	playlistNAME
+	public int pref_zenkyoku_list_id = -1;			// 全曲リスト
+	public int saikintuika_list_id = -1;			//最近追加
+	public int saikinsisei_list_id = -1;			//最近再生
+
 	public String play_order;
 	//アーティストごとの情報
 	public String artistID;
@@ -724,6 +728,15 @@ public class MyPreferences extends PreferenceActivity {
 								dbMsg += " ,再生時間＝ " + pref_saisei_nagasa;//////////////////
 								wrStr = ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_nagasa));
 								dbMsg += "；" + pref_saisei_nagasa + "=" + wrStr;                //+";"+pTF_saisei_jikan.getText();//////////////////
+							} else if (key.equals("pref_zenkyoku_list_id")) {
+								pref_zenkyoku_list_id = Integer.parseInt(keys.get(key).toString());
+								dbMsg += ",全曲リスト[" + pref_zenkyoku_list_id + "]";
+							} else if (key.equals("saikintuika_list_id")) {
+								saikintuika_list_id = Integer.parseInt(keys.get(key).toString());
+								dbMsg += ",最近追加[" + saikintuika_list_id + "]";
+							} else if (key.equals("saikinsisei_list_id")) {
+								saikinsisei_list_id = Integer.parseInt(keys.get(key).toString());
+								dbMsg += ",最近再生[" + saikinsisei_list_id + "]";
 							} else if (key.equals("nowList_id")) {
 								nowList_id = keys.get(key).toString();
 								dbMsg += "再生中のプレイリスト[" + nowList_id + "]";    //再生中のプレイリストID	playListID

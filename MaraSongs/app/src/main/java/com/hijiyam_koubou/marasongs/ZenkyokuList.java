@@ -346,10 +346,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	/**
 	 * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで端末内の音楽データ読み込み
-	 * c_orderBy = MediaStore.Audio.Media.DATA でアーティスチフォルダの降順
+     *  MediaStore.Audio.Media.IS_MUSIC  <> "0"
+	 * c_orderBy = MediaStore.Audio.Media.DATA でアーティスフォルダの降順
 	 * @ 無し
 	 * preReadBodyへ
 	 * reqCode = pt_start
+     *
 	 * */
 	public void preRead( ) {			//dataURIを読み込みながら欠けデータ確認	, int reqCode
 		final String TAG = "preRead";			//, AlertDialog pDialog

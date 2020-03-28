@@ -142,6 +142,11 @@ public class MaraSonActivity extends AppCompatActivity
 	public String pref_artist_bunnri = "100";		//アーティストリストを分離する曲数
 	public String pref_saikin_tuika = "1";			//最近追加リストのデフォルト枚数
 	public String pref_saikin_sisei = "100";		//最近再生加リストのデフォルト枚数
+
+	public int pref_zenkyoku_list_id;			// 全曲リスト
+	public int saikintuika_list_id;			//最近追加
+	public int saikinsisei_list_id;			//最近再生
+
 	//曲ごとの情報
 	public String audioID;
 	public String dataURL = null;
@@ -461,9 +466,10 @@ public class MaraSonActivity extends AppCompatActivity
 			reverbBangou = myPreferences.reverbBangou;				//リバーブ効果番号
 			visualizerType =myPreferences.visualizerType;		//VisualizerはFFT
 			dbMsg += "、visualizerType=" + visualizerType;
-
+			pref_zenkyoku_list_id = myPreferences.pref_zenkyoku_list_id;			// 全曲リスト
+			saikintuika_list_id = myPreferences.saikintuika_list_id;			//最近追加
+			saikinsisei_list_id = myPreferences.saikinsisei_list_id;			//最近再生
 			prTT_dpad = myPreferences.prTT_dpad;		//ダイヤルキーの有無
-
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -893,7 +899,7 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.putExtra("rp_pp",rp_pp);					//2点間リピート中
 			MPSIntent.putExtra("pp_start",pp_start);			//リピート区間開始点
 			MPSIntent.putExtra("pp_end",pp_end);				//リピート区間終了点
-			MPSIntent.putExtra("tugiList_id",-1 );
+			MPSIntent.putExtra("tugiList_id",pref_zenkyoku_list_id );
 			MPSIntent.putExtra("tugiList","");
 
 			dbMsg +=" ,getAction=" + MPSIntent.getAction();/////////////////////////////////////
@@ -1386,12 +1392,6 @@ public class MaraSonActivity extends AppCompatActivity
 				mIndex = Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
 				dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
 				if(mIndex < 0 ){					//読み込んだリストに該当する曲が無ければ
-	//				sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-	//				myEditor = sharedPref.edit();
-	//				myEditor.putString( "nowList",  getResources().getString(R.string.listmei_zemkyoku));			//全曲リストで読み直し
-	//				myEditor.putString( "nowList_id", String.valueOf("-1"));
-	//				Boolean kakikomi = myEditor.commit();	// データの保存
-	//				dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
 					Item.itemsClear();
 					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
 					mItems = Item.getItems( this);
@@ -2009,63 +2009,6 @@ public class MaraSonActivity extends AppCompatActivity
 
 	FileInfoEdit fieDialog;
 	int fie_cBtn;
-	//http://androidguide.nomaki.jp/html/dlg/custom/customMain.html
-//	public void creditNameTouroku( ){								//クレジットされているアーティスト名のリスト登録の扱い
-//		final String TAG = "creditNameTouroku[MaraSonActivity]";
-//		String dbMsg= "開始;";/////////////////////////////////////
-//		try{
-//			fieDialog = new FileInfoEdit(this , 2 , dataFN , creditArtistName , albumArtist , albumName , String.valueOf(releaceYear) , titolName);
-//			dbMsg= "setTitle;";/////////////////////////////////////
-//			fie_cBtn = 0;
-//			fieDialog.setTitle(getResources().getString(R.string.menu_funk_artistmei));			//情報編集
-//
-//			dbMsg= "setOnCancelListener;";/////////////////////////////////////
-//
-//			fieDialog.setOnCancelListener(new DialogInterface.OnCancelListener(){			// cancel()もしくは戻るボタンで発生
-//				public void onCancel(DialogInterface dialog){
-//					final String TAG = "onCancel[MaraSonActivity]";
-//					String dbMsg= "開始;";/////////////////////////////////////
-//					try{
-//						dbMsg= dialog.toString();/////////////////////////////////////
-//						fie_cBtn = R.id.fie_nega_btn;
-//						myLog(TAG, dbMsg);
-//					} catch (Exception e) {
-//						myErrorLog(TAG ,  dbMsg + "で" + e);
-//					}
-//				}
-//			});
-//
-//			dbMsg= "setOnDismissListener;";/////////////////////////////////////
-//			fieDialog.setOnDismissListener(new DialogInterface.OnDismissListener(){			// 閉じる
-//				public void onDismiss(DialogInterface dialog){
-//					final String TAG = "onDismiss[MaraSonActivity]";
-//					String dbMsg= "開始;";/////////////////////////////////////
-//					try{
-//						dbMsg= "hashCode="+ dialog.hashCode();//
-//			//			dbMsg= "getModifiers="+ dialog.getClass().getModifiers();//確定も中止も；getModifiers=1,POSITIVE=-1,NEGATIVE=-2
-//			//			dbMsg +=",POSITIVE="+ dialog.BUTTON_POSITIVE + ",NEGATIVE="+ dialog.BUTTON_NEGATIVE;/////////////////////////////////////
-//						dbMsg +=",fie_cBtn="+ fie_cBtn;/////////////////////////////////////
-//						if(fie_cBtn != R.id.fie_nega_btn){
-//							int reqCode= R.string.menu_funk_artistmei;					// syoki_Yomi1 = syoki_Yomikomi+1;CreateArtistListの初回作成
-//							Intent intentML = new Intent(getApplication(),MuList.class);						//parsonalPBook.thisではメモリーリークが起こる
-//							intentML.putExtra("reqCode",reqCode);		//何のリストか
-//							intentML.putExtra("albumArtist",albumArtist);		//アルバムアーティスト
-//							startActivityForResult(intentML , reqCode);
-//						}
-//						myLog(TAG, dbMsg);
-//					} catch (Exception e) {
-//						myErrorLog(TAG ,  dbMsg + "で" + e);
-//					}
-//				}
-//			});
-//
-//			dbMsg= "show;";/////////////////////////////////////
-//			fieDialog.show();
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
 
 	public void creditNHanei( List<String> mainList  , String artistMei){			//クレジットアーティスト名のリスト表示名反映後の再表示処理
 		final String TAG = "creditNHanei[MaraSonActivity]";
@@ -2454,9 +2397,7 @@ public class MaraSonActivity extends AppCompatActivity
 				MaraSonActivity.this.rp_pp = false;
 				MaraSonActivity.this.pp_start = 0;
 				MaraSonActivity.this.pp_end = 0;
-//				MaraSonActivity.this.mcPosition = 0;
 				myEditor.putBoolean("pref_nitenkan", MaraSonActivity.this.rp_pp);
-	//			myEditor.putString("repeatType", String.valueOf( -1 ));					//リピート再生の種類
 				myEditor.putString( "pref_nitenkan_start", String.valueOf(MaraSonActivity.this.pp_start));
 				myEditor.putString( "pref_nitenkan_end", String.valueOf(MaraSonActivity.this.pp_end));
 				Boolean kakikomi = myEditor.commit();	// データの保存
@@ -3219,7 +3160,6 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg = "戻り["+ nowList_id + "]" + nowList;		/////////////////////////////////////////////////////////////////////////
 			myEditor.putString( "nowList", String.valueOf(b_List));
 			myEditor.putString( "nowList_id", String.valueOf(modori_List_id));
-	//		myEditor.putString("repeatType", String.valueOf(-1));					//リピート再生の種類
 			myEditor.putBoolean("pref_nitenkan", rp_pp);
 			myEditor.putString( "pref_nitenkan_start", String.valueOf(pp_start));
 			myEditor.putString( "pref_nitenkan_end", String.valueOf(pp_end));
@@ -5281,7 +5221,7 @@ public class MaraSonActivity extends AppCompatActivity
 				boolean retBool ;
 				String retString = null;
 				bundle = intent.getExtras();
-				if(resultCode == RESULT_OK){			//-1
+				if(resultCode == RESULT_OK){
 					switch(requestCode) {
 						case syoki_start_up:			//100;onCreate、jyoukyouBunki→preRead→　ここ　→終了後、onCreateまで戻る
 							ruikei_titol = String.valueOf( bundle.getInt("key.retInt"));		//全タイトルカウント//MediaStore.Audio.Mediaのレコード数
@@ -5352,7 +5292,7 @@ public class MaraSonActivity extends AppCompatActivity
 							dbMsg +="[プレイリストID=" + b_nowList_id;/////////////////////////////////////
 							MaraSonActivity.this.nowList_id = bundle.getInt("nowList_id");
 							dbMsg +="→" + MaraSonActivity.this.nowList_id +"]" + MaraSonActivity.this.nowList;/////////////////////////////////////
-							if( -1 < MaraSonActivity.this.nowList_id ){
+							if( pref_zenkyoku_list_id != MaraSonActivity.this.nowList_id ){
 								artistCountLL.setVisibility(View.GONE);				//アーティストカウント
 								albumCountLL.setVisibility(View.GONE);					//アルバムカウント
 								titolCountLL.setVisibility(View.GONE);					//タイトルカウント

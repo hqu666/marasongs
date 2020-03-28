@@ -156,6 +156,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String pref_artist_bunnri = "1000";		//アーティストリストを分離する曲数
 	public String pref_saikin_tuika = "5";			//最近追加リストのデフォルト枚数
 	public String pref_saikin_sisei = "100";		//最近再生加リストのデフォルト枚数
+
+	public int pref_zenkyoku_list_id;			// 全曲リスト
+	public int saikintuika_list_id;			//最近追加
+	public int saikinsisei_list_id;			//最近再生
+
 	public String play_order;
 	public String artistID;						//アーティストごとの情報
 	public String albumID;							//アルバムごとの情報
@@ -239,21 +244,17 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
-//			rp_pp = myPreferences.rp_pp;							//2点間リピート中
-//			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
-//			pp_end =Integer.parseInt( myPreferences.pp_end);								//リピート区間終了点
 
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
 			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order =myPreferences.play_order;
-//			//アーティストごとの情報
-//			artistID = myPreferences.artistID;
-//			//アルバムごとの情報
-//			albumID = myPreferences.albumID;
-//			//曲ごとの情報
-//			audioID = myPreferences.audioID;
+
+			pref_zenkyoku_list_id = myPreferences.pref_zenkyoku_list_id;			// 全曲リスト
+			saikintuika_list_id = myPreferences.saikintuika_list_id;			//最近追加
+			saikinsisei_list_id = myPreferences.saikinsisei_list_id;			//最近再生
+
 			pref_toneList = myPreferences.pref_toneList;		//プリファレンス保存用トーンリスト
 			toneSeparata = myPreferences.toneSeparata;
 			tone_name = myPreferences.tone_name;				//トーン名称
@@ -803,7 +804,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 							mainEditor.putString( "nowList_id", String.valueOf(nowList_id));		//☆intで書き込むとcannot be cast
 							mainEditor.putString( "pref_data_url", dataFN);		//再生中のファイル名
 							mainEditor.putString( "maeList", null);
-							mainEditor.putString( "maeList_id", String.valueOf(-1));		//☆intで書き込むとcannot be cast
+							mainEditor.putString( "maeList_id", String.valueOf(pref_zenkyoku_list_id));		//☆intで書き込むとcannot be cast
 							mainEditor.putString( "maeDatFN", null);		//再生中のファイル名
 							boolean kakikomi = mainEditor.commit();
 							dbMsg += ",書き込み=" + kakikomi;	////////////////
@@ -2064,7 +2065,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg +=",操作指定=" + action + "<<b_state=" + b_state;
 			Intent intent = new Intent(ACTION_STATE_CHANGED);
 			Context context = getApplicationContext();
-			nowList_id = Integer.parseInt(getPrefStr("nowList_id" , "-1" , context));
+			nowList_id = Integer.parseInt(getPrefStr("nowList_id" , String.valueOf(pref_zenkyoku_list_id) , context));
 			dbMsg +=  ",再生中のプレイリスト["  + nowList_id +"]";
 			nowList = getPrefStr("nowList" , context.getResources().getString(R.string.listmei_zemkyoku) , context);	//sharedPref.getString("nowList" , context.getResources().getString(R.string.listmei_zemkyoku));
 			dbMsg += nowList ;			dbMsg +=  "再生中のプレイリスト["  + nowList_id +"]" + nowList;
@@ -2515,7 +2516,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg +="指定リスト無し";
 					nowList = getResources().getString(R.string.listmei_zemkyoku);		// 全曲リスト
 					mainEditor.putString( "nowList", nowList);
-					nowList_id = -1;
+					nowList_id = pref_zenkyoku_list_id;
 					mainEditor.putString( "nowList_id", String.valueOf(nowList_id));
 					nowList_data = null;
 					mainEditor.putString( "nowList_data", nowList_data);
@@ -3015,7 +3016,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
 		@Override
 		public void onCallStateChanged(int state, String number) {
-		final String TAG = "onCallStateChanged[MusicPlayerService]";
+		final String TAG = "onCallStateChanged";
 		String dbMsg="[MusicPlayerService]";
 		try{
 			dbMsg +="state = " + state;/////////////////////////////////////
