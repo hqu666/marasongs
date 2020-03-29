@@ -1,11 +1,17 @@
 package com.hijiyam_koubou.marasongs;
 //Androidアプリでマルチメディアを扱うための基礎知識	http://www.atmarkit.co.jp/ait/articles/1203/28/news128.html
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +28,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
 public class Item implements Comparable<Object> {	// 外部ストレージ上の音楽をあらわすクラス。
 	//プリファレンス
 	public static SharedPreferences sharedPref;
+	public int pref_zenkyoku_list_id;			// 全曲リスト
+	public int saikintuika_list_id;			//最近追加
+	public int saikinsisei_list_id;			//最近再生
+	public String pref_commmn_music="";		//共通音楽フォルダ
+
 	public Editor myEditor ;
 	private static List<Item> items;
 	private static final String TAG = "Item";
@@ -42,6 +54,9 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	final String data;
 	public SimpleDateFormat stf = new SimpleDateFormat("mm:ss SSS");		//02;03 414=123414
 
+	/**
+	 * このクラスのメンバー
+	 * **/
 	public Item(int listid, int _id, String artist, String album_artist, String album, int track, String title, long duration, String data) {			//int lid,
 		this.listid = listid;
 		this._id = _id;
@@ -54,14 +69,18 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		this.data = data;
 	}
 
+	/**
+	 * プレイリストのidで指定されたuriを返す
+	 * mIndexで指定されている
+	 * **/
 	public static Uri getURI(Context context , int id) {		//playNextSong[MusicPlayerService]でsetDataSource
-		final String TAG = "getURI[Item]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "getURI";
+		String dbMsg= "[Item]";/////////////////////////////////////
 		Uri retUri = null;
 		try{
 			Cursor cursor;
 	//		id++;						//20140629暫定
-			dbMsg= "id= " + id;/////////////////////////////////////
+			dbMsg += "id= " + id;/////////////////////////////////////
 			retUri = Uri.parse(items.get(id).data);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -72,7 +91,9 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	//	return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 	}
 
-	public Uri getUriAAT(Context context , String albumArtist , String albumMei , String titol) {		//アルバムアーティスト、アルバム、タイトルからUriを戻す
+	/**
+	 * *アルバムアーティスト、アルバム、タイトルからUriを戻す*/
+	public Uri getUriAAT(Context context , String albumArtist , String albumMei , String titol) {
 		final String TAG = "getUriAAT[Item]";
 		String dbMsg= "開始;";/////////////////////////////////////
 		Uri retUri = null;
@@ -107,9 +128,12 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	//	return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 	}
 
+	/**
+	 * このクラスに読み込まれているデータを全削除
+	 * **/
 	public static List<Item> itemsClear( ) {
-		final String TAG = "itemsClear[Item]";
-		String dbMsg= "開始;";/////////////////////////////////////
+		final String TAG = "itemsClear";
+		String dbMsg= "[Item]";
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			if( items  != null){
@@ -126,6 +150,11 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		return items;
 	}
 
+	/**
+	 * プレイリストにアイテムを追加する
+	 *
+	 * 末尾追加は MusicPlaylist の addMusicToPlaylist で可能
+	 * **/
 	public static List<Item> dbRecordAddItems(Cursor cursor , int nowList_id ,int idCount , List<Item> items) {
 		final String TAG = "dbRecordAddItems";
 		String dbMsg = "[Item];";
@@ -189,6 +218,11 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		return items;
 	}
 
+	/**
+	 * 全曲dbを返す
+	 *
+	 * runOnUiThread[albumList_yomikomi] が同メソッドから
+	 * */
 	public SQLiteDatabase retDB(Context context) {			//全曲dbを返す
 		final String TAG = "retDB";
 		String dbMsg = "[Item];";
@@ -239,6 +273,9 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			Cursor cursor = null;
 			int nowList_id = -1;
+			int pref_zenkyoku_list_id = -1;
+			String pref_commmn_music="";		//共通音楽フォルダ
+
 			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) , Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			Map<String, ?> keys = sharedPref.getAll();
 			dbMsg += ",keys=" + keys.size() + "件" ;				//in16.pla=29236
@@ -246,8 +283,10 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			boolean kAri = sharedPref.contains("nowList_id");
 			if(kAri){
 				String rVal = sharedPref.getString("nowList_id", "-1");
-//				nowList_id =sharedPref.getInt("nowList_id", -1);		//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
 				nowList_id = Integer.valueOf(rVal);			//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
+				pref_zenkyoku_list_id = sharedPref.getInt("pref_zenkyoku_list_id", -1);
+				pref_commmn_music = sharedPref.getString("pref_commmn_music", "");
+
 			} else{
 				dbMsg += ",nowList_id有り=" + kAri  ;
 			}
@@ -255,10 +294,12 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 
 			String nowList = String.valueOf(keys.get("nowList"));                  //20190506;[-1でjava.lang.NullPointerException:
 			dbMsg += "、nowList=" + nowList  ;
-			if(nowList == null || nowList.equals("null")){
-				nowList_id = -1;
+			if(nowList == null || nowList.equals("null") || nowList_id <0){
+				nowList_id = getPrefInt("pref_zenkyoku_list_id",-1,context);
 				dbMsg += ">>" + nowList_id  ;
 				nowList = context.getResources().getString(R.string.listmei_zemkyoku);					//全曲リストでなければ
+				setPrefStr("nowList",nowList,context);
+				setPrefInt("nowList_id",nowList_id,context);
 				dbMsg +=  ">>全曲リストに補正" ;
 			}
 //			else {
@@ -284,6 +325,124 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 				}
 				//		myLog(TAG,dbMsg );
 				if (items.size() == 0) {
+					if(-1 < nowList_id){
+						List<Map<String, String>> albumArtistLis = new ArrayList<Map<String, String>>();
+						String dMessage = "[" + nowList_id +"]"+nowList;
+
+						Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", nowList_id);
+						String[] columns = null;			//{ idKey, nameKey };
+						String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+						Cursor playLists = context.getContentResolver().query(uri, columns, null, null, c_orderBy );
+						dbMsg += ",該当"+playLists.getCount() +"件";
+						if( playLists.moveToFirst() ){
+							try{
+								String all_songs_file_name = pref_commmn_music + File.separator + context.getString(R.string.all_songs_file_name) + ".m3u8";
+								dbMsg += ",全曲リストの汎用ファイル= " + all_songs_file_name;
+//java.lang.IllegalArgumentException: File /storage/emulated/0/Music/全曲リスト.m3u8 contains a path separator
+								FileInputStream in = new FileInputStream( new File(all_songs_file_name));
+//								FileInputStream in = context.openFileInput(all_songs_file_name);
+								dbMsg += ",in=" + in.available();
+								BufferedReader reader = new BufferedReader( new InputStreamReader( in , "UTF-8") );
+								String allSonglist = "";
+								String rURL;
+								while( (rURL = reader.readLine()) != null ){
+									dbMsg2 +=",rURL= "+ rURL;
+									allSonglist = allSonglist + rURL + "\n";
+									String extntionStr = "";
+									if(rURL.contains(".mp3" )){
+										extntionStr = ".mp3";
+									}else if(rURL.contains(".aac" )){
+										extntionStr = ".aac";
+									}else if(rURL.contains(".m4a" )){
+										extntionStr = ".m4a";
+									}else if(rURL.contains(".mp4" )){
+										extntionStr = ".mp4";
+									}else if(rURL.contains(".flac" )){
+										extntionStr = ".flac";
+									}else if(rURL.contains(".wav" )){
+										extntionStr = ".wav";
+									}else if(rURL.contains(".aif" )){
+										extntionStr = ".aif";
+									}else if(rURL.contains(".ogg" )){
+										extntionStr = ".ogg";
+									}else if(rURL.contains(".wma" )){
+										extntionStr = ".wma";
+									}else if(rURL.contains(".mp3" )){
+										extntionStr = ".mp3";
+									}
+									dbMsg2 +=",extntionStr="+ extntionStr;
+									String[] rStrs = rURL.split(extntionStr,0);
+									dbMsg2 += rStrs.length + " で分割>>";
+									rURL = rStrs[0];
+									String commentStr = rStrs[1];
+									rStrs = rURL.split(pref_commmn_music,0);
+									rURL = pref_commmn_music + rStrs[1] + extntionStr;
+									if(commentStr.contains("#" )){
+										dbMsg2 += ">remark>";
+										rStrs = commentStr.split("\\#",0);
+										dbMsg2 += rStrs.length + "分割>>";
+										commentStr = rStrs[1];
+										dbMsg2 += ",commentStr=" + commentStr;
+//									if(MuList.this.tuikaSakiListName.equals(MuList.this.getResources().getString(R.string.all_songs_file_name))){
+										String[] aas = commentStr.split("\\,",0);
+										dbMsg2 += aas.length + "分割>>";
+										String album_artist = aas[0];
+										String album = aas[1];
+										boolean isAdd = false;
+										if( 0 < albumArtistLis.size()){
+											Map<String, String> rtMap= albumArtistLis.get(albumArtistLis.size() - 1);
+											String b_album_artist = rtMap.get("album_artist");
+											String b_album = rtMap.get("album");
+											if(!album.equals(b_album)){		//!album_artist.equals(b_album_artist) &&
+												isAdd = true;
+											}
+										}else{
+											isAdd = true;
+										}
+										if(isAdd){
+											dbMsg += "[" + albumArtistLis.size() + "枚目]";
+											dbMsg += album_artist;
+											dbMsg += ",album=" + album;
+											Map<String, String> albumArtistMap= new HashMap<>();
+											albumArtistMap.put("album_artist" , album_artist);
+											albumArtistMap.put("album" , album);
+											albumArtistMap.put("data" , rURL);
+											albumArtistLis.add(albumArtistMap);
+										}
+
+//									}
+									}
+
+								}
+								reader.close();
+							}catch( IOException e ){
+								myErrorLog(TAG,dbMsg + dbMsg2 + "で"+e.toString());
+							}
+
+							do{
+								int play_order = playLists.getPosition();
+								dbMsg += ","+ play_order + ")";
+								String album_artist = albumArtistLis.get(play_order).get("album_artist");
+								dbMsg += ","+ album_artist ;
+								items.add(new Item(
+										nowList_id,
+										play_order,
+										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST)),	//artist
+										playLists.getString(playLists.getColumnIndex(album_artist)), 	//album_artist
+										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM)),	//album
+										playLists.getInt(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK)),        //track
+										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),	//title
+										Long.valueOf(playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION))),	//duration
+										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)) 	//_data
+								));
+								//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
+								dbMsg2 += "[" + items.get(items.size() - 1)._id + "]" + items.get(items.size() - 1).artist + "(" + items.get(items.size() - 1).album_artist + ")" +
+										items.get(items.size() - 1).album + "[" + items.get(items.size() - 1).track + "]" + items.get(items.size() - 1).title + " >> " + items.get(items.size() - 1).data;/////////////////////////////////////
+							}while(playLists.moveToNext());
+						}
+						playLists.close();
+					}
+
 					if (nowList.equals(context.getResources().getString(R.string.listmei_zemkyoku))) {
 						sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file), android.content.Context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
 						dbMsg += ",全曲リストを読み込み";
@@ -319,8 +478,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							dbMsg += "；全曲リストテーブル名=" + zenkyokuTName;
 							String c_selection = null;
 							String[] c_selectionArgs= null;
-							String c_orderBy= null;
-							cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, c_orderBy);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
+//							c_orderBy= null;
+							cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, null);
 
 //							String c_orderBy = null;            //⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
 //							cursor = Zenkyoku_db.query(zenkyokuTName, null, null, null, null, null, c_orderBy);    //リString table, String[] columns,new String[] {MotoN, albamN}
@@ -549,6 +708,46 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
 		Util.myErrorLog(TAG , dbMsg);
+	}
+
+	public static int getPrefInt(String keyNmae , int defaultVal,Context context) {        //プリファレンスの読込み
+		int retInt = -99;
+		final String TAG = "getPrefStr";
+		String dbMsg="[MaraSonActivity]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
+
+//		try {
+//			Context context = getApplicationContext();
+//			dbMsg +=",context";
+//			String pefName = context.getResources().getString(R.string.pref_main_file);
+//			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+//			myEditor = sharedPref.edit();
+//			retInt = sharedPref.getInt(keyNmae , defaultVal);
+//			dbMsg +=  ",retIn="  + retInt;
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+		return retInt;
+	}
+
+	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "setPrefInt";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = Util.setPrefInt(keyNmae , wrightVal,context);
+		return retBool;
+	}
+
+	public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "setPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = Util.setPreStr(keyNmae , wrightVal,context);
+		return retBool;
 	}
 
 }
