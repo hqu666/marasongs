@@ -26,13 +26,15 @@ import java.util.Map;
 public class MusicPlaylist {
 
     public Context cContext ;
-//    public plogTask pTask;
+    public MyPreferences myPreferences;
 
     public String tuikaSakiListName;		//操作対象リスト名
     public int tuikaSakiListID;		//操作対象リスト名
     public Uri tuikaSakilistUri;		//編集中リストUri
     public Cursor playLists;
-
+    public String pref_commmn_music="";		//共通音楽フォルダ
+    public String nowAlbumArtist;
+    public String nowAlbum;
 
     public int reqCode = -1;
     static final int CONTEXT_del_playlist = 100;			//このリストを削除
@@ -41,12 +43,13 @@ public class MusicPlaylist {
     /***
      * Androidのlaylistを使用する
      * ****/
-    public MusicPlaylist(Context context) {					//アーティスト名の置き換えリスト
+    public MusicPlaylist(Context context) {
         final String TAG = "MusicPlaylist";
         String dbMsg= "[MusicPlaylist]";
         try{
-            cContext = context;						//第１引数; context ;読出し元;データベースを所有するコンテキストオブジェクトを指定します。
-
+            cContext = context;
+            myPreferences = new MyPreferences();
+            pref_commmn_music= myPreferences.pref_commmn_music;		//共通音楽フォルダ
 
 //            myLog(TAG,dbMsg);
         }catch (Exception e) {
@@ -339,7 +342,7 @@ public class MusicPlaylist {
                 dbMsg += ">>成功 listName＝ " + listName + ",playlist_id=" + playlist_id;
                 //add playlist : プレイリスト2015-12-03 14:16:37,42529
             }
-            myLog(TAG, dbMsg);
+//            myLog(TAG, dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
@@ -476,6 +479,53 @@ public class MusicPlaylist {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
         return result_uri;
+    }
+
+    /**
+     * uriから指定された名称を返す
+     *
+     * reqItem は 0:アーティスト、1:アルバム2、:タイトル
+     * **/
+    public String uri2Item(String uriStr , int reqItem) {
+        final String TAG = "uri2Item";
+        String dbMsg= "[MusicPlaylist]";
+        String retStr = "";
+        try{
+            String albumArtist = "";
+            String album = "";
+            String titol = "";
+
+            dbMsg += "uriStr" + uriStr;
+            dbMsg += "、pref_commmn_music=" + pref_commmn_music;
+            String removed = uriStr.replace(pref_commmn_music + File.separator, "");
+            String rStrs[] = removed.split(File.separator);
+            if(rStrs.length == 3){
+                albumArtist = rStrs[0];
+                album = rStrs[1];
+                titol = rStrs[2];
+            }
+            dbMsg += "、reqItem=" + reqItem;
+            switch(reqItem) {
+                case 0:
+                    dbMsg += ":アーティスト";
+                    retStr = albumArtist;
+                    break;
+                case 1:
+                    dbMsg += ":アルバム";
+                    retStr = album;
+                    break;
+                case 2:
+                    dbMsg += ":タイトル";
+                    retStr = titol;
+                    break;
+            }
+
+            dbMsg += ",retStr" + retStr;
+            myLog(TAG,dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG,dbMsg + "で"+e.toString());
+        }
+        return retStr;
     }
 
     //////////////////////////////////////

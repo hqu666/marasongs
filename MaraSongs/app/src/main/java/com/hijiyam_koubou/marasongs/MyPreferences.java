@@ -84,6 +84,7 @@ public class MyPreferences extends PreferenceActivity {
 	public String pref_file_album="";		//総アルバム数
 	public String pref_file_saisinn="";	//最新更新日
 
+	public String pref_data_url = "";
 	public String nowList_id;				//再生中のプレイリストID	playListID
 	public String nowList;					//再生中のプレイリスト名	playlistNAME
 	public int pref_zenkyoku_list_id = -1;			// 全曲リスト
@@ -718,6 +719,7 @@ public class MyPreferences extends PreferenceActivity {
 							if (key.equals("pref_data_url")) {
 								saisei_fname = String.valueOf(keys.get(key));
 								dbMsg += "　は再生中のファイル";
+								pref_data_url = saisei_fname;
 							} else if (key.equals("pref_position")) {
 								pref_saisei_jikan = String.valueOf(keys.get(key));        //再開時間		Integer.valueOf(keys.get(key).toString());
 								dbMsg += " = ";//////////////////

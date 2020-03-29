@@ -100,6 +100,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public boolean pref_notifplayer =true;				//ノティフィケーションプレイヤー</string>
 	public String myPFN = "ma_pref";
 	public String pref_commmn_music = "";				//音楽ファイルの格納先
+	public String pref_data_url = "";
 
 	long start;		// 開始時刻の取得
 	long startPart;		// 開始時刻の取得
@@ -206,6 +207,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pref_commmn_music = myPreferences.pref_commmn_music;
 			all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
 			dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
+			pref_data_url = myPreferences.pref_data_url;
+
 			album_artist_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
 			dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;
 
@@ -1925,6 +1928,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //				if(musicPlaylist == null){
 					musicPlaylist = new MusicPlaylist(ZenkyokuList.this);	//cContext=com.hijiyam_koubou.marasongs.ZenkyokuList@6013445,
 //				}
+				dbMsg += ",pref_data_url=" + pref_data_url;
+				if(pref_data_url.equals("") || pref_data_url == null){
+					pref_data_url = cursor.getString(cursor.getColumnIndex("DATA"));
+					dbMsg += ">>" + pref_data_url;
+					setPrefStr("pref_data_url",pref_data_url,ZenkyokuList.this);
+				}
 
 				myLog(TAG,dbMsg);
 				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage_stok , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
@@ -1987,7 +1996,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
                     cCount++;
 				}
             }
-            myLog(TAG,dbMsg);
+//            myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
@@ -3984,6 +3993,16 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		Util UTIL = new Util();
 		Util.myErrorLog(TAG , dbMsg);
 	}
+
+	public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
+		boolean retBool = false;
+		final String TAG = "setPrefStr";
+		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		Util UTIL = new Util();
+		retBool = Util.setPreStr(keyNmae , wrightVal,context);
+		return retBool;
+	}
+
 }
 //http://greety.sakura.ne.jp/redo/2011/02/asynctask.html
 

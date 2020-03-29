@@ -189,9 +189,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		return items;
 	}
 
-
 	public SQLiteDatabase retDB(Context context) {			//全曲dbを返す
-		final String TAG = "retDB[MaraSonActivity]";
+		final String TAG = "retDB";
 		String dbMsg = "[Item];";
 		SQLiteDatabase Zenkyoku_db = null;
 		try{
@@ -225,8 +224,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		}
 		return Zenkyoku_db;
 	}
-
-
 
 	/**
 	 * *ストレージ上から音楽を探してリストを返す。
