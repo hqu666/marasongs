@@ -791,6 +791,7 @@ public class Util {
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
+			return defaultVal.toString();
 		}
 		return retStr;
 	}
@@ -829,7 +830,7 @@ public class Util {
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
 			SharedPreferences.Editor myEditor = sharedPref.edit();
-			myEditor.putString( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
+			myEditor.putString( keyNmae, wrightVal.toString());						//再生中のファイル名  Editor に値を代入
 //			myEditor.apply();			//書き込み実行：20200307欠落確認
 			retBool = myEditor.commit();
 			dbMsg +=">>書込み成功="+ retBool;

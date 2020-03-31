@@ -863,19 +863,7 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.putExtra("continu_status",toPlaying);
 			dbMsg += ","+ n_dataFN;/////////////////////////////////////
 			if( n_dataFN != null ){				//n_dataFN
-//				if( mItems == null){
-//					dbMsg +=",mItems =" + mItems;/////////////////////////////////////
-//					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//					mItems = Item.getItems( this);
-//					dbMsg +=">>" + mItems.size() + "件";/////////////////////////////////////
-//				}
-////					if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){		// ;		// 全曲リスト</string>
-////						mIndex = Item.getMPItem( n_dataFN );			//インデックスの逆検索	, mItems  ,getApplicationContext()
-////					}
-////					dbMsg +="[mIndex;" + mIndex;/////////////////////////////////////
-//				dbMsg += "/" + mItems.size() + "]";/////////////////////////////////////
 				MPSIntent.putExtra("dataFN",n_dataFN);	//n_dataFN
-		//		MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);				//リスト選択後
 			} else {
 
 				if(dataFN != null){          //        &&  pref_data_url.equals("")
@@ -1358,7 +1346,6 @@ public class MaraSonActivity extends AppCompatActivity
 				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
 				mItems = Item.getItems( this);
 				dbMsg += "、mItems作り直し；" + mItems.size() + "件";
-
 			}
 
 			if(urlStr == null || urlStr.equals("") ||  urlStr.equals("null")) {
@@ -1399,11 +1386,6 @@ public class MaraSonActivity extends AppCompatActivity
 					dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
 				}
 				songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
-	//			if( rp_pp ){				//2点間リピート中
-	//				songIDTotal = 1;
-	//			}else{
-	//				songIDTotal = mItems.size();							//20160113; + 1
-	//			}
 				dbMsg +="/" + songIDTotal +"曲";
 				titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
 				playingItem = mItems.get(mIndex);							//☆1始まりのIdを0始まりのインデックスに	再生中の楽曲レコード
@@ -5693,7 +5675,6 @@ public class MaraSonActivity extends AppCompatActivity
 					mItems = Item.getItems( MaraSonActivity.this);
 					dbMsg += ">>mItems読込み>>="+mItems.size() +"件";
 				}
-//				nowList_id = extras.getInt("nowList_id");					//何のリストか
 				dbMsg +="{"+ nowList_id ;/////////////////////////////////////
 				String rStr=extras.getString("nowList");
 				dbMsg +="]rStr="+ rStr ;/////////////////////////////////////

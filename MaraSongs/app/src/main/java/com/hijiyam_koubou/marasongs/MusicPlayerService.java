@@ -82,7 +82,7 @@ import android.media.session.MediaController.TransportControls;
 @SuppressLint("InlinedApi")
 public class MusicPlayerService  extends Service implements  MusicFocusable,PrepareMusicRetrieverTask.MusicRetrieverPreparedListener  , OnCompletionListener, OnPreparedListener{
 	//	, OnErrorListener,
-	static Context rContext;
+	public Context rContext;			//static
 	OrgUtil ORGUT;				//自作関数集
 	MaraSonActivity MUP;								//音楽プレイヤー
 	MusicPlaylist musicPlaylist ;
@@ -130,8 +130,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		Focused			// we have full audio focus
 	}
 	private AudioFocus mAudioFocus = AudioFocus.NoFocusNoDuck;						// do we have audio focus?
-	private List<Item> mItems;
-	private int mIndex;						//play_order
+	public List<Item> mItems;			//private
+	public int mIndex;						//play_order
 	private int tugiNoKyoku ;
 	private AudioManager mAudioManager;
 	public TimerTask timertask;

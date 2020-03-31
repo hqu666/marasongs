@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,23 +17,32 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.AbstractCursor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
 public class Item implements Comparable<Object> {	// 外部ストレージ上の音楽をあらわすクラス。
+
+//	private List<Item> mItems;
+	public static List<Item> items;		//static
+
 	//プリファレンス
 	public static SharedPreferences sharedPref;
 	public int pref_zenkyoku_list_id;			// 全曲リスト
@@ -41,9 +51,9 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	public String pref_commmn_music="";		//共通音楽フォルダ
 
 	public Editor myEditor ;
-	private static List<Item> items;
 	private static final String TAG = "Item";
 	final int listid;						//作成したリストの連番
+	final int play_order;					//リスト内の再生順
 	final int _id;						//MediaStore.Audio.Media._ID
 	final String artist;				//クレジットアーティスト名
 	final String album_artist;			//アルバムアーティスト
@@ -57,8 +67,9 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	/**
 	 * このクラスのメンバー
 	 * **/
-	public Item(int listid, int _id, String artist, String album_artist, String album, int track, String title, long duration, String data) {			//int lid,
+	public Item(int listid, int play_order, int _id, String artist, String album_artist, String album, int track, String title, long duration, String data) {			//int lid,
 		this.listid = listid;
+		this.play_order = play_order;
 		this._id = _id;
 		this.artist = artist;
 		this.album_artist = album_artist;
@@ -73,7 +84,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	 * プレイリストのidで指定されたuriを返す
 	 * mIndexで指定されている
 	 * **/
-	public static Uri getURI(Context context , int id) {		//playNextSong[MusicPlayerService]でsetDataSource
+	public static Uri getURI(Context context , int id) {		//playNextSong[MusicPlayerService]でsetDataSource	static
 		final String TAG = "getURI";
 		String dbMsg= "[Item]";/////////////////////////////////////
 		Uri retUri = null;
@@ -164,7 +175,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			Util UTIL = new Util();
 //			UTIL.dBaceColumnCheck( cursor ,  cPosition);
 
-
+			int auduo_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("AUDIO_ID")));
 			String ArtistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
 			dbMsg += ",ARTIST=" + ArtistName;
 			String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
@@ -191,6 +202,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			items.add(new Item(
 					nowList_id,
 					idCount,				//id	Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id")))
+					auduo_id,
 					ArtistName,						//cursor.getString(cursor.getColumnIndex("ARTIST")),								//artist
 					albumArtist,				//cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")),					//album_artist
 					albumName,					//cursor.getString(cursor.getColumnIndex("ALBUM")),								//album
@@ -265,66 +277,84 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	 *  @return 見つかった音楽のリスト
 	 *  プレイリストからデータを読み込む時に再生順に齟齬が有れば修正する
 	 *  */
-	public static List<Item> getItems(Context context) {
+	public static List<Item> getItems(Context context) {	//static
 		final String TAG = "getItems";
 		String dbMsg = "[Item];";
 		String dbMsg2 = "";
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
-			Cursor cursor = null;
-			int nowList_id = -1;
-			int pref_zenkyoku_list_id = -1;
-			String pref_commmn_music="";		//共通音楽フォルダ
+			if(items == null){
+				dbMsg += ",初回作成" ;
 
-			sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) , Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			Map<String, ?> keys = sharedPref.getAll();
-			dbMsg += ",keys=" + keys.size() + "件" ;				//in16.pla=29236
+				Cursor cursor = null;
+				int nowList_id = -1;
+				String nowList = "";		//			int pref_zenkyoku_list_id = -1;
+				int pref_zenkyoku_list_id = -1;
+				String pref_commmn_music="";		//共通音楽フォルダ
+				String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 
-			boolean kAri = sharedPref.contains("nowList_id");
-			if(kAri){
-				String rVal = sharedPref.getString("nowList_id", "-1");
-				nowList_id = Integer.valueOf(rVal);			//☆getIntでは java.lang.String cannot be cast to java.lang.Integer
-				pref_zenkyoku_list_id = sharedPref.getInt("pref_zenkyoku_list_id", -1);
-				pref_commmn_music = sharedPref.getString("pref_commmn_music", "");
-
-			} else{
-				dbMsg += ",nowList_id有り=" + kAri  ;
-			}
-			dbMsg += ",prefのプレイリスト[" + nowList_id  + "]";				//in16.pla=29236
-
-			String nowList = String.valueOf(keys.get("nowList"));                  //20190506;[-1でjava.lang.NullPointerException:
-			dbMsg += "、nowList=" + nowList  ;
-			if(nowList == null || nowList.equals("null") || nowList_id <0){
-				nowList_id = getPrefInt("pref_zenkyoku_list_id",-1,context);
-				dbMsg += ">>" + nowList_id  ;
-				nowList = context.getResources().getString(R.string.listmei_zemkyoku);					//全曲リストでなければ
-				setPrefStr("nowList",nowList,context);
-				setPrefInt("nowList_id",nowList_id,context);
-				dbMsg +=  ">>全曲リストに補正" ;
-			}
-//			else {
-				if (items != null) {
-					dbMsg += ",items=" + items.size() + "件";
-					if (0 < items.size()) {                                        //既に読み込んでいたら
-						int nlID = items.get(0).listid;
-						dbMsg += "、保持しているのは[" + nlID + "]";
-						if (nlID != nowList_id ||
-								nowList.equals(context.getResources().getString(R.string.playlist_namae_randam)) ||            //ランダム再生
-								nowList.equals(context.getResources().getString(R.string.playlist_namae_repeat))            //リピート再生
-						) {
-							itemsClear();
-//					}else if( nlID != nowList_id ){								//リストが変わっていたら
-//						itemsClear( );
-//					}else{
-//						itemsClear( );
-						}
+				sharedPref = context.getSharedPreferences( context.getResources().getString(R.string.pref_main_file) , Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+				Map<String, ?> keys = sharedPref.getAll();
+				dbMsg += ",keys=" + keys.size() + "件" ;				//in16.pla=29236
+				for (String key : keys.keySet()) {
+					if(key.equals("nowList_id")){
+						nowList_id = Integer.parseInt(keys.get(key).toString());
+						dbMsg += ",nowList_id[" + nowList_id+ "]";
+					} else if (key.equals("nowList")) {
+						nowList = keys.get(key).toString();
+						dbMsg += nowList ;
+					} else if (key.equals("pref_zenkyoku_list_id")) {
+						pref_zenkyoku_list_id = Integer.parseInt(keys.get(key).toString());
+						dbMsg += ",全曲リスト[" + pref_zenkyoku_list_id + "]";
+//				} else if (key.equals("saikintuika_list_id")) {
+//					saikintuika_list_id = Integer.parseInt(keys.get(key).toString());
+//					dbMsg += ",最近追加[" + saikintuika_list_id + "]";
+//				} else if (key.equals("saikinsisei_list_id")) {
+//					saikinsisei_list_id = Integer.parseInt(keys.get(key).toString());
+//					dbMsg += ",最近再生[" + saikinsisei_list_id + "]";
+					} else if (key.equals("pref_commmn_music")) {
+						pref_commmn_music = keys.get(key).toString();
+						dbMsg += ",共通音楽フォルダ=" + pref_commmn_music;
 					}
-					dbMsg += ",items=" + items.size() + "件に";
-				} else {
-					items = new LinkedList<Item>();
 				}
-				//		myLog(TAG,dbMsg );
-				if (items.size() == 0) {
+				if(nowList == null || nowList.equals("null") || nowList_id <0){
+					nowList_id = pref_zenkyoku_list_id;			//getPrefInt("pref_zenkyoku_list_id",-1,context);
+					dbMsg += ">>" + nowList_id  ;
+					nowList = context.getResources().getString(R.string.listmei_zemkyoku);					//全曲リストでなければ
+					setPrefStr("nowList",nowList,context);
+					setPrefInt("nowList_id",nowList_id,context);
+					dbMsg +=  ">>全曲リストに補正" ;
+				}
+//				if (items != null) {
+//					dbMsg += ",items=" + items.size() + "件";
+//					if (0 < items.size()) {                                        //既に読み込んでいたら
+//						int nlID = items.get(0).listid;
+//						dbMsg += "、保持しているのは[" + nlID + "]";
+//						if (nlID != nowList_id ||
+//								nowList.equals(context.getResources().getString(R.string.playlist_namae_randam)) ||            //ランダム再生
+//								nowList.equals(context.getResources().getString(R.string.playlist_namae_repeat))            //リピート再生
+//						) {
+//							itemsClear();
+//						}
+//					}
+//					dbMsg += ",items=" + items.size() + "件に";
+//				} else {
+					items = new LinkedList<Item>();
+//				}
+//				if (items.size() == 0) {
+//					sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file), android.content.Context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
+					dbMsg += ",全曲リストを読み込み";
+					String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+					File databasePath = context.getDatabasePath(fn);
+					dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+					ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+					dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+					File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+					//☆初回時は未だDBが作られていないのでgetApplicationContext()
+					dbMsg += ",dbF=" + dbF;
+					dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+					//	dbMsg += ",Zenkyoku_db:PageSiz=" + Zenkyoku_db.getPageSize();
+
 					if(-1 < nowList_id){
 						List<Map<String, String>> albumArtistLis = new ArrayList<Map<String, String>>();
 						String dMessage = "[" + nowList_id +"]"+nowList;
@@ -335,126 +365,62 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 						Cursor playLists = context.getContentResolver().query(uri, columns, null, null, c_orderBy );
 						dbMsg += ",該当"+playLists.getCount() +"件";
 						if( playLists.moveToFirst() ){
-							try{
-								String all_songs_file_name = pref_commmn_music + File.separator + context.getString(R.string.all_songs_file_name) + ".m3u8";
-								dbMsg += ",全曲リストの汎用ファイル= " + all_songs_file_name;
-//java.lang.IllegalArgumentException: File /storage/emulated/0/Music/全曲リスト.m3u8 contains a path separator
-								FileInputStream in = new FileInputStream( new File(all_songs_file_name));
-//								FileInputStream in = context.openFileInput(all_songs_file_name);
-								dbMsg += ",in=" + in.available();
-								BufferedReader reader = new BufferedReader( new InputStreamReader( in , "UTF-8") );
-								String allSonglist = "";
-								String rURL;
-								while( (rURL = reader.readLine()) != null ){
-									dbMsg2 +=",rURL= "+ rURL;
-									allSonglist = allSonglist + rURL + "\n";
-									String extntionStr = "";
-									if(rURL.contains(".mp3" )){
-										extntionStr = ".mp3";
-									}else if(rURL.contains(".aac" )){
-										extntionStr = ".aac";
-									}else if(rURL.contains(".m4a" )){
-										extntionStr = ".m4a";
-									}else if(rURL.contains(".mp4" )){
-										extntionStr = ".mp4";
-									}else if(rURL.contains(".flac" )){
-										extntionStr = ".flac";
-									}else if(rURL.contains(".wav" )){
-										extntionStr = ".wav";
-									}else if(rURL.contains(".aif" )){
-										extntionStr = ".aif";
-									}else if(rURL.contains(".ogg" )){
-										extntionStr = ".ogg";
-									}else if(rURL.contains(".wma" )){
-										extntionStr = ".wma";
-									}else if(rURL.contains(".mp3" )){
-										extntionStr = ".mp3";
-									}
-									dbMsg2 +=",extntionStr="+ extntionStr;
-									String[] rStrs = rURL.split(extntionStr,0);
-									dbMsg2 += rStrs.length + " で分割>>";
-									rURL = rStrs[0];
-									String commentStr = rStrs[1];
-									rStrs = rURL.split(pref_commmn_music,0);
-									rURL = pref_commmn_music + rStrs[1] + extntionStr;
-									if(commentStr.contains("#" )){
-										dbMsg2 += ">remark>";
-										rStrs = commentStr.split("\\#",0);
-										dbMsg2 += rStrs.length + "分割>>";
-										commentStr = rStrs[1];
-										dbMsg2 += ",commentStr=" + commentStr;
-//									if(MuList.this.tuikaSakiListName.equals(MuList.this.getResources().getString(R.string.all_songs_file_name))){
-										String[] aas = commentStr.split("\\,",0);
-										dbMsg2 += aas.length + "分割>>";
-										String album_artist = aas[0];
-										String album = aas[1];
-										boolean isAdd = false;
-										if( 0 < albumArtistLis.size()){
-											Map<String, String> rtMap= albumArtistLis.get(albumArtistLis.size() - 1);
-											String b_album_artist = rtMap.get("album_artist");
-											String b_album = rtMap.get("album");
-											if(!album.equals(b_album)){		//!album_artist.equals(b_album_artist) &&
-												isAdd = true;
-											}
-										}else{
-											isAdd = true;
-										}
-										if(isAdd){
-											dbMsg += "[" + albumArtistLis.size() + "枚目]";
-											dbMsg += album_artist;
-											dbMsg += ",album=" + album;
-											Map<String, String> albumArtistMap= new HashMap<>();
-											albumArtistMap.put("album_artist" , album_artist);
-											albumArtistMap.put("album" , album);
-											albumArtistMap.put("data" , rURL);
-											albumArtistLis.add(albumArtistMap);
-										}
-
-//									}
-									}
-
-								}
-								reader.close();
-							}catch( IOException e ){
-								myErrorLog(TAG,dbMsg + dbMsg2 + "で"+e.toString());
-							}
-
+							String pdTitol = nowList + context.getString(R.string.comon_sakusei);		//リピート再生	作成
+							int retInt = playLists.getCount();
+							String pdMessage =  nowList+ ";" + retInt + context.getString(R.string.pp_kyoku);		//書込み　曲
+							dbMsg += ",pdMessage=" + pdMessage;			//fastItemeFn=/storage/sdcard0/Music/Jimmy Cliff/Follow My Mind/07 Remake The World.wma
 							do{
 								int play_order = playLists.getPosition();
-								dbMsg += ","+ play_order + ")";
-								String album_artist = albumArtistLis.get(play_order).get("album_artist");
-								dbMsg += ","+ album_artist ;
+								dbMsg2 += ","+ play_order + ")";
+								int audio_id = playLists.getInt(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
+								String album_artist = playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));
+								String data = playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+
+//								if (dbF.exists()) {
+//									SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
+//									String c_selection = "DATA = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//									String[] c_selectionArgs= {String.valueOf(data)};   			//音楽と分類されるファイルだけを抽出する
+//									cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, null);
+//									if (cursor.moveToFirst()) {
+//										audio_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("AUDIO_ID")));
+//										dbMsg2 += ","+ audio_id + ")";
+//										album_artist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+//										dbMsg2 += album_artist ;
+//									}
+//									cursor.close();
+//									Zenkyoku_db.close();
+//								} else {
+//									dbMsg += ",全曲リスト未作成";
+//								}
+
 								items.add(new Item(
 										nowList_id,
 										play_order,
+										audio_id,
 										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST)),	//artist
-										playLists.getString(playLists.getColumnIndex(album_artist)), 	//album_artist
+										album_artist,
 										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM)),	//album
 										playLists.getInt(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK)),        //track
 										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),	//title
 										Long.valueOf(playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION))),	//duration
-										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)) 	//_data
+										data
+										//playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)) 	//_data
 								));
-								//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
 								dbMsg2 += "[" + items.get(items.size() - 1)._id + "]" + items.get(items.size() - 1).artist + "(" + items.get(items.size() - 1).album_artist + ")" +
 										items.get(items.size() - 1).album + "[" + items.get(items.size() - 1).track + "]" + items.get(items.size() - 1).title + " >> " + items.get(items.size() - 1).data;/////////////////////////////////////
 							}while(playLists.moveToNext());
 						}
 						playLists.close();
 					}
-
+					/*
 					if (nowList.equals(context.getResources().getString(R.string.listmei_zemkyoku))) {
-						sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file), android.content.Context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
-						dbMsg += ",全曲リストを読み込み";
-
-						String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
-						File databasePath = context.getDatabasePath(fn);
-						dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-
-
-//						File f = validateFilePath(fn, false);
-						ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
-						dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+//						sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file), android.content.Context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
+//						dbMsg += ",全曲リストを読み込み";
+//						String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+//						File databasePath = context.getDatabasePath(fn);
+//						dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+//						ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+//						dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
 //						File dbF = context.getDatabasePath(zenkyokuHelper.getDatabaseName());
 //						String saveDir = context.getExternalFilesDir(null).toString();						//メモリカードに保存フォルダ
 //						dbMsg += "、saveDir="+ saveDir;
@@ -462,27 +428,22 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 ////						dbMsg += "、rDir="+ rDir;
 //						File dbF = new File(saveDir + "/databases/" + fn);
 ////						File dbF = new File("/data/data/com.hijiyam_koubou.marasongs/databases/" + fn);
-						File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-						//☆初回時は未だDBが作られていないのでgetApplicationContext()
-						dbMsg += ",dbF=" + dbF;
-						dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+//						File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+//						//☆初回時は未だDBが作られていないのでgetApplicationContext()
+//						dbMsg += ",dbF=" + dbF;
+//						dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
 //						fn = dbF.getPath();
 //						dbMsg += "db= " + fn;
 //						File chFile = new File(dbF);
 //						dbMsg += " ,exists=" + chFile.exists();
 						if (dbF.exists()) {
-//						if (chFile.exists()) {
 							SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
 							dbMsg += ",Zenkyoku_db:PageSiz=" + Zenkyoku_db.getPageSize();
-							String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-							dbMsg += "；全曲リストテーブル名=" + zenkyokuTName;
+//							String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//							dbMsg += "；全曲リストテーブル名=" + zenkyokuTName;
 							String c_selection = null;
 							String[] c_selectionArgs= null;
-//							c_orderBy= null;
 							cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, null);
-
-//							String c_orderBy = null;            //⑧引数orderByには、orderBy句を指定します。	降順はDESC		MediaStore.Audio.Media.TRACK
-//							cursor = Zenkyoku_db.query(zenkyokuTName, null, null, null, null, null, c_orderBy);    //リString table, String[] columns,new String[] {MotoN, albamN}
 							dbMsg += "；" + cursor.getCount() + "件";
 							int idCount = 0;
 							if (cursor.moveToFirst()) {
@@ -497,7 +458,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							dbMsg += ",全曲リスト未作成";
 						}
 					} else if (nowList.equals(context.getResources().getString(R.string.playlist_namae_saikintuika))) {
-						String fn = context.getResources().getString(R.string.playlist_saikintuika_filename);
+						fn = context.getResources().getString(R.string.playlist_saikintuika_filename);
 						dbMsg += "、ファイル=" + fn;
 						File chFile = new File(fn);
 						dbMsg += ",exists=" + chFile.exists();
@@ -581,14 +542,13 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 							cursor.close();
 						}
 					}
+					*/
 					dbMsg += ",書換え結果";
-
-
-				}
-//			}
+//				}
+			}
 			long end=System.currentTimeMillis();		// 終了時刻の取得
+			dbMsg +=","+ items.get(0) + "〜"+ items.get(items.size() -1).data;
 			dbMsg +="["+context.getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]"+items.size() +context.getResources().getString(R.string.comon_ken);		//	<string name="">所要時間</string>
-
 			myLog(TAG,dbMsg );
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + dbMsg2 + "で"+e.toString());
@@ -664,7 +624,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					//	イテレータ	for( Item i : items){はjava.util.ConcurrentModificationException発生
 					String rStr = items.get(i).data;
 					if(rStr.equals(data)){
-						retInt = items.get(i)._id;
+						retInt = items.get(i).play_order;
 						dbMsg +="[" + retInt + "]に" + rStr + "有り";
 						break;
 					}
@@ -699,6 +659,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		}
 		return track - item.track;
 	}
+
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
@@ -708,28 +669,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
 		Util.myErrorLog(TAG , dbMsg);
-	}
-
-	public static int getPrefInt(String keyNmae , int defaultVal,Context context) {        //プリファレンスの読込み
-		int retInt = -99;
-		final String TAG = "getPrefStr";
-		String dbMsg="[MaraSonActivity]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
-
-//		try {
-//			Context context = getApplicationContext();
-//			dbMsg +=",context";
-//			String pefName = context.getResources().getString(R.string.pref_main_file);
-//			sharedPref = context.getSharedPreferences(pefName,context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-//			myEditor = sharedPref.edit();
-//			retInt = sharedPref.getInt(keyNmae , defaultVal);
-//			dbMsg +=  ",retIn="  + retInt;
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-		return retInt;
 	}
 
 	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
