@@ -84,6 +84,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	//	, OnErrorListener,
 	public Context rContext;			//static
 	OrgUtil ORGUT;				//自作関数集
+	public MyApp myApp;
 	MaraSonActivity MUP;								//音楽プレイヤー
 	MusicPlaylist musicPlaylist ;
 
@@ -285,7 +286,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						dbMsg += ",dataFN="+dataFN;
 						if(dataFN != null){
 							dbMsg += ",mIndex="+ mIndex;
-							playingItem = mItems.get(mIndex);	//0始まりでリスト上のインデックス指定
+//							playingItem = mItems.get(mIndex);	//0始まりでリスト上のインデックス指定
 							int mcPosition = 0;
 							int saiseiJikan = (int)playingItem.duration;
 							sharedPref = getSharedPreferences( getResources().getString(R.string.pref_main_file) ,MODE_PRIVATE);		//MODE_WORLD_WRITEABLE 	getSharedPreferences(prefFname,MODE_PRIVATE);
@@ -3478,6 +3479,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg += "起動済み=" + kaisiZumi;/////////////////////////////////////
 			if(! kaisiZumi){  //重複読出し防止
 				ORGUT = new OrgUtil();	//自作関数集
+
 				ruikeiSTTime = 0;			//累積時間
 				ruikeikyoku = 0;			//累積曲数
 				///ここからオリジナル////////////////////////////////////////////////////////////////////////////
@@ -3529,6 +3531,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 				String dataFN = getPrefStr( "pref_data_url" ,"" , MusicPlayerService.this);
 				dbMsg +=  "," + dataFN ;////////////////////////////////////////////////////////////////////////////
+				myApp = (MyApp) this.getApplication();
+				mItems = myApp.getItemList();
 				if( mItems == null){
 					// dbMsg + ",mItems =" + mItems;/////////////////////////////////////
 					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
@@ -3543,6 +3547,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					}
 					dbMsg += "[" + mIndex + "/" + mItems.size() + "]";///////////////////////////////////
 				}
+
+
 				mAudioManager = (AudioManager) getApplicationContext().getSystemService(AUDIO_SERVICE);
 				//			int ringVol = mAudioManager.getStreamVolume(AudioManager.STREAM_RING);
 				//			dbMsg +=",着信音量は" + ringVol;/////////////////////////////////////

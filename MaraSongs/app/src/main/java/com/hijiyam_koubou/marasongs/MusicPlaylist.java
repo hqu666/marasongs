@@ -371,6 +371,94 @@ public class MusicPlaylist {
     }
 
     /**
+     * 指定されたplayListのプレイオーダーにある曲のUrlを返す
+     * ***/
+    public String getPlaylistItemData(int listId , int playOrder){				//指定された名称のリストを作成する
+        String data = null;
+        final String TAG = "getPlaylistItemData";
+        String dbMsg = "[MusicPlaylist]";
+        try{
+            dbMsg += ",[" + listId + "]" + playOrder;
+            Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", listId);
+            String[] columns = null;    //{String.valueOf(playOrder)};			//{ idKey, nameKey };
+            String c_selection =  MediaStore.Audio.Playlists.Members.PLAY_ORDER +" = ? ";
+            String[] selectionArgs = { String.valueOf(playOrder) };
+            Cursor playList = cContext.getContentResolver().query(uri, columns, c_selection, selectionArgs, null );
+//            dbMsg += ",該当"+playList.getCount() +"件";
+            if( playList.moveToFirst() ){
+                data = playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+                dbMsg += ",url=" + data;
+            }else{
+                dbMsg += ",該当無し";
+            }
+            myLog(TAG, dbMsg);
+            playList.close();
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return data;
+    }
+
+    /**
+     * 指定されたplayListからデータを検索し、プレイオーダーを返す
+     * ***/
+    public int getPlaylistItemOrder(int listId , String data){				//指定された名称のリストを作成する
+        int playOrder = -1;
+        final String TAG = "getPlaylistItemOrder";
+        String dbMsg = "[MusicPlaylist]";
+        try{
+            dbMsg += ",[" + listId + "]" + data;
+            Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", listId);
+            String[] columns = null;			//{ idKey, nameKey };
+            String selection =  MediaStore.Audio.Playlists.Members.DATA  + " = ? ";
+            String[] selectionArgs = { data };
+            String c_orderBy = MediaStore.Audio.Playlists.Members.DATA;
+            Cursor playList = cContext.getContentResolver().query(uri, columns, selection, selectionArgs, c_orderBy );
+//            dbMsg += ",該当"+playLists.getCount() +"件";
+            if( playList.moveToFirst() ){
+                playOrder = Integer.parseInt(playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.PLAY_ORDER)));
+                dbMsg += ",playOrder=" + playOrder;
+            }else{
+                dbMsg += ",該当無し";
+            }
+            myLog(TAG, dbMsg);
+            playList.close();
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return playOrder;
+    }
+
+    /**
+     * 指定されたplayListのプレイオーダーにある曲のUrlを返す
+     * ***/
+    public Cursor getPlaylistItems(int listId , int playOrder){				//指定された名称のリストを作成する
+        Cursor playList = null;
+        final String TAG = "getPlaylistItems";
+        String dbMsg = "[MusicPlaylist]";
+        try{
+            dbMsg += ",[" + listId + "]" + playOrder;
+            Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", listId);
+            String[] columns = null;            //{String.valueOf(playOrder)};			//{ idKey, nameKey };
+            String c_selection =  MediaStore.Audio.Playlists.Members.PLAY_ORDER +" = ? ";
+            String[] selectionArgs = { String.valueOf(playOrder) };
+            playList = cContext.getContentResolver().query(uri, columns, c_selection, selectionArgs, null );
+//            dbMsg += ",該当"+playList.getCount() +"件";
+            if( playList.moveToFirst() ){
+                String data = playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+                dbMsg += ",url=" + data;
+            }else{
+                dbMsg += ",該当無し";
+            }
+            myLog(TAG, dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return playList;
+    }
+
+
+    /**
      *  指定された名称のリストを作成する;既に有ればlistIDを返し、無ければ作成してIdを返す */
     public int getPlaylistId(String listName){				//指定された名称のリストを作成する
         int listId = 0;
@@ -484,7 +572,7 @@ public class MusicPlaylist {
     /**
      * uriから指定された名称を返す
      *
-     * reqItem は 0:アーティスト、1:アルバム2、:タイトル
+     * reqItem は 0:アーティスト、1:アルバム、2:タイトル
      * **/
     public String uri2Item(String uriStr , int reqItem) {
         final String TAG = "uri2Item";

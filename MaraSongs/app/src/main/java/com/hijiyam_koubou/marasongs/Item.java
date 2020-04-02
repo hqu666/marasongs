@@ -363,7 +363,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 						String[] columns = null;			//{ idKey, nameKey };
 						String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 						Cursor playLists = context.getContentResolver().query(uri, columns, null, null, c_orderBy );
-						dbMsg += ",該当"+playLists.getCount() +"件";
+						dbMsg += ",該当"+ playLists.getCount() +"件";
+						setPrefInt("list_max" , playLists.getCount() , context);
 						if( playLists.moveToFirst() ){
 							String pdTitol = nowList + context.getString(R.string.comon_sakusei);		//リピート再生	作成
 							int retInt = playLists.getCount();

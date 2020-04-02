@@ -87,6 +87,7 @@ public class MyPreferences extends PreferenceActivity {
 	public String pref_data_url = "";
 	public String nowList_id;				//再生中のプレイリストID	playListID
 	public String nowList;					//再生中のプレイリスト名	playlistNAME
+	public int list_max = -1;			///再生中のプレイリストのアイテム数
 	public int pref_zenkyoku_list_id = -1;			// 全曲リスト
 	public int saikintuika_list_id = -1;			//最近追加
 	public int saikinsisei_list_id = -1;			//最近再生
@@ -747,7 +748,10 @@ public class MyPreferences extends PreferenceActivity {
 								dbMsg += "プレイリスト名=" + nowList;////////////////////////////////////////////////////////////////////////////
 							} else if (key.equals("play_order")) {
 								play_order = keys.get(key).toString();
-								dbMsg += "(play_order=" + play_order + ")";////////////////////////////////////////////////////////////////////////////
+								dbMsg += "(play_order=" + play_order + ")";
+							} else if (key.equals("list_max")) {
+								list_max = Integer.parseInt(keys.get(key).toString());
+								dbMsg += "(list_max=" + list_max + "件";		///再生中のプレイリストのアイテム数
 							} else if (key.equals("artistID")) {
 								artistID = keys.get(key).toString();
 								dbMsg += ",アーティスト=" + artistID;////////////////////////////////////////////////////////////////////////////
