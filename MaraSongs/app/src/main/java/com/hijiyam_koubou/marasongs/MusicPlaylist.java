@@ -406,7 +406,6 @@ public class MusicPlaylist {
             } else {
                 dbMsg += ",全曲リスト未作成";
             }
-
             myLog(TAG, dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
