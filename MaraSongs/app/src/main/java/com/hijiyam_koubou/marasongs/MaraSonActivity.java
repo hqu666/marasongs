@@ -342,9 +342,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public String psSarviceUri;
 	public ComponentName MPSName;
 	public MusicPlayerService MPS;
-	private List<Item> mItems = null;
-//	private int mIndex;
-	private Item playingItem;						//再生中の楽曲レコード
+	private int mIndex;										//playList中の再生順
 	public MusicReceiver mReceiver;
 	public Handler mHandler = new Handler();
 	public IntentFilter mFilter;
@@ -1342,13 +1340,6 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg += "検索対象；" + urlStr;
 			dbMsg += "、mIndex；" + mIndex;
-//			if( mItems == null){
-//				Item.itemsClear();
-//				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//				mItems = Item.getItems( this);
-//				dbMsg += "、mItems作り直し；" + mItems.size() + "件";
-//			}
-
 			if(urlStr == null || urlStr.equals("") ||  urlStr.equals("null")) {
 				urlStr = null;
 				urlStr = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
@@ -1363,10 +1354,10 @@ public class MaraSonActivity extends AppCompatActivity
 						}
 						dbMsg += ">dataURL>" + urlStr;
 							if(urlStr == null || urlStr.equals("")) {
-							if(playingItem != null) {
-								urlStr = playingItem.data;
-								dbMsg += ">>" + urlStr;
-							}
+//							if(playingItem != null) {
+//								urlStr = playingItem.data;
+//								dbMsg += ">>" + urlStr;
+//							}
 						}
 					}
 				}
@@ -1378,22 +1369,12 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += "[nowList_id=" + nowList_id +"]F" + nowList ;
 				toolbar.setTitle(nowList);
 				mIndex = musicPlaylist.getPlaylistItemOrder(nowList_id,urlStr);
-						//Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
-				dbMsg += "(mIndex=" + mIndex+")" ;			//+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
-//				if(mIndex < 0 ){					//読み込んだリストに該当する曲が無ければ
-//					Item.itemsClear();
-//					mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//					mItems = Item.getItems( this);
-//					mIndex = Item.getMPItem( urlStr);			//インデックスの逆検索	 , mItems  ,getApplicationContext()
-//					dbMsg += "(mIndex=" + mIndex+ "/" + mItems.size() +")" ;/////////////////////////////////////	this.lid = lid;
-//				}
+				dbMsg += "(mIndex=" + mIndex+")" ;
 				songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
 				songIDTotal = musicPlaylist.getUserListMaxPlayOrder(nowList_id);
 				dbMsg +="/" + songIDTotal +"曲";
 				titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
 				Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
-				albumArtist = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.album_artist;	//アルバムアーティスト名
-				dbMsg +=" ,アルバムアーティスト= " + albumArtist;/////////////////////////////////////		this.album_artist = album_artist;
 				creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
 				dbMsg +=" ,クレジット⁼ " + creditArtistName;
 				artist_tv.setText(creditArtistName);
@@ -1403,7 +1384,11 @@ public class MaraSonActivity extends AppCompatActivity
 				titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
 				dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 				titol_tv.setText(titolName);					//タイトル
+				int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
 				playingItem.close();
+				dbMsg +=" ,audioId= " + audioId;
+				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//playingItem.album_artist;	//アルバムアーティスト名
+				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
 				dbMsg +="、ジャケット写真=" + albumArt ;/////////////////////////////////////
 				if ( albumArt ==null ) {
 					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
@@ -3145,9 +3130,6 @@ public class MaraSonActivity extends AppCompatActivity
 			myEditor.putString( "pref_nitenkan_end", String.valueOf(pp_end));
 			Boolean kakikomi = myEditor.commit();	// データの保存
 			dbMsg +=",kakikomi="+kakikomi;////////////////////////////////////////////////////////////////////////////
-//			Item.itemsClear();
-//			mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//			mItems = Item.getItems( this);
 			pp_pp_ll.setVisibility(View.GONE);
 			pp_zenkai_ll.setVisibility(View.VISIBLE);						//前回の累積レイアウト
 			saiseiSeekMP.setSecondaryProgress(0);
@@ -4171,29 +4153,30 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg +=">>="+selName;
 			}
 			intent.putExtra("senntakuItem",selName);
-			if( playingItem != null ){
-				dbMsg +=",アルバムアーティスト="+ playingItem.album_artist;						// ,アルバムアーティスト=10cc
-			}else{
-				intent.putExtra("albumArtist",creditArtistName);								//アルバムアーティスト	albumArtist
-			}
-			dbMsg +=",クレジットされているアーティスト名=" + creditArtistName;				// クレジットされているアーティスト名=10cc,
-			intent.putExtra("albumArtist",playingItem.album_artist);					//アルバムアーティスト	albumArtist
+
+			Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
+			creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
+			dbMsg +=" ,クレジット⁼ " + creditArtistName;
+			albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
+			dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+			titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
+			dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+			int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+			dbMsg +=" ,audioId= " + audioId;
+			playingItem.close();
+			albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);
+			dbMsg +=" ,アルバムアーティスト= " + albumArtist;
+
 			intent.putExtra("creditArtistName",creditArtistName);					//クレジットされているアーティスト名
-			dbMsg += ",アルバム名=" + albumName;										// アルバム名=ORIGNAL SOUNDTRAK
+			intent.putExtra("albumArtist",albumArtist);					//アルバムアーティスト	albumArtist
 			intent.putExtra("albumName",albumName);									//アルバム名
-			dbMsg += ",曲名=" + titolName;												// 曲名=Une Nuit A Paris
 			intent.putExtra("titolName",titolName);									//曲名
-			dbMsg += ",アルバムアートのURI=" + albumArt;								// アルバムアートのURI=null,
-			intent.putExtra("albumArt",albumArt);
-//			dbMsg +=",dataFN="+ dataFN ;					// dataFN=/storage/emulated/0/Music/10cc/ORIGNAL SOUNDTRAK/01 Une Nuit A Paris.mp3
-//			intent.putExtra("dataFN",dataFN);
+//			dbMsg += ",アルバムアートのURI=" + albumArt;								// アルバムアートのURI=null,
+//			intent.putExtra("albumArt",albumArt);
 			dbMsg +=",mcPosition= " + mcPosition;											// ,mcPosition= 0
 			intent.putExtra("mcPosition", mcPosition);
 			dbMsg +=",再生中か= " + IsPlaying;												// ,再生中か= false,
 			intent.putExtra("IsPlaying", IsPlaying);
-//			if(!IsPlaying){
-//
-//			}
 			dbMsg +=",生成中= " + IsSeisei;			// 生成中= false
 			intent.putExtra("IsSeisei", IsSeisei);
 			setResult(RESULT_OK, intent);                //20190518
@@ -4214,13 +4197,6 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			titolName =titol_tv.getText().toString();		//曲名
 			dbMsg += ".titolName="+ titolName;
-//			if(titolName != null){
-//				if(titolName.equals("")){
-////					titolName = playingItem.title;					//選択しておくアイテムアイテム
-////				}
-////			}else{
-//				titolName = playingItem.title;					//選択しておくアイテムアイテム
-////			}
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
 			dbMsg += ".dataFN="+ dataFN;
 			int mcPosition = saiseiSeekMP.getProgress();
@@ -4312,6 +4288,21 @@ public class MaraSonActivity extends AppCompatActivity
 			int saiseiJikan = saiseiSeekMP.getMax();
 			dbMsg += ",現在="+mcPosition + "/" + saiseiJikan + "[ms]";/////saiseiJikan　⁼0？
 			dbMsg += " , クリックされたのは" + v.getId();/////////////////////////////////////
+
+//			Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
+//			creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
+//			dbMsg +=" ,クレジット⁼ " + creditArtistName;
+//			albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
+//			dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+//			titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
+//			dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+//			int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+//			dbMsg +=" ,audioId= " + audioId;
+//			playingItem.close();
+//			albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);
+//			dbMsg +=" ,アルバムアーティスト= " + albumArtist;
+
+
 			if (v == ppPBT) {
 				dbMsg += " 、ppPBT;Description="+ ppPBT.getContentDescription();/////////////////////////////////////
 				dbMsg +=  ",生成中= "+ IsSeisei;
@@ -4376,25 +4367,25 @@ public class MaraSonActivity extends AppCompatActivity
 				vol_tf.setText(String.valueOf(nowVol));//音量表示
 			} else if (v == artist_tv) {					//mButtonStop
 				maenoArtist =albumArtist;	//前に再生していたアルバムアーティスト名
-				if(albumArtist != null){
-					if(albumArtist.equals("")){
-						albumArtist = playingItem.album_artist;					//選択しておくアイテムアイテム
-					}
-				}else{
-					albumArtist = playingItem.album_artist;					//選択しておくアイテムアイテム
-				}
+//				if(albumArtist != null){
+//					if(albumArtist.equals("")){
+//						albumArtist = playingItem.album_artist;					//選択しておくアイテムアイテム
+//					}
+//				}else{
+//					albumArtist = playingItem.album_artist;					//選択しておくアイテムアイテム
+//				}
 				dbMsg+=albumArtist + "を選択してアーティスト選択リストを表示";
 				callListView(v_artist ,albumArtist ,mcPosition);							//リストビュー読出し
 			} else if (v == alubum_tv) {					//mButtonStop
 				dbMsg+=  "alubum_tv設定";
 				albumName =alubum_tv.getText().toString();		//アルバム名
-				if(albumName != null){
-					if(albumName.equals("")){
-						albumName = playingItem.album;					//選択しておくアイテムアイテム
-					}
-				}else{
-					albumName = playingItem.album;					//選択しておくアイテムアイテム
-				}
+//				if(albumName != null){
+//					if(albumName.equals("")){
+//						albumName = playingItem.album;					//選択しておくアイテムアイテム
+//					}
+//				}else{
+//					albumName = playingItem.album;					//選択しておくアイテムアイテム
+//				}
 				callListView(v_alubum ,albumName  ,mcPosition);						//リストビュー読出し
 			} else if (v == titol_tv) {					//mButtonStop
 				dbMsg+=  "titol_tv設定";
@@ -5287,10 +5278,6 @@ public class MaraSonActivity extends AppCompatActivity
 //							requestCode ==rp_titol  ||
 //							requestCode ==rp_point
 							){
-//								mItems= null;
-//								Item.itemsClear();
-//								mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//								mItems = Item.getItems( this);
 							}
 							n_dataFN = bundle.getString("dataFN");		//	//次に再生する再生ファイル
 							dbMsg += ",n_dataFN= ;"+n_dataFN;
@@ -5301,7 +5288,6 @@ public class MaraSonActivity extends AppCompatActivity
 //						}
 							dbMsg +=  "[play_order="+mIndex ;/////////////////////////////////////リストの状態	起動直後；veiwPlayer / 再選択chyangeSong
 							songIDTotal = musicPlaylist.getUserListMaxPlayOrder(nowList_id);
-//							songIDTotal = mItems.size();			//全曲数
 							dbMsg +="/" + songIDTotal +"曲";
 							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
 							imanoJyoutai = bundle.getInt("imanoJyoutai");	//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)

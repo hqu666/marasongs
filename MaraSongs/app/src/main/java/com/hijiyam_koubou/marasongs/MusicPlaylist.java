@@ -371,6 +371,51 @@ public class MusicPlaylist {
     }
 
     /**
+     * アルバムのアーティスト名を取得する
+     * 当面は全曲DBから取得
+     * */
+    public String getAlbumArtist(int audioId , Context context){
+        String album_artist = null;
+        final String TAG = "getAlbumArtist";
+        String dbMsg = "[MusicPlaylist]";
+        try{
+            dbMsg += ",[" + audioId + "]";
+            dbMsg += ",全曲リストを読み込み";
+            String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+            String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+            File databasePath = context.getDatabasePath(fn);
+            dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+            dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+            File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            //☆初回時は未だDBが作られていないのでgetApplicationContext()
+            dbMsg += ",dbF=" + dbF;
+            dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+
+            if (dbF.exists()) {
+                SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
+                String c_selection = "AUDIO_ID = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+                String[] c_selectionArgs= {String.valueOf(audioId)};   			//音楽と分類されるファイルだけを抽出する
+                Cursor cursor = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, null);
+                if (cursor.moveToFirst()) {
+                    album_artist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+                    dbMsg += album_artist ;
+                }
+                cursor.close();
+                Zenkyoku_db.close();
+            } else {
+                dbMsg += ",全曲リスト未作成";
+            }
+
+            myLog(TAG, dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return album_artist;
+    }
+
+
+    /**
      * 指定されたplayListのプレイオーダーにある曲のUrlを返す
      * ***/
     public String getPlaylistItemData(int listId , int playOrder){				//指定された名称のリストを作成する
