@@ -306,12 +306,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					} else if (key.equals("pref_zenkyoku_list_id")) {
 						pref_zenkyoku_list_id = Integer.parseInt(keys.get(key).toString());
 						dbMsg += ",全曲リスト[" + pref_zenkyoku_list_id + "]";
-//				} else if (key.equals("saikintuika_list_id")) {
-//					saikintuika_list_id = Integer.parseInt(keys.get(key).toString());
-//					dbMsg += ",最近追加[" + saikintuika_list_id + "]";
-//				} else if (key.equals("saikinsisei_list_id")) {
-//					saikinsisei_list_id = Integer.parseInt(keys.get(key).toString());
-//					dbMsg += ",最近再生[" + saikinsisei_list_id + "]";
 					} else if (key.equals("pref_commmn_music")) {
 						pref_commmn_music = keys.get(key).toString();
 						dbMsg += ",共通音楽フォルダ=" + pref_commmn_music;
@@ -325,24 +319,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					setPrefInt("nowList_id",nowList_id,context);
 					dbMsg +=  ">>全曲リストに補正" ;
 				}
-//				if (items != null) {
-//					dbMsg += ",items=" + items.size() + "件";
-//					if (0 < items.size()) {                                        //既に読み込んでいたら
-//						int nlID = items.get(0).listid;
-//						dbMsg += "、保持しているのは[" + nlID + "]";
-//						if (nlID != nowList_id ||
-//								nowList.equals(context.getResources().getString(R.string.playlist_namae_randam)) ||            //ランダム再生
-//								nowList.equals(context.getResources().getString(R.string.playlist_namae_repeat))            //リピート再生
-//						) {
-//							itemsClear();
-//						}
-//					}
-//					dbMsg += ",items=" + items.size() + "件に";
-//				} else {
 					items = new LinkedList<Item>();
-//				}
-//				if (items.size() == 0) {
-//					sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.pref_main_file), android.content.Context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
 					dbMsg += ",全曲リストを読み込み";
 					String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
 					File databasePath = context.getDatabasePath(fn);

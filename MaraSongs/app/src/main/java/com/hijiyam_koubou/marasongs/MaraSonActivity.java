@@ -1387,7 +1387,7 @@ public class MaraSonActivity extends AppCompatActivity
 				int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
 				playingItem.close();
 				dbMsg +=" ,audioId= " + audioId;
-				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//playingItem.album_artist;	//アルバムアーティスト名
+				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//アルバムアーティスト名
 				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
 				dbMsg +="、ジャケット写真=" + albumArt ;/////////////////////////////////////
 				if ( albumArt ==null ) {
@@ -3089,20 +3089,11 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=",getProgress="+saiseiSeekMP.getProgress();////////////////////////////////////////////////////////////////////////////
 			MaraSonActivity.this.pp_start = pp_start;
 			songIDPTF.setText(String.valueOf((1)));			//リスト中の何曲目か
-//			int reqCode = rp_point;
-//			String selName = MaraSonActivity.this.titolName;
-//			callListView(reqCode ,selName   );								//リストビューを読出し
-//			MPSIntent.setAction(MusicPlayerService.ACTION_STOP);
-//			MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
 			dbMsg +=",rp_pp_bicyousei="+ rp_pp_bicyousei;
-//			if(rp_pp_bicyousei){		//2点間リピート設定変更
 			int mIndex = getPrefInt("pref_mIndex" , 0 , MaraSonActivity.this);
 			mData2Service(mIndex);										//サービスにプレイヤー画面のデータを送る
-				rp_pp_bicyousei = false;
-//			}
+			rp_pp_bicyousei = false;
 			onPrepareOptionsMenu(toolbar.getMenu());			//表示直前に行う非表示や非選択設定
-	//			kaijyoMenu = toolbar.getMenu().addSubMenu(R.id.menu_item_repeatplay_kaijo);
-	//		dbMsg +=",kaijyoMenu="+kaijyoMenu;////////////////////////////////////////////////////////////////////////////
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4140,12 +4131,12 @@ public class MaraSonActivity extends AppCompatActivity
 				intent.putExtra("nowList_data", nowList_data);
 			}
 			int mIndex = getPrefInt("pref_mIndex" , 0, MaraSonActivity.this);
-			int rINdex = Item.getMPItem(selName);
 			dbMsg +="[mIndex="+ mIndex;			// リストの一曲目=0
-			if(mIndex != rINdex ){
-				mIndex = rINdex;
-				dbMsg +=">>"+ mIndex;			// リストの一曲目=0
-			}
+//			int rINdex = Item.getMPItem(selName);
+//			if(mIndex != rINdex ){
+//				mIndex = rINdex;
+//				dbMsg +=">>"+ mIndex;			// リストの一曲目=0
+//			}
 			intent.putExtra("mIndex",mIndex);
 			dbMsg +="]選択アイテム="+selName;	//			// ]選択アイテム=10cc
 			if( reqCode == MuList.MENU_MUSCK_PLIST ){
@@ -4367,13 +4358,6 @@ public class MaraSonActivity extends AppCompatActivity
 				vol_tf.setText(String.valueOf(nowVol));//音量表示
 			} else if (v == artist_tv) {					//mButtonStop
 				maenoArtist =albumArtist;	//前に再生していたアルバムアーティスト名
-//				if(albumArtist != null){
-//					if(albumArtist.equals("")){
-//						albumArtist = playingItem.album_artist;					//選択しておくアイテムアイテム
-//					}
-//				}else{
-//					albumArtist = playingItem.album_artist;					//選択しておくアイテムアイテム
-//				}
 				dbMsg+=albumArtist + "を選択してアーティスト選択リストを表示";
 				callListView(v_artist ,albumArtist ,mcPosition);							//リストビュー読出し
 			} else if (v == alubum_tv) {					//mButtonStop

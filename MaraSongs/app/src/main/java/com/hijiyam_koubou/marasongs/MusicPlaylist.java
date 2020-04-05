@@ -131,7 +131,6 @@ public class MusicPlaylist {
         }
     }
 
-
     /**
      *  指定したプレイリストを全削除
      *  全消去すればmedia/external/audio/playlists/リストIDが変わる/members/
@@ -180,7 +179,6 @@ public class MusicPlaylist {
         }
         return retInt;
     }
-
 
     /**
      * 指定したプレイリストの内容削除(プログレス処理への引き継ぎ) */
@@ -411,6 +409,157 @@ public class MusicPlaylist {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
         return album_artist;
+    }
+
+   /**
+    * アルバム　アーティストのリストアップ
+    * **/
+    public List<String>  listUpArtist(Context context){
+        List<String> artistSL =null;
+        final String TAG = "listUpArtist";
+        String dbMsg = "[MusicPlaylist]";
+        try{
+//            dbMsg += ",[" + audioId + "]";
+            dbMsg += ",全曲リストを読み込み";
+            String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+            String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+            File databasePath = context.getDatabasePath(fn);
+            dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+            dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+            File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            //☆初回時は未だDBが作られていないのでgetApplicationContext()
+            dbMsg += ",dbF=" + dbF;
+            dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+
+            if (dbF.exists()) {
+                SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
+                boolean distinct = true;
+                String[] columns= {"DISTINCT " + String.valueOf("ALBUM_ARTIST")};
+                String c_selection = null;          //"AUDIO_ID = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+                String[] c_selectionArgs= null; //{String.valueOf(audioId)};   			//音楽と分類されるファイルだけを抽出する
+
+                Cursor cursor = Zenkyoku_db.query(zenkyokuTName, columns, null, null , null, null, null);
+//                Cursor cursor = Zenkyoku_db.query(distinct,zenkyokuTName, columns, null, null , null, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    do{
+                        String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+                        dbMsg += albumArtist ;
+                        artistSL.add(albumArtist);
+                    }while(cursor.moveToNext());
+                }
+                cursor.close();
+                Zenkyoku_db.close();
+                dbMsg += "、" + artistSL.size() + "件" ;
+            } else {
+                dbMsg += ",全曲リスト未作成";
+            }
+            myLog(TAG, dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return artistSL;
+    }
+
+    /**
+     * 指定されたアーティストのアルバム名リストを返す
+     * **/
+    public List<String>  listUpAlubm(String albumArtist,Context context){
+        List<String> albumSL =null;
+        final String TAG = "listUpArtist";
+        String dbMsg = "[MusicPlaylist]";
+        String dbMsg2 = "";
+
+        try{
+//            dbMsg += ",[" + audioId + "]";
+            dbMsg += ",albumArtist=" + albumArtist;
+            String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+            String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+            File databasePath = context.getDatabasePath(fn);
+            dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+            dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+            File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            //☆初回時は未だDBが作られていないのでgetApplicationContext()
+            dbMsg += ",dbF=" + dbF;
+            dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+
+            if (dbF.exists()) {
+                SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
+                boolean distinct = true;
+                String[] columns= null;     //{"DISTINCT " + String.valueOf("ALBUM_ARTIST")};
+                String c_selection = "ALBUM_ARTIST = ? ";          //"AUDIO_ID = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+                String[] c_selectionArgs= {String.valueOf(albumArtist)};   			//音楽と分類されるファイルだけを抽出する
+
+                Cursor cursor = Zenkyoku_db.query(zenkyokuTName, columns, c_selection, c_selectionArgs , null, null, null);
+                if (cursor.moveToFirst()) {
+                    do{
+                        String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+                        dbMsg2 += "," + albumName ;
+                        albumSL.add(albumName);
+                    }while(cursor.moveToNext());
+                }
+                cursor.close();
+                Zenkyoku_db.close();
+                dbMsg += "、" + albumSL.size() + "件" ;
+            } else {
+                dbMsg += ",全曲リスト未作成";
+            }
+            myLog(TAG, dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return albumSL;
+    }
+
+    /**
+     * 指定されたアーティストの指定されたアルバムからタイトル名リストを返す
+     * **/
+    public List<String>  listUpTitol(String albumArtist,String albumName,Context context){
+        List<String> titolSL =null;
+        final String TAG = "listUpTitol";
+        String dbMsg = "[MusicPlaylist]";
+        String dbMsg2 = "";
+
+        try{
+            dbMsg += ",albumArtist=" + albumArtist;
+            dbMsg += ",albumName=" + albumName;
+            String zenkyokuTName = context.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+            String fn = context.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
+            File databasePath = context.getDatabasePath(fn);
+            dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(context, fn);        //全曲リストの定義ファイル		.
+            dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
+            File dbF = context.getDatabasePath(fn);				//dbF=/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+            //☆初回時は未だDBが作られていないのでgetApplicationContext()
+            dbMsg += ",dbF=" + dbF;
+            dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+
+            if (dbF.exists()) {
+                SQLiteDatabase Zenkyoku_db = zenkyokuHelper.getReadableDatabase();                        //全曲リストファイルを読み書きモードで開く
+                boolean distinct = true;
+                String[] columns= null;     //{"DISTINCT " + String.valueOf("ALBUM_ARTIST")};
+                String c_selection = "ALBUM_ARTIST = ? + ALBUM = ?";          //"AUDIO_ID = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+                String[] c_selectionArgs= {String.valueOf(albumArtist) , String.valueOf(albumName)};   			//音楽と分類されるファイルだけを抽出する
+                Cursor cursor = Zenkyoku_db.query(zenkyokuTName, columns, c_selection, c_selectionArgs , null, null, null);
+                if (cursor.moveToFirst()) {
+                    do{
+                        String titolName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+                        dbMsg2 += "," + titolName ;
+                        titolSL.add(titolName);
+                    }while(cursor.moveToNext());
+                }
+                cursor.close();
+                Zenkyoku_db.close();
+                dbMsg += "、" + titolSL.size() + "件" ;
+            } else {
+                dbMsg += ",全曲リスト未作成";
+            }
+            myLog(TAG, dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return titolSL;
     }
 
 
