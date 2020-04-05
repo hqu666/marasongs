@@ -491,6 +491,8 @@ public class MusicPlaylist {
             if( playList.moveToFirst() ){
                 String data = playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
                 dbMsg += ",url=" + data;
+                dbMsg += "," + playList.getColumnCount() + "項目";
+
             }else{
                 dbMsg += ",該当無し";
             }
