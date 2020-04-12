@@ -2155,22 +2155,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //		return retInt;
 //	}
 
-//	protected List<Item> dataReflesh(Context context) {					//リストの全タイトル読み込み
-//		final String TAG = "dataReflesh[MusicPlayerService]";
-//		String dbMsg = "開始;";
-//		try{
-//			createBody();
-//			rContext = context;
-//		//	MaraSonActivity MSA = new MaraSonActivity();
-//			mItems = Item.getItems( context);
-//			dbMsg +=mItems.size() + "件";///////////////////////////////////
-//	//		myLog(TAG,dbMsg);
-//		}catch (Exception e) {
-//			myErrorLog(TAG,dbMsg + "で"+e.toString());
-//		}
-//		return mItems;
-//	}
-
 	//データ受信と送信/////////////////////////////////////////////////////////////////////
 	/**
 	 * 一曲分のデータ抽出して他のActvteyに渡す。
@@ -2525,12 +2509,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						rInt = extras.getInt("mIndex");
 						dbMsg += "[mIndex;" + rInt;
 						if (rInt != index) {
-//							mItems = new LinkedList<Item>();    //id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//							mItems = Item.getItems(getApplicationContext());
 							if (index == -1) {
 								mIndex = 0;
 								dataFN = pref_data_url;
-//										mItems.get(0).data;
 								dbMsg += ",dataFN=" + dataFN;
 								mainEditor.putString("pref_data_url", String.valueOf(dataFN));        //再生中のファイル名
 							} else {

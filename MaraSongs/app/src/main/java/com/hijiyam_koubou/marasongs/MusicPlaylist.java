@@ -756,7 +756,7 @@ public class MusicPlaylist {
                 }
             }
             if(dbMsg != null){
-                myLog(TAG, dbMsg);
+//                myLog(TAG, dbMsg);
             }
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);

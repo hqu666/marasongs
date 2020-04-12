@@ -544,9 +544,6 @@ public class OrgUtil  extends Activity{				//
 
 /**
  * 渡された文字が既にリストに登録されていればインデックスを返す
- * @param List<Map<String, Object>> groups 検査するリスト
- * @param String key 照合するキー
- * @param  String tStr 検査するデータ
  * */
 	public int mapIndex(List<Map<String, Object>> groups , String key , String tStr){		//渡された文字が既にリストに登録されていればインデックスを返す
 		int retINt =-1;
@@ -585,9 +582,6 @@ public class OrgUtil  extends Activity{				//
 
 /**
  * 渡された文字が既にリストに登録されていればインデックスを返す
- * @param List<Map<String, Object>> groups 検査するリスト
- * @param String key 照合するキー
- * @param  String tStr 検査するデータ
  * */
 	public int mapEqualIndex(List<Map<String, Object>> groups , String key , String tStr){		//渡された文字が既にリストに登録されていればインデックスを返す
 		int retINt =-1;
@@ -727,14 +721,18 @@ public class OrgUtil  extends Activity{				//
 		return retStr;
 	}
 
+	/**
+	 * リストに該当する名称が有ればそれを返す
+	 * ***/
 	public String sarchiInListString(List<String> groups , String tStr){		//渡された文字が既にリストに登録されていれば該当する文字を返す
 		String retStr = null ;
-		final String TAG = "isInListString[OrgUtil]";
-		String dbBlock= groups.size() + "件目で" + tStr;//////////////////////////////////////////
+		final String TAG = "sarchiInListString";
+		String dbMsg ="[OrgUtil]";
+		dbMsg += groups.size() + "件中に " + tStr;
 		try{
 			int i=1;
 			for(String tName:groups){		//for(i=0;i<pCount;i++){
-				dbBlock= i +"/" +groups.size()+";" + tStr +"/" +tName ;////////////////////////////////////////////////////////
+//				dbMsg += " tName=" + tName;
 				if(tStr.equals(tName)){							//tStr.equals(tName) || tName.equals(tStr)
 					retStr = tName;
 					break;
@@ -746,9 +744,12 @@ public class OrgUtil  extends Activity{				//
 //					break;
 				}
 			}
-			dbBlock= dbBlock + ",retStr=" + retStr  ;//////////////////////////////////////////
-		//	myLog(TAG,dbBlock);
-//			dbBlock="tStr=" + tStr +"が"+ groups.get(0) + "～" + groups.get(groups.size()-1) + "に有るか；件数="+ groups.size() ;//////////////////////////////////////////
+			if (retStr != null) {
+				dbMsg += " >>" + i + "/" + groups.size() + "件目に有り";
+			}else{
+				dbMsg +=  " >>該当無し" ;//////////////////////////////////////////
+			}
+//			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG, dbBlock +"で"+e.toString());
 		}

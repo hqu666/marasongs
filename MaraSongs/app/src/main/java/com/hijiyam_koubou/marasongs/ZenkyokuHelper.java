@@ -27,7 +27,7 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 			//	/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db が
 			//	/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 			dbMsg +=" ,バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}

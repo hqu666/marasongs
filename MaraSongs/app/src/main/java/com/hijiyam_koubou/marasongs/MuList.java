@@ -468,39 +468,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				preRead(MaraSonActivity.syoki_Yomikomi , null);				//dataURIを読み込みながら欠けデータ確認		//		mediaSTkousinn();						//メディアストアの更新呼出し
 			}
 			cursor.close();
-//			String zenkyokuTName = MuList.this.getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-//			dbMsg += ",全曲リストを読み込み";
-//			String fn = MuList.this.getResources().getString(R.string.zenkyoku_file);            				//全曲リスト
-//			File databasePath = MuList.this.getDatabasePath(fn);
-//			dbMsg += ",databasePath=" + databasePath;		//		/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-//			ZenkyokuHelper zenkyokuHelper = new ZenkyokuHelper(MuList.this, fn);        //全曲リストの定義ファイル		.
-//			dbMsg += ">>" + zenkyokuHelper.toString();        //03-28java.lang.IllegalArgumentException:  contains a path separator
-//			File dbF = MuList.this.getDatabasePath(fn);
-//			dbMsg += ",dbF=" + dbF;
-//			dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
-//			Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", nowList_id);
-//			String[] columns = null;			//{ idKey, nameKey };
-//			String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-//			allSongCursor = MuList.this.getContentResolver().query(uri, columns, null, null, c_orderBy );
-//
-//			listEnd = allSongCursor.getCount();
-//			dbMsg += "," + listEnd + "件";
-//			if(listEnd <= 0){
-//				dbMsg += "取得できず";
-//				preRead(MaraSonActivity.syoki_Yomikomi , null);				//dataURIを読み込みながら欠けデータ確認		//		mediaSTkousinn();						//メディアストアの更新呼出し
-////			}else{
-////				myApp.setItemList(allSongCursor);
-//			}
-//
-////			myItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-////			mItems = Item.getItems( this );
-////			if(mItems == null){
-////				dbMsg += "取得できず";
-////				preRead(MaraSonActivity.syoki_Yomikomi , null);				//dataURIを読み込みながら欠けデータ確認		//		mediaSTkousinn();						//メディアストアの更新呼出し
-////			}else{
-////				dbMsg += "," + mItems.size() + "件";
-////				myApp.setItemList(myItems);
-////			}
 			myLog(TAG , dbMsg);
 		} catch (Exception er) {
 			myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -7080,13 +7047,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							CreatePLList( Long.valueOf(MuList.this.sousalistID) , pdMessage);		//プレイリストの内容取得			MuList.this.nowList_data,
 							reqCode= MENU_MUSCK_PLIST;			//プレイリスト選択中
 							dbMsg +=  "追加した曲=" + tuikaItemName;
-//							dbMsg += "," + mItems.size() + "件";
-//							mItems = myApp.getItemList();
-//							if(mItems == null){
-//								mItems = Item.getItems( MuList.this );
-//								dbMsg += ">>" + mItems.size() + "件";
-//								myApp.setItemList(mItems);
-//							}
 							sigotoFuriwake(reqCode , null , null  , tuikaItemName , null);		//表示するリストの振り分け			, plAL
 						}
 						myLog(TAG, dbMsg);
@@ -8415,9 +8375,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				sousalistName = tuikaSakiListName;
 				setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
 				setPrefInt("pref_position" ,  0 , MuList.this);
-//				mItems = new LinkedList<Item>();	//id"、ARTIST、ALBUM_ARTIST、ALBUM、TITLE、DURATION、DATAを読み込む
-//				Item.itemsClear();
-//				mItems = Item.getItems( getApplicationContext() );
 				back2Player( dataFN);												//プレイヤーにuriを送る
 			}
 

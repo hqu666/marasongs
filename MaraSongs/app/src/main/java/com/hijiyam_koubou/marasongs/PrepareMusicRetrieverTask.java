@@ -31,11 +31,11 @@ public class PrepareMusicRetrieverTask extends AsyncTask<Context, Void, List<Ite
 		String dbMsg= "開始;";/////////////////////////////////////
 		List<Item> retList = null;
 		try{
-			dbMsg= "arg[0]=" + arg[0];/////////////////////////////////////
-			retList = new LinkedList<Item>();
-			if(arg[0] != null){
-				retList = Item.getItems(arg[0]);
-			}
+//			dbMsg= "arg[0]=" + arg[0];/////////////////////////////////////
+//			retList = new LinkedList<Item>();
+//			if(arg[0] != null){
+//				retList = Item.getItems(arg[0]);
+//			}
 	//		myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
