@@ -1131,9 +1131,6 @@ public class OrgUtil  extends Activity{				//
 	///固有関数///////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * mapを使ったリストからインデックスを返す
-	 * @param List<Map<String, Object>> fList 検索対象を含む配列
-	 * @param String key 検索するキー
-	 * @param  String fStr 検索する文字
 	 * */
 	public int retArreyIndex(List<Map<String, Object>> fList , String key , String fStr){		//mapを使ったリストからインデックスを返す
 		int retInt =-1;
@@ -1157,18 +1154,18 @@ public class OrgUtil  extends Activity{				//
 	}
 
 	public String ArtistPreFix(String aName ){					//アーティスト名のTheを取る
-		final String TAG = "ArtistPreFix[OrgUtil]";
-		String dbMsg="開始;";/////////////////////////////////////
+		final String TAG = "ArtistPreFix";
+		String dbMsg="[OrgUtil];";/////////////////////////////////////
 		try{
-			dbMsg=nowTime(true,true,true) + dbMsg + aName;/////////////////////////////////////
+			dbMsg += nowTime(true,true,true) + aName;/////////////////////////////////////
 			aName = String.valueOf(aName);
 			aName = aName.toUpperCase();									//大文字化
-			if(aName.startsWith("The ")){
-				aName = aName.replaceAll("The ", "");	//aName = aName.substring(3, aName.length());
+			if(aName.startsWith("THE")){
+				aName = aName.replaceAll("THE ", "");	//aName = aName.substring(3, aName.length());
 			}else if(aName.startsWith("the ")){
 				aName = aName.replaceAll("the ", "");	//aName = aName.substring(3, aName.length());
-			}else if(aName.startsWith("THE ")){
-				aName = aName.replaceAll("THE ", "");	//aName = aName.substring(3, aName.length());
+			}else if(aName.startsWith("The ")){
+				aName = aName.replaceAll("The ", "");	//aName = aName.substring(3, aName.length());
 			}
 			if(aName.contains("FEAT")){
 				dbMsg +=">" + aName;/////////////////////////////////////
@@ -1180,8 +1177,12 @@ public class OrgUtil  extends Activity{				//
 			aName = aName.replace(  ".", "%");
 			aName = aName.replace(  "(", "%");
 			aName = aName.replace(  ")", "%");
-			dbMsg +=">" + aName;/////////////////////////////////////
-	//		 myLog(TAG,dbMsg);
+			dbMsg += ">" + aName;
+			if(aName.startsWith("THE")){
+				dbMsg += ">The抜けず" ;
+				myLog(TAG,dbMsg);
+			}
+
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}

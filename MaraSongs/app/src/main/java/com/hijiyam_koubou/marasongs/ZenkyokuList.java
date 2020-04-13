@@ -184,6 +184,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public String all_songs_file_name ;		//全曲リストの汎用リスト
 	public int allSongsID;
 	public String album_artist_file_name ;			//アーティスト名の汎用リスト
+	public String[] JunlList = {"Rock","Jazz","Blues","Classic","Soundtrack","Compilations"};				//コンピレーション化するジャンル
 
 
 	public void readPref() {        //プリファレンスの読込み
@@ -258,6 +259,67 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		}
 		return retStr;
 	}
+
+	public String setAlbumArtist(Cursor cursor) {
+		final String TAG = "setAlbumArtist";
+		String dbMsg = "[ZenkyokuList]";
+		String retStr = "";
+		try {
+			String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			String motoName = artistN;
+
+//			String dataStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+//			dataStr = dataStr.replace(pref_commmn_music + File.separator, "");
+//			dbMsg += ":" + dataStr ;
+			String aArtintName = getUrl2Artist(cursor);
+			dbMsg += ">>" + aArtintName ;
+			String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
+			dbMsg += ",composer=" + composer ;
+			if( artistN == null ){
+				if( composer != null ){
+					artistN = composer;
+				} else{
+					artistN = aArtintName;
+//					artistN = getApplicationContext().getResources().getString(R.string.comon_nuKnow_artist);
+				}
+			} else {
+				String comp10 = getResources().getString(R.string.comon_compilation);			//コンピレーション
+				String comp11 = comp10.toUpperCase();											//大文字化
+				String comp12 = comp10.toLowerCase();											//小文字化
+				String comp20 = getResources().getString(R.string.comon_compilation0);	//さまざまなアーティスト
+				String comp21 = comp20.toUpperCase();											//大文字化
+				String comp22 = comp20.toLowerCase();											//小文字化
+				String comp30 = getResources().getString(R.string.comon_compilation2);	//Various Artists
+				String comp31 = comp30.toUpperCase();											//大文字化
+				String comp32 = comp30.toLowerCase();											//小文字化
+				if(artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
+						artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
+						artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32) ){
+					artistN = comp10;
+				}else{
+					for(String Junl : JunlList){
+						if(aArtintName.equals(Junl)){
+							artistN = Junl;
+						}
+					}
+				}
+			}
+
+			if(! motoName.equals(artistN)
+//					&& ! retStr.equals("Compilations")
+			){
+				retStr = artistN;
+				dbMsg += ":::artist=" + artistN ;
+				dbMsg += ">>" + retStr ;
+//				myLog(TAG, dbMsg);
+			}
+
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retStr;
+	}
+
 
 	//設定読込・旧バージョン設定の消去
 
@@ -1062,55 +1124,30 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * kaliAartistListEndへ
 	 * */
 	public Cursor kaliAartistListBody(Cursor cursor ) throws IOException {			//803;仮アーティストリスト作成
-	final String TAG = "kaliAartistListBody";
+		final String TAG = "kaliAartistListBody";
 		String dbMsg= "[ZenkyokuList]";
+		boolean kakikomi = false;
 		try{
 			pdCoundtVal = cursor.getPosition()+1;
 			progBar1.setProgress(pdCoundtVal);
 			dbMsg += "[" + pdCoundtVal +"/"+ progBar1.getMax() + "]";
-			boolean kakikomi = false;
 
-			String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-			String motoName = artistN;
+			String motoName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			dbMsg += motoName ;
+			String artistN = setAlbumArtist(cursor);
 			dbMsg += "）" + artistN ;
-			String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
-			dbMsg += ",composer=" + composer ;
-			if( artistN == null ){
-				if( composer != null ){
-					artistN = composer;
-				} else{
-					artistN = getApplicationContext().getResources().getString(R.string.comon_nuKnow_artist);
-				}
-			} else {
-				String comp10 = getResources().getString(R.string.comon_compilation);			//コンピレーション
-				String comp11 = comp10.toUpperCase();											//大文字化
-				String comp12 = comp10.toLowerCase();											//小文字化
-				String comp20 = getResources().getString(R.string.comon_compilation0);	//さまざまなアーティスト
-				String comp21 = comp20.toUpperCase();											//大文字化
-				String comp22 = comp20.toLowerCase();											//小文字化
-				String comp30 = getResources().getString(R.string.comon_compilation2);	//Various Artists
-				String comp31 = comp30.toUpperCase();											//大文字化
-				String comp32 = comp30.toLowerCase();											//小文字化
-				if(artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) || 
-					artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) || 
-					artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32) ){
-					artistN = comp10;
-				}
-			}
-
-			String aArtintName = getUrl2Artist(cursor);
-			aArtist = String.valueOf(motoName);
-			dbMsg += ">>" + motoName + ":" + aArtintName ;
-			if(! artistN.equals(motoName)){
-				artistN = aArtintName;
-				dbMsg += ">フォルダ名に>" + artistN ;
-			}
 			String sort_name = ORGUT.ArtistPreFix(artistN.toUpperCase());	//大文字化してアーティスト名のTheを取る
 			dbMsg += ",sort_name=" + sort_name ;
+			boolean isNotComp = true;
+			for(String Junl : JunlList){
+				if(artistN.equals(Junl)){
+					isNotComp = false;
+				}
+			}
+
 			int bCount = ZenkyokuList.this.artistList.size();
 
 			ZenkyokuList.this.objMap = new HashMap<String, Object>();
-
 
 			dbMsg += "<<aArtist=" + aArtist ;
 			if(ZenkyokuList.this.artistList == null) {                //一人目
@@ -1119,8 +1156,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				kakikomi = true;
 			}else if(ZenkyokuList.this.artistList.size() == 0){				//一人目
 				kakikomi = true;
-			}else if(! artistN.equals(aArtist)){					//名前が変わったら
-				String rStr = ORGUT.sarchiInListString( ZenkyokuList.this.shortArtistList , artistN) ;			//渡された文字が既にリストに登録されていれば該当する文字を返す
+			}else if(! artistN.equals(aArtist) && isNotComp){					//名前が変わったら
+				String rStr = ORGUT.sarchiInListString( ZenkyokuList.this.shortArtistList , sort_name) ;			//渡された文字が既にリストに登録されていれば該当する文字を返す
 				dbMsg += ">sarchiInListString>" + rStr ;
 				int rIndex = ORGUT.mapEqualIndex(artistList , "credit_artist" ,artistN);//渡された文字を含む名前が既にリストに登録されていればインデックスを返す
 				dbMsg += ",rIndex=" + rIndex ;
@@ -1140,7 +1177,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //					}
 				}
 			}
-			aArtist = artistN;
+			aArtist = sort_name;
 
 //			bArtistN = artistN;
 			dbMsg += ">ALBUM_ARTIST>>" + artistN;
@@ -1151,7 +1188,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				ZenkyokuList.this.objMap.put("album" ,albumMei );							//対象アルバム
 				ZenkyokuList.this.objMap.put("credit_artist" ,motoName );					//ゲストやグループなどを含む元の名称
 				ZenkyokuList.this.artistList.add( objMap);
-				ZenkyokuList.this.shortArtistList.add(artistN);		//最短アーティスト名
+				ZenkyokuList.this.shortArtistList.add(sort_name);		//The抜き大文字アーティスト名
 			}
 			int aCount = ZenkyokuList.this.artistList.size();
 			dbMsg += aCount + "件目=" + ZenkyokuList.this.artistList.get(ZenkyokuList.this.artistList.size()-1 );
@@ -1164,10 +1201,19 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //					dbMsg += ":" + motoName +">フォルダ名に>" + artistN + ":" + datsFN;
 //					myLog(TAG,dbMsg);
 //				}else
-				if(kakikomi){
-					dbMsg = ">>" + aCount + "件目に追加>>" + artistN + ":" + datsFN;
-					myLog(TAG,dbMsg);
-				}
+			if(kakikomi){
+				dbMsg = ">>" + aCount + "件目に追加>>" + artistN + ":" + sort_name + ":" + datsFN;
+				myLog(TAG,dbMsg);
+			}
+			if(! isNotComp){
+				dbMsg = motoName + ">コンピレーションに>" +artistN ;
+				myLog(TAG,dbMsg);
+			}
+			if(sort_name.startsWith("THE")){
+				String dataUrl = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+				dbMsg = ">The抜けず>" + sort_name + ":::" +dataUrl ;
+				myLog(TAG,dbMsg);
+			}
 //			}
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -1273,16 +1319,15 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		final String TAG = "kaliListBody";
 		String dbMsg= "[ZenkyokuList]";
 		try{
-			String kensakuStr = "";					//20140211アーティスト名のTheを取って大文字化
-			String sort_name;
-			String album_artist;
-			String shortName = null;
+//			String kensakuStr = "";					//20140211アーティスト名のTheを取って大文字化
+//			String album_artist;
+//			String shortName = null;
 			String val = null;
 			Map<String, String> map = null;
 
 			pdCoundtVal = cursor.getPosition()+1;
 			progBar1.setProgress(pdCoundtVal);
-			dbMsg = pdCoundtVal +"/"+ progBar1.getMax();
+			dbMsg += pdCoundtVal +"/"+ progBar1.getMax();
 			String dataFPN = null;
 			dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 			dbMsg += dataFPN ;
@@ -1294,59 +1339,70 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 			dbMsg += "[_ID:" + ｒID + "]";
 			stmt.bindString(1, String.valueOf(ｒID));								//1.元々のID
-
-			String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));					//クレジットアーティスト
-			String motoName = artistN;
-			dbMsg += ",(MediaStore.Audio.Media)クレジットアーティスト=" +motoName ;
-			String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
-			dbMsg +=",composer=" + composer ;
-			if( artistN == null || artistN.contains("unknown") || artistN.contains("unknown")){
-				val = map.get( "cArtistName" ); // 指定したキーに対応する値を取得. キャスト不要
-				if( val != null ){
-					artistN = val;
-				}else if( composer != null ){
-					artistN = composer;
-				} else{
-					artistN = getApplicationContext().getResources().getString(R.string.comon_nuKnow_artist);
-				}
-				dbMsg += ">>" + artistN ;
-			}
-			int sIndex =ORGUT.mapIndex(artistList , "credit_artist" ,artistN);		//渡された文字が既にリストに登録されていればインデックスを返す
-			dbMsg += "、sIndex(" + sIndex;
-			album_artist = artistN;														//基本的にはそのまま
-			if(sIndex < 0){									//リストに無ければ
-				String comp10 = getResources().getString(R.string.comon_compilation);			//コンピレーション
-				String comp11 = comp10.toUpperCase();											//大文字化
-				String comp12 = comp10.toLowerCase();											//小文字化
-				String comp20 = getResources().getString(R.string.comon_compilation0);	//さまざまなアーティスト
-				String comp21 = comp20.toUpperCase();											//大文字化
-				String comp22 = comp20.toLowerCase();											//小文字化
-				String comp30 = getResources().getString(R.string.comon_compilation2);	//Various Artists
-				String comp31 = comp30.toUpperCase();											//大文字化
-				String comp32 = comp30.toLowerCase();											//小文字化
-				if(artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) || 
-					artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) || 
-					artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32) ){
-					artistN = comp10;
-				}
-				album_artist = artistN;
-			}else{
-				String rStr = String.valueOf(artistList.get(sIndex).get("album_artist"));
-				if(artistN.contains(rStr)){
-//					sort_name = String.valueOf(artistList.get(sIndex).get("sort_name"));
-					album_artist = rStr;
+			String motoName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			dbMsg += motoName ;
+			String artistN = setAlbumArtist(cursor);
+			dbMsg += ":" + artistN ;
+			String sort_name = ORGUT.ArtistPreFix(artistN.toUpperCase());	//大文字化してアーティスト名のTheを取る
+			dbMsg += ",sort_name=" + sort_name ;
+			boolean isNotComp = true;
+			for(String Junl : JunlList){
+				if(artistN.equals(Junl)){
+					isNotComp = false;
 				}
 			}
+			dbMsg += ",isNotComp=" + isNotComp ;
 
-			String aArtintName = getUrl2Artist(cursor);
-			dbMsg += ">>" + artistN + ":" + aArtintName ;
-			if(! artistN.equals(motoName) || ! artistN.equals(aArtintName)){
-				artistN = aArtintName;
-				dbMsg += ">フォルダ名に>" + artistN ;
-			}
-			sort_name = ORGUT.ArtistPreFix(artistN.toUpperCase());	//大文字化してアーティスト名のTheを取る
+//			String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));					//クレジットアーティスト
+//			String motoName = artistN;
+//			dbMsg += ",(MediaStore.Audio.Media)クレジットアーティスト=" +motoName ;
+//			if( artistN == null || artistN.contains("unknown") || artistN.contains("unknown")){
+//				val = map.get( "cArtistName" ); // 指定したキーに対応する値を取得. キャスト不要
+//				if( val != null ){
+//					artistN = val;
+//				}else if( composer != null ){
+//					artistN = composer;
+//				} else{
+//					artistN = getApplicationContext().getResources().getString(R.string.comon_nuKnow_artist);
+//				}
+//				dbMsg += ">>" + artistN ;
+//			}
+//			int sIndex =ORGUT.mapIndex(artistList , "credit_artist" ,artistN);		//渡された文字が既にリストに登録されていればインデックスを返す
+//			dbMsg += "、sIndex(" + sIndex;
+//			album_artist = artistN;														//基本的にはそのまま
+//			if(sIndex < 0){									//リストに無ければ
+//				String comp10 = getResources().getString(R.string.comon_compilation);			//コンピレーション
+//				String comp11 = comp10.toUpperCase();											//大文字化
+//				String comp12 = comp10.toLowerCase();											//小文字化
+//				String comp20 = getResources().getString(R.string.comon_compilation0);	//さまざまなアーティスト
+//				String comp21 = comp20.toUpperCase();											//大文字化
+//				String comp22 = comp20.toLowerCase();											//小文字化
+//				String comp30 = getResources().getString(R.string.comon_compilation2);	//Various Artists
+//				String comp31 = comp30.toUpperCase();											//大文字化
+//				String comp32 = comp30.toLowerCase();											//小文字化
+//				if(artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
+//					artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
+//					artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32) ){
+//					artistN = comp10;
+//				}
+//				album_artist = artistN;
+//			}else{
+//				String rStr = String.valueOf(artistList.get(sIndex).get("album_artist"));
+//				if(artistN.contains(rStr)){
+////					sort_name = String.valueOf(artistList.get(sIndex).get("sort_name"));
+//					album_artist = rStr;
+//				}
+//			}
+//
+//			String aArtintName = getUrl2Artist(cursor);
+//			dbMsg += ">>" + artistN + ":" + aArtintName ;
+//			if(! artistN.equals(motoName) || ! artistN.equals(aArtintName)){
+//				artistN = aArtintName;
+//				dbMsg += ">フォルダ名に>" + artistN ;
+//			}
+//			sort_name = ORGUT.ArtistPreFix(artistN.toUpperCase());	//大文字化してアーティスト名のTheを取る
 
-			dbMsg += ")sort_name=" + sort_name + "、album_artist=" + album_artist + "、credit_artist=" + motoName;
+			dbMsg += ")sort_name=" + sort_name + "、album_artist=" + artistN + "、credit_artist=" + motoName;
 			stmt.bindString(2, String.valueOf(sort_name));		//2.SORT_NAME;ALBUM_ARTISTを最短化して大文字化
 			stmt.bindString(3, motoName);						//3.artist;クレジットアーティスト名;cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 			stmt.bindString(4, artistN);						//4.album_artist
@@ -1421,6 +1477,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				dbMsg +=">>"+ kousinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
 			}
 			stmt.bindString(11, kousinnbi);			//11.idkousinnbi = cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
+			String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
+			dbMsg +=",composer=" + composer ;
 			if( composer != null){
 				stmt.bindString(12, composer);			//12.idcomposer = cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER);
 			}else{
@@ -1477,16 +1535,16 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 			}
 
-			if( (! artistN.equals(motoName) ||
-					! artistN.equals("Compilations") ||
-					! artistN.equals("Soundtrack")
-			)){
-				dbMsg = motoName +">フォルダ名に>" + artistN + ":" + dataFPN ;
+//			if( (! artistN.equals(motoName) && (
+//					! artistN.equals("Compilations" )||
+//					! artistN.equals("Soundtrack"))
+//			)){
+//				dbMsg = motoName +">フォルダ名に>" + artistN + ":" + dataFPN ;
 //				myLog(TAG,dbMsg);
-//			}else if(kakikomi){
-//				dbMsg = ">>" + aCount + "件目に追加>>" + artistN;
-//				myLog(TAG,dbMsg);
-			}
+//			}else if(sort_name.contains("The")){
+//				dbMsg = ">The抜けず>" ;
+				myLog(TAG,dbMsg);
+//			}
 
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
