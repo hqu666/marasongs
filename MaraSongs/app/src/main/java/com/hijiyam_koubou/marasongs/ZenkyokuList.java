@@ -305,13 +305,16 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 			}
 
+			if(retStr.equals("")){
+				retStr = aArtintName;
+			}
 			if(! motoName.equals(artistN)
 //					&& ! retStr.equals("Compilations")
 			){
 				retStr = artistN;
 				dbMsg += ":::artist=" + artistN ;
 				dbMsg += ">>" + retStr ;
-//				myLog(TAG, dbMsg);
+				myLog(TAG, dbMsg);
 			}
 
 		} catch (Exception e) {
