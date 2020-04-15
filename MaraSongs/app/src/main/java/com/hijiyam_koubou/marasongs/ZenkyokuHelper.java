@@ -50,7 +50,7 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 
 			String tSet = "create table " + tName +" (" +							//テーブル名；artist_rw_table
 					"_id integer primary key autoincrement not null, "+ 			//作成したリストの連番
-					"AUDIO_ID text not null," +		//1.元々のID
+					"AUDIO_ID text not null," +				//1.元々のID
 					"SORT_NAME text not null," +		//2.ALBUM_ARTISTを最短化して大文字化
 					"ARTIST text not null," +		//3.artist;クレジットアーティスト名
 					"ALBUM_ARTIST text, " +			//4.album_artist
@@ -62,7 +62,8 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 					"DATA text, " +					//10.data;					//URI
 					"MODIFIED text, " +				//11.idkousinnbi = cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
 					"COMPOSER text, " +				//12.idcomposer = cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER);
-					"LAST_YEAR text " +				//13.MediaStore.Audio.Albums.LAST_YEAR
+					"LAST_YEAR text, " +				//13.MediaStore.Audio.Albums.LAST_YEAR
+					"ALBUM_ARTIST_LIST_ID " +		//14.ALBUM_ARTIST_LIST_IDのID
 						");";
 /*
 	 				"	id text, "+ 										//MediaStore.Audio.Media._ID	updateに必要
