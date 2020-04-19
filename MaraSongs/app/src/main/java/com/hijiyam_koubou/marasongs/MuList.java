@@ -1214,7 +1214,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg =  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 				String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 				String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-				String c_selection = null;			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
+				String c_selection = null;
 				String[] c_selectionArgs= null;
 				String c_groupBy = "ARTIST";
 				String c_having = null;
@@ -1534,7 +1534,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 			String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-			String c_selection = "ARTIST = ? ";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
+			String c_selection = "ARTIST = ? ";
 			String c_orderBy= "TRACK"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			Cursor cursor;
 			if( mtoAlubm == null ){
@@ -1571,11 +1571,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				henkouKensuu =shyuuseiuListRDelLoop(mtoArtist , mtoAlubm);			//作成されている修正リストから選択されたレコードを消去する
 
 				if( mtoAlubm == null ){
-					c_selection = "ARTIST = ? ";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
+					c_selection = "ARTIST = ? ";
 					String[] c_selectionArgs= { mtoArtist };
 					cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 				}else{
-					c_selection = "ARTIST = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
+					c_selection = "ARTIST = ? AND ALBUM = ?";
 					String[] c_selectionArgs2= { mtoArtist , mtoAlubm };
 					cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 				}
@@ -1858,7 +1858,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
 			shyuusei_db = shyuusei_Helper.getReadableDatabase();			// データベースをオープン
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-			String c_selection = null;			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
+			String c_selection = null;
 			String[] c_selectionArgs= null;
 			String c_groupBy = "ARTIST";
 			String c_having = null;
@@ -2028,11 +2028,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String c_orderBy = null;
 			dbMsg += " , ARTIST = " + mtoArtist +  " , ALBUM = " + mtoAlubm;//////
 			if( mtoAlubm == null ){
-				c_selection = "ARTIST = ? ";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
+				c_selection = "ARTIST = ? ";
 				String[] c_selectionArgs= { mtoArtist };
 				cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}else{
-				c_selection = "ARTIST = ? AND ALBUM = ?";			//= "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
+				c_selection = "ARTIST = ? AND ALBUM = ?";
 				String[] c_selectionArgs2= { mtoArtist , mtoAlubm };
 				cursorS = shyuusei_db.query(shyuuseiTName, c_columns, c_selection, c_selectionArgs2 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			}
@@ -2101,7 +2101,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg += ">isOpen>" + Zenkyoku_db.isOpen()+ ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 				String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 				String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-				String c_selection = null;			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
+				String c_selection = null;
 				String[] c_selectionArgs= null;
 				String c_groupBy = "ARTIST";
 				String c_having = null;
@@ -3006,12 +3006,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				}
 			}
 			String table =artistTName;			//テーブル名を指定します。
-			String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String[] columns =null;
 			String c_selection = null;					// compSelection;
 			String[] c_selectionArgs= null;				//compList;
-			String groupBy = null;				//"ALBUM_ARTIST";			//ALBUM_ARTIST;					//groupBy句を指定します。
+			String groupBy = null;
 			String having =null;					//having句を指定します。
-			String orderBy  = null;			//"_id";				//"ALBUM_ARTIST";				//ALBUM_ARTIST
+			String orderBy  = null;
 			String limit = null;					//検索結果の上限レコードを数を指定します。
 			cursorA = artist_db.query( table ,columns, c_selection,  c_selectionArgs,  groupBy,  having,  orderBy,  limit) ;
 			retInt = cursorA.getCount();
@@ -3090,14 +3090,10 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			if(ｃArtistUp.length() !=aArtist.length()){
 	//			myLog(TAG,dbMsg);
 			}
-//			if( aArtist != null ){
-//				if( !  Arrays.asList( aArtistList ).contains(aArtist)){			// || this.pdCoundtVal==1		isInListString	containsInListString	渡された文字が既にリストに登録されているいずれかの文字列に含まれていたらtrueを返す
-				//				if( ! ORGUT.isInListString( MuList.this.aArtistList , aArtist) ){			//isInListString	containsInListString	渡された文字が既にリストに登録されているいずれかの文字列に含まれていたらtrueを返す
 					MuList.this.artistSL.add(aArtist);					//クレジットされたアーティストト	wrArtist
 					MuList.this.artistMap = new HashMap<String, Object>();		//アーティストリスト用
 					MuList.this.artistMap.put("index" ,aArtist );
 					MuList.this.artistMap.put("main" ,aArtist );					///wrArtist
-		//			MuList.this.aArtistList.add(aArtist);
 					if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 					} else {
 						dbMsg +=MuList.this.artistSL.size() + ")" + aArtist ;
@@ -3145,8 +3141,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					}
 					MuList.this.artistAL.add(artistMap);		//アーティストリスト用ArrayList
 					dbMsg +="["+ cursor.getPosition()   +">>" +MuList.this.artistAL.size() +"]";			//+ "/" + cursor.getCount()
-//				}						//if( !  Arrays.asList( aArtistList ).contains(aArtist)){
-//			}							//if( aArtist != null ){
 	//		dbMsg +=">>" + MuList.this.aArtistList.size() + "件";
 //			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -3293,7 +3287,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			boolean distinct = true;					//trueを指定すると検索結果から重複する行を削除します。
 			String c_selection = "ALBUM_ARTIST = ?";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs0={albumArtist};			//⑥引数groupByには、groupBy句を指定します。 "'" + artistMei + "'"
-			String c_groupBy= "ALBUM";	//ALBUM , ALBUM_ARTISTで144、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+			String c_groupBy= "ALBUM";
 			String having =null;					//having句を指定します。
 			String c_orderBy="LAST_YEAR ,YEAR"; 	 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			if( Arrays.asList( compList ).contains(albumArtist)){				//コンピュレーションなどの末尾へのなら
@@ -3352,9 +3346,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							}
 							c_selection = "ALBUM_ARTIST = ? AND ALBUM = ?";			//SORT_NAME	2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 							String[] c_selectionArgs2={albumArtist , aName};			//⑥引数groupByには、groupBy句を指定します。 "'" + artistMei + "'"
-							c_groupBy = null;	//"TITLE"	ALBUM , ALBUM_ARTISTで144、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+							c_groupBy = null;
 							Cursor cursor2 = Zenkyoku_db.query(zenkyokuTName, null, c_selection, c_selectionArgs2 , null, null, null);	//1;table, 2; columns,new String[] {MotoN, albamN}
-				//			Cursor cursor2 = Zenkyoku_db.query(false,zenkyokuTName, null, c_selection, c_selectionArgs2 , c_groupBy, null, c_orderBy,null);	//1;table, 2; columns,new String[] {MotoN, albamN}
 							String kyokusuu = String.valueOf(cursor2.getCount());			//MediaStore.Audio.Albums.NUMBER_OF_SONGS
 							dbMsg +=" ; "+ kyokusuu + "曲";/////////////////////////////////////////////////////////////////////////////////////////////
 							cursor2.close();
@@ -3516,12 +3509,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg +=   ",aName=" + aName;/////////////////////////////////////
 			String table =artistTName= getString(R.string.artist_table);				//テーブル名を指定します。
 			artistDBOpen();									//artist_dbを開く
-			String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String[] columns =null;
 			String selections = "ALBUM_ARTIST = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] selectionArgs = new String[]{ aName };  			//	 {"%" + artistMei + "%" , albumMei };
 			String groupBy ="ALBUM_ARTIST";					//groupBy句を指定します。
 			String having =null;					//having句を指定します。
-			String orderBy  =null;						//"ALBUM_ARTIST,ALBUM";				//
+			String orderBy  =null;
 			String limit = null;					//検索結果の上限レコードを数を指定します。
 			Cursor cursor = artist_db.query( table ,columns, selections,  selectionArgs,  groupBy,  having,  orderBy,  limit) ;
 			if(cursor.moveToFirst()){
@@ -3549,7 +3542,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String table =artistTName= getString(R.string.artist_table);				//テーブル名を指定します。
 			dbMsg += ">>" + artistTName;/////////////////////////////////////
 			artistDBOpen();									//artist_dbを開く
-			String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String[] columns =null;
 			String selections = "ARTIST = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] selectionArgs = new String[]{ aName };  			//	 {"%" + artistMei + "%" , albumMei };
 			if(aName == null){
@@ -3558,7 +3551,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}
 			String groupBy ="ALBUM_ARTIST";					//groupBy句を指定します。
 			String having =null;					//having句を指定します。
-			String orderBy  =null;						//"ALBUM_ARTIST,ALBUM";				//
+			String orderBy  =null;
 			String limit = null;					//検索結果の上限レコードを数を指定します。
 			Cursor cursor = artist_db.query( table ,columns, selections,  selectionArgs,  groupBy,  having,  orderBy,  limit) ;
 			dbMsg += "," + cursor.getCount() + "件";/////////////////////////////////////
@@ -8432,7 +8425,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ",getPageSize=" + Zenkyoku_db.getPageSize() + "件)" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 			String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-			String c_selection = "ALBUM_ARTIST LIKE ? ";			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
+			String c_selection = "ALBUM_ARTIST LIKE ? ";
 			String[] c_selectionArgs= {"%" + albumArtist + "%"  };
 			String c_orderBy= "_id , ALBUM , TRACK";			// ""; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
@@ -8662,7 +8655,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							dbMsg += ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 							String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
 							String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-							String c_selection = "DATA = ?";			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
+							String c_selection = "DATA = ?";
 							String[] c_selectionArgs= {String.valueOf(dataFN)};
 							String c_groupBy = null;
 							String c_having = null;
@@ -8678,7 +8671,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 									tugiIndex = 1 ;
 								}
 								dbMsg += ">>("+ tugiIndex + "/"+listEnd + ")" ;////////
-								c_selection = "_id = ? ";			//"ALBUM_ARTIST LIKE ? AND ALBUM = ?";		//	= "SORT_NAME = ? AND ALBUM = ?";
+								c_selection = "_id = ? ";
 								String[] c_selectionArgs2= {String.valueOf(tugiIndex)};
 								cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , c_groupBy, c_having, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 								if( cursor.moveToFirst() ){

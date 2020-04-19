@@ -29,6 +29,7 @@
     <string name="artist_reW_table">artist_rw_table</string>
     <string name="a_WSepalater"> >> </string> <!-- 変更するアーティスト名のセパレータ -->
     <string name="aaWSepalater"> ;; </string> <!-- 特定アルバムの指定 -->
+    <string name="kari_artist_file">kari_artist.db</string>
     <string name="artist_file">artist.db</string>
     <string name="artist_table">artist_table</string>
     <string name="kari_file">kari.db</string>

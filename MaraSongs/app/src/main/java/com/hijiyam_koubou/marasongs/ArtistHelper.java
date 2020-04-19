@@ -34,12 +34,14 @@ public class ArtistHelper extends SQLiteOpenHelper {
 			String tName = rContext.getResources().getString(R.string.artist_table);
 			dbMsg="テーブル名= "+ tName;/////////////////////////////////////
 			String tSet = "create table " + tName +" (" +			//テーブル名；artist_rw_table
-					"_id  integer primary key autoincrement not null, "+ 
-					"	ARTIST text," +				//1,MediaStore.Audio.Albums.ARTIST
-					"	ALBUM_ARTIST text," +		//2
-					"	ALBUM text, " +				//3,MediaStore.Audio.Albums.ALBUM_ART
-					"	ALBUM_ART text, " +		//4,MediaStore.Audio.Albums.ALBUM_ART
-					"	SUB_TEXT text" +				//5.アーティストリスト生成用の集約情報
+					"_id  integer primary key autoincrement not null, "+
+					"ARTIST_ID text not null," +		//1.MediaStore.Audio.Media.ARTIST_ID
+					"SORT_NAME text not null," +		//2.the抜き大文字
+					"ARTIST text," +					//3,MediaStore.Audio.Albums.ARTIST
+					"ALBUM_ARTIST text," +				//4,ALBUM_ARTIST
+					"ALBUM text, " +				//5,MediaStore.Audio.Albums.ALBUM
+					"ALBUM_ART text, " +		//6,MediaStore.Audio.Albums.ALBUM_ART
+					"SUB_TEXT text" +				//7.アーティストリスト生成用の集約情報
 					");"; 
 			/*	
 					"	FIRST_YEAR text, " +		//5.MediaStore.Audio.Albums.FIRST_YEAR

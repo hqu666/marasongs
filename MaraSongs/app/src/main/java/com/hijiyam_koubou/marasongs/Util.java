@@ -516,11 +516,13 @@ public class Util {
 		String rStr = checkStr;
 		try {
 			dbMsg += "," + rStr;
-			if (checkStr.contains("/")){
-				String[] tStrs = checkStr.split("/");
-				rStr = tStrs[0];
-				dbMsg += ">>" + rStr;
+			if(checkStr == null){
+				if (checkStr.contains("/")){
+					String[] tStrs = checkStr.split("/");
+					rStr = tStrs[0];
+					dbMsg += ">>" + rStr;
 //				myLog(TAG, dbMsg);
+				}
 			}
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
