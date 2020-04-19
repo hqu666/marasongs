@@ -165,15 +165,13 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public static final int pt_preReadEnd=pt_start+1;												//801;メディアストア更新  ←preReadで欠けが見つかった場合のみ
 	public static final int pt_mastKopusin=pt_preReadEnd+1;										//802;メディアストア更新  ←preReadで欠けが見つかった場合のみ
 	public static final int pt_KaliArtistList=pt_mastKopusin+1;									//803;仮アーティスト作成
-	public static final int pt_CreateKaliList=pt_KaliArtistList+1;									//804;仮リスト作成
-	
-	public static final int pt_jyuufukuSakujyo = pt_CreateKaliList+1;					//804;コンピレーション抽出；アルバムアーティスト名の重複
-	public static final int pt_HenkouHanei= pt_jyuufukuSakujyo+1;						//805;ユーザーの変更を反映
-	public static final int pt_CreateZenkyokuList = pt_HenkouHanei+1;					//806;全曲リスト作成
+	public static final int pt_artistList_yomikomi = pt_KaliArtistList+1;								//808;アーティストリストを読み込む(db未作成時は-)
+	public static final int pt_CreateKaliList=pt_artistList_yomikomi+1;									//804;仮リスト作成
+//	public static final int pt_jyuufukuSakujyo = pt_CreateKaliList+1;					//804;コンピレーション抽出；アルバムアーティスト名の重複
+//	public static final int pt_HenkouHanei= pt_jyuufukuSakujyo+1;						//805;ユーザーの変更を反映
+	public static final int pt_CreateZenkyokuList = pt_CreateKaliList+1;					//806;全曲リスト作成
 	public static final int pt_CompList = pt_CreateZenkyokuList+1;						//807;全曲リストにコンピレーション追加
-//	public static final int pt_artistList_yomikomi = pt_CompList+1;								//808;アーティストリストを読み込む(db未作成時は-)
-	public static final int pt_artistList_yomikomi = pt_CompList+1;								//808;アーティストリストを読み込む(db未作成時は-)
-	public static final int pt_end = pt_artistList_yomikomi+1;										//809;最終処理
+	public static final int pt_end = pt_CompList+1;										//809;最終処理
 	public String bArtistN;
 	public String aArtist ;
 	public String b_AlbumMei ;
@@ -207,6 +205,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	public List<String> aArtistList;		//アルバムアーティスト
 	public String artistlist = "";
 	String lastYear = null;
+	public String compIndex;
+	public ContentValues cv;
+	public String udIdName;							//アップデートする名前
+	public String allSonglist = "";
+
 
 	public void readPref() {        //プリファレンスの読込み
 		final String TAG = "readPref";
@@ -291,10 +294,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		try {
 			String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 			String motoName = artistN;
-
-//			String dataStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-//			dataStr = dataStr.replace(pref_commmn_music + File.separator, "");
-//			dbMsg += ":" + dataStr ;
 			String aArtintName = getUrl2Artist(cursor);
 			dbMsg += ">>" + aArtintName ;
 			String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
@@ -319,7 +318,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				if(artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
 						artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
 						artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32) ){
-					artistN = comp10;
+					artistN = "Compilations";
 				}else{
 					for(String Junl : genleList){
 						if(aArtintName.equals(Junl)){
@@ -346,7 +345,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		}
 		return retStr;
 	}
-
 
 	//設定読込・旧バージョン設定の消去
 
@@ -1219,8 +1217,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 			}
 			aArtist = sort_name;
-
-//			bArtistN = artistN;
 			dbMsg += ">ALBUM_ARTIST>>" + artistN;
 			dbMsg += ",書込み" + kakikomi;
 			if( kakikomi ){
@@ -1344,7 +1340,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg2 = "";
 			if(kakikomi){
 				dbMsg = ">>" + aCount + "件目に追加>>" + artistN + ":" + sort_name + ":" + datsFN + "\n" + dbMsg;
-				myLog(TAG,dbMsg);
+//				myLog(TAG,dbMsg);
 			}else if(! isNotComp){
 				dbMsg = motoName + ">コンピレーションに>" +artistN ;
 //				myLog(TAG,dbMsg);
@@ -1385,7 +1381,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //				}
 //			});
 			Collections.sort(shortArtistList);
-
 			if(0 < compGenList.size()){
 				for(String Junl : genleList){
 					for(String comp : compGenList){
@@ -1399,23 +1394,21 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							dbMsg += "（"+artistList.size() +"）"+ comp;
 							ZenkyokuList.this.shortArtistList.add( sort_name);
 							dbMsg += "（"+shortArtistList.size() +"）"+ sort_name;
-//							SQLiteStatement stmt = kariArtist_db.compileStatement("insert into " + artistTName +
-//									"(ARTIST,ALBUM_ARTIST,ALBUM,ALBUM_ART,SUB_TEXT) values (?, ?, ?, ?, ?);");
-//							stmt = stmtWrite2(comp ,  stmt , 1);							//1;ARTIST
-//							stmt = stmtWrite2(comp ,  stmt , 2);				//2;ALBUM_ARTIST
-//							stmt = stmtWrite2(comp ,  stmt ,  3);
-//							stmt = stmtWrite2("" ,  stmt , 4);
-//							stmt = stmtWrite2("" ,  stmt ,  5);
-//							long id = stmt.executeInsert();
-//							dbMsg += "文字[" + id +"]に追加";///////////////////		ZenkyokuList.this.
 						}
 					}
 				}
 			}
+			dbMsg += ",shortArtistList=" + shortArtistList.size() + "件";
+			for(String rStr : shortArtistList) {
+				Integer alubumArtistListID = ZenkyokuList.this.shortArtistList.indexOf(rStr);
+				dbMsg +="\n" + alubumArtistListID + ")" + rStr;
+			}
+
+
 			kariArtist_db = artistHelper.getReadableDatabase();			// データベースをオープン
 			cursor = kariArtist_db.query(artistTName, null , null , null , null, null , null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
 			int artistSize = cursor.getCount();
-			dbMsg += ",kariArtist_db=" + artistSize + "件";
+			dbMsg += "\nkariArtist_db=" + artistSize + "件";
 			if(cursor.moveToFirst()){
 				do{
 					String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
@@ -1432,14 +1425,10 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			cursor.close();
 			pdMessage_stok = pdMessage_stok +"\n\n" + pd2CoundtVal + ";" +
 					cContext.getString(R.string.pp_artist) + artistSize + "," + cContext.getString(R.string.comon_nin);// アーティスト  人</string>
-			for(String rStr : shortArtistList) {
-				Integer alubumArtistListID = ZenkyokuList.this.shortArtistList.indexOf(rStr);
-				dbMsg +="\n" + alubumArtistListID + ")" + rStr;
-			}
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			String dousaJikann = ORGUT.sdf_mss.format( (int)((end - startPart)));
-			pdMes = pdMessage_stok +"["+cContext.getString(R.string.comon_syoyoujikan)+";"+ dousaJikann + "mS]";		//	<string name="">所要時間</string>
 			myLog(TAG,dbMsg);
+			pdMes = pdMessage_stok +"["+cContext.getString(R.string.comon_syoyoujikan)+";"+ dousaJikann + "mS]";		//	<string name="">所要時間</string>
 			CreateArtistList();
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg);
@@ -1545,7 +1534,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
 
 			dbMsg += "、リスト" + ZenkyokuList.this.aArtistList.size() +"件";
-			myLog(TAG,dbMsg);
+//			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -1610,8 +1599,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					getResources().getString(R.string.common_artist_list)  + pdMaxVal + this.cContext.getString(R.string.comon_nin);		//追加</string>
 			pdMessage_stok = pdMessage_stok +"[" +dousaJikann + "mS]";		//所要時間
 			dbMsg +=  pdMessage_stok ;
-			reqCode = pt_end;
-			cursor.close();
+//			reqCode = pt_end;
+//			cursor.close();
 
 			try {
 				dbMsg += " , アーティストリストファイル書き込み= " + album_artist_file_name;
@@ -1628,7 +1617,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 			myLog(TAG,dbMsg );
 			CreateKaliList();			//仮リスト作成
-//			totalEnd( pdMessage_stok );									//データベースを閉じて終了処理
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -1661,7 +1649,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
-			String c_orderBy=MediaStore.Audio.Media.ARTIST  + " , " + MediaStore.Audio.Media.ALBUM+ " , " + MediaStore.Audio.Media.TRACK ; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+			String c_orderBy=MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+//			String c_orderBy=MediaStore.Audio.Media.ARTIST  + " , " + MediaStore.Audio.Media.ALBUM+ " , " + MediaStore.Audio.Media.TRACK ; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
 			cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
 			dbMsg=dbMsg +";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
 	//		myLog(TAG,dbMsg);
@@ -1820,21 +1809,23 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}else{
 				stmt.bindString(13, "");				//13.MediaStore.Audio.Albums.LAST_YEAR
 			}
-
+			Integer alubumArtistListID = ZenkyokuList.this.shortArtistList.indexOf(sort_name)+ 1;
 			String aSelection =  "SORT_NAME = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] aSelectionArgs= {sort_name};   			//音楽と分類されるファイルだけを抽出する
+			String[] aSelectionArgs= {String.valueOf(sort_name)};   			//音楽と分類されるファイルだけを抽出する
 			Cursor aCursor = artist_db.query(artistTName, null , aSelection , aSelectionArgs , null, null , null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
-			Integer alubumArtistListID = aCursor.getInt(aCursor.getColumnIndex("_id"));
-//			Integer alubumArtistListID = ZenkyokuList.this.shortArtistList.indexOf(sort_name)+1;
-			dbMsg += "、ALBUM_ARTIST_LIST_ID="+ alubumArtistListID;
-			if(-1 < alubumArtistListID){
-				dbMsg += ">>書込み";
-				stmt.bindString(14, String.valueOf(alubumArtistListID));			//ALBUM_ARTIST_LIST_IDのID
-			}else{
-				dbMsg += ">最後に>"+ ZenkyokuList.this.shortArtistList.size() + 1;
-				stmt.bindString(14, String.valueOf(aCursor.getCount() + 1));			//ALBUM_ARTIST_LIST_IDのID
-//				stmt.bindString(14, String.valueOf(ZenkyokuList.this.shortArtistList.size() + 1));			//ALBUM_ARTIST_LIST_IDのID
+			if(aCursor.moveToFirst()){
+				alubumArtistListID = aCursor.getInt(aCursor.getColumnIndex("_id") );
 			}
+
+			dbMsg += "、ALBUM_ARTIST_LIST_ID="+ alubumArtistListID;
+//			if(-1 < alubumArtistListID){
+//				dbMsg += ">>書込み";
+				stmt.bindString(14, String.valueOf(alubumArtistListID + 10000));			//ALBUM_ARTIST_LIST_IDのID
+//			}else{
+//				dbMsg += ">最後に>"+ ZenkyokuList.this.shortArtistList.size() + 1;
+//				stmt.bindString(14, String.valueOf(aCursor.getCount() + 1));			//ALBUM_ARTIST_LIST_IDのID
+////				stmt.bindString(14, String.valueOf(ZenkyokuList.this.shortArtistList.size() + 1));			//ALBUM_ARTIST_LIST_IDのID
+//			}
 			aCursor.close();
 			if( ZenkyokuList.this.saisinnbi == null){					//最新更新日付が拾えていなければ
 				ZenkyokuList.this.saisinnbi = kousinnbi;
@@ -1951,399 +1942,395 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pdMessage_stok = pdMessage_stok + "\n" +"[" +dousaJikann + "mS]";		//所要時間
 			dbMsg +=";; " +pdMessage_stok;//////
 			myLog(TAG,dbMsg);
-//			CreateZenkyokuList();				//全曲リスト作成
-			jyuufukuSakujyo();				//コンピレーション抽出；アルバムアーティスト名の重複
+			CreateZenkyokuList();				//全曲リスト作成
+//			jyuufukuSakujyo();				//コンピレーション抽出；アルバムアーティスト名の重複
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
 	}
 
-	/**
-	 * コンピレーション抽出；アルバムアーティスト名の重複
-	 * @ 無し
-	 * Kari_dbをALBUM でグルーピング。
-	 * 	ALBUM , SORT_NAMEでSort
-	 * jyuufukuSakujyoBodyへ
-	 * reqCode = pt_jyuufukuSakujyo
-	 * */
-	public void jyuufukuSakujyo(){		//コンピレーション抽出；アルバムアーティスト名の重複
-		final String TAG = "jyuufukuSakujyo";
-		String dbMsg= "[ZenkyokuList]";
-		try{
-			startPart = System.currentTimeMillis();		// 開始時刻の取得
-			String comp = cContext.getString(R.string.comon_compilation);			//コンピレーション
-			new ArrayList<String>();
-			cContext.getContentResolver();
-
-			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
-			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
-			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-			String[] c_columns = null;	////{ "ARTIST", "ALBUM ", "YEAR " };			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String c_selection = null;					//"ALBUM = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] c_selectionArgs= null;   			//	 {"%" + artistMei + "%" , albumMei };
-			String c_groupBy=  "ALBUM";			// , SORT_NAME　ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
-			String c_having= null;			//2で318,1で340、nullで587	降順はDESC
-			String c_orderBy= "ALBUM , SORT_NAME";	//ALBUM_ARTIST,YEAR	。	降順はDESC
-			cursor = Kari_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy, null);				//(rSQL ,null);
-			int souMai = cursor.getCount();
-			Kari_db.close();
-			dbMsg = "アルバムは" + souMai +"枚";
-			if(cursor.moveToFirst()){
-				reqCode = pt_jyuufukuSakujyo;			//コンピレーション抽出；アルバムアーティスト名の重複
-				pd2CoundtVal++;
-				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" +comp + getString(R.string.comon_syori)+"\n"+		//コンピレーション処理</string>
-						getString(R.string.zl_coment_comp_matome)+"\n"+				//.条件1.トラック番号の重複\nn...条件2:設定した比率より別のアーティスト曲が多い</string>
-						getString(R.string.zl_genzai_lisi)+ getString(R.string.comon_album) +souMai + this.cContext.getString(R.string.pp_mai);	 	//">リストアップされる"">アルバム</string></string>アルバム ○○枚確認
-				pdMessage = pdMessage_stok + "\n\n" +
-						getString(R.string.common_kakunincyuu) ;				//."">確認中</string>
-			//	dbMsg +=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
-				pdCoundtVal = 0;
-				myLog(TAG,dbMsg);
-				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
-			}				//if( cursor.moveToFirst()){
-	//		myLog(TAG,dbMsg);
-		}catch(IllegalArgumentException e){
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}
-	}
-
-	public String compIndex;
-	public ContentValues cv;
-	public String udIdName;							//アップデートする名前
-    public String allSonglist = "";
-
-	/**
-	 * コンピレーションの抽出とアルバムアーティスト名の重複処理
-	 * @ Cursor cursor  Kari_dbをALBUM でグルーピングしたレコード
-	 * 1.Kari_dbからアルバムごとの曲データレコードを読み出し、
-	 * 
-	 * アップデートするIDをArrayList<String> udIdListに収集
-	 * jyuufukuSakujyoEndへ
-	 * */
-	public Cursor jyuufukuSakujyoBody(Cursor cursor) throws IOException {		//アルバムアーティスト名の重複   ,  ,SQLiteStatement stmt
-		final String TAG = "jyuufukuSakujyoBody";
-		String dbMsg= "[ZenkyokuList]";
-		try{
-			boolean jikkou =true;
-			int onajiTrack = 0;
-			dbMsg += "[" + (cursor.getPosition() + 1 ) +"/"+ cursor.getCount() + "枚目]";
-			String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-			dbMsg = cursor.getPosition()+ "/;" + cursor.getCount();		// +"；" +"[" + id1 +"]" + aName1+";" + song1+"曲";
-			String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
-			dbMsg += "アルバム：" + albumName;
-			String c_selection ="ALBUM = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] c_selectionArgs=  {albumName};   			//	 {"%" + artistMei + "%" , albumMei };
-			String c_groupBy= null;		//ALBUM_ARTIST "ALBUM";	//,YEAR	。	降順はDESC
-			String c_having= null;			//"COUNT(*) > 1";	//ALBUM_ARTIST,YEAR	。	降順はDESC
-			String c_orderBy= "ALBUM_ARTIST";	//	降順はDESC
-			Cursor tCursor = ZenkyokuList.this.Kari_db.query(zenkyokuTName, null, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy);				//(rSQL ,null);
-			int kyokuSuu = tCursor.getCount();
-			dbMsg=dbMsg +"は"+ kyokuSuu + "曲、";
-			bArtistN = "";
-			int onajiCount = 0;
-			if( tCursor.moveToFirst() && 1 < tCursor.getCount()){
-				bArtistN  = tCursor.getString(tCursor.getColumnIndex("ALBUM_ARTIST"));		//最短アーティスト名
-				Map<String, Integer> intMap = new HashMap<String, Integer>();
-				String artistName;
-				do{
-					artistName =String.valueOf( tCursor.getString(tCursor.getColumnIndex("ALBUM_ARTIST")));		//最短アーティスト名		ALBUM_ARTIST	SORT_NAME"));	
-					String track = String.valueOf( tCursor.getString(tCursor.getColumnIndex("TRACK")));			//6.track;トラックNo,
-					track = UTIL.checKTrack( track);
-					if(bArtistN.equals(artistName)){
-						onajiCount++;
-					}else{
-						dbMsg += "、" + artistName + ";" + onajiCount  + "曲" ;
-						intMap.put(bArtistN ,onajiCount );
-						onajiCount = 1;
-						bArtistN = artistName;
-					}
-					if(track.equals("01")){
-						onajiTrack++;
-					}
-				}while( tCursor.moveToNext() );
-				if(1 < onajiCount){							//最多アーティストが最後の場合
-					dbMsg += "、" + artistName + ";" + onajiCount  + "曲" ;
-					intMap.put(bArtistN ,onajiCount );
-				}
-				dbMsg =  albumName + "は" + kyokuSuu + "曲中";
-				dbMsg += "、参加アーティスト=" + intMap.size() +"人、コンプレーション判定値=" + pref_compBunki + "%に対し";
-				if(1 < intMap.size() && onajiTrack < 2){			//2曲以上のアルバムで同じトラック番号が無ければ
-					List<Map.Entry<String,Integer>> entries =  new ArrayList<Map.Entry<String,Integer>>(intMap.entrySet());						// List 生成 (ソート用)
-					Collections.sort(entries, new Comparator<Map.Entry<String,Integer>>() {
-						@Override
-						public int compare( Entry<String,Integer> entry1, Entry<String,Integer> entry2) {
-							return entry2.getValue().compareTo(entry1.getValue());
-						}
-					});
-					String rArtistName = entries.get(0).getKey();				//.get("ALBUM_ARTIST"):
-					int saidai = entries.get(0).getValue();
-					dbMsg +=",最多=" + rArtistName +"=" + saidai +"曲";
-					String SORT_NAME = rArtistName;
-					float compBunk = ( saidai * 1.0f / kyokuSuu) *100;					//コンピレーションの分離のみなら	( objMap.size()*1.0f / kyokuSuu) *100;
-					dbMsg +="、全曲中=" + compBunk;
-					int compInt =  (int) (compBunk +0.5f);		//	Integer.valueOf(  String.valueOf
-					dbMsg += ">>" + compInt +"%";
-					if( compInt < Integer.valueOf(pref_compBunki)  ){						//parseIntではjava.lang.NumberFormatException: Invalid int: "16.666668"
-						rArtistName =  cContext.getString(R.string.comon_compilation);			//コンピレーション	tCursor.getString(tCursor.getColumnIndex("ARTIST"));
-						SORT_NAME = rArtistName;
-					} else{
-						int jitenn = entries.get(1).getValue();
-						if(2 < jitenn){					//同名アルバム対策（仮）
-							jikkou  = false;
-							dbMsg +="、同名アルバムで処理中断 ";
-						}else{
-							SORT_NAME = ORGUT.ArtistPreFix(rArtistName.toUpperCase());	//大文字化してアーティスト名のTheを取る
-						}
-					}
-					dbMsg +="、rArtistName=" + rArtistName +"、SORT_NAME=" + SORT_NAME;
-					if( tCursor.moveToFirst() && jikkou ){
-			//			sortNameReWright(tCursor ,rArtistName , SORT_NAME);		//アルバム一枚分のアルバムアーティスト名修正//						try {
-						try {
-					//		dbMsg += ">Kari_db.isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-							if(Kari_db.isOpen()){
-								Kari_db.close();
-				//				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-							}
-					//		dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-							if( ! Kari_db.isOpen()){
-								Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
-				//				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-							}
-							
-							do{
-				//				dbMsg =dbMsg+"書込み" +  tCursor.getPosition()+ "/" + tCursor.getCount() +"人目(id=";		// +"；" +"[" + id1 +"]" + aName1+";" + song1+"曲";
-								String rID = tCursor.getString(tCursor.getColumnIndex("_id"));
-								ContentValues cv = new ContentValues();
-									cv.put("ALBUM_ARTIST", rArtistName);
-									cv.put("SORT_NAME", SORT_NAME);
-									String where = "_id = ?";
-									String[] selectionArgs = {rID};
-									int rRow = Kari_db.update(zenkyokuTName, cv , where, selectionArgs);
-						//			dbMsg +=">書込み>" + rRow;
-							}while( tCursor.moveToNext() );
-						} finally {
-							if (Kari_db != null) {
-								Kari_db.close();
-								Kari_db = zenkyokuHelper.getReadableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
-							}
-						}
-					}
-		//			myLog(TAG,dbMsg);
-				}else{
-					dbMsg =dbMsg+"1曲しかない";
-					dbMsg =dbMsg+"トラック番号01が" + onajiTrack + "曲で書換えしない";
-		//			myLog(TAG,dbMsg);
-				}
-			}		//	( tCursor.moveToFirst() ){
-			tCursor.close();
-		}catch(IllegalArgumentException e){
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}
-		return cursor;
-	}
-		
-
-	/**
-	 * アルバムアーティスト名の重複処理終了
-	 * @ 無し
-	 * kari.dbを開き直して
-	 * henkouHaneiへ
-	 * */
-	public void jyuufukuSakujyoEnd(){		//アルバムアーティスト名の重複
-		final String TAG = "jyuufukuSakujyoEnd";
-		String dbMsg= "[ZenkyokuList]";
-		try{
-			cursor.close();
-			dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			if(Kari_db.isOpen()){
-				Kari_db.close();
-				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			}
-			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			if( ! Kari_db.isOpen()){
-				Kari_db = zenkyokuHelper.getReadableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
-				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			}
-			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
-			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
-			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-			String[] c_columns = null;	////{ "ARTIST", "ALBUM ", "YEAR " };			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String c_selection = null;					//"ALBUM = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] c_selectionArgs= null;   			//	 {"%" + artistMei + "%" , albumMei };
-			String c_groupBy=  "ALBUM , SORT_NAME";	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
-			String c_having=null;										// "COUNT(*) > 1"	降順はDESC
-			String c_orderBy= " SORT_NAME , ALBUM";	//ALBUM_ARTIST,YEAR	。	降順はDESC
-			Cursor cursor = Kari_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy, null);				//(rSQL ,null);
-			int souMai = cursor.getCount();
-			pdMes =souMai + "件";		//	<string name="">所要時間</string>
-			cursor.close();
-			Kari_db.close();
-			long end=System.currentTimeMillis();		// 終了時刻の取得
-			String dousaJikann = ORGUT.sdf_mss.format( (int)((end - startPart)));
-			pdMessage_stok = pdMessage_stok + ">>" +souMai  + this.cContext.getString(R.string.pp_mai) + "\n" +
-					this.cContext.getString(R.string.comon_kakuninn) +"[" + dousaJikann + "mS]";//複数のアーティストが収録されたアルバム ○○枚確認
-			pdMes = (String) pdMessage_stok;		//	<string name="">所要時間</string>
-			myLog(TAG,dbMsg);
-			henkouHanei();		//805;ユーザーの変更を反映
-//			CreateZenkyokuList();				//全曲リスト作成
-		}catch(IllegalArgumentException e){
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}
-	}
-
-	/**
-	 * ユーザーのアルバムアーティスト名変更を反映
-	 * @ 無し
-	 * shyuusei.dbを読み込み
-	 * henkouHaneiBodyへ
-	 * reqCode = pt_HenkouHanei
-	 * */
-	public void henkouHanei(){		//805;ユーザーの変更を反映
-		final String TAG = "henkouHanei";
-		String dbMsg= "[ZenkyokuList]ユーザーの変更(shyuusei_db)" + "を反映";/////////////////////////////////////
-		try{
-			startPart = System.currentTimeMillis();		// 開始時刻の取得
-			reqCode = pt_HenkouHanei;					//805;ユーザーの変更を反映
-			pd2CoundtVal++;
-
-			String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
-			dbMsg += ",db=" + fn;
-			File shyuFile = new File(fn);
-			dbMsg += ",exists=" + shyuFile.exists();
-//			if( shyuFile.exists()){
-			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-//			dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
-//			dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
-			if(shyuusei_db != null){
-				dbMsg += "," + shyuusei_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-	//			myLog(TAG,dbMsg);
-				if(shyuusei_db.isOpen()){
-					shyuusei_db = shyuusei_Helper.getReadableDatabase();			// データベースをオープン
-					dbMsg += ">isOpen>" + shyuusei_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-				}
-			}else{
-				shyuusei_db = shyuusei_Helper.getReadableDatabase();			// データベースをオープン
-				dbMsg += ">isOpen>" + shyuusei_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			}
-
-			cursor = shyuusei_db.query(shyuuseiTName, null, null, null , null, null, null);	// table, columns,new String[] {MotoN, albamN}
-			int syuuseMae = cursor.getCount();					//修正前のレコードの合計
-			dbMsg += syuuseMae+"件";
-			if( cursor.moveToFirst() ){
-				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" +syuuseMae + getString(R.string.muqu_dlog_kenwo)+		//	件を</string>
-						getString(R.string.menu_funk_artistmei2);				//他のアーティストに統合する
-				pdMessage = pdMessage_stok + "\n\n" +
-						getString(R.string.common_kakunincyuu) ;				//."">確認中</string>
-				dbMsg +=reqCode + ";ループ前" + pd2CoundtVal +"/"+ pd2MaxVal ;					//+ ";" + pdMessage  ;
-				pdCoundtVal = 0;
-		//		myLog(TAG,dbMsg);
-				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
-			}else{
-				cursor.close();
-				shyuusei_db.close();
-				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" + getString(R.string.list_contex_listup)+		//リストアップ編集</string>
-				getString(R.string.common_syouryaku);				//	省略</string>
-				CreateZenkyokuList();				//全曲リスト作成
-			}
-		}catch(IllegalArgumentException e){
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}
-	}
-
-	/**
-	 * ユーザーのアルバムアーティスト名変更反映処理
-	 * @ Cursor cursor  shyuusei.db
-	 * Kari_dbとDATAで照合してSORT_NAMEとALBUM_ARTISTを書換え
-	 * CreateZenkyokuListへ
-	 * */
-	public Cursor henkouHaneiBody( Cursor cursor ) throws IOException {		//805;ユーザーの変更を反映
-		final String TAG = "henkouHaneiBody";
-		String dbMsg= "[ZenkyokuList]";
-		try{
-			dbMsg = "[" + ( cursor.getPosition() +1 )+ "/" + cursor.getCount() +"]";
-			String dataUri = cursor.getString(cursor.getColumnIndex("DATA"));
-			dbMsg += dataUri;
-			String udIdName = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
-			String syuuseiArtist = cursor.getString(cursor.getColumnIndex("ARTIST"));
-			dbMsg +="をALBUM_ARTIST「"+ udIdName + "」に変更";
-			cContext.getContentResolver();
-			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
-	//		dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
-	//		dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-			String[] c_columns = null;	////{ "ARTIST", "ALBUM ", "YEAR " };			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String c_selection ="DATA = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] c_selectionArgs=  {dataUri};   			//	 {"%" + artistMei + "%" , albumMei };
-			String c_groupBy=  null;	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
-			String c_having= null;			//2で318,1で340、nullで587	降順はDESC
-			String c_orderBy= "ALBUM , ALBUM_ARTIST";	//ALBUM_ARTIST,YEAR	。	降順はDESC
-			Cursor cCursor = Kari_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy, null);				//(rSQL ,null);
-			if( cCursor.moveToFirst() ){
-				String rID = cCursor.getString(cCursor.getColumnIndex("_id"));
-				dbMsg +=",_id=" + rID +")";		//03-28java.lang.IllegalArgumentException:  contains a path separator
-				String cARTIST = cCursor.getString(cCursor.getColumnIndex("ARTIST"));
-				String aARTIST = cCursor.getString(cCursor.getColumnIndex("ALBUM_ARTIST"));
-				dbMsg += cARTIST +"["+ aARTIST+"]に一致 ";		//03-28java.lang.IllegalArgumentException:  contains a path separator
-				ContentValues cv = new ContentValues();
-				try {
-					int aLengs= aARTIST.length();
-					dbMsg += "(" + aLengs +"文字)";
-					aLengs = aLengs+4;
-					if(aLengs < cARTIST.length()){
-						if( aARTIST.startsWith("The")  || aARTIST.startsWith("THE")  ||aARTIST.startsWith("the") ){
-							cARTIST = cARTIST.substring(0, aLengs);
-						}else{
-							cARTIST = cARTIST.substring(0, aARTIST.length());
-						}
-						dbMsg += ">クレジット変更>" + cARTIST;
-						udIdName = udIdName;
-	//					myLog(TAG,dbMsg);
-					}
-					cv.put("SORT_NAME", udIdName);
-					cv.put("ALBUM_ARTIST", udIdName);						//ALBUM_ARTIST
-					String where = "_id = ?";
-					String[] selectionArgs = {rID};
-					int rRow = Kari_db.update(zenkyokuTName, cv , where, selectionArgs);
-					dbMsg +=">>" + rRow;
-//						if( ! cARTIST.equals(syuuseiArtist)){				//クレジットされているアーティスト名も
-//							dbMsg +=",ARTIST=" + cARTIST  + ">>" + syuuseiArtist;
-//							cv.put("ARTIST", syuuseiArtist);				//設定されたアーティスト名に書き換える
-////							 where = "_id = ?";
-////							String[] selectionArgs2 = {rID};
+//	/**
+//	 * コンピレーション抽出；アルバムアーティスト名の重複
+//	 * @ 無し
+//	 * Kari_dbをALBUM でグルーピング。
+//	 * 	ALBUM , SORT_NAMEでSort
+//	 * jyuufukuSakujyoBodyへ
+//	 * reqCode = pt_jyuufukuSakujyo
+//	 * */
+//	public void jyuufukuSakujyo(){		//コンピレーション抽出；アルバムアーティスト名の重複
+//		final String TAG = "jyuufukuSakujyo";
+//		String dbMsg= "[ZenkyokuList]";
+//		try{
+//			startPart = System.currentTimeMillis();		// 開始時刻の取得
+//			String comp = cContext.getString(R.string.comon_compilation);			//コンピレーション
+//			new ArrayList<String>();
+//			cContext.getContentResolver();
+//
+//			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
+//			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
+//			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//			String[] c_columns = null;	////{ "ARTIST", "ALBUM ", "YEAR " };			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String c_selection = null;					//"ALBUM = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String[] c_selectionArgs= null;   			//	 {"%" + artistMei + "%" , albumMei };
+//			String c_groupBy=  "ALBUM";			// , SORT_NAME　ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+//			String c_having= null;			//2で318,1で340、nullで587	降順はDESC
+//			String c_orderBy= "ALBUM , SORT_NAME";	//ALBUM_ARTIST,YEAR	。	降順はDESC
+//			cursor = Kari_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy, null);				//(rSQL ,null);
+//			int souMai = cursor.getCount();
+//			Kari_db.close();
+//			dbMsg = "アルバムは" + souMai +"枚";
+//			if(cursor.moveToFirst()){
+//				reqCode = pt_jyuufukuSakujyo;			//コンピレーション抽出；アルバムアーティスト名の重複
+//				pd2CoundtVal++;
+//				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" +comp + getString(R.string.comon_syori)+"\n"+		//コンピレーション処理</string>
+//						getString(R.string.zl_coment_comp_matome)+"\n"+				//.条件1.トラック番号の重複\nn...条件2:設定した比率より別のアーティスト曲が多い</string>
+//						getString(R.string.zl_genzai_lisi)+ getString(R.string.comon_album) +souMai + this.cContext.getString(R.string.pp_mai);	 	//">リストアップされる"">アルバム</string></string>アルバム ○○枚確認
+//				pdMessage = pdMessage_stok + "\n\n" +
+//						getString(R.string.common_kakunincyuu) ;				//."">確認中</string>
+//			//	dbMsg +=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
+//				pdCoundtVal = 0;
+//				myLog(TAG,dbMsg);
+//				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
+//			}				//if( cursor.moveToFirst()){
+//	//		myLog(TAG,dbMsg);
+//		}catch(IllegalArgumentException e){
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}
+//	}
+//
+//	/**
+//	 * コンピレーションの抽出とアルバムアーティスト名の重複処理
+//	 * @ Cursor cursor  Kari_dbをALBUM でグルーピングしたレコード
+//	 * 1.Kari_dbからアルバムごとの曲データレコードを読み出し、
+//	 *
+//	 * アップデートするIDをArrayList<String> udIdListに収集
+//	 * jyuufukuSakujyoEndへ
+//	 * */
+//	public Cursor jyuufukuSakujyoBody(Cursor cursor) throws IOException {		//アルバムアーティスト名の重複   ,  ,SQLiteStatement stmt
+//		final String TAG = "jyuufukuSakujyoBody";
+//		String dbMsg= "[ZenkyokuList]";
+//		try{
+//			boolean jikkou =true;
+//			int onajiTrack = 0;
+//			dbMsg += "[" + (cursor.getPosition() + 1 ) +"/"+ cursor.getCount() + "枚目]";
+//			String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//			dbMsg = cursor.getPosition()+ "/;" + cursor.getCount();		// +"；" +"[" + id1 +"]" + aName1+";" + song1+"曲";
+//			String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+//			dbMsg += "アルバム：" + albumName;
+//			String c_selection ="ALBUM = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String[] c_selectionArgs=  {albumName};   			//	 {"%" + artistMei + "%" , albumMei };
+//			String c_groupBy= null;		//ALBUM_ARTIST "ALBUM";	//,YEAR	。	降順はDESC
+//			String c_having= null;			//"COUNT(*) > 1";	//ALBUM_ARTIST,YEAR	。	降順はDESC
+//			String c_orderBy= "ALBUM_ARTIST";	//	降順はDESC
+//			Cursor tCursor = ZenkyokuList.this.Kari_db.query(zenkyokuTName, null, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy);				//(rSQL ,null);
+//			int kyokuSuu = tCursor.getCount();
+//			dbMsg=dbMsg +"は"+ kyokuSuu + "曲、";
+//			bArtistN = "";
+//			int onajiCount = 0;
+//			if( tCursor.moveToFirst() && 1 < tCursor.getCount()){
+//				bArtistN  = tCursor.getString(tCursor.getColumnIndex("ALBUM_ARTIST"));		//最短アーティスト名
+//				Map<String, Integer> intMap = new HashMap<String, Integer>();
+//				String artistName;
+//				do{
+//					artistName =String.valueOf( tCursor.getString(tCursor.getColumnIndex("ALBUM_ARTIST")));		//最短アーティスト名		ALBUM_ARTIST	SORT_NAME"));
+//					String track = String.valueOf( tCursor.getString(tCursor.getColumnIndex("TRACK")));			//6.track;トラックNo,
+//					track = UTIL.checKTrack( track);
+//					if(bArtistN.equals(artistName)){
+//						onajiCount++;
+//					}else{
+//						dbMsg += "、" + artistName + ";" + onajiCount  + "曲" ;
+//						intMap.put(bArtistN ,onajiCount );
+//						onajiCount = 1;
+//						bArtistN = artistName;
+//					}
+//					if(track.equals("01")){
+//						onajiTrack++;
+//					}
+//				}while( tCursor.moveToNext() );
+//				if(1 < onajiCount){							//最多アーティストが最後の場合
+//					dbMsg += "、" + artistName + ";" + onajiCount  + "曲" ;
+//					intMap.put(bArtistN ,onajiCount );
+//				}
+//				dbMsg =  albumName + "は" + kyokuSuu + "曲中";
+//				dbMsg += "、参加アーティスト=" + intMap.size() +"人、コンプレーション判定値=" + pref_compBunki + "%に対し";
+//				if(1 < intMap.size() && onajiTrack < 2){			//2曲以上のアルバムで同じトラック番号が無ければ
+//					List<Map.Entry<String,Integer>> entries =  new ArrayList<Map.Entry<String,Integer>>(intMap.entrySet());						// List 生成 (ソート用)
+//					Collections.sort(entries, new Comparator<Map.Entry<String,Integer>>() {
+//						@Override
+//						public int compare( Entry<String,Integer> entry1, Entry<String,Integer> entry2) {
+//							return entry2.getValue().compareTo(entry1.getValue());
 //						}
-					rRow = Kari_db.update(zenkyokuTName, cv , where, selectionArgs);
-					dbMsg +=">>" + rRow;
-				} finally {
-					if (Kari_db != null) {
-						Kari_db.close();
-					}
-				}
-			}
-			cCursor.close();
-			myLog(TAG,dbMsg);
-		}catch(IllegalArgumentException e){
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg +"で"+e.toString());
-		}
-		return cursor;
-	}
+//					});
+//					String rArtistName = entries.get(0).getKey();				//.get("ALBUM_ARTIST"):
+//					int saidai = entries.get(0).getValue();
+//					dbMsg +=",最多=" + rArtistName +"=" + saidai +"曲";
+//					String SORT_NAME = rArtistName;
+//					float compBunk = ( saidai * 1.0f / kyokuSuu) *100;					//コンピレーションの分離のみなら	( objMap.size()*1.0f / kyokuSuu) *100;
+//					dbMsg +="、全曲中=" + compBunk;
+//					int compInt =  (int) (compBunk +0.5f);		//	Integer.valueOf(  String.valueOf
+//					dbMsg += ">>" + compInt +"%";
+//					if( compInt < Integer.valueOf(pref_compBunki)  ){						//parseIntではjava.lang.NumberFormatException: Invalid int: "16.666668"
+//						rArtistName =  cContext.getString(R.string.comon_compilation);			//コンピレーション	tCursor.getString(tCursor.getColumnIndex("ARTIST"));
+//						SORT_NAME = rArtistName;
+//					} else{
+//						int jitenn = entries.get(1).getValue();
+//						if(2 < jitenn){					//同名アルバム対策（仮）
+//							jikkou  = false;
+//							dbMsg +="、同名アルバムで処理中断 ";
+//						}else{
+//							SORT_NAME = ORGUT.ArtistPreFix(rArtistName.toUpperCase());	//大文字化してアーティスト名のTheを取る
+//						}
+//					}
+//					dbMsg +="、rArtistName=" + rArtistName +"、SORT_NAME=" + SORT_NAME;
+//					if( tCursor.moveToFirst() && jikkou ){
+//			//			sortNameReWright(tCursor ,rArtistName , SORT_NAME);		//アルバム一枚分のアルバムアーティスト名修正//						try {
+//						try {
+//					//		dbMsg += ">Kari_db.isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//							if(Kari_db.isOpen()){
+//								Kari_db.close();
+//				//				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//							}
+//					//		dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//							if( ! Kari_db.isOpen()){
+//								Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
+//				//				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//							}
+//
+//							do{
+//				//				dbMsg =dbMsg+"書込み" +  tCursor.getPosition()+ "/" + tCursor.getCount() +"人目(id=";		// +"；" +"[" + id1 +"]" + aName1+";" + song1+"曲";
+//								String rID = tCursor.getString(tCursor.getColumnIndex("_id"));
+//								ContentValues cv = new ContentValues();
+//									cv.put("ALBUM_ARTIST", rArtistName);
+//									cv.put("SORT_NAME", SORT_NAME);
+//									String where = "_id = ?";
+//									String[] selectionArgs = {rID};
+//									int rRow = Kari_db.update(zenkyokuTName, cv , where, selectionArgs);
+//						//			dbMsg +=">書込み>" + rRow;
+//							}while( tCursor.moveToNext() );
+//						} finally {
+//							if (Kari_db != null) {
+//								Kari_db.close();
+//								Kari_db = zenkyokuHelper.getReadableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
+//							}
+//						}
+//					}
+//		//			myLog(TAG,dbMsg);
+//				}else{
+//					dbMsg =dbMsg+"1曲しかない";
+//					dbMsg =dbMsg+"トラック番号01が" + onajiTrack + "曲で書換えしない";
+//		//			myLog(TAG,dbMsg);
+//				}
+//			}		//	( tCursor.moveToFirst() ){
+//			tCursor.close();
+//		}catch(IllegalArgumentException e){
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}
+//		return cursor;
+//	}
+//
+//
+//	/**
+//	 * アルバムアーティスト名の重複処理終了
+//	 * @ 無し
+//	 * kari.dbを開き直して
+//	 * henkouHaneiへ
+//	 * */
+//	public void jyuufukuSakujyoEnd(){		//アルバムアーティスト名の重複
+//		final String TAG = "jyuufukuSakujyoEnd";
+//		String dbMsg= "[ZenkyokuList]";
+//		try{
+//			cursor.close();
+//			dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			if(Kari_db.isOpen()){
+//				Kari_db.close();
+//				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			}
+//			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			if( ! Kari_db.isOpen()){
+//				Kari_db = zenkyokuHelper.getReadableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
+//				dbMsg += ">>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			}
+//			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
+//			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
+//			dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//			String[] c_columns = null;	////{ "ARTIST", "ALBUM ", "YEAR " };			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String c_selection = null;					//"ALBUM = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String[] c_selectionArgs= null;   			//	 {"%" + artistMei + "%" , albumMei };
+//			String c_groupBy=  "ALBUM , SORT_NAME";	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+//			String c_having=null;										// "COUNT(*) > 1"	降順はDESC
+//			String c_orderBy= " SORT_NAME , ALBUM";	//ALBUM_ARTIST,YEAR	。	降順はDESC
+//			Cursor cursor = Kari_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy, null);				//(rSQL ,null);
+//			int souMai = cursor.getCount();
+//			pdMes =souMai + "件";		//	<string name="">所要時間</string>
+//			cursor.close();
+//			Kari_db.close();
+//			long end=System.currentTimeMillis();		// 終了時刻の取得
+//			String dousaJikann = ORGUT.sdf_mss.format( (int)((end - startPart)));
+//			pdMessage_stok = pdMessage_stok + ">>" +souMai  + this.cContext.getString(R.string.pp_mai) + "\n" +
+//					this.cContext.getString(R.string.comon_kakuninn) +"[" + dousaJikann + "mS]";//複数のアーティストが収録されたアルバム ○○枚確認
+//			pdMes = (String) pdMessage_stok;		//	<string name="">所要時間</string>
+//			myLog(TAG,dbMsg);
+//			henkouHanei();		//805;ユーザーの変更を反映
+////			CreateZenkyokuList();				//全曲リスト作成
+//		}catch(IllegalArgumentException e){
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}
+//	}
+//
+//	/**
+//	 * ユーザーのアルバムアーティスト名変更を反映
+//	 * @ 無し
+//	 * shyuusei.dbを読み込み
+//	 * henkouHaneiBodyへ
+//	 * reqCode = pt_HenkouHanei
+//	 * */
+//	public void henkouHanei(){		//805;ユーザーの変更を反映
+//		final String TAG = "henkouHanei";
+//		String dbMsg= "[ZenkyokuList]ユーザーの変更(shyuusei_db)" + "を反映";/////////////////////////////////////
+//		try{
+//			startPart = System.currentTimeMillis();		// 開始時刻の取得
+//			reqCode = pt_HenkouHanei;					//805;ユーザーの変更を反映
+//			pd2CoundtVal++;
+//
+//			String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
+//			dbMsg += ",db=" + fn;
+//			File shyuFile = new File(fn);
+//			dbMsg += ",exists=" + shyuFile.exists();
+////			if( shyuFile.exists()){
+//			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
+////			dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+//			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
+////			dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
+//			if(shyuusei_db != null){
+//				dbMsg += "," + shyuusei_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//	//			myLog(TAG,dbMsg);
+//				if(shyuusei_db.isOpen()){
+//					shyuusei_db = shyuusei_Helper.getReadableDatabase();			// データベースをオープン
+//					dbMsg += ">isOpen>" + shyuusei_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//				}
+//			}else{
+//				shyuusei_db = shyuusei_Helper.getReadableDatabase();			// データベースをオープン
+//				dbMsg += ">isOpen>" + shyuusei_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			}
+//
+//			cursor = shyuusei_db.query(shyuuseiTName, null, null, null , null, null, null);	// table, columns,new String[] {MotoN, albamN}
+//			int syuuseMae = cursor.getCount();					//修正前のレコードの合計
+//			dbMsg += syuuseMae+"件";
+//			if( cursor.moveToFirst() ){
+//				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" +syuuseMae + getString(R.string.muqu_dlog_kenwo)+		//	件を</string>
+//						getString(R.string.menu_funk_artistmei2);				//他のアーティストに統合する
+//				pdMessage = pdMessage_stok + "\n\n" +
+//						getString(R.string.common_kakunincyuu) ;				//."">確認中</string>
+//				dbMsg +=reqCode + ";ループ前" + pd2CoundtVal +"/"+ pd2MaxVal ;					//+ ";" + pdMessage  ;
+//				pdCoundtVal = 0;
+//		//		myLog(TAG,dbMsg);
+//				pTask = (plogTask) new plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
+//			}else{
+//				cursor.close();
+//				shyuusei_db.close();
+//				pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" + getString(R.string.list_contex_listup)+		//リストアップ編集</string>
+//				getString(R.string.common_syouryaku);				//	省略</string>
+//				CreateZenkyokuList();				//全曲リスト作成
+//			}
+//		}catch(IllegalArgumentException e){
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}
+//	}
+//
+//	/**
+//	 * ユーザーのアルバムアーティスト名変更反映処理
+//	 * @ Cursor cursor  shyuusei.db
+//	 * Kari_dbとDATAで照合してSORT_NAMEとALBUM_ARTISTを書換え
+//	 * CreateZenkyokuListへ
+//	 * */
+//	public Cursor henkouHaneiBody( Cursor cursor ) throws IOException {		//805;ユーザーの変更を反映
+//		final String TAG = "henkouHaneiBody";
+//		String dbMsg= "[ZenkyokuList]";
+//		try{
+//			dbMsg = "[" + ( cursor.getPosition() +1 )+ "/" + cursor.getCount() +"]";
+//			String dataUri = cursor.getString(cursor.getColumnIndex("DATA"));
+//			dbMsg += dataUri;
+//			String udIdName = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+//			String syuuseiArtist = cursor.getString(cursor.getColumnIndex("ARTIST"));
+//			dbMsg +="をALBUM_ARTIST「"+ udIdName + "」に変更";
+//			cContext.getContentResolver();
+//			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
+//	//		dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			Kari_db = zenkyokuHelper.getWritableDatabase();			//アーティスト名のえリストファイルを書き込み可能モードで開く
+//	//		dbMsg += ">isOpen>" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//			String[] c_columns = null;	////{ "ARTIST", "ALBUM ", "YEAR " };			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String c_selection ="DATA = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			String[] c_selectionArgs=  {dataUri};   			//	 {"%" + artistMei + "%" , albumMei };
+//			String c_groupBy=  null;	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+//			String c_having= null;			//2で318,1で340、nullで587	降順はDESC
+//			String c_orderBy= "ALBUM , ALBUM_ARTIST";	//ALBUM_ARTIST,YEAR	。	降順はDESC
+//			Cursor cCursor = Kari_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy, null);				//(rSQL ,null);
+//			if( cCursor.moveToFirst() ){
+//				String rID = cCursor.getString(cCursor.getColumnIndex("_id"));
+//				dbMsg +=",_id=" + rID +")";		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//				String cARTIST = cCursor.getString(cCursor.getColumnIndex("ARTIST"));
+//				String aARTIST = cCursor.getString(cCursor.getColumnIndex("ALBUM_ARTIST"));
+//				dbMsg += cARTIST +"["+ aARTIST+"]に一致 ";		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//				ContentValues cv = new ContentValues();
+//				try {
+//					int aLengs= aARTIST.length();
+//					dbMsg += "(" + aLengs +"文字)";
+//					aLengs = aLengs+4;
+//					if(aLengs < cARTIST.length()){
+//						if( aARTIST.startsWith("The")  || aARTIST.startsWith("THE")  ||aARTIST.startsWith("the") ){
+//							cARTIST = cARTIST.substring(0, aLengs);
+//						}else{
+//							cARTIST = cARTIST.substring(0, aARTIST.length());
+//						}
+//						dbMsg += ">クレジット変更>" + cARTIST;
+//						udIdName = udIdName;
+//	//					myLog(TAG,dbMsg);
+//					}
+//					cv.put("SORT_NAME", udIdName);
+//					cv.put("ALBUM_ARTIST", udIdName);						//ALBUM_ARTIST
+//					String where = "_id = ?";
+//					String[] selectionArgs = {rID};
+//					int rRow = Kari_db.update(zenkyokuTName, cv , where, selectionArgs);
+//					dbMsg +=">>" + rRow;
+////						if( ! cARTIST.equals(syuuseiArtist)){				//クレジットされているアーティスト名も
+////							dbMsg +=",ARTIST=" + cARTIST  + ">>" + syuuseiArtist;
+////							cv.put("ARTIST", syuuseiArtist);				//設定されたアーティスト名に書き換える
+//////							 where = "_id = ?";
+//////							String[] selectionArgs2 = {rID};
+////						}
+//					rRow = Kari_db.update(zenkyokuTName, cv , where, selectionArgs);
+//					dbMsg +=">>" + rRow;
+//				} finally {
+//					if (Kari_db != null) {
+//						Kari_db.close();
+//					}
+//				}
+//			}
+//			cCursor.close();
+//			myLog(TAG,dbMsg);
+//		}catch(IllegalArgumentException e){
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg +"で"+e.toString());
+//		}
+//		return cursor;
+//	}
 
 //	Cursor artistCursor;
+
 	/**
 	 * 全曲リスト作成
 	 * ユーザーのアルバムアーティスト名変更反映処理終了
@@ -2366,11 +2353,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg +="[" + allSongsID + "]";
 
 			cursor.close();
-			dbMsg +=",shyuusei_db.isOpen()=" + shyuusei_db.isOpen();/////////////////////////////////////
-			if( shyuusei_db.isOpen() ){
-				shyuusei_db.close();
-				dbMsg += ">>" + shyuusei_db.isOpen();/////////////////////////////////////
-			}
+//			dbMsg +=",shyuusei_db.isOpen()=" + shyuusei_db.isOpen();/////////////////////////////////////
+//			if( shyuusei_db.isOpen() ){
+//				shyuusei_db.close();
+//				dbMsg += ">>" + shyuusei_db.isOpen();/////////////////////////////////////
+//			}
 			dbMsg += " , comCount = " + comCount;		//03-28java.lang.IllegalArgumentException:  contains a path separator
 			String fn = cContext.getString(R.string.kari_file);			//仮ファイル
 			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
@@ -2378,7 +2365,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg += ">isOpen=" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
 		//	String[] c_selectionArgs = new String[]{ comp };  			//	 {"%" + artistMei + "%" , albumMei };
 			String c_orderBy= "ALBUM_ARTIST_LIST_ID,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
-			cursor = Kari_db.query(zenkyokuTName, null, compSelection, compList , null, null, c_orderBy, null);	//リString table, String[] columns,new String[] {MotoN, albamN}
+			cursor = Kari_db.query(zenkyokuTName, null, null, null , null, null, c_orderBy, null);	//リString table, String[] columns,new String[] {MotoN, albamN}
+//			String c_orderBy= "ALBUM_ARTIST_LIST_ID,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
+//			cursor = Kari_db.query(zenkyokuTName, null, compSelection, compList , null, null, c_orderBy, null);	//リString table, String[] columns,new String[] {MotoN, albamN}
 			pdMaxVal = cursor.getCount();
 			dbMsg += "；" + pdMaxVal + "件";
 			if(cursor.moveToFirst()){
@@ -2668,7 +2657,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			myLog(TAG,dbMsg );
 			reTry=0;					//再処理リミット
 			totalEnd( pdMessage_stok );									//データベースを閉じて終了処理
-
 //			CreateArtistList();								//アーティストリストを読み込む(db未作成時は-)
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -3544,11 +3532,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				Kari_db.close();
 				dbMsg += ">>" + Kari_db.isOpen();/////////////////////////////////////
 			}
-			dbMsg +=",shyuusei_db.isOpen()=" + shyuusei_db.isOpen();/////////////////////////////////////
-			if( shyuusei_db.isOpen() ){
-				shyuusei_db.close();
-				dbMsg += ">>" + shyuusei_db.isOpen();/////////////////////////////////////
-			}
+//			dbMsg +=",shyuusei_db.isOpen()=" + shyuusei_db.isOpen();/////////////////////////////////////
+//			if( shyuusei_db.isOpen() ){
+//				shyuusei_db.close();
+//				dbMsg += ">>" + shyuusei_db.isOpen();/////////////////////////////////////
+//			}
 			pdMessage_stok = this.cContext.getString(R.string.zenkyoku_end_msg) ;			//お待たせしました。</string>
 			pdMessage_stok = pdMessage_stok + "\n\n"  + kyoku +  this.cContext.getString(R.string.pp_kyoku);		//ame="">曲</string>
 			pdMessage_stok = pdMessage_stok +"\n["+this.cContext.getString(R.string.comon_syoyoujikan)+";"+dousaJikann + "mS]";		//	<string name="">所要時間</string>
@@ -3590,9 +3578,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			case pt_CreateKaliList:						//804;仮リスト作成
 				CreateKaliListEnd();
 				break;
-			case pt_HenkouHanei:							//805;ユーザーの変更を反映
-				CreateZenkyokuList();			//全曲リスト作成						break;
-				break;
+//			case pt_HenkouHanei:							//805;ユーザーの変更を反映
+//				CreateZenkyokuList();			//全曲リスト作成						break;
+//				break;
 //			case pt_albumReadAll:					//803;MediaStore.Audio.Albumsの全レコード読み込み
 //				albumRead2( );										//MediaStore.Audio.Albumsを仮リストへ転記
 //				break;
@@ -3604,9 +3592,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //			case pt_dbSakusei:						//806;artist_dbデータベース作成
 //				dbSakuseiEnd( );							//MediaStoreからデータベースへ読み込み
 //				break;
-			case pt_jyuufukuSakujyo:					//807:アルバムアーティスト名の重複
-				jyuufukuSakujyoEnd();					//アルバムアーティスト名の重複
-				break;
+//			case pt_jyuufukuSakujyo:					//807:アルバムアーティスト名の重複
+//				jyuufukuSakujyoEnd();					//アルバムアーティスト名の重複
+//				break;
 			case pt_CreateZenkyokuList:			//809;全曲リスト作成
 				CreateZenkyokuListEnd();
 				break;
@@ -3960,25 +3948,25 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							album_art = null;
 							last_year = null;
 							break;
-						case pt_jyuufukuSakujyo:						//804;コンピレーション抽出；アルバムアーティスト名の重複
-							this.fn =  (String) params[5] ;			//5
-							dbMsg += ",db=" + fn;
-							zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-							dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
-							Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
+//						case pt_jyuufukuSakujyo:						//804;コンピレーション抽出；アルバムアーティスト名の重複
+//							this.fn =  (String) params[5] ;			//5
+//							dbMsg += ",db=" + fn;
+//							zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//							dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
+//							Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
 //							Kari_db.beginTransaction();
 //							stmt = Kari_db.compileStatement("UPDATE " + zenkyokuTName + " SET ALBUM_ARTIST=? WHERE _id=?");
 //final SQLiteStatement statement1=writableDb.compileStatement("UPDATE " + TABLE_NAME + " SET "+ Field.NATIVECONTACTID+ "=? WHERE "+ Field.LOCALID+ "=?");
 //http://stackoverflow.com/questions/13482091/update-syntax-in-sqlite?lq=1
 //return readableDb.compileStatement("SELECT " + Field.LOCALID + " FROM "+ TABLE_NAME+ " WHERE "+ Field.SERVERID+ "=?");
-							break;
-						case pt_HenkouHanei:							//805;ユーザーの変更を反映
-//							this.fn =  (String) params[5] ;			//5
-//							dbMsg += ",db=" + fn;
-//							shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//登録アーティスト修正
-//							dbMsg += "；全曲リストテーブル=" + shyuusei_Helper;
-//							shyuusei_db = shyuusei_Helper.getWritableDatabase();			// データベースをオープン
-							break;
+//							break;
+//						case pt_HenkouHanei:							//805;ユーザーの変更を反映
+////							this.fn =  (String) params[5] ;			//5
+////							dbMsg += ",db=" + fn;
+////							shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//登録アーティスト修正
+////							dbMsg += "；全曲リストテーブル=" + shyuusei_Helper;
+////							shyuusei_db = shyuusei_Helper.getWritableDatabase();			// データベースをオープン
+//							break;
 						case pt_CreateZenkyokuList:		//807;全曲リスト作成
 						case pt_CompList:						//806;全曲リストにコンピレーション追加
 							this.fn =  (String) params[5] ;			//5
@@ -4042,12 +4030,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 								id = stmt.executeInsert();
 								dbMsg += "文字[" + id +"]に追加";///////////////////		ZenkyokuList.this.
 								break;
-							case pt_jyuufukuSakujyo:								//805;コンピレーション抽出；アルバムアーティスト名の重複
-								cursor = jyuufukuSakujyoBody(cursor);		//アルバムアーティスト名の重複			//
-								break;
-							case pt_HenkouHanei:							//806;ユーザーの変更を反映
-								cursor = henkouHaneiBody( cursor );
-								break;
+//							case pt_jyuufukuSakujyo:								//805;コンピレーション抽出；アルバムアーティスト名の重複
+//								cursor = jyuufukuSakujyoBody(cursor);		//アルバムアーティスト名の重複			//
+//								break;
+//							case pt_HenkouHanei:							//806;ユーザーの変更を反映
+//								cursor = henkouHaneiBody( cursor );
+//								break;
 							case pt_CreateZenkyokuList:									//807;全曲リスト作成
 							case pt_CompList:													//808;全曲リストにコンピレーション追加
 								cursor = CreateZenkyokuBody( cursor  , stmt );					//最終リスト作成
