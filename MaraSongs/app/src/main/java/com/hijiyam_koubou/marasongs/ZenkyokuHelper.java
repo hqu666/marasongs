@@ -19,13 +19,9 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 		String dbMsg= "[ZenkyokuHelper]";
 		try{
 //			dbMsg +="getPackageCodePath= "+context.getPackageCodePath();
-			//	/mnt/user/0
-			//
 			rContext = context;						//第１引数; context ;読出し元;データベースを所有するコンテキストオブジェクトを指定します。
 			dbName = dFn;							//第２引数; fileName ;データベースファイルの名前です。この引数にnullを指定すると、データベースはメモリー上に作られます。
 			dbMsg += " , db= " + dbName;
-			//	/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db が
-			//	/data/user/0/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
 			dbMsg +=" ,バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
 //			myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -65,11 +61,6 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 					"LAST_YEAR text, " +				//13.MediaStore.Audio.Albums.LAST_YEAR
 					"ALBUM_ARTIST_LIST_ID " +		//14.ALBUM_ARTIST_LIST_IDのID
 						");";
-/*
-	 				"	id text, "+ 										//MediaStore.Audio.Media._ID	updateに必要
-					"	BOOKMARK text, " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
-					"	ALBUM_ART text, " +				//MediaStore.Audio.Albums.ALBUM_ART
-*/
 			dbMsg +=",tSet= "+tSet;/////////////////////////////////////
 			db.execSQL(tSet);
 			myLog(TAG,dbMsg);
@@ -89,39 +80,6 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
 	}
-
-
-//	public void ColumnCheck( Context context , Cursor carsor) {
-//		final String TAG = "VersatilityDBHelper";
-//		String dbMsg = "[ZenkyokuHelper]";
-//		try {
-//
-//			dbMsg += "carsor = " + carsor.getCount() + "件";
-//			if(carsor.moveToFirst()){
-//				int colCount = carsor.getColumnCount();
-//				dbMsg = "," + colCount + "列";
-//				colNames =  "id INTEGER PRIMARY KEY AUTOINCREMENT,";
-//				for (int i = 0; i < colCount; i++) {
-//					dbMsg += "(" + i + ")";
-//					String colName = carsor.getColumnName(i);
-//					dbMsg += colName;
-//					colNames += colName  + " STRING";
-//					if(i < (colCount  - 1)){
-//						colNames += ",";
-////					}else{
-////						colNames += ")";
-//					}
-//				}
-//			}
-//
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-
-
-
 
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {

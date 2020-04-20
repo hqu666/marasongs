@@ -43,19 +43,9 @@ public class ArtistHelper extends SQLiteOpenHelper {
 					"ALBUM_ART text, " +			//6,MediaStore.Audio.Albums.ALBUM_ART
 					"SUB_TEXT text" +				//7.アーティストリスト生成用の集約情報:100001足して文字列でもソート可能にする
 					");"; 
-			/*	
-					"	FIRST_YEAR text, " +		//5.MediaStore.Audio.Albums.FIRST_YEAR
-					"	LAST_YEAR text, " +			//6.MediaStore.Audio.Albums.LAST_YEAR
-			 					"	YEAR text, " +					//5,FIRST_YEAR-LAST_YEAR:NUMBER_OF_ALBUM/NUMBER_OF_SONGS
-					"	NUMBER_OF_ALBUM text, " +	
-					"	NUMBER_OF_SONGS text" +		//MediaStore.Audio.Albums.NUMBER_OF_SONGS
-//					"	NOS integer, " +		//6,NUMBER_OF_SONGS
-//					"	SORT_NAME text, " +		//7.the抜き大文字
-*/
 			dbMsg="tSet= "+tSet;/////////////////////////////////////
 			db.execSQL(tSet);
 	//		myLog(TAG, dbMsg);
-	//		db.execSQL("insert into " + tName +"(motName,albumName , sakiName) values ('Beck', 'Beck, Bogert & Appice', 'Beck, Bogert & Appice');");
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}

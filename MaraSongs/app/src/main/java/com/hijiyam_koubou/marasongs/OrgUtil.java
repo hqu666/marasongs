@@ -1419,10 +1419,10 @@ public class OrgUtil  extends Activity{				//
 
 	public String retAlbumArtUri(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
 		String retStr = null;
-		final String TAG = "retAlbumArtUri[OrgUtil]";
-		String dbMsg= "開始" ;/////////////////////////////////////
+		final String TAG = "retAlbumArtUri";
+		String dbMsg= "[OrgUtil]" ;/////////////////////////////////////
 		try{
-			dbMsg= "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
+			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
 			//java.lang.NullPointerException
 			Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
@@ -1434,9 +1434,9 @@ public class OrgUtil  extends Activity{				//
 			if( cursor.moveToFirst() ){
 				retStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 			}
-			dbMsg +=",ALBUM_ART=" +retStr ;/////////////////////////////////////
+			dbMsg += ",ALBUM_ART=" +retStr ;/////////////////////////////////////
 			cursor.close();
-	//			myLog(TAG,dbMsg);
+				myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
