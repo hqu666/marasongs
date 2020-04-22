@@ -1417,26 +1417,49 @@ public class OrgUtil  extends Activity{				//
 		return retBool;
 	}
 
+	/**アルバムアートのURLを返す
+	 *
+	 * android - ALBUM_ART列はAPI 29などから非推奨
+	 * **/
 	public String retAlbumArtUri(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
 		String retStr = null;
 		final String TAG = "retAlbumArtUri";
 		String dbMsg= "[OrgUtil]" ;/////////////////////////////////////
 		try{
 			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
-			//java.lang.NullPointerException
 			Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Albums.ARTIST +" LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM +" = ?";
 			String[] c_selectionArgs= { "%" + artistMei + "%" , albumMei };   			//⑥引数groupByには、groupBy句を指定します。
 			String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
-
 			Cursor cursor = context.getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);			//getApplicationContext()
 			if( cursor.moveToFirst() ){
-				retStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+				dbMsg += "," +cursor.getCount() + "件";
+				do{
+					retStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+					if(retStr != null){
+						break;
+					}else{
+//						resolver = new ContentResolver(this) {
+//							@NonNull
+//							@Override
+//							public Bitmap loadThumbnail(@NonNull Uri uri, @NonNull Size size, @Nullable CancellationSignal signal) throws IOException {
+//								return super.loadThumbnail(uri, size, signal);
+//							}
+//						};
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//							try {
+//								Bitmap albumArt = resolver.loadThumbnail(uriOfItem, size, null);
+//							} catch (IOException e) {
+//								e.printStackTrace();
+//							}
+						}
+					}
+				}while(cursor.moveToNext());
 			}
-			dbMsg += ",ALBUM_ART=" +retStr ;/////////////////////////////////////
+			dbMsg += ",album_art=" +retStr ;/////////////////////////////////////
 			cursor.close();
-				myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {

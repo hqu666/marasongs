@@ -1181,7 +1181,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 				String c_selection =  MediaStore.Audio.Media.ARTIST + " LIKE ?";
-				String[] c_selectionArgs= {motoName};   			//音楽と分類されるファイルだけを抽出する
+				String[] c_selectionArgs= {"%" + artistN + "%" };   			//音楽と分類されるファイルだけを抽出する
 				String c_orderBy = MediaStore.Audio.Media.YEAR;
 				Cursor cursor_p2 = this.cContext.getContentResolver().query( cUri ,c_columns, c_selection, c_selectionArgs,c_orderBy) ;
 				int maiSuu = cursor_p2.getCount();
@@ -1189,9 +1189,10 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				if( cursor_p2.moveToFirst() ){
 					dbMsg2 = "";
 					String rAlbum = null;
+					album_art = null;
 					do{
 						rStr = cursor_p2.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-						if(album_art == null ){
+//						if(album_art == null ){
 							rAlbum = rStr;
 							dbMsg2 +=", ALBUM="+ rAlbum;
 							cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
@@ -1203,6 +1204,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							if( cursor_3.moveToFirst() ){
 								if(album_art == null){
 									album_art = cursor_3.getString(cursor_3.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+									dbMsg2 += " ,album_art=" + album_art;
+									myLog(TAG,dbMsg);
 								}
 								rStr = cursor_3.getString(cursor_3.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR));
 								dbMsg2 += ",FIRST_YEAR="+ rStr;
@@ -1229,7 +1232,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							}
 							cursor_3.close();
 
-						}
+//						}
 					}while( cursor_p2.moveToNext() );
 				}				//if( cursor_p2.moveToFirst() ){
 				cursor_p2.close();
@@ -1273,9 +1276,10 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}while( cursor.moveToNext() );
 //			cursor.moveToPrevious();
 			dbMsg += ",sort_name=" + cursor.getPosition() + "件まで";
-			String datsFN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+
 			dbMsg2 = "";
 			if(kakikomi){
+				String datsFN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 				dbMsg = ">>" + aCount + "件目に追加>>" + artistN + ":" + sort_name + ":" + datsFN + "\n" + dbMsg;
 //				myLog(TAG,dbMsg);
 			}else if(! isNotComp){
@@ -1889,7 +1893,6 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
 			Kari_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
 			dbMsg += ">isOpen=" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-		//	String[] c_selectionArgs = new String[]{ comp };  			//	 {"%" + artistMei + "%" , albumMei };
 			String c_orderBy= "ALBUM_ARTIST_LIST_ID,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
 			cursor = Kari_db.query(zenkyokuTName, null, null, null , null, null, c_orderBy, null);	//リString table, String[] columns,new String[] {MotoN, albamN}
 			pdMaxVal = cursor.getCount();
@@ -1975,7 +1978,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
                     cCount++;
 				}
             }
-            myLog(TAG,dbMsg);
+//            myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}catch (Exception e) {
