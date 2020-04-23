@@ -3134,10 +3134,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			sousalistName = nowList;
 			dbMsg +=  "nowList[" + nowList_id + "]" + nowList +"→操作中のリスト[" + sousalistID + "]" + sousalistName ;	////////////////
 			dbMsg += "シンプル表示か" + pref_list_simple;/////////////////////////////////////
-//			if( mItems == null){
 			pref_zenkyoku_list_id = getAllSongItems();
 			dbMsg += " [全曲リスト； " + pref_zenkyoku_list_id + "]";/////////////////////////////////////
-//			}
 			if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 				dbMsg += " artistSL= " + artistSL.size() + "件" +artistSL.get(0) + "～"  +artistSL.get(artistSL.size()-1) ;/////////////////////////////////////
 				artintCo = artistSL.size();
@@ -3158,7 +3156,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String subText =getResources().getString(R.string.pp_artist) + " ; "  + artintCo + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
 			subHTF.setText(subText );		//	toolbar.setSubtitle(subText);
 	//		reqCode = MaraSonActivity.v_alubum;							//アーティスト
-//			if(0 < mItems.size()){
 				if( 0< mIndex ){
 					dbMsg += " ,mIndex= " + mIndex;/////////////////////////////////////
 					Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
@@ -3178,7 +3175,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					}
 					playingItem.close();
 				}
-//			}
 			dbMsg += " , retInt=⁼" + retInt;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {

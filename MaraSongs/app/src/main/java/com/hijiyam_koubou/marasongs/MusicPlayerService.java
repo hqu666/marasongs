@@ -1140,26 +1140,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 										MusicPlayerService.this.frCount = 0;
 									}
 								} else {
-//									int mcPosition = 0;
-//									if( mPlayer == null ){
-//										mcPosition = getPrefInt("pref_position" , 0 , MusicPlayerService.this);
-//										saiseiJikan = getPrefInt("pref_duration" , 0 , MusicPlayerService.this);
-//										if(rp_pp){						//2点間リピート中で//リピート区間終了点
-//											mcPosition = pp_start;		//リピート区間開始点
-//										}
-//										IsPlaying  = false ;			//再生中か
-//										IsSeisei  = false ;				//生成中
-//									} else {
-//										mcPosition = mPlayer.getCurrentPosition();
-//										saiseiJikan = mPlayer.getDuration();
-//										IsPlaying  = mPlayer.isPlaying() ;			//再生中か
-//										IsSeisei  = true ;				//生成中
-//									}
-//									dbMsg += "[" + mcPosition + "/"+saiseiJikan + "]";/////////////////////////////////////
 									intent.putExtra("mcPosition", mcPosition);
 									ruikeikasannTime = mcPosition;			//累積加算時間
 									intent.putExtra("saiseiJikan", saiseiJikan);
-//									intent.putExtra("data", "");							//タイトルなどの書き換えを行わない
 									intent.putExtra("mIndex", mIndex);
 									dbMsg +=",生成中= " + IsSeisei;//////////////////////////////////
 									intent.putExtra("IsSeisei", IsSeisei);
@@ -2195,9 +2178,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "wrightSaseiList";
 		String dbMsg="[MusicPlayerService]";
 		try{
-			String audio_id = null;
+			int playOrder = 0;
 			String listMei = getResources().getString(R.string.playlist_namae_saikinsisei);			//最近再生
-			int playlist_id =siteiListSakusi( listMei);				//指定された名称のリストを作成する
+			int playlist_id = musicPlaylist.getPlaylistId(listMei);	//指定された名称のリストを作成する
 			dbMsg +="[" + playlist_id + "]" + listMei ;
 			Uri uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
 			String[] columns = null;			//{ idKey, nameKey };
@@ -2205,37 +2188,77 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			String[] c_selectionArg= {listMei};		//⑥引数groupByには、groupBy句を指定します。
 			String c_orderBy = null;			//MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 			Cursor playList = getApplicationContext().getContentResolver().query(uri, columns, c_selection0, c_selectionArg, c_orderBy );
-
 			int poSetteiti = playList.getCount();
 			dbMsg +=",現在" + poSetteiti + "件" ;
+			if(playList.moveToFirst()){
+				uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+				columns = null;			//{ idKey, nameKey };
+				c_selection = MediaStore.Audio.Playlists.Members.DATA +" = ? ";
+				String[] c_selectionArg2= {data};
+				//⑥引数groupByには、groupBy句を指定します。
+				c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+				Cursor cursor = getApplicationContext().getContentResolver().query(uri, columns, c_selection, c_selectionArg2, c_orderBy );
+				if(cursor.moveToFirst()){
+					dbMsg +=",削除候補＝" + cursor.getCount() + "件" ;
+					do{
+						int menberId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));
+						dbMsg +="[" + menberId + "]" ;
+						int delID = musicPlaylist.delOneLineBody(uri,menberId);
+						dbMsg +=">>" + menberId ;
+					}while(cursor.moveToNext());
+				}
+				cursor.close();
+				cursor = getApplicationContext().getContentResolver().query(uri, columns, null, null, c_orderBy );
+				if(cursor.moveToLast()){
+					playOrder = cursor.getCount() + 1;
+					dbMsg +=",書換候補＝" + playOrder + "件" ;
+					if(100 < playOrder){
+						cursor.moveToPosition(99);
+						playOrder = 100;
+					}
+					do{
+						int menberId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));
+						dbMsg +="(" + playOrder + "[" + menberId + "]" ;
+						String menberData = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+						String[] c_selectionArg3= {String.valueOf(menberId)};
+						ContentValues contentvalues = new ContentValues();
+						contentvalues.put("play_order", playOrder);
+						int result_Id = getContentResolver().update(uri,contentvalues,MediaStore.Audio.Playlists.Members._ID,c_selectionArg3);				//更新
+						dbMsg +=  ">result>" + result_Id;
+						playOrder--;
+					}while(cursor.moveToPrevious());
+				}
+				cursor.close();
+
+				dbMsg +=  ",追加する曲=" + data;
+				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+				String c_selection =  MediaStore.Audio.Media.DATA +" = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+				String[] c_selectionArgs= {String.valueOf(data)};   			//音楽と分類されるファイルだけを抽出する
+				cursor = getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
+				if(cursor.moveToFirst()){
+					dbMsg +=",追加候補＝" + cursor.getCount() + "件" ;
+					Uri kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
+					dbMsg +=  ",kakikomiUri=" + kakikomiUri;
+
+					ContentValues contentvalues = new ContentValues();
+					int audio_id = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));;
+					dbMsg +=  ",audio_id=" + audio_id;
+					contentvalues.put("audio_id", Integer.valueOf(audio_id));
+					contentvalues.put("play_order", playOrder);
+					Uri result_uri = getContentResolver().insert(kakikomiUri, contentvalues);				//追加
+					dbMsg +=  ",result_uri=" + result_uri;
+					if(result_uri == null){					//NG
+						dbMsg +=  "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
+					}else if(((int)ContentUris.parseId(result_uri)) == -1){					//NG
+						dbMsg +=  "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
+					}else{					//OK
+						dbMsg +=   ">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
+					}
+				}
+				cursor.close();
+			}
 			playList.close();
-
-			dbMsg +=  ",追加する曲=" + data;
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
-			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-			String c_selection =  MediaStore.Audio.Media.DATA +" = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-			String[] c_selectionArgs= {String.valueOf(data)};   			//音楽と分類されるファイルだけを抽出する
-			Cursor cursor = getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
-			if(cursor.moveToFirst()){
-				audio_id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-			}
-
-			ContentValues contentvalues = new ContentValues();
-			Uri kakikomiUri = null;
-			contentvalues.put("play_order", poSetteiti);
-			kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
-			dbMsg +=  ",kakikomiUri=" + kakikomiUri;
-			dbMsg +=  ",audio_id=" + audio_id;
-			contentvalues.put("audio_id", Integer.valueOf(audio_id));
-			Uri result_uri = getContentResolver().insert(kakikomiUri, contentvalues);				//追加
-			dbMsg +=  ",result_uri=" + result_uri;
-			if(result_uri == null){					//NG
-				dbMsg +=  "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
-			}else if(((int)ContentUris.parseId(result_uri)) == -1){					//NG
-				dbMsg +=  "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-			}else{					//OK
-				dbMsg +=   ">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
