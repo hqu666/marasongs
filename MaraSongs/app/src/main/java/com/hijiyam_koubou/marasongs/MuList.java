@@ -10282,6 +10282,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			"MusicPlayer (RemoteControl)", MusicPlayerRemoteControlActivity.class,
 	}
 	;
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {									//①起動
 		super.onCreate(savedInstanceState);
@@ -10305,7 +10307,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			setPrefStr( "pp_end" ,  "0" , MuList.this);   							//リピート区間開始点
 			receiverHaki();		//レシーバーを破棄
 
-			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
+			dbMsg += "=" + ORGUT.nowTime(true,true,true) ;/////////////////////////////////////
 			Bundle extras = getIntent().getExtras();
 			dbMsg +=  ",extras="+ extras ;/////////////////////////////////////
 			if( extras== null ){
