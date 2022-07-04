@@ -1659,7 +1659,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			File shyuFile = new File(fn);
 			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 			if( ! shyuFile.exists()){
-				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, SQLiteDatabase.OPEN_READWRITE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+//				modeを SQLiteDatabase.OPEN_READWRITEから変更
+// アーティスト名のえリストファイルを読み書きモードで開く
 				shyuusei_db.close();
 			}
 			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
@@ -1814,7 +1816,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			File shyuFile = new File(fn);
 			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 			if( ! shyuFile.exists()){
-				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, SQLiteDatabase.OPEN_READWRITE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+				//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
 				   //  2019	SQLiteDatabase.OPEN_READWRITE
 				shyuusei_db.close();
 			}
@@ -1976,7 +1979,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 			dbMsg += ">>" + getApplicationContext().getDatabasePath(fn).getPath() + ",exists=" + shyuFile.exists()+ ",exists=" + shyuFile.exists();
 			if( ! shyuFile.exists()){
-				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, SQLiteDatabase.OPEN_READWRITE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
 				shyuusei_db.close();
 			}
 			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
@@ -4372,7 +4375,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
-	public void headClickAction() {	//ヘッドが クリックされた時の処理
+	/** ヘッドが クリックされた時の処理*/
+	public void headClickAction() {
 		final String TAG = "headClickAction";
 		String dbMsg = "[MuList]";
 		try{
@@ -6724,8 +6728,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		return retrbool;
 	}
 
-	/**
-	 *  プレイリストを新規作成する */
+	/**  プレイリストを新規作成する */
 
 	/**
 	 *  プレイリストの名前を変更（名前変更ダイアログ表示） */
