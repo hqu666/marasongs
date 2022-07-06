@@ -7122,10 +7122,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					for (int i = 0; i < gSize ; i++){
 						m3Item[i] = m3Files.get(i);
 					}
-//					Alart3BT alart3BT = new Alart3BT(MuList.this,
-//							 dTitol,dMessage, PosiBTT,NeutBTT, NegaBTT,
-//							 isInput, InType, isLists, multiChoiceList, m3Item, listID);
-//					alart3BT.setOnDismissListener(onDismissListener);
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( MuList.this );
 					alertDialogBuilder.setTitle(dTitol);	// アラートダイアログのタイトルを設定します 	getApplicationContext()
 					alertDialogBuilder.setItems(m3Item, new DialogInterface.OnClickListener() {			//DialogInterface.OnClicｋListener()
@@ -7222,8 +7218,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				dbMsg +=",reqCode="+ reqCode;
 				pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage, pdMaxVal ).execute(reqCode,  pdMessage , urls ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
 			}else{
+				dbMsg += ">>" + pdMessage;
 			}
-			dbMsg += "：" + pdMessage;
+//			dbMsg += "：" + pdMessage;
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -7234,7 +7231,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	 *指定されたインデックスのURLから
 	 * **/
 	public void m3U2PlayList_body(int index){
-		final String TAG = "m3U2PlayList_body";
+		final String TAG = "";
 		String dbMsg = "[MuList]";
 		try{
 			dbMsg +=  MuList.this.tuikaSakiListID + "に("+ ( index + 1 ) + "曲目)";/////////////////////////////////////
@@ -10111,9 +10108,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 							preRead( MaraSonActivity.syoki_Yomikomi , null);
 						}
 						break;
-					//		case veiwPlayer:								// 200起動
-//					case m3u_list:		//m3uファイル選択
-//						break;
 					case quite_me:
 						dbMsg += "設定表示";
 						MuList.this.finish();
