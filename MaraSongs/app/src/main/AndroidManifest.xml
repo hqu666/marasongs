@@ -62,6 +62,10 @@
 				android:name="com.google.android.gms.ads.APPLICATION_ID"
 				android:value="@string/banner_ad_unit_id"/>
         </activity>
+		<activity android:name="AllSongs"
+			android:theme="@android:style/Theme.Dialog"
+			android:multiprocess="true">
+		</activity>
 		<activity android:name="ZenkyokuList"
 			android:theme="@android:style/Theme.Dialog"
 			android:multiprocess="true">

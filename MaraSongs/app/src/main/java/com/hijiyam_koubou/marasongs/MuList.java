@@ -773,16 +773,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
 			pref_sonota_vercord = packageInfo.versionCode;					//このアプリのバージョンコード
 			dbMsg += ",このアプリのバージョンコード="+ pref_sonota_vercord;
-//			if(tukurinaosi_ver < pref_sonota_vercord ){
-//				pref_sonota_vercord = pref_sonota_vercord;
-//				dbMsg += ",このアプリのバージョンコード=" + pref_sonota_vercord;//
-//				boolean kakikomi = psetVersionCode(pref_sonota_vercord);			//アプリのバージョン情報をプリファレンスに書き込む
-//			}else
-//			if(pref_sonota_vercord < tukurinaosi_ver ){
-//				String dlTitol = getResources().getString(R.string.saisinnVerKakuninn_titol);
-//				String dlMessege = getResources().getString(R.string.saisinnVerKakuninn_meg);
-//				preReadJunbi(dlTitol , dlMessege);										//全曲再生リスト作成を促すダイアログ表示
-//			}
 			if( MuList.this.nowList.equals(getResources().getString(R.string.playlist_namae_request))){				// );		//リクエストリスト
 				Cursor cursor = listUMU(getResources().getString(R.string.playlist_namae_request));
 				dbMsg +=  "全件="+cursor.getCount() + "件";
@@ -2291,7 +2281,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 //////////////////////////////////////////////////////////ContextMenu///
-	  /**dataURIを読み込みながら欠けデータ確認*/
+	  /**dataURIを読み込みながら欠けデータ確認、ZenkyokuListを読み込む*/
 	public void preRead(int reqCode , String msg) throws IOException {
 		final String TAG = "preRead";
 		String dbMsg = "[MuList]";
@@ -2301,10 +2291,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			sousalistName = getResources().getString(R.string.listmei_zemkyoku);			//全曲リスト
 			sousalistID = -1;		//操作対象リストID
 			sousalist_data = null;		//操作対象リストのUrl
-//			setPrefStr( "nowList", String.valueOf(sousalistName),  MuList.this);         //			myEditor.putString( "nowList", String.valueOf(sousalistName));
-//			setPrefStr( "nowList_id", String.valueOf(sousalistID),  MuList.this);         //	myEditor.putString( "nowList_id", String.valueOf(sousalistID));		//☆intで書き込むとcannot be cast
-//			setPrefStr(  "nowList_data", String.valueOf(sousalist_data),  MuList.this);         //	myEditor.putString( "nowList_data", String.valueOf(sousalist_data));	//再生中のプレイリストの保存場所
-			Intent intentZL = new Intent(getApplication(),ZenkyokuList.class);						//parsonalPBook.thisではメモリーリークが起こる
+			Intent intentZL = new Intent(getApplication(),AllSongs.class);						//parsonalPBook.thisではメモリーリークが起こる
+//20220709			Intent intentZL = new Intent(getApplication(),ZenkyokuList.class);						//parsonalPBook.thisではメモリーリークが起こる
 			intentZL.putExtra("reqCode",reqCode);														//処理コード
 			startActivityForResult(intentZL , reqCode);
 			long end=System.currentTimeMillis();		// 終了時刻の取得
@@ -10227,6 +10215,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	public boolean isFocusNow = false;
+	//グローバル変数にセットされたタイトルとメッセージでダイアログを表示する
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {	 //<onCreate ヘッドのイメージは実際にローディンされた時点で設定表示と同時にウィジェットの高さや幅を取得したいときは大抵ここで取る。
 		final String TAG = "onWindowFocusChanged";
@@ -10280,7 +10269,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 	;
 
-
+//Permission確認、レシーバー破棄、起動中のサービス確認、スレッド起動確認、リスト画面の構成物読み込み、getPList()	へ
 	@Override
 	public void onCreate(Bundle savedInstanceState) {									//①起動
 		super.onCreate(savedInstanceState);
@@ -10296,15 +10285,17 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			myApp = (MyApp) MuList.this.getApplication();
 
 			musicPlaylist = new MusicPlaylist(MuList.this);
-
+			//Permission確認
 			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
 			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
 			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点
 			setPrefStr( "pp_end" ,  "0" , MuList.this);   							//リピート区間開始点
+			//レシーバー破棄、
 			receiverHaki();		//レシーバーを破棄
 
 			dbMsg += "=" + ORGUT.nowTime(true,true,true) ;/////////////////////////////////////
+			//起動中のサービス確認
 			Bundle extras = getIntent().getExtras();
 			dbMsg +=  ",extras="+ extras ;/////////////////////////////////////
 			if( extras== null ){
@@ -10367,6 +10358,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			for (int i = 0; i < list.length; i++) {
 				list[i] = (String) activities[i * 2];
 			}
+			//リスト画面の構成物読み込み
 			locale = Locale.getDefault();		// アプリで使用されているロケール情報を取得
 			setContentView(R.layout.mu_list);				//			setContentView(R.layout.main);
 			toolbar = findViewById(R.id.list_tool_bar);						//このアクティビティのtoolBar
@@ -10459,6 +10451,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	//現在未使用
 	@Override
 	protected void onRestart() {
 		super.onRestart();
@@ -10472,6 +10465,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	//現在未使用
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -10485,6 +10479,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	// MusicPlaylistクラスとレシーバーを生成
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -10505,6 +10500,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	//現在未使用
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -10522,6 +10518,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	//現在未使用
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -10535,6 +10532,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 		}
 	}
 
+	//現在未使用
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

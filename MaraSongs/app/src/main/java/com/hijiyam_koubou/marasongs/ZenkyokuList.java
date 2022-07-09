@@ -3000,7 +3000,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							dbMsg += ",db=" + fn;
 							del_DB(fn);		//SQLiteDatabaseを消去
 							zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-							Kari_db = this.cContext.openOrCreateDatabase(fn, SQLiteDatabase.OPEN_READWRITE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+							Kari_db = this.cContext.openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+//							Kari_db = this.cContext.openOrCreateDatabase(fn, SQLiteDatabase.OPEN_READWRITE, null);	//, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
 							Kari_db.close();
 							dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
 							zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名

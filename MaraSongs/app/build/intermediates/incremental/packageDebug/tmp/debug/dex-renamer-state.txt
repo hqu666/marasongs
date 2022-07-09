@@ -1,7 +1,0 @@
-#Tue Jul 05 00:08:16 JST 2022
-base.1=H\:\\develop\\2022\\marasongs\\MaraSongs\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
-path.1=classes.dex
-base.0=H\:\\develop\\2022\\marasongs\\MaraSongs\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex
-renamed.1=classes2.dex
-renamed.0=classes.dex
-path.0=classes.dex
