@@ -11,8 +11,9 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
+        google()// ここもCould not resolve all dependencies for configuration ':app:androidApis'.対策
         jcenter()
+        maven { url 'https://maven.google.com' } // Could not resolve all dependencies for configuration ':app:androidApis'.で追加した行
     }
 }
 

@@ -410,13 +410,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             try{
                 dbMsg= "shigot_bangou;" + shigot_bangou;/////////////////////////////////////
                 //			myLog(TAG,dbMsg);
-                switch(shigot_bangou) {
-                    case MaraSonActivity.syoki_Yomikomi:
+// 20220710               switch(shigot_bangou) {
+//                    case MaraSonActivity.syoki_Yomikomi:
                         preRead( );			//dataURIを読み込みながら欠けデータ確認
-                        break;
-                    default:
-                        break;
-                }
+//                        break;
+//                    default:
+//                        break;
+//                }
                 shigot_bangou = 0;
             }catch (Exception e) {
                 myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -425,7 +425,9 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         super.onWindowFocusChanged(hasFocus);
     }
 
-    //
+    /**
+     * MusicPlaylistクラスを作成
+     * */
     @Override
     public void onResume(){
         super.onResume();
@@ -442,6 +444,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         }
     }
 
+    //現在未使用
     @Override
     public void onPause() {
         super.onPause();
@@ -455,7 +458,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     }
 
     /**
-     * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで端末内の音楽データ読み込み
+     * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで端末内の音楽データ読み込み、既存の全曲リスト消去、欠けデータ確認
      *  MediaStore.Audio.Media.IS_MUSIC  <> "0"
      * c_orderBy = MediaStore.Audio.Media.DATA でアーティスフォルダの降順
      * @ 無し
@@ -509,6 +512,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 //			myLog(TAG,dbMsg);
                 pNFVeditor.commit();	// データの保存
             }
+            //既存の全曲リスト消去
             musicPlaylist.deletPlayList(AllSongs.this.getResources().getString(R.string.all_songs_file_name));
             pd2CoundtVal=0;
             pd2MaxVal = pt_end - pt_start;									//このクラスのステップ数
@@ -520,6 +524,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? "  ;
             String[] c_selectionArgs= {"0"  };   			//, null , null , null
             String c_orderBy=MediaStore.Audio.Media.DATE_MODIFIED  + " DESC"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+            //更新日の降順ソートで端末内の音楽ファイルを取得
             cursor = resolver.query( cUri , null , null , null, c_orderBy);
             kyoku = cursor.getCount();									//redrowIDList.size();
             if(cursor.moveToFirst()){
@@ -564,6 +569,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     MediaStore.Audio.Media.TITLE  + " = ? " ;
             String[] c_selectionArgs2= {"0" , "" , "" , "" , "" };   			//, null , null , null
             c_orderBy = MediaStore.Audio.Media.DATA; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+            // ARTIST,ALBUM,TITLEの情報が欠けているファイルを確認してreqCode＝pt_start、shigot_bangou=MaraSonActivity.syoki_YomikomiでplogTaskへ
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs2, c_orderBy);
             int keturaku = cursor.getCount();									//redrowIDList.size();
             dbMsg=dbMsg +";欠落="+ keturaku + "件";
@@ -617,7 +623,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     }
 
     /**
-     * MediaStore.Audio.Mediaの欠けデータ確認
+     * URIからMediaStore.Audio.Mediaの欠けデータ確認
      * @ Cursor cursor MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで読み込んだ端末内の音楽データ
      * @ Uri cUri
      * @ String where
@@ -1545,9 +1551,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         }
     }
 
-
     /**
-     * 仮リスト作成
+     * 仮リスト作成；全音楽ファイル抽出
      * @ 無し
      * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIをMediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソート
      * kaliListBodyへ
@@ -1574,6 +1579,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
             String c_orderBy=MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
 //			String c_orderBy=MediaStore.Audio.Media.ARTIST  + " , " + MediaStore.Audio.Media.ALBUM+ " , " + MediaStore.Audio.Media.TRACK ; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+            //全音楽ファイル抽出
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
             dbMsg=dbMsg +";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
             //		myLog(TAG,dbMsg);
