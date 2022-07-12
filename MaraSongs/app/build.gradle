@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.hijiyam_koubou.marasongs"
-        minSdkVersion 23
-        targetSdkVersion 28
+        minSdkVersion 29
+        targetSdkVersion 31
         signingConfig signingConfigs.debug
         versionCode = 9341248
         versionName = '1.2.48'
@@ -22,9 +22,10 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
     }
+    buildToolsVersion '30.0.3'
 }
 
 repositories {
@@ -32,22 +33,27 @@ repositories {
         url "https://maven.google.com"
     }
     maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+    maven {
         url 'http://fan-adn.github.io/nendSDK-Android-lib/library'
+        allowInsecureProtocol = true //Gradleバージョン7以降で安全でないプロトコルを許可する
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
-    implementation 'com.google.android.gms:play-services-ads:17.2.0'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:31.0.0'
+    implementation 'com.android.support:support-v4:31.0.0'
+    implementation 'com.android.support:design:31.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation 'com.google.android.gms:play-services-ads:21.0.0'
     //play-servicesは配布されていない
-    implementation 'com.android.support:support-media-compat:28.0.0'
+    implementation 'com.android.support:support-media-compat:31.0.0'
     //    appcompat-v7が通らなくなった場合
-    implementation 'com.android.support:animated-vector-drawable:28.0.0'
-    implementation 'com.android.support:customtabs:28.0.0'
+    implementation 'com.android.support:animated-vector-drawable:31.0.0'
+    implementation 'com.android.support:customtabs:31.0.0'
     testImplementation 'junit:junit:4.13-beta-2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

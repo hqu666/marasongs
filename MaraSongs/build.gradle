@@ -14,6 +14,10 @@ allprojects {
         google()// ここもCould not resolve all dependencies for configuration ':app:androidApis'.対策
         jcenter()
         maven { url 'https://maven.google.com' } // Could not resolve all dependencies for configuration ':app:androidApis'.で追加した行
+        maven {
+            url 'http://fan-adn.github.io/nendSDK-Android-lib/library'
+            allowInsecureProtocol = true //Gradleバージョン7以降で安全でないプロトコルを許可する
+        }
     }
 }
 

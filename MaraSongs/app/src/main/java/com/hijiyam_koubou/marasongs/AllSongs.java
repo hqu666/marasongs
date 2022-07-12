@@ -479,7 +479,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pgdBar2_ll.setVisibility( View.VISIBLE );										//セカンドプログレスバーエリア
             ORGUT = new OrgUtil();				//自作関数集
             reqCode = pt_start;
-            dbMsg=dbMsg +",reqCode="+ reqCode ;
+            dbMsg +=",reqCode="+ reqCode ;
 
             artistBk=0;
             albumBk=0;
@@ -487,16 +487,16 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             trackBk=0;
             String saveDir = this.cContext.getExternalFilesDir(null).toString();						//メモリカードに保存フォルダ
             String[] rDir = saveDir.split(File.separator);
-            dbMsg=dbMsg +"、rDir="+ rDir;
+            dbMsg +="、rDir="+ rDir;
             exDrive = rDir[0] + File.separator+ rDir[1] + File.separator+ rDir[2];
             saveDir = this.cContext.getFilesDir().toString();						//内蔵メモリ
             rDir = saveDir.split(File.separator);
             inDrive = rDir[0] + File.separator+ rDir[1] + File.separator+ rDir[2];
-            dbMsg=dbMsg +"、(do前)内蔵メモリ="+ inDrive + ",メモリカード="+ exDrive;
+            dbMsg +="、(do前)内蔵メモリ="+ inDrive + ",メモリカード="+ exDrive;
 //			sharedPref = this.cContext.getSharedPreferences( this.cContext.getResources().getString(R.string.pref_main_file) , this.cContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
             pNFVeditor = sharedPref.edit();
             Map<String, ?> keys = sharedPref.getAll();
-            dbMsg=dbMsg +",keys="+ keys.size() +"件" ;
+            dbMsg +=",keys="+ keys.size() +"件" ;
             saisinnbi = "0";
             if(keys.size() > 0 ){
                 saisinnbi = String.valueOf(keys.get("pref_file_saisinn"));
@@ -515,10 +515,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             //既存の全曲リスト消去
             musicPlaylist.deletPlayList(AllSongs.this.getResources().getString(R.string.all_songs_file_name));
             pd2CoundtVal=0;
+            //プログレスの終端カウント設定
             pd2MaxVal = pt_end - pt_start;									//このクラスのステップ数
             dbMsg +="[" +pd2CoundtVal +"/"+ pd2MaxVal +"]";
             ProgBar2.setMax(pd2MaxVal);	 //セカンドプログレスバー
-            dbMsg=dbMsg +",最新="+ saisinnbi ;
+/*
+            //最近追加したファイルの日付取得
+            dbMsg +=",最新="+ saisinnbi ;
             ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
             Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
             String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? "  ;
@@ -549,7 +552,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                                 AllSongs.this.exDir = exDrive;				//外部メモリ + "\n"
                             }
                             dbMsg +=">>exDir="+ AllSongs.this.exDir;/////////////////////////////////////////////////////////////////////////////////////////////
-                        }else{				//								dbMsg=dbMsg +"、内蔵メモリ="+ inDrive + ",="+ exDrive;
+                        }else{				//								dbMsg +="、内蔵メモリ="+ inDrive + ",="+ exDrive;
                             AllSongs.this.inDir = dirName;				//内蔵メモリ + "\n"
                             if(AllSongs.this.inDir.length() < dirName.length() || dirName.contains("Music") || dirName.contains("MUSIC") || dirName.contains("music")){
                                 AllSongs.this.inDir = dirName;				//内蔵メモリ + "\n"
@@ -561,6 +564,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     }
                 }
             }
+
+            //欠落データ確認
             String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
             c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? AND " +
                     MediaStore.Audio.Media.ARTIST  + " = ? OR " +
@@ -572,7 +577,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             // ARTIST,ALBUM,TITLEの情報が欠けているファイルを確認してreqCode＝pt_start、shigot_bangou=MaraSonActivity.syoki_YomikomiでplogTaskへ
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs2, c_orderBy);
             int keturaku = cursor.getCount();									//redrowIDList.size();
-            dbMsg=dbMsg +";欠落="+ keturaku + "件";
+            dbMsg +=";欠落="+ keturaku + "件";
             pdMessage = this.cContext.getString(R.string.medst_kakunin)+keturaku +"/" + kyoku + this.cContext.getString(R.string.pp_kyoku);			//"メディアストアの欠落データn/N name="">曲</string>;
             this.pdCoundtVal=0;		//ProgressDialog表示値
             if(cursor.moveToFirst()){
@@ -595,7 +600,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 String[] c_selectionArgs3= {"0" , "%" +"unknow" + "%" , "%" +"unknow" + "%" , "%" +"unknow" + "%" };   			//, null , null , null
                 cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs3, c_orderBy);
                 keturaku = cursor.getCount();									//redrowIDList.size();
-                dbMsg=dbMsg +";unknow="+ keturaku + "件";
+                dbMsg +=";unknow="+ keturaku + "件";
                 pdMessage = this.cContext.getString(R.string.medst_kakunin)+keturaku +"/" + kyoku + this.cContext.getString(R.string.pp_kyoku);			//"メディアストアの欠落データn/N name="">曲</string>;
                 this.pdCoundtVal=0;		//ProgressDialog表示値
                 if(cursor.moveToFirst()){
@@ -614,8 +619,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     //		kyoku = cursor.getCount();									//redrowIDList.size();
                 }
             }
+
+            */
             long partEnd=System.currentTimeMillis();		// 終了時刻の取得
-            dbMsg=dbMsg +";"+ (int)((partEnd - startPart)) + "m秒で終了";
+            dbMsg +=";"+ (int)((partEnd - startPart)) + "m秒で終了";
+            CreateKaliList();
             myLog(TAG,dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -871,7 +879,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String[] c_selectionArgs= {"0"};   			//⑥引数groupByには、groupBy句を指定します。
             String c_orderBy=MediaStore.Audio.Media.DATA; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
-            dbMsg=dbMsg +";"+ cursor.getCount() + "件×"+ cursor.getColumnCount() + "項目";
+            dbMsg +=";"+ cursor.getCount() + "件×"+ cursor.getColumnCount() + "項目";
             if(cursor.moveToFirst()){
                 pd2CoundtVal++;
                 dbMsg="ループ前" + pd2CoundtVal +"/"+ pd2MaxVal ;
@@ -965,7 +973,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 }
             }
             trackNo = UTIL.checKTrack( trackNo);
-            dbMsg=dbMsg + "[" + trackNo + "]";
+            dbMsg += "[" + trackNo + "]";
             trackNoList.add(trackNo);
             ContentValues cv = new ContentValues();
             cv.put(MediaStore.Audio.Media.TRACK, trackNo);
@@ -1013,7 +1021,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pdMes = pdMes+titolList.size() + "," + cContext.getString(R.string.pp_kyoku);
             dbMsg +=",trackNo="+trackNoList.size()+ cContext.getString(R.string.comon_ken);
             pdMes = pdMes+"/" + cursor.getCount() + cContext.getString(R.string.comon_ken);
-            dbMsg=dbMsg +";"+pdMes+",到達"+cursor.getPosition();
+            dbMsg +=";"+pdMes+",到達"+cursor.getPosition();
             //		Toast.makeText(context, pdMes, Toast.LENGTH_SHORT).show();
             myLog(TAG,dbMsg);
             albumList.size();
@@ -1056,7 +1064,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //			String having =null;								//EXTERNAL_CONTENT_URIには使えない
             String c_orderBy= MediaStore.Audio.Media.DATA ; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC	☆"album_artist"は拾えない
             cursor = this.cContext.getContentResolver().query( cUri ,c_columns, c_selection, c_selectionArgs, c_orderBy) ;
-            dbMsg=dbMsg +";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
+            dbMsg +=";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
             if(cursor.moveToFirst()){
                 aArtist = "";
                 artistList = new ArrayList<Map<String, Object>>();
@@ -1581,7 +1589,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //			String c_orderBy=MediaStore.Audio.Media.ARTIST  + " , " + MediaStore.Audio.Media.ALBUM+ " , " + MediaStore.Audio.Media.TRACK ; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
             //全音楽ファイル抽出
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
-            dbMsg=dbMsg +";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
+            dbMsg +=";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
             //		myLog(TAG,dbMsg);
             if(cursor.moveToFirst()){
                 aArtist = "";
@@ -1769,7 +1777,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                             AllSongs.this.exDir = exDrive;				//外部メモリ + "\n"
                         }
 //						dbMsg +=">>exDir="+ AllSongs.this.exDir;/////////////////////////////////////////////////////////////////////////////////////////////
-                    }else{				//								dbMsg=dbMsg +"、内蔵メモリ="+ inDrive + ",="+ exDrive;
+                    }else{				//								dbMsg +="、内蔵メモリ="+ inDrive + ",="+ exDrive;
                         AllSongs.this.inDir = dirName;				//内蔵メモリ + "\n"
                         if(AllSongs.this.inDir.length() < dirName.length() || dirName.contains("Music") || dirName.contains("MUSIC") || dirName.contains("music")){
                             AllSongs.this.inDir = dirName;				//内蔵メモリ + "\n"
@@ -2468,7 +2476,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //				retBool = true;
 //			}
 //			dbMsg +=">>"+ retBool;
-//			dbMsg=dbMsg +";"+dousaJikann + "m秒で終了";
+//			dbMsg +=";"+dousaJikann + "m秒で終了";
 //			myLog(TAG,dbMsg);
 //		}catch (Exception e) {
 //			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -2535,7 +2543,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     cursor.close();
                 }
             }
-            dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
+            dbMsg +=";"+ (int)((end - start)) + "m秒で終了";
             myLog(TAG,dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg + "で"+e.toString());
