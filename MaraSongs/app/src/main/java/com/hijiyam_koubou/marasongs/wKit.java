@@ -1,15 +1,5 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.io.File;
-
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-
-import net.nend.android.NendAdListener;
-import net.nend.android.NendAdView;
-import net.nend.android.NendAdInterstitial.NendAdInterstitialStatusCode;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -25,14 +15,10 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -42,6 +28,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+
+import net.nend.android.NendAdInterstitial.NendAdInterstitialStatusCode;
+import net.nend.android.NendAdListener;
+import net.nend.android.NendAdView;
+
+import java.io.File;
 
 public class wKit extends Activity {
 
@@ -581,17 +580,17 @@ public class wKit extends Activity {
 		//	dbMsg += ",mAdView=" + mAdView;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
 			//テスト		https://developers.google.com/mobile-ads-sdk/docs/admob/intermediate?hl=ja
 			//未登録機はlogcatで03-21 21:21:41.232: I/Ads(10844): Use AdRequest.Builder.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302") to get test ads on this device.	を検索
-			adRequest = new AdRequest.Builder()
-				.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)				// すべてのエミュレータ
-				.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302")	//Xpelia Z5 (Android5.1.1)
-				.addTestDevice("170A4E96B8EE2D03CFAB2DF201D0655D")	//SHL32(Android4.4.4/AQUOS K タッチパネル無し)
-				.addTestDevice("F3B787B1C99665529E01E5BB0647FD8D")	//	304SH(Android4.4.2)
-				.addTestDevice("772C6F3DB402CD1F9D8A66E1555E54C5")	//SH08E(Android4.2.2/7インチタブレット)
-				.addTestDevice("B339C45F7878E57784B1940379760332")		//	206SH(Android4.2.2)
-				.addTestDevice("EFF070C53D3F43AF29325F8E5529D704")	//	203SH(Android4.1.2)
-				.addTestDevice("2CCFE123DEF10276C319F12B66D744FA")	//	iS15SH(Android4.0.3)Ads: Use AdRequest.Builder.addTestDevice("") to get test ads on this device.で取得
-//				.tagForChildDirectedTreatment(true)									//児童向けで
-				.build();
+//			adRequest = new AdRequest.Builder()
+//				.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)				// すべてのエミュレータ
+//				.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302")	//Xpelia Z5 (Android5.1.1)
+//				.addTestDevice("170A4E96B8EE2D03CFAB2DF201D0655D")	//SHL32(Android4.4.4/AQUOS K タッチパネル無し)
+//				.addTestDevice("F3B787B1C99665529E01E5BB0647FD8D")	//	304SH(Android4.4.2)
+//				.addTestDevice("772C6F3DB402CD1F9D8A66E1555E54C5")	//SH08E(Android4.2.2/7インチタブレット)
+//				.addTestDevice("B339C45F7878E57784B1940379760332")		//	206SH(Android4.2.2)
+//				.addTestDevice("EFF070C53D3F43AF29325F8E5529D704")	//	203SH(Android4.1.2)
+//				.addTestDevice("2CCFE123DEF10276C319F12B66D744FA")	//	iS15SH(Android4.0.3)Ads: Use AdRequest.Builder.addTestDevice("") to get test ads on this device.で取得
+////				.tagForChildDirectedTreatment(true)									//児童向けで
+//				.build();
 	//		dbMsg +="、getAdUnitId=" + mAdView.getAdUnitId();//ca-app-pub-3146425308522831/2530772303
 	//		dbMsg += ",　request=" + adRequest;
 			mAdView.loadAd(adRequest);
@@ -625,7 +624,7 @@ public class wKit extends Activity {
 //							}
 						}
 						dbMsg +=",getChildAt=" + adViewC;
-						dbMsg +=",ClassName=" + mAdView.getMediationAdapterClassName();		//null
+			//			dbMsg +=",ClassName=" + mAdView.getMediationAdapterClassName();		//null
 						//errer発生	getTransitionName	getOutlineProvider	getOverlay
 			//			myLog(TAG,dbMsg);
 					} catch (Exception e) {
@@ -647,7 +646,7 @@ public class wKit extends Activity {
 						}
 					}
 
-				@Override
+		//		@Override
 				public void onAdLeftApplication() {
 					final String TAG = "onAdLeftApplication[adMobLoad]";
 					String dbMsg = "広告からアプリケーションを終了した場合";//////////////////
@@ -659,7 +658,7 @@ public class wKit extends Activity {
 						}
 					}
 
-				@Override
+		//		@Override
 				public void onAdFailedToLoad(int errorCode) {
 					final String TAG = "onAdFailedToLoad[adMobLoad]";
 					String dbMsg = "広告リクエストが失敗した";//////////////////

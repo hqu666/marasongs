@@ -1,42 +1,22 @@
 package com.hijiyam_koubou.marasongs;
 //Androidアプリでマルチメディアを扱うための基礎知識	http://www.atmarkit.co.jp/ait/articles/1203/28/news128.html
 
-import java.io.BufferedReader;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.MediaStore;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.AbstractCursor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
-import android.util.Log;
 
 public class Item implements Comparable<Object> {	// 外部ストレージ上の音楽をあらわすクラス。
 
@@ -51,7 +31,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	public String pref_commmn_music="";		//共通音楽フォルダ
 
 	public Editor myEditor ;
-	private static final String TAG = "Item";
 	final int listid;						//作成したリストの連番
 	final int play_order;					//リスト内の再生順
 	final int _id;						//MediaStore.Audio.Media._ID
@@ -104,6 +83,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 
 	/**
 	 * *アルバムアーティスト、アルバム、タイトルからUriを戻す*/
+	@SuppressLint("Range")
 	public Uri getUriAAT(Context context , String albumArtist , String albumMei , String titol) {
 		final String TAG = "getUriAAT[Item]";
 		String dbMsg= "開始;";/////////////////////////////////////
@@ -175,28 +155,28 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			Util UTIL = new Util();
 //			UTIL.dBaceColumnCheck( cursor ,  cPosition);
 
-			int auduo_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("AUDIO_ID")));
-			String ArtistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
+			@SuppressLint("Range") int auduo_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("AUDIO_ID")));
+			@SuppressLint("Range") String ArtistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
 			dbMsg += ",ARTIST=" + ArtistName;
-			String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+			@SuppressLint("Range") String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
 			dbMsg += " : " + albumArtist;
-			String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+			@SuppressLint("Range") String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
 			dbMsg += ",ALBUM=" + albumName;
-			String trackVar = cursor.getString(cursor.getColumnIndex("TRACK"));
+			@SuppressLint("Range") String trackVar = cursor.getString(cursor.getColumnIndex("TRACK"));
 			dbMsg += ",TRACK=" + trackVar;
 			trackVar = UTIL.checKTrack(trackVar);
 //			if (trackVar.contains("/")){
 //				String[] tStrs = trackVar.split("/");
 //				trackVar = tStrs[0];
 //			}
-			String titleNeme = cursor.getString(cursor.getColumnIndex("TITLE"));
+			@SuppressLint("Range") String titleNeme = cursor.getString(cursor.getColumnIndex("TITLE"));
 			dbMsg += ",TITLE=" + titleNeme;
-			String duration = cursor.getString(cursor.getColumnIndex("DURATION"));
+			@SuppressLint("Range") String duration = cursor.getString(cursor.getColumnIndex("DURATION"));
 			dbMsg += ",DURATION=" + duration;
 			String moh = UTIL.stf.format(new Date(Long.valueOf(duration)));
 			dbMsg += "=" + moh;
 				//I'll Be Alright
-			String dataUrl = cursor.getString(cursor.getColumnIndex("DATA"));
+			@SuppressLint("Range") String dataUrl = cursor.getString(cursor.getColumnIndex("DATA"));
 //			dbMsg += ",DATA=" + dataUrl;
 
 			items.add(new Item(
@@ -277,6 +257,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 	 *  @return 見つかった音楽のリスト
 	 *  プレイリストからデータを読み込む時に再生順に齟齬が有れば修正する
 	 *  */
+	@SuppressLint("Range")
 	public static List<Item> getItems(Context context) {	//static
 		final String TAG = "getItems";
 		String dbMsg = "[Item];";
@@ -534,6 +515,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		return items;
 	}
 
+	@SuppressLint("Range")
 	public static ArrayList<String> artistlist_yomikomi(Context context){				//アーティストリストを読み込む
 		ArrayList<String> retList = null;
 		final String TAG = "artistlist_yomikomi[MusicPlayerService]";

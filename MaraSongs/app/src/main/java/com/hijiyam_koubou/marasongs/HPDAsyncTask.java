@@ -1,15 +1,11 @@
 package com.hijiyam_koubou.marasongs;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentManager;
 import android.text.SpannableString;
 import android.widget.Toast;
-import android.support.v4.app.DialogFragment;
-
 
 import java.text.NumberFormat;
 

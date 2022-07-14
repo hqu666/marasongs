@@ -1,6 +1,7 @@
 package com.hijiyam_koubou.marasongs;
 
 import android.R.color;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -247,7 +248,8 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 		return convertView;
 	}
 
-	public void setIMG( ViewGroup parent , int albumID ,ImageView lrow_image) {						//アルバムアート描画
+	@SuppressLint("Range")
+	public void setIMG(ViewGroup parent , int albumID , ImageView lrow_image) {						//アルバムアート描画
 		final String TAG = "setIMG[MyTreeAdapter]";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{

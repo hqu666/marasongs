@@ -1,24 +1,9 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Arrays;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -36,7 +21,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -44,14 +28,17 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AllSongs extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
     OrgUtil ORGUT;				//自作関数集
@@ -59,7 +46,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     MusicPlaylist musicPlaylist ;
     MyPreferences myPreferences;
 
-    MaraSonActivity MSA;
     public Context cContext ;
     public plogTaskCallback callback;
     public AllSongs.plogTask pTask;
@@ -244,8 +230,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         String dbMsg = "[AllSongs]";
         String retStr = "";
         try {
-            String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-            String dataStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+            @SuppressLint("Range") String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+            @SuppressLint("Range") String dataStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             dataStr = dataStr.replace(pref_commmn_music + File.separator, "");
             dbMsg += ":" + dataStr ;
             String[] datas = dataStr.split(File.separator );
@@ -271,11 +257,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         String dbMsg = "[AllSongs]";
         String retStr = "";
         try {
-            String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+            @SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
             String motoName = artistN;
             String aArtintName = getUrl2Artist(cursor);
             dbMsg += ">>" + aArtintName ;
-            String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
+            @SuppressLint("Range") String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
             dbMsg += ",composer=" + composer ;
             if( artistN == null ){
                 if( composer != null ){
@@ -641,6 +627,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * kousinnbに更新日、exDir で外部メモリ、inDiに内蔵メモリを記録
      * preReadEndへ
      * */
+    @SuppressLint("Range")
     public void preReadBody(Cursor cursor , Uri cUri , String where) throws IOException {			//MediaStore.Audio.Mediaの欠けデータ確認
         final String TAG = "preReadBody";
         String dbMsg= "[AllSongs]";
@@ -651,7 +638,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String val = null;
             Map<String, String> map = null;
 
-            String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+            @SuppressLint("Range") String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
             dbMsg = dbMsg + "[_ID" + ｒID +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////
             String[] selectionArgs = {ｒID};
             dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -898,6 +885,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         }
     }
 
+    @SuppressLint("Range")
     protected int mastKopusinBody(Context context , Cursor cursor , Uri uri , String where ) {				//メディアストア更新のレコード処理
         final String TAG = "mastKopusinBody";
         pdCoundtVal=cursor.getPosition()+1;		//プログレスカウンタ
@@ -907,13 +895,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String trackNo = null;			//曲順
             String titolName =null;		//曲名
             dbMsg = cursor.getPosition() +"/"+ cursor.getCount() + "曲[";/////////////////////////////////////////////////////////////////////////////////////////////
-            String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+            @SuppressLint("Range") String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
             dbMsg = dbMsg+ ｒID + "]";/////////////////////////////////////////////////////////////////////////////////////////////
-            String dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));				//The data stream for the file ;Type: DATA STREAM
+            @SuppressLint("Range") String dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));				//The data stream for the file ;Type: DATA STREAM
             dbMsg = dbMsg +" , "+ dataFPN;/////////////////////////////////////////////////////////////////////////////////////////////
             String val;
             Map<String, String> map = ORGUT.data2msick(dataFPN, getApplicationContext());
-            String creditArtistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));	//クレジットされているアーティスト名
+            @SuppressLint("Range") String creditArtistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));	//クレジットされているアーティスト名
             dbMsg = dbMsg +"アーティスト="+ creditArtistName;/////////////////////////////////////////////////////////////////////////////////////////////
             boolean ololae = false;
             if(creditArtistName == null){
@@ -938,7 +926,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 dbMsg = dbMsg + "処理" + rows +"件";/////////////////////////////////////////////////////////////////////////////////////////////
             }
 
-            String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));		//アルバム名
+            @SuppressLint("Range") String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));		//アルバム名
             dbMsg = dbMsg +" ,アルバム="+ albumName;/////////////////////////////////////////////////////////////////////////////////////////////
             if(albumName == null || albumName.equals("<unknown>")){
                 ololae = true;
@@ -1103,6 +1091,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * ArrayList<String> artistListに格納
      * kaliAartistListEndへ
      * */
+    @SuppressLint("Range")
     public Cursor kaliAartistListBody(Cursor cursor , SQLiteStatement stmt) throws IOException {			//803;仮アーティストリスト作成
         final String TAG = "kaliAartistListBody";
         String dbMsg= "[AllSongs]";
@@ -1113,7 +1102,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             progBar1.setProgress(pdCoundtVal);
             dbMsg += "[" + pdCoundtVal +"/"+ progBar1.getMax() + "]";
 
-            String motoName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+            @SuppressLint("Range") String motoName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
             dbMsg += motoName ;
             String artistN = setAlbumArtist(cursor);
             dbMsg += "）" + artistN ;
@@ -1175,7 +1164,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 AllSongs.this.artistList.add( objMap);
                 AllSongs.this.shortArtistList.add(sort_name);		//The抜き大文字アーティスト名
                 //dbへの書込み///////////////////////////
-                String artistID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+                @SuppressLint("Range") String artistID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
                 stmt = stmtWrite2(artistID ,  stmt , 1);
                 stmt = stmtWrite2(sort_name ,  stmt , 2);
                 stmt = stmtWrite2(motoName ,  stmt , 3);							//1;ARTIST
@@ -1362,13 +1351,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg += "\nkariArtist_db=" + artistSize + "件";
             if(cursor.moveToFirst()){
                 do{
-                    String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
+                    @SuppressLint("Range") String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
                     dbMsg += "\n" + _id + ")";
-                    String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
+                    @SuppressLint("Range") String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
                     dbMsg += " " + ｃArtist;
-                    String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
+                    @SuppressLint("Range") String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
                     dbMsg += " : " + sortName;
-                    String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
+                    @SuppressLint("Range") String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
                     dbMsg += " : " + aArtist;
 
                 }while(cursor.moveToNext());
@@ -1462,7 +1451,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg +=columnNames.length + "項目";
             for(String cName:columnNames){
                 dbMsg += "," + cCount+")" + cName;
-                String cVal = String.valueOf(cursor.getString(cursor.getColumnIndex(cName)));
+                @SuppressLint("Range") String cVal = String.valueOf(cursor.getString(cursor.getColumnIndex(cName)));
                 dbMsg += " = "+ cVal;
                 if( cName.equals("_id")) {
                     dbMsg += " スキップ ";
@@ -1518,13 +1507,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pdMaxVal = cursor.getCount();
             if(cursor.moveToFirst()){
                 do{
-                    String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
+                    @SuppressLint("Range") String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
                     dbMsg += "\n" + _id + ")";
-                    String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
+                    @SuppressLint("Range") String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
                     dbMsg += " " + ｃArtist;
-                    String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
+                    @SuppressLint("Range") String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
                     dbMsg += " : " + sortName;
-                    String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
+                    @SuppressLint("Range") String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
                     dbMsg += " : " + aArtist;
 
                 }while(cursor.moveToNext());
@@ -1624,7 +1613,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * stmtはplogTask.endTSでKari_dbに書き込まれる
      * CreateKaliListEndへ
      * */
-    @SuppressLint("DefaultLocale")
+    @SuppressLint({"DefaultLocale", "Range"})
     public Cursor kaliListBody(Cursor cursor ,SQLiteStatement stmt ) throws IOException {			//仮リスト作成		 , SQLiteStatement stmt			5041曲 [01:17 349mS]		//2016：03；Cursor finalized without prior close()７回発生?
         final String TAG = "kaliListBody";
         String dbMsg= "[AllSongs]";
@@ -1886,6 +1875,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * CreateZenkyokuBodyへ
      * reqCode = pt_CreateAllSongs
      * */
+    @SuppressLint("Range")
     public void CreateAllSongs(){				//全曲リスト作成
         final String TAG = "CreateAllSongs";
         String dbMsg= "[AllSongs]";
@@ -1955,18 +1945,18 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             int audio_id = -1;
             pdCoundtVal = ｃursor.getPosition();
             dbMsg += reqCode + "：仮リスト: "+  pdCoundtVal + "/" + pdMaxVal + "曲目";
-            String cAUDIO_ID = String.valueOf(ｃursor.getString(cursor.getColumnIndex("AUDIO_ID")));
+            @SuppressLint("Range") String cAUDIO_ID = String.valueOf(ｃursor.getString(cursor.getColumnIndex("AUDIO_ID")));
             dbMsg += "[AUDIO_ID= "+ cAUDIO_ID;
             audio_id= Integer.parseInt(cAUDIO_ID);
             dbMsg += ",audio_id=" + audio_id;
 
-            String dataUri = String.valueOf(ｃursor.getString(cursor.getColumnIndex("DATA")));
+            @SuppressLint("Range") String dataUri = String.valueOf(ｃursor.getString(cursor.getColumnIndex("DATA")));
             dbMsg += "]= "+ dataUri;
-            String titolName  = String.valueOf(ｃursor.getString(cursor.getColumnIndex("TITLE")));
+            @SuppressLint("Range") String titolName  = String.valueOf(ｃursor.getString(cursor.getColumnIndex("TITLE")));
             dbMsg += ",titolName= "+ titolName;
-            String album_artist = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
+            @SuppressLint("Range") String album_artist = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
             dbMsg += ",album_artist= "+ album_artist;
-            String albumName = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
+            @SuppressLint("Range") String albumName = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
             dbMsg += ",albumName= "+ albumName;
 
             allSonglist += titolName + "," + dataUri + "#" + album_artist + "," + albumName +"\n";
@@ -1979,7 +1969,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg +=columnNames.length + "項目";
             for(String cName:columnNames){
                 dbMsg += "," + cCount+")" + cName;
-                String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
+                @SuppressLint("Range") String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
                 dbMsg += " = "+ cVal;
                 if( cName.equals("_id")) {
                     dbMsg += " スキップ ";
@@ -2296,7 +2286,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             albumList.clear();
             if (cur.moveToFirst()) {
                 String comp = cContext.getString(R.string.comon_compilation);			//コンピレーション
-                String nData = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
+                @SuppressLint("Range") String nData = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
                 dbMsg +=" , " + nData;/////////////////////////////////////
                 if(!nData.equals("") || nData != null){
                     int albumColumn = cur.getColumnIndex(MediaStore.Audio.Media.ALBUM);
@@ -2311,7 +2301,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                             artistMei = comp;			//コンピレーション
                         }
                         do {					// リストに追加
-                            String tNmae = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                            @SuppressLint("Range") String tNmae = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.TITLE));
                             if(artistMei.equals(comp)){
                                 stmt = dataRecordWright( stmt , cur , artistMei);					//データリストのレコード書き込み
                                 long kyokusuu = stmt.executeInsert();
@@ -2345,18 +2335,19 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
     public String bAlbum;
     public int trackCount;
-    public SQLiteStatement dataRecordWright( SQLiteStatement stmt , Cursor cur , String artist_r) {					//データリストのレコード書き込み
+    @SuppressLint("Range")
+    public SQLiteStatement dataRecordWright(SQLiteStatement stmt , Cursor cur , String artist_r) {					//データリストのレコード書き込み
         final String TAG = "dataRecordWright";
         String dbMsg= "[AllSongs]";
         try{
             dbMsg = "[" +cur.getPosition()  +"/" + cur.getCount() +"枚目]" ;/////////////////////////////////////////////////////////////////////////////////////////////
-            int readint = cur.getInt(cur.getColumnIndex(MediaStore.Audio.Media._ID));
+            @SuppressLint("Range") int readint = cur.getInt(cur.getColumnIndex(MediaStore.Audio.Media._ID));
             dbMsg= "_ID=" + readint;/////////////////////////////////////
             ContentResolver resolver = cContext.getContentResolver();	//c.getContentResolver();
             Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
             String where = MediaStore.Audio.Media._ID + "= ?";
             String[] selectionArgs = {String.valueOf(readint)};
-            String rData =cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
+            @SuppressLint("Range") String rData =cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
             Map<String, String> map = ORGUT.data2msick(rData, getApplicationContext());		//URLからアーティスト～拡張子を分離させて返す
 
             String readStr = String.valueOf(readint);
@@ -2524,8 +2515,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 if(cursor.moveToFirst()){
                     do{
                         dbMsg = "[" + cursor.getPosition() + "/" + cursor.getCount() +"]";/////////////////////////////////////////////////////////////////////
-                        String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                        String albumN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                        @SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                        @SuppressLint("Range") String albumN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                         dbMsg += artistN+"/" + albumN;/////////////////////////////////////////////////////////////////////
                         String aOa = albumN +" of "+artistN;
                         if(! ORGUT.isInListString(albumOfArtist, aOa)){				//既に書き込まれていなければ
@@ -2554,12 +2545,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     /**	アルバムリストのレコード書き込み
      *	呼ばれ元 dbSakuseiBody , compNameAdd
      **/
-    public SQLiteStatement albumRecordWright( SQLiteStatement stmt , Cursor cursor , String aName , int titolCount) {
+    @SuppressLint("Range")
+    public SQLiteStatement albumRecordWright(SQLiteStatement stmt , Cursor cursor , String aName , int titolCount) {
         final String TAG = "albumRecordWright[AllSongs]";
         String dbMsg= "[AllSongs]";
         try{
             dbMsg += "[" +cursor.getPosition()  +"/" + cursor.getCount() +"枚目]" ;/////////////////////////////////////////////////////////////////////////////////////////////
-            String  cArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+            @SuppressLint("Range") String  cArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
             dbMsg +=cArtist ;/////////////////////////////////////////////////////////////////////////////////////////////
             if(cArtist == null){
                 cArtist = "";
@@ -2576,13 +2568,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //				}
             stmt.bindString(1, lArtist);	//MediaStore.Audio.Albums.ARTIST		cv.put("ARTIST", aName);
             stmt.bindString(2, cArtist);	//クレジットアーティスト;
-            String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+            @SuppressLint("Range") String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
             dbMsg += " , " +albumMei ;/////////////////////////////////////////////////////////////////////////////////////////////
             if(albumMei == null){
                 albumMei ="";
             }
             stmt.bindString(3, albumMei);	//MediaStore.Audio.Albums.ALBUM
-            String wStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+            @SuppressLint("Range") String wStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
             dbMsg += " , " +wStr ;/////////////////////////////////////////////////////////////////////////////////////////////
             if(wStr == null){
                 wStr ="";
@@ -3096,8 +3088,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                                 dbMsg += "文字[" + id +"]に追加";///////////////////		AllSongs.this.
                                 break;
                             case pt_CreateKaliList:						//;								//804;仮リスト作成
-                                String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                                String kyokuYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
+                                @SuppressLint("Range") String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                                @SuppressLint("Range") String kyokuYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
                                 String testStr =albumMei;
                                 if(kyokuYear != null){
                                     testStr = testStr + kyokuYear;

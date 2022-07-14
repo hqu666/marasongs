@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Service;
 import android.bluetooth.BluetoothA2dp;
@@ -81,6 +82,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
  * 				>>>onStartCommand[MusicPlayerService](16543): 開始,action=com.example.android.remotecontrol.ACTION_PLAY>>remotecontrol.ACTION_PAUSE が連続発生
  * */
 	//	BroadcastReceiver btReceiver = new BroadcastReceiver() {		//②ⅰpublic BroadcastReceive
+	@SuppressLint("MissingPermission")
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		this.rContext = context;
@@ -245,9 +247,6 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 			String dbMsg="開始";/////////////////////////////////////
 			try {
 				dbMsg +=",stateBaseStr=" +stateBaseStr;
-	// message = extras.getString("message");	// そいつを表示する
-//				MaraSonActivity MSA = new MaraSonActivity();
-//				MSA.setBTinfo(stateBaseStr);
 				dbMsg +=",activity=" +activity;
 				if (activity != null){
 //					TextView dviceStyte = (TextView) activity.findViewById(R.id.dviceStyte);
@@ -273,6 +272,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 		 * 接続状況を読み取る
 		 * 呼出し元	onReceive
 		 * */
+		@SuppressLint("MissingPermission")
 		public String getPairedDevices(final Context context, Intent intent){								//ペアリング機器の検索
 			final String TAG = "getPairedDevices[BuletoohtReceiver]";
 			String dbMsg="開始";/////////////////////////////////////
@@ -451,7 +451,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 				if( mBluetoothAdapter == null){
 					mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 				}
-				BluetoothServerSocket serverSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("SampleServerConn",UUID.fromString(uuidStr));	
+				@SuppressLint("MissingPermission") BluetoothServerSocket serverSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("SampleServerConn",UUID.fromString(uuidStr));
 
 				dbMsg="serverSocket = " + serverSocket;
 				BluetoothSocket socket = serverSocket.accept();

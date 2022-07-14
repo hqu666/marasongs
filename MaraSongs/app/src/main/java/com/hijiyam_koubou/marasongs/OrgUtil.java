@@ -1,11 +1,30 @@
 package com.hijiyam_koubou.marasongs;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.ImageView;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -17,32 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
 public class OrgUtil  extends Activity{				//
 //	public Locale locale;	// アプリで使用されているロケール情報を取得
@@ -1421,6 +1414,7 @@ public class OrgUtil  extends Activity{				//
 	 *
 	 * android - ALBUM_ART列はAPI 29などから非推奨
 	 * **/
+	@SuppressLint("Range")
 	public String retAlbumArtUri(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
 		String retStr = null;
 		final String TAG = "retAlbumArtUri";
@@ -1653,7 +1647,7 @@ public class OrgUtil  extends Activity{				//
 ///service////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * 起動しているサービスを取得
-	 * {@link http://seesaawiki.jp/w/moonlight_aska/d/%B5%AF%C6%B0%C3%E6%A4%CE%A5%B5%A1%BC%A5%D3%A5%B9%B0%EC%CD%F7%A4%F2%BC%E8%C6%C0%A4%B9%A4%EB}
+	 * {@link <a href="http://seesaawiki.jp/w/moonlight_aska/d/%B5%AF%C6%B0%C3%E6%A4%CE%A5%B5%A1%BC%A5%D3%A5%B9%B0%EC%CD%F7%A4%F2%BC%E8%C6%C0%A4%B9%A4%EB">...</a>}
 	 * */
 	public ArrayList<String> getMyService(Activity fromAct , String myPackageName) {				//起動しているサービスを取得
 		final String TAG = "getNowServicet[OrgUtil]";

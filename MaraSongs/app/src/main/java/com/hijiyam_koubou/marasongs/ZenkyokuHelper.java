@@ -1,12 +1,8 @@
 package com.hijiyam_koubou.marasongs;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 public class ZenkyokuHelper extends SQLiteOpenHelper {
 	final static private int DB_VERSION = 1;

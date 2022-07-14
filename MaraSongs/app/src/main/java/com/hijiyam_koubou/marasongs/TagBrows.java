@@ -1,5 +1,6 @@
 package com.hijiyam_koubou.marasongs;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,18 +27,14 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-
-import com.hijiyam_koubou.marasongs.AsyncTaskResult;
-import com.hijiyam_koubou.marasongs.R;
-import com.hijiyam_koubou.marasongs.plogTaskCallback;
 
 /**
  * 音楽ファイルのタグから歌詞を抽出します。
@@ -49,9 +45,9 @@ import com.hijiyam_koubou.marasongs.plogTaskCallback;
 * @author Hijiyama-koubou(Hiroomi.Kuwayama)
 * @version $Revision: 1.0 $
 * special thanks ;Eric Farng
-* {@link http://javamusictag.sourceforge.net/}
+* {@link <a href="http://javamusictag.sourceforge.net/">...</a>}
 * special thanks ;Takaaki.Mizyno
-* {@link http://www.takaaki.info/wp-content/uploads/2013/01/ID3v2.3.0J.html}
+* {@link <a href="http://www.takaaki.info/wp-content/uploads/2013/01/ID3v2.3.0J.html">...</a>}
 */
 public class TagBrows  extends Activity implements plogTaskCallback{
 	public Context rContext ;
@@ -874,7 +870,6 @@ private byte majorVersion = (byte) 0;
 	/**
 	 * RandomAccessFileをString変換
 	 * ID3などのタグヘッダー情報からタグ部分だけを文字列にして返す。
-	 * @param File file
 	 * @return
 	 * @throws IOException , FileNotFoundException
 	 */
@@ -1470,10 +1465,8 @@ private byte majorVersion = (byte) 0;
 		}
 	}
 
-
 	/**
 	 * AACフィールド名リストをList<String> syougouに作成
-	 * @param int reqCode 検索対象 read_AAC_HEAD;QuickTime Tags / read_AAC_ITEM;QuickTime ItemList Tags
 	 * 	@link http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/QuickTime.html#HTCInfo
 	 * */
 	public void makAACList(int reqCode) {	//AACフィールド名リストをList<String> syougouに作成
@@ -2069,8 +2062,6 @@ private byte majorVersion = (byte) 0;
 
 	/**
 	 * AACのQuickTime ItemList Tags読取り
-	 * @param String result 検索する文字列
-	 * @param  String target　抽出するフレーム名
 	 * */
 	public void itemReadAacBody(String readStr , String target){		//AACのQQuickTime ItemList Tags読取り
 		final String TAG = "itemReadAacBody";
@@ -3623,9 +3614,9 @@ private byte majorVersion = (byte) 0;
 
 	/**
 	 * フレームに設定されたエンコードフラグを読み、変換した文字を返す
-	 * @param int encFlag フィールドにセットされている0～4のフラグ
-	 * @param String motoEncrod 変換前のエンコード名。基本はISO-8859-1
-	 * @param String retStr 変換する文字、エラーが発生したらそのまま返す
+	 * @param  encFlag フィールドにセットされている0～4のフラグ
+	 * @param  motoEncrod 変換前のエンコード名。基本はISO-8859-1
+	 * @param  retStr 変換する文字、エラーが発生したらそのまま返す
 	 * */
 	public String getEncordStr( int encFlag , String motoEncrod ,String retStr){			//フレームに設定されたエンコードフラグを読み、変換した文字を返す
 		final String TAG = "getEncordStr";
@@ -3680,9 +3671,10 @@ private byte majorVersion = (byte) 0;
 
 	/**
 	 * ID3;指定されたフレームのデータをこのクラスのグローバル変数にセットする
-	 * @param String bodyData フレーム名から始まるフレーム一つ分の全データ
+	 * @param  bodyData フレーム名から始まるフレーム一つ分の全データ
 	 * */
-	public void setTargetFream( String bodyData , String target){			//指定されたフレームのデータをこのクラスのグローバル変数にセットする
+	@SuppressLint("ByteOrderMark")
+	public void setTargetFream(String bodyData , String target){			//指定されたフレームのデータをこのクラスのグローバル変数にセットする
 		final String TAG = "setTargetFream";
 		String dbMsg= "[TagBrows]";
 		String tuikaMoji = null;
@@ -5337,7 +5329,7 @@ private byte majorVersion = (byte) 0;
 
 	/**
 	 * 歌詞をhtmlに書き出す
-	 * @param String songLyric 変換する歌詞
+	 * @param  songLyric 変換する歌詞
 	 * */
 	private String lyric2webSouce( String songLyric ) {					//歌詞をhtmlに書き出す
 		String fName = null;

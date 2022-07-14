@@ -3,7 +3,6 @@ package com.hijiyam_koubou.marasongs;
 import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 	
 public class lsRecever extends DeviceAdminReceiver {
@@ -16,7 +15,7 @@ public class lsRecever extends DeviceAdminReceiver {
 		try{
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg + "で"+e.toString());
+			myErrorLog(TAG,dbMsg + "で"+ e);
 		}
     }
 

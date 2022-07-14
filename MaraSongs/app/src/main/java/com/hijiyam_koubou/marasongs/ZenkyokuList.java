@@ -249,8 +249,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		String dbMsg = "[ZenkyokuList]";
 		String retStr = "";
 		try {
-			String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-			String dataStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+			@SuppressLint("Range") String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			@SuppressLint("Range") String dataStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 			dataStr = dataStr.replace(pref_commmn_music + File.separator, "");
 			dbMsg += ":" + dataStr ;
 			String[] datas = dataStr.split(File.separator );
@@ -276,11 +276,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		String dbMsg = "[ZenkyokuList]";
 		String retStr = "";
 		try {
-			String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			@SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 			String motoName = artistN;
 			String aArtintName = getUrl2Artist(cursor);
 			dbMsg += ">>" + aArtintName ;
-			String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
+			@SuppressLint("Range") String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
 			dbMsg += ",composer=" + composer ;
 			if( artistN == null ){
 				if( composer != null ){
@@ -467,6 +467,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * reqCode = pt_start
      *
 	 * */
+	@SuppressLint("Range")
 	public void preRead( ) {			//dataURIを読み込みながら欠けデータ確認	, int reqCode
 		final String TAG = "preRead";			//, AlertDialog pDialog
 		String dbMsg= "[ZenkyokuList]";
@@ -533,9 +534,9 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					ZenkyokuList.this.saisinnbi =  cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
 					dbMsg += ">追加日>"+ ZenkyokuList.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
 				}
-				String dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+				@SuppressLint("Range") String dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 				dbMsg += ",dataFPN="+ dataFPN;/////////////////////////////////////////////////////////////////////////////////////////////
-				String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+				@SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 				dbMsg +="、MediaStore..ARTIST=" + artistN;/////////////////////////////////////////////////////////////////////////////////////////////
 				if( dataFPN != null && artistN != null ){
 					if( dataFPN.contains(artistN) ){
@@ -631,6 +632,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * kousinnbに更新日、exDir で外部メモリ、inDiに内蔵メモリを記録
 	 * preReadEndへ
 	 * */
+	@SuppressLint("Range")
 	public void preReadBody(Cursor cursor , Uri cUri , String where) throws IOException {			//MediaStore.Audio.Mediaの欠けデータ確認
 		final String TAG = "preReadBody";
 		String dbMsg= "[ZenkyokuList]";
@@ -641,7 +643,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			String val = null;
 			Map<String, String> map = null;
 
-			String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+			@SuppressLint("Range") String ｒID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 			dbMsg = dbMsg + "[_ID" + ｒID +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////
 			String[] selectionArgs = {ｒID};
 			dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -654,7 +656,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				String mPass = map.get( "mPass" );
 				dbMsg = dbMsg + ",mPass=" + mPass;/////////////////////////////////////////////////////////////////////////////////////////////
 
-				String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+				@SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 				dbMsg = dbMsg +"、MediaStore..ARTIST=" + artistN;/////////////////////////////////////////////////////////////////////////////////////////////
 				String hikaku = getApplicationContext().getResources().getString(R.string.comon_nuKnow_artist);
 		//		dbMsg = dbMsg +" ,hikaku="+ hikaku;/////////////////////////////////////////////////////////////////////////////////////////////
@@ -693,7 +695,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				}
 
 				kakikae = false;
-				String albumT = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+				@SuppressLint("Range") String albumT = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
 				dbMsg = dbMsg + " ,MediaStore...ALBUM= " + albumT;/////////////////////////////////////////////////////////////////////////////////////////////
 				val = map.get( "Alnbum" );		//選択中アルバム名
 				dbMsg = dbMsg +" ,map="+ val;/////////////////////////////////////////////////////////////////////////////////////////////
@@ -733,7 +735,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					myLog(TAG,dbMsg);
 				}
 				kakikae = false;
-				String rStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+				@SuppressLint("Range") String rStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
 				rStr = UTIL.checKTrack( rStr);
 				dbMsg = dbMsg + " ,[MediaStoreで " + rStr ;
 				String trackNo = map.get( "trackNo" );
@@ -754,7 +756,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 					}
 				}
 				kakikae = false;
-				String titleT = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+				@SuppressLint("Range") String titleT = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
 				dbMsg = dbMsg + "]MediaStoreから ; " + titleT;/////////////////////////////////////////////////////////////////////////////////////////////
 				if( titleT == null){
 					kakikae = true ;
@@ -888,6 +890,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 		}
 	}
 
+	@SuppressLint("Range")
 	protected int mastKopusinBody(Context context , Cursor cursor , Uri uri , String where ) {				//メディアストア更新のレコード処理
 		final String TAG = "mastKopusinBody";
 		pdCoundtVal=cursor.getPosition()+1;		//プログレスカウンタ
@@ -1093,6 +1096,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * ArrayList<String> artistListに格納
 	 * kaliAartistListEndへ
 	 * */
+	@SuppressLint("Range")
 	public Cursor kaliAartistListBody(Cursor cursor , SQLiteStatement stmt) throws IOException {			//803;仮アーティストリスト作成
 		final String TAG = "kaliAartistListBody";
 		String dbMsg= "[ZenkyokuList]";
@@ -1165,7 +1169,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				ZenkyokuList.this.artistList.add( objMap);
 				ZenkyokuList.this.shortArtistList.add(sort_name);		//The抜き大文字アーティスト名
 				//dbへの書込み///////////////////////////
-				String artistID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+				@SuppressLint("Range") String artistID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
 				stmt = stmtWrite2(artistID ,  stmt , 1);
 				stmt = stmtWrite2(sort_name ,  stmt , 2);
 				stmt = stmtWrite2(motoName ,  stmt , 3);							//1;ARTIST
@@ -1352,13 +1356,13 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg += "\nkariArtist_db=" + artistSize + "件";
 			if(cursor.moveToFirst()){
 				do{
-					String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
+					@SuppressLint("Range") String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
 					dbMsg += "\n" + _id + ")";
-					String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
+					@SuppressLint("Range") String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
 					dbMsg += " " + ｃArtist;
-					String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
+					@SuppressLint("Range") String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
 					dbMsg += " : " + sortName;
-					String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
+					@SuppressLint("Range") String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
 					dbMsg += " : " + aArtist;
 
 				}while(cursor.moveToNext());
@@ -1452,7 +1456,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg +=columnNames.length + "項目";
 			for(String cName:columnNames){
 				dbMsg += "," + cCount+")" + cName;
-				String cVal = String.valueOf(cursor.getString(cursor.getColumnIndex(cName)));
+				@SuppressLint("Range") String cVal = String.valueOf(cursor.getString(cursor.getColumnIndex(cName)));
 				dbMsg += " = "+ cVal;
 				if( cName.equals("_id")) {
 					dbMsg += " スキップ ";
@@ -1508,13 +1512,13 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			pdMaxVal = cursor.getCount();
 			if(cursor.moveToFirst()){
 				do{
-					String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
+					@SuppressLint("Range") String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
 					dbMsg += "\n" + _id + ")";
-					String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
+					@SuppressLint("Range") String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
 					dbMsg += " " + ｃArtist;
-					String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
+					@SuppressLint("Range") String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
 					dbMsg += " : " + sortName;
-					String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
+					@SuppressLint("Range") String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
 					dbMsg += " : " + aArtist;
 
 				}while(cursor.moveToNext());
@@ -1614,7 +1618,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * stmtはplogTask.endTSでKari_dbに書き込まれる
 	 * CreateKaliListEndへ
 	 * */
-	@SuppressLint("DefaultLocale")
+	@SuppressLint({"DefaultLocale", "Range"})
 	public Cursor kaliListBody(Cursor cursor ,SQLiteStatement stmt ) throws IOException {			//仮リスト作成		 , SQLiteStatement stmt			5041曲 [01:17 349mS]		//2016：03；Cursor finalized without prior close()７回発生?
 		final String TAG = "kaliListBody";
 		String dbMsg= "[ZenkyokuList]";
@@ -1656,7 +1660,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			if( ! bArtistN.equals(artistN) ){									//アーティストの変わり目		aArtist？
 				bArtistN = artistN;
 			}
-			String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+			@SuppressLint("Range") String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
 			dbMsg += "、" + albumMei ;
 			dbMsg +=" , albumMei =" +  albumMei ;/////////////////////////////////////
 			if(albumMei== null){
@@ -1676,7 +1680,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
 			}
 			trackCount++;
-			String readStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+			@SuppressLint("Range") String readStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
 			dbMsg += " ,[MediaStoreのTRACK=" + readStr + "]" ;
 			if(readStr == null){						//拾えなければ
 				dbMsg += ">>" + readStr + "]" ;
@@ -1714,7 +1718,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
 			dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 			stmt.bindString(10, dataFPN);
-			String tuikabi = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
+			@SuppressLint("Range") String tuikabi = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
 			dbMsg +=" , 追加日="+ tuikabi;/////////////////////////////////////////////////////////////////////////////////////////////
 			String kousinnbi = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED));	//The time the file was last modified
 			dbMsg +=" , 更新日="+ kousinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
@@ -1876,6 +1880,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	 * CreateZenkyokuBodyへ
 	 * reqCode = pt_CreateZenkyokuList
 	 * */
+	@SuppressLint("Range")
 	public void CreateZenkyokuList(){				//全曲リスト作成
 		final String TAG = "CreateZenkyokuList";
 		String dbMsg= "[ZenkyokuList]";
@@ -1945,18 +1950,18 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			int audio_id = -1;
 			pdCoundtVal = ｃursor.getPosition();
 			dbMsg += reqCode + "：仮リスト: "+  pdCoundtVal + "/" + pdMaxVal + "曲目";
-			String cAUDIO_ID = String.valueOf(ｃursor.getString(cursor.getColumnIndex("AUDIO_ID")));
+			@SuppressLint("Range") String cAUDIO_ID = String.valueOf(ｃursor.getString(cursor.getColumnIndex("AUDIO_ID")));
 			dbMsg += "[AUDIO_ID= "+ cAUDIO_ID;
 			audio_id= Integer.parseInt(cAUDIO_ID);
 			dbMsg += ",audio_id=" + audio_id;
 
-			String dataUri = String.valueOf(ｃursor.getString(cursor.getColumnIndex("DATA")));
+			@SuppressLint("Range") String dataUri = String.valueOf(ｃursor.getString(cursor.getColumnIndex("DATA")));
 			dbMsg += "]= "+ dataUri;
-			String titolName  = String.valueOf(ｃursor.getString(cursor.getColumnIndex("TITLE")));
+			@SuppressLint("Range") String titolName  = String.valueOf(ｃursor.getString(cursor.getColumnIndex("TITLE")));
 			dbMsg += ",titolName= "+ titolName;
-			String album_artist = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
+			@SuppressLint("Range") String album_artist = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
 			dbMsg += ",album_artist= "+ album_artist;
-			String albumName = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
+			@SuppressLint("Range") String albumName = String.valueOf(ｃursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));
 			dbMsg += ",albumName= "+ albumName;
 
 			allSonglist += titolName + "," + dataUri + "#" + album_artist + "," + albumName +"\n";
@@ -1969,7 +1974,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
             dbMsg +=columnNames.length + "項目";
             for(String cName:columnNames){
                 dbMsg += "," + cCount+")" + cName;
-                String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
+                @SuppressLint("Range") String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
                 dbMsg += " = "+ cVal;
 				if( cName.equals("_id")) {
                     dbMsg += " スキップ ";
@@ -2286,7 +2291,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			albumList.clear();
 			if (cur.moveToFirst()) {
 				String comp = cContext.getString(R.string.comon_compilation);			//コンピレーション
-				String nData = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
+				@SuppressLint("Range") String nData = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
 				dbMsg +=" , " + nData;/////////////////////////////////////
 				if(!nData.equals("") || nData != null){
 					int albumColumn = cur.getColumnIndex(MediaStore.Audio.Media.ALBUM);
@@ -2301,7 +2306,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							artistMei = comp;			//コンピレーション
 						}
 						do {					// リストに追加
-							String tNmae = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.TITLE));
+							@SuppressLint("Range") String tNmae = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.TITLE));
 							if(artistMei.equals(comp)){
 								stmt = dataRecordWright( stmt , cur , artistMei);					//データリストのレコード書き込み
 								long kyokusuu = stmt.executeInsert();
@@ -2335,7 +2340,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	public String bAlbum;
 	public int trackCount;
-	public SQLiteStatement dataRecordWright( SQLiteStatement stmt , Cursor cur , String artist_r) {					//データリストのレコード書き込み
+	@SuppressLint("Range")
+	public SQLiteStatement dataRecordWright(SQLiteStatement stmt , Cursor cur , String artist_r) {					//データリストのレコード書き込み
 		final String TAG = "dataRecordWright";
 		String dbMsg= "[ZenkyokuList]";
 		try{
@@ -2514,8 +2520,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				if(cursor.moveToFirst()){
 					do{
 						dbMsg = "[" + cursor.getPosition() + "/" + cursor.getCount() +"]";/////////////////////////////////////////////////////////////////////
-						String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-						String albumN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+						@SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+						@SuppressLint("Range") String albumN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
 						dbMsg += artistN+"/" + albumN;/////////////////////////////////////////////////////////////////////
 						String aOa = albumN +" of "+artistN;
 						if(! ORGUT.isInListString(albumOfArtist, aOa)){				//既に書き込まれていなければ
@@ -2544,7 +2550,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	/**	アルバムリストのレコード書き込み
 	*	呼ばれ元 dbSakuseiBody , compNameAdd
 	**/
-		public SQLiteStatement albumRecordWright( SQLiteStatement stmt , Cursor cursor , String aName , int titolCount) {
+		@SuppressLint("Range")
+		public SQLiteStatement albumRecordWright(SQLiteStatement stmt , Cursor cursor , String aName , int titolCount) {
 			final String TAG = "albumRecordWright[ZenkyokuList]";
 			String dbMsg= "[ZenkyokuList]";
 			try{
@@ -2566,7 +2573,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 //				}
 				stmt.bindString(1, lArtist);	//MediaStore.Audio.Albums.ARTIST		cv.put("ARTIST", aName);
 				stmt.bindString(2, cArtist);	//クレジットアーティスト;
-				String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+				@SuppressLint("Range") String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
 				dbMsg += " , " +albumMei ;/////////////////////////////////////////////////////////////////////////////////////////////
 				if(albumMei == null){
 					albumMei ="";
@@ -3086,8 +3093,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 								dbMsg += "文字[" + id +"]に追加";///////////////////		ZenkyokuList.this.
 								break;
 							case pt_CreateKaliList:						//;								//804;仮リスト作成
-								String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-								String kyokuYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
+								@SuppressLint("Range") String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+								@SuppressLint("Range") String kyokuYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
 								String testStr =albumMei;
 								if(kyokuYear != null){
 									testStr = testStr + kyokuYear;

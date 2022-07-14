@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -221,9 +222,9 @@ public class CreditNameHensyuu extends Activity {
 				int i = 0;
 				do{
 					dbMsg +=i + "/" + cCount + ")" ;/////////////////////////////////////
-					String motName = awCursor.getString(awCursor.getColumnIndex("motName"));			//リストアップしたアルバムアーティスト名
-					String albumName = awCursor.getString(awCursor.getColumnIndex("albumName"));		//アルバム名
-					String sakiName = awCursor.getString(awCursor.getColumnIndex("sakiName"));	//クレジットされているアーティスト名
+					@SuppressLint("Range") String motName = awCursor.getString(awCursor.getColumnIndex("motName"));			//リストアップしたアルバムアーティスト名
+					@SuppressLint("Range") String albumName = awCursor.getString(awCursor.getColumnIndex("albumName"));		//アルバム名
+					@SuppressLint("Range") String sakiName = awCursor.getString(awCursor.getColumnIndex("sakiName"));	//クレジットされているアーティスト名
 					String wStr = motName + fSep + albumName + aSep + sakiName;
 					listItems[i] = wStr;
 					dbMsg +=listItems[i];/////////////////////////////////////
@@ -241,7 +242,7 @@ public class CreditNameHensyuu extends Activity {
 							try{
 					        	dbMsg="[" +which +"]";/////////////////////////////////////////////////////////////////////////////////////
 					        	awCursor.moveToPosition(which);
-					        	String idStr = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_id")));
+					        	@SuppressLint("Range") String idStr = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_id")));
 								dbMsg +=idStr;/////////////////////////////////////////////////////////////////////////////////////
 								int syoukyoGyou = ar_db.delete(getResources().getString(R.string.artist_reW_table),"_id = '" + idStr +"'", null);		//			"_id = ?", new String[]{ idStr }
 								dbMsg +=" , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////

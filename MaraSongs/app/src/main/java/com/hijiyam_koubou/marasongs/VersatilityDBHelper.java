@@ -4,11 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
-import android.support.annotation.Nullable;
 
-import java.sql.Array;
-import java.util.ArrayList;
+import androidx.annotation.Nullable;
 
 /**
   *  汎用データベースヘルパー
@@ -60,9 +57,7 @@ public class VersatilityDBHelper extends SQLiteOpenHelper {
 		String dbMsg = "[VersatilityDBHelper]";
 		try {
 			dbMsg += "colNames = " + colNames;
-				db.execSQL("CREATE TABLE goods ("
-								   + colNames
-								   + ")");
+				db.execSQL(new StringBuilder().append("CREATE TABLE goods (").append(colNames).append(')').toString());
 // 				db.execSQL("CREATE TABLE goods ("
 //								   + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
 //								   + "name STRING,"

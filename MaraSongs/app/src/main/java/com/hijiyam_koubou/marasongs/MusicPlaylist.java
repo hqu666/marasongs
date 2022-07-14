@@ -1,27 +1,18 @@
 package com.hijiyam_koubou.marasongs;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.MediaStore;
 
 import java.io.File;
-import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MusicPlaylist {
 
@@ -135,6 +126,7 @@ public class MusicPlaylist {
      *  指定したプレイリストを全削除
      *  全消去すればmedia/external/audio/playlists/リストIDが変わる/members/
      *  */
+    @SuppressLint("Range")
     public int deletPlayList(String listName){			//指定したプレイリストを削除する
         int retInt =0;
         final String TAG = "deletPlayList";
@@ -243,10 +235,10 @@ public class MusicPlaylist {
         try{
             dbMsg +=  "削除するプレイリスト=" + MusicPlaylist.this.tuikaSakilistUri ;
             dbMsg += "(" + cursor.getPosition() + "/" + cursor.getCount() +")";
-            int delID = cursor.getInt(cursor.getColumnIndex( MediaStore.Audio.Playlists.Members._ID));
+            @SuppressLint("Range") int delID = cursor.getInt(cursor.getColumnIndex( MediaStore.Audio.Playlists.Members._ID));
             dbMsg +="[" + delID +"]" ;/////////////////////////////////////
             dbMsg += MusicPlaylist.this.tuikaSakilistUri ;/////////////////////////////////////
-            String rStr = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Playlists.Members.TITLE));/////////////////////////////////////
+            @SuppressLint("Range") String rStr = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Playlists.Members.TITLE));/////////////////////////////////////
             dbMsg +=";" + rStr;/////////////////////////////////////
             int retint=delOneLineBody( MusicPlaylist.this.tuikaSakilistUri, delID);			//プレイリストから指定された行を削除する MuList.this.sousalistUri, MuList.this.sousaRecordId
             dbMsg += ",削除= " + retint + "レコード";
@@ -372,6 +364,7 @@ public class MusicPlaylist {
      * アルバムのアーティスト名を取得する
      * 当面は全曲DBから取得
      * */
+    @SuppressLint("Range")
     public String getAlbumArtist(int audioId , Context context){
         String album_artist = null;
         final String TAG = "getAlbumArtist";
@@ -443,7 +436,7 @@ public class MusicPlaylist {
 //                Cursor cursor = Zenkyoku_db.query(distinct,zenkyokuTName, columns, null, null , null, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do{
-                        String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+                        @SuppressLint("Range") String albumArtist = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
                         dbMsg += albumArtist ;
                         artistSL.add(albumArtist);
                     }while(cursor.moveToNext());
@@ -494,7 +487,7 @@ public class MusicPlaylist {
                 Cursor cursor = Zenkyoku_db.query(zenkyokuTName, columns, c_selection, c_selectionArgs , null, null, null);
                 if (cursor.moveToFirst()) {
                     do{
-                        String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+                        @SuppressLint("Range") String albumName = cursor.getString(cursor.getColumnIndex("ALBUM"));
                         dbMsg2 += "," + albumName ;
                         albumSL.add(albumName);
                     }while(cursor.moveToNext());
@@ -544,7 +537,7 @@ public class MusicPlaylist {
                 Cursor cursor = Zenkyoku_db.query(zenkyokuTName, columns, c_selection, c_selectionArgs , null, null, null);
                 if (cursor.moveToFirst()) {
                     do{
-                        String titolName = cursor.getString(cursor.getColumnIndex("ALBUM"));
+                        @SuppressLint("Range") String titolName = cursor.getString(cursor.getColumnIndex("ALBUM"));
                         dbMsg2 += "," + titolName ;
                         titolSL.add(titolName);
                     }while(cursor.moveToNext());
@@ -566,6 +559,7 @@ public class MusicPlaylist {
     /**
      * 指定されたplayListのプレイオーダーにある曲のUrlを返す
      * ***/
+    @SuppressLint("Range")
     public String getPlaylistItemData(int listId , int playOrder){				//指定された名称のリストを作成する
         String data = null;
         final String TAG = "getPlaylistItemData";
@@ -595,6 +589,7 @@ public class MusicPlaylist {
     /**
      * 指定されたplayListからデータを検索し、プレイオーダーを返す
      * ***/
+    @SuppressLint("Range")
     public int getPlaylistItemOrder(int listId , String data){				//指定された名称のリストを作成する
         int playOrder = -1;
         final String TAG = "getPlaylistItemOrder";
@@ -638,7 +633,7 @@ public class MusicPlaylist {
             playList = cContext.getContentResolver().query(uri, columns, c_selection, selectionArgs, null );
 //            dbMsg += ",該当"+playList.getCount() +"件";
             if( playList.moveToFirst() ){
-                String data = playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+                @SuppressLint("Range") String data = playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
                 dbMsg += ",url=" + data;
                 dbMsg += "," + playList.getColumnCount() + "項目";
 
@@ -655,6 +650,7 @@ public class MusicPlaylist {
 
     /**
      *  指定された名称のリストを作成する;既に有ればlistIDを返し、無ければ作成してIdを返す */
+    @SuppressLint("Range")
     public int getPlaylistId(String listName){				//指定された名称のリストを作成する
         int listId = 0;
         final String TAG = "getPlaylistId";

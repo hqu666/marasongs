@@ -1,10 +1,12 @@
 package com.hijiyam_koubou.marasongs;
-/**
- * MODE_PRIVATE	自アプリのみ読み書き可能
- * MODE_WORLD_READABLE	他アプリから読み取り可能	API Level17で非推奨
- * MODE_WORLD_WRITEABLE	他アプリから書き込み可能	API Level17で非推奨
- * MODE_MULTI_PROCESS	複数のプロセスで読み書き可能	API Level23で非推奨
- * **/
+/*
+  MODE_PRIVATE	自アプリのみ読み書き可能
+  MODE_WORLD_READABLE	他アプリから読み取り可能	API Level17で非推奨
+  MODE_WORLD_WRITEABLE	他アプリから書き込み可能	API Level17で非推奨
+  MODE_MULTI_PROCESS	複数のプロセスで読み書き可能	API Level23で非推奨
+  **/
+
+import static android.os.Environment.DIRECTORY_MUSIC;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -32,12 +34,11 @@ import android.view.MenuItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static android.os.Environment.DIRECTORY_MUSIC;
 
 public class MyPreferences extends PreferenceActivity {
 	public OrgUtil ORGUT;		//自作関数集                                                 .putString( "pref_data_url",   putString( "data"

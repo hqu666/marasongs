@@ -1,19 +1,4 @@
 package com.hijiyam_koubou.marasongs;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import android.R.drawable;
 import android.annotation.SuppressLint;
@@ -23,8 +8,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.appwidget.AppWidgetManager;
-import android.bluetooth.*;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -32,14 +16,28 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
+import android.media.MediaMetadata;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.media.RemoteControlClient;
+import android.media.audiofx.BassBoost;
+import android.media.audiofx.Equalizer;
+import android.media.audiofx.PresetReverb;
+import android.media.audiofx.Visualizer;
+import android.media.session.MediaController.TransportControls;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -51,32 +49,24 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-//import android.support.v4.app.NotificationCompat;
-//import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-import android.media.AudioManager;
-import android.media.AudioManager.OnAudioFocusChangeListener;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.media.RemoteControlClient;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.media.audiofx.BassBoost;
-import android.media.audiofx.Equalizer;
-import android.media.audiofx.PresetReverb;
-import android.media.audiofx.Visualizer;
-import android.media.session.MediaSession;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.MediaMetadata;
-import android.media.session.MediaController.TransportControls;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressWarnings("deprecation")
 @SuppressLint("InlinedApi")
@@ -499,6 +489,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		}
 	}
 
+	@SuppressLint("Range")
 	public void okuriMpdosi(int tIDCo) {		//送り戻しの実行;加算数を渡す <run[changeCount.MusicPlayerService
 		final String TAG = "okuriMpdosi[MusicPlayerService]";
 		String dbMsg="[MusicPlayerService]";
@@ -529,7 +520,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
 					titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
 					dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-					int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+					@SuppressLint("Range") int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
 					dbMsg += " ,audioId= " + audioId;
 //				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//playingItem.album_artist;	//アルバムアーティスト名
 //				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
@@ -745,6 +736,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * 		onStartCommandでACTION_LISTSEL,processPlayRequestでmState == State.Paused 以外、okuriMpdosiで最終的な送り状態になった場合
 	 * 		onCompletion,onMusicRetrieverPreparedからFalse , processSkipRequestでstopの時はtrue <processPlayRequest
 	 * */
+	@SuppressLint("Range")
 	public void playNextSong(boolean isOnlyPrepare ) {		// throws IOException　 throws IllegalArgumentException
 		final String TAG = "playNextSong";
 		String dbMsg="[MusicPlayerService]";
@@ -1203,6 +1195,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	///独自イベント///////////////////////////////////////////////////////////////////////////////////
 	long tunagiJikan;		//測定用
 	boolean onCompletNow = false;			//曲間処理中
+	@SuppressLint("Range")
 	public void onCompletion(MediaPlayer player) {			/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 	//☆曲の終了でも発生する
 		final String TAG = "onCompletion";
@@ -1991,7 +1984,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 *  呼出し元は	onStartCommand ACTION_PLAY_READ/ACTION_REQUEST_STATE/ACTION_KEIZOKU/ACTION_SYUURYOU_NOTIF
 	 * 				 , processPlayRequest , processPauseRequest , songInfoSett . onMusicRetrieverPrepared
 	 * */
-	@SuppressLint("InlinedApi")
+	@SuppressLint({"InlinedApi", "Range"})
 	private void sendPlayerState( MediaPlayer player ) {			//①?、②ⅲStop?	,	onStartCommand(ACTION_PLAY_READ,ACTION_REQUEST_STATE),
 		final String TAG = "sendPlayerState";
 		String dbMsg="[MusicPlayerService]";
@@ -2013,7 +2006,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
 				titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
 				dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-				int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+				@SuppressLint("Range") int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
 				dbMsg += " ,audioId= " + audioId;
 				Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
 				String pref_data_url = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
@@ -2200,7 +2193,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if(cursor.moveToFirst()){
 					dbMsg +=",削除候補＝" + cursor.getCount() + "件" ;
 					do{
-						int delId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));
+						@SuppressLint("Range") int delId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));
 						dbMsg +="[" + delId + "]" ;
 						String where = "_id=" + Integer.valueOf(delId);
 						int delID = getApplicationContext().getContentResolver().delete(plUri, where, null);				//削除		getApplicationContext()
@@ -2226,7 +2219,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						}
 					}
 					do{
-						int menberId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));
+						@SuppressLint("Range") int menberId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID));
 						dbMsg +="(" + playOrder + ")"  ;
 //						String menberData = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
 						String where = "_id=" + Integer.valueOf(menberId);
@@ -2253,7 +2246,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg +=  ",kakikomiUri=" + plUri;
 
 					ContentValues contentvalues = new ContentValues();
-					int audio_id = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));;
+					@SuppressLint("Range") int audio_id = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));;
 					dbMsg +=  ",audio_id=" + audio_id;
 					contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
 					contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, String.valueOf(playOrder));
@@ -2276,7 +2269,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		}
 	}
 
-	public int siteiListSakusi( String listName){				//指定された名称のリストを作成する
+	@SuppressLint("Range")
+	public int siteiListSakusi(String listName){				//指定された名称のリストを作成する
 		int listID = 0;
 		final String TAG = "siteiListSakusi[MusicPlayerService]";
 		String dbMsg="[MusicPlayerService]";
@@ -2344,6 +2338,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * 独自メソッド
 	 * 	呼出し元	onStartCommandで
 	 * */
+	@SuppressLint("Range")
 	public void dataUketori(Intent intent) {	//クライアントからデータを受け取りグローバル変数にセット
 		final String TAG = "dataUketori";
 		String dbMsg="[MusicPlayerService]";/////////////////////////////////////

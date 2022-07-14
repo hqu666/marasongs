@@ -1,4 +1,5 @@
 package com.hijiyam_koubou.marasongs;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -23,7 +24,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.gesture.GestureOverlayView;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -37,8 +37,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+//import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
@@ -74,15 +74,18 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherAdView;
+//import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+//import com.google.android.gms.ads.doubleclick.PublisherAdView;
 
 import net.nend.android.NendAdInformationListener;
 import net.nend.android.NendAdView;
@@ -97,13 +100,10 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import static java.nio.file.Paths.get;
 
 public class MaraSonActivity extends AppCompatActivity
 	implements View.OnClickListener  , View.OnLongClickListener , View.OnKeyListener ,OnSeekBarChangeListener , android.view.GestureDetector.OnGestureListener{
@@ -254,7 +254,7 @@ public class MaraSonActivity extends AppCompatActivity
 	//	public LinearLayout pp_koukoku;					//広告表示枠		include
 	private LinearLayout advertisement_ll;
 	private LinearLayout ad_layout;
-	private PublisherAdView adView;
+	private AdView adView;
 	private LinearLayout nend_layout;
 	private NendAdView nendAdView;
 
@@ -484,13 +484,13 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg="[MaraSonActivity]";
 		try {
 			if(adView == null){
-				adView = new PublisherAdView(this);
+				adView = new AdView(this);
 				String AdUnitID = getString (R.string.banner_ad_unit_id);
 //				String AdUnitID = getString (R.string.banner_test_id);//配信停止中のデバッグ用
 				dbMsg += ",AdUnitID=" + AdUnitID ;
 				adView.setAdUnitId(AdUnitID);
 				dbMsg += ",adView=" + adView;
-				adView = new PublisherAdView(this);
+				adView = new AdView(this);
 				adView.setAdUnitId(AdUnitID);
 
 				float scale = getResources().getDisplayMetrics().density;
@@ -505,10 +505,10 @@ public class MaraSonActivity extends AppCompatActivity
 ////			layoutHeight =(int)(50*scale)/2;
 //			dbMsg += ">>[" + layoutWidth + "×" + layoutHeight + "]";
 				AdSize customAdSize = new AdSize(layoutWidth, layoutHeight);
-				adView.setAdSizes(customAdSize);
+				adView.setAdSize(customAdSize);
 				ad_layout.addView(adView);
 
-				PublisherAdRequest adRequest = new PublisherAdRequest.Builder().build();
+				AdRequest adRequest = new AdRequest.Builder().build();
 				dbMsg += ",adRequest=" + adRequest;
 				adView.loadAd(adRequest);
 
@@ -525,7 +525,7 @@ public class MaraSonActivity extends AppCompatActivity
 						}
 					}
 
-					@Override
+//					@Override
 					public void onAdFailedToLoad(int errorCode) {
 						final String TAG = "onAdFailedToLoad";
 						String dbMsg = "[adView]";
@@ -568,7 +568,7 @@ public class MaraSonActivity extends AppCompatActivity
 						}
 					}
 
-					@Override
+//					@Override
 					public void onAdLeftApplication() {
 						final String TAG = "onAdLeftApplication";
 						String dbMsg = "[adView]";
@@ -897,6 +897,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	@SuppressLint("Range")
 	public String getPLName(int nowList_id){			//プレイリスト名を返す
 		String retStr = null;
 		final String TAG = "getPLName[MaraSonActivity]";
@@ -1302,6 +1303,7 @@ public class MaraSonActivity extends AppCompatActivity
 	 * mReceivert,btReceiverが生成されていたら破棄する
 	 * 呼出し元は	onCreate ,quitMe	 rusekiKousin		//onActivityResult , onStartTrackingTouch
 	 * */
+	@SuppressLint("MissingPermission")
 	public void receiverHaki(){		//レシーバーを破棄
 		final String TAG = "receiverHaki";
 		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
@@ -1332,7 +1334,8 @@ public class MaraSonActivity extends AppCompatActivity
 	/**
 	 * onReceive、onWindowFocusChanged後の処理
 	 * */
-	public void url2FSet(String urlStr ,int mIndex){		//②ⅱ；urlからプレイヤーの書き込みを行う　起動時のプリファレンスから		 , String artistMei
+	@SuppressLint("Range")
+	public void url2FSet(String urlStr , int mIndex){		//②ⅱ；urlからプレイヤーの書き込みを行う　起動時のプリファレンスから		 , String artistMei
 		final String TAG = "url2FSet";
 		String dbMsg= "[MaraSonActivity];";
 		try{
@@ -1598,7 +1601,7 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ",comp=" + comp;
 				do{
 					dbMsg = cursor.getPosition() + "/" + retInt + "件";
-					String rStr1 = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+					@SuppressLint("Range") String rStr1 = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
 					dbMsg += rStr1;
 					if( rStr1 != null ){
 						if( rStr1.equals(comp) ){
@@ -1715,7 +1718,7 @@ public class MaraSonActivity extends AppCompatActivity
 								if(cursor.moveToFirst()){
 									do{
 										dbMsg= "[" + cursor.getPosition() +"/"+alubumTotal +"]";		//リストアップしたアルバムアーティスト名
-										String rAlbum = cursor.getString(cursor.getColumnIndex("ALBUM"));
+										@SuppressLint("Range") String rAlbum = cursor.getString(cursor.getColumnIndex("ALBUM"));
 										albumList.add( rAlbum );														//MediaStore.Audio.Albums.ARTIST
 										dbMsg += albumList.get(albumList.size()-1);
 						//				myLog(TAG,dbMsg);
@@ -1831,7 +1834,7 @@ public class MaraSonActivity extends AppCompatActivity
 									do{
 										try{
 											dbMsg = (cursor.getPosition() +1 )+ "/" + MaraSonActivity.this.titolTotal + "曲目";
-											String rStr = cursor.getString(cursor.getColumnIndex("TITLE"));		//タイトル
+											@SuppressLint("Range") String rStr = cursor.getString(cursor.getColumnIndex("TITLE"));		//タイトル
 											dbMsg += rStr;
 											if( rStr != null){					//アルバムに重複がなければ追記
 												titolList.add(rStr);	//MediaStore.Audio.Albums.ARTIST
@@ -1969,7 +1972,8 @@ public class MaraSonActivity extends AppCompatActivity
 	FileInfoEdit fieDialog;
 	int fie_cBtn;
 
-	public void creditNHanei( List<String> mainList  , String artistMei){			//クレジットアーティスト名のリスト表示名反映後の再表示処理
+	@SuppressLint("Range")
+	public void creditNHanei(List<String> mainList  , String artistMei){			//クレジットアーティスト名のリスト表示名反映後の再表示処理
 		final String TAG = "creditNHanei[MaraSonActivity]";
 		String dbMsg= "開始;";/////////////////////////////////////
 		try{
@@ -1996,7 +2000,7 @@ public class MaraSonActivity extends AppCompatActivity
 						rDate = awCursor.getString(awCursor.getColumnIndex("rDate"));				//データURL
 					}while( awCursor.moveToNext() || ! dataFN.contains(rDate) );
 				}
-				String rARName = awCursor.getString(awCursor.getColumnIndex("albumArtist"));		//リストアップしたアルバムアーティスト名
+				@SuppressLint("Range") String rARName = awCursor.getString(awCursor.getColumnIndex("albumArtist"));		//リストアップしたアルバムアーティスト名
 				if( rARName != null ){
 					albumArtist = rARName;
 					dbMsg += ">>" + albumArtist;//////////////////
@@ -2022,7 +2026,7 @@ public class MaraSonActivity extends AppCompatActivity
 						albumList = new ArrayList<String>();
 						albumList.clear();		//アルバム名
 						do{
-							String rStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+							@SuppressLint("Range") String rStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
 							albumList.add(rStr);
 						}while( cursor.moveToNext() );
 						albumIDPTF.setText(String.valueOf(albumList.indexOf(albumName)+1));		//アルバムカウント
@@ -2060,7 +2064,7 @@ public class MaraSonActivity extends AppCompatActivity
 			if(cursor.moveToFirst()){
 				do{
 					dbMsg= "[" + cursor.getPosition() + "/" + cursor.getCount() +"]";/////////////////////////////////////
-					String tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+					@SuppressLint("Range") String tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 					dbMsg +=tStr;/////////////////////////////////////
 					String coment = null;
 					if( tStr.equals(artistMei) ){
@@ -4101,7 +4105,8 @@ public class MaraSonActivity extends AppCompatActivity
 	 *  リストに戻る
 	 * @param reqCode	選択されたもの
 	 * */
-	public void callListView(int reqCode ,String selName ,int mcPosition ){								//リストビューを読出し
+	@SuppressLint("Range")
+	public void callListView(int reqCode , String selName , int mcPosition ){								//リストビューを読出し
 		final String TAG = "callListView";
 		String dbMsg= "[MaraSonActivity];";
 		try{
@@ -4142,7 +4147,7 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
 			titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
 			dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-			int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+			@SuppressLint("Range") int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
 			dbMsg +=" ,audioId= " + audioId;
 			playingItem.close();
 			albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);

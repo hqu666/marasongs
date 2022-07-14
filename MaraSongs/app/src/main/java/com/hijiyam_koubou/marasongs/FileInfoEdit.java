@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -215,6 +216,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 		}
 	}
 
+	@SuppressLint("Range")
 	public void url2FSet(String urlStr , String artistMei){		//urlからプレイヤーの書き込みを行う　起動時のプリファレンスから
 		final String TAG = "url2FSet[FileInfoEdit]";
 		String dbMsg= "開始;";/////////////////////////////////////
@@ -580,7 +582,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 				int i = 0;
 				do{
 					dbMsg +=i + "/" + cCount + ")" ;/////////////////////////////////////
-					String rDate = awCursor.getString(awCursor.getColumnIndex("rDate"));		//データURL
+					@SuppressLint("Range") String rDate = awCursor.getString(awCursor.getColumnIndex("rDate"));		//データURL
 					dbMsg +=rDate+">>";/////////////////////////////////////
 					listItems[i] = rDate;
 					dbMsg +=listItems[i];/////////////////////////////////////
@@ -598,7 +600,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 							try{
 					        	dbMsg="[" +which +"]";/////////////////////////////////////////////////////////////////////////////////////
 					        	awCursor.moveToPosition(which);
-					        	String idStr = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_id")));
+					        	@SuppressLint("Range") String idStr = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_id")));
 								dbMsg +=idStr;/////////////////////////////////////////////////////////////////////////////////////
 								int syoukyoGyou = ar_db.delete(ｒContext.getResources().getString(R.string.artist_reW_table),"_id = '" + idStr +"'", null);		//			"_id = ?", new String[]{ idStr }
 								dbMsg +=" , 消去したのは" +  syoukyoGyou + " 行目";/////////////////////////////////////////////////////////////////////////////////////
@@ -644,7 +646,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 //			awCursor = ar_db.query(awTname, null, "creditArtistName = '" + creditArtistName + "' AND albumName = '"+ albumName +"'", null , null, null, null);//リString table, String[] columns,new String[] {MotoN, albamN}
 			if(awCursor.moveToFirst()){
 				dbMsg += "は書き換え除外リストに" + awCursor.getCount() +"件あり";/////////////////////////////////////////////////////////////	motName,albumName , sakiName
-				String reId = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_ID")));
+				@SuppressLint("Range") String reId = String.valueOf(awCursor.getInt(awCursor.getColumnIndex("_ID")));
 				dbMsg +="更新先=" + reId +")";/////////////////////////////////////
 				ar_db.beginTransaction();
 				try {
@@ -743,7 +745,8 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 	}
 
 	//ArrayList<String> lItems;
-	public void aListSentaku( String MotoN , String albumN ){			//クレジットアーティスト名を他の名称に統合;アーティストリスト表示
+	@SuppressLint("Range")
+	public void aListSentaku(String MotoN , String albumN ){			//クレジットアーティスト名を他の名称に統合;アーティストリスト表示
 		String sakiN = null;
 		final String TAG = "aListSentaku[FileInfoEdit]";
 		String dbMsg= "開始;";/////////////////////////////////////
