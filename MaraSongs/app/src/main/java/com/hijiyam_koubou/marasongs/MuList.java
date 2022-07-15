@@ -73,7 +73,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;			//AndroidXからはV7不要？
 import androidx.appcompat.widget.Toolbar;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
@@ -2647,7 +2647,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					public void onScanCompleted(String path, Uri uri) {
 						final String TAG = "onScanCompleted[MuList]";
 						String dbMsg = ",path="+ path;
-						dbMsg += ",uri="+ uri.toString() ;
+					//	dbMsg += ",uri="+ uri.toString() ;
 						myLog(TAG, dbMsg);
 					}
 				});
@@ -2969,7 +2969,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				mainTStr = getResources().getString(R.string.listmei_zemkyoku);			//全曲リスト
 				subTStr =  getResources().getString(R.string.pp_artist)+retInt +  getResources().getString(R.string.comon_nin);			//アーティスト
 				mainHTF.setText(mainTStr);					//ヘッダーのメインテキスト表示枠
-				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠		//		toolbar.setSubtitle(subTStr);
+				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 		//		dbMsg += ",artistSL=" +  artistSL;
 				if( artistSL == null){
 					artistSL =  new ArrayList<String>();				//アーティストリスト用簡易リスト
@@ -3140,7 +3140,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 			}
 			String subText =getResources().getString(R.string.pp_artist) + " ; "  + artintCo + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
-			subHTF.setText(subText );		//	toolbar.setSubtitle(subText);
+			subHTF.setText(subText );
 	//		reqCode = MaraSonActivity.v_alubum;							//アーティスト
 				if( 0< mIndex ){
 					dbMsg += " ,mIndex= " + mIndex;/////////////////////////////////////
@@ -4416,7 +4416,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						makePlainList( artistSL);			//階層化しないシンプルなリスト
 					}else if(artistSL != null){
 						String subTStr = getResources().getString(R.string.pp_artist)+artistSL.size() +  getResources().getString(R.string.comon_nin);			//アーティスト
-						subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠			//			toolbar.setSubtitle( subTStr);
+						subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 						makePlainList( artistSL);			//階層化しないシンプルなリスト
 					}else{
 						dbMsg +="[選択="+ sousalistID + "(nowList=" +nowList_id+")]"+ MuList.this.sousalistName;
@@ -5512,7 +5512,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ">reqCode>"+reqCode + ",listType=" + listType;
 			String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.comon_sakusei);				//プレイリスト 作成>
 			dbMsg += ",subText="+subText ;
-			subHTF.setText(subText );													//		toolbar.setSubtitle(subText);
+			subHTF.setText(subText );
 			String pdMessage = MuList.this.sousalistName + " ; " + subText;
 			dbMsg += ",pdMessage="+pdMessage;
 			pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage ,retInt ).execute(reqCode,  pdMessage , retInt ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
@@ -5755,8 +5755,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			int retInt = plAL.size();
 			String subText = retInt + getResources().getString(R.string.pp_kyoku);
 			dbMsg += ",retInt="+subText + ":pref_artist_bunnri=" + pref_artist_bunnri + "曲";
-			subHTF.setText(MuList.this.nowListSub );			//toolbar.setSubtitle(MuList.this.nowListSub);
-
+			subHTF.setText(MuList.this.nowListSub );
 			if(pref_list_simple){											//シンプルなリスト表示（サムネールなど省略）
 				listType = listType_plane;									// 0;//情報なし
 			}else {
@@ -6283,7 +6282,6 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			}else{
 				Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
 			}
-	//		toolbar.setNavigationIcon(R.drawable.ic_launcher);
 			headImgIV.setVisibility(View.GONE);
 			mainHTF.setVisibility(View.GONE);
 			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -9775,7 +9773,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 //				break;
 			case listType_2ly:				//アーティストの単階層リストとalbumとtitolの２階層
 				String subTStr = getResources().getString(R.string.pp_artist)+artistSL.size() +  getResources().getString(R.string.comon_nin);			//アーティスト
-				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠				//toolbar.setSubtitle(subTStr);
+				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 				makePlainList( artistSL);			//階層化しないシンプルなリスト
 				break;
 			case listType_2ly2:				//  listType_2ly + 1;albumとtitolの２階層
@@ -9915,7 +9913,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					}
 					dbMsg +=",artistSL= " + artistCount+ "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					subTStr = getResources().getString(R.string.pp_artist)+ selPosition + "/"+ artistCount + getResources().getString(R.string.comon_nin);			//アーティスト
-					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠				//toolbar.setSubtitle(subTStr);
+					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 					myLog(TAG,dbMsg);
 					lvID.setSelection(selPosition);
 					lvID.setFocusable(true);
@@ -9930,7 +9928,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 
 					dbMsg +="alubum_tv:artistMei= " + artistMei +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					mainHTF.setVisibility(View.VISIBLE);
-					mainHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);					//Toolbar を Action Bar のように使用する場合	//	toolbar.setTitle(artistMei);								//スタンドアローン Toolbar を使用する場合
+					mainHTF.setText( artistMei);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);
 					MuList.this.albumAL = CreateAlbumList( artistMei , albumMei );		//リスト表示せずに曲リスト作成
 					dbMsg += ",抽出できたアルバム=" + MuList.this.albumAL.size() + "枚 ";
 					if( artistMei == null){
@@ -9976,7 +9974,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 					headImgIV.setVisibility(View.VISIBLE);								 // 表示枠を消す
-					headImgIV.setImageResource(R.drawable.no_image);		//		toolbar.setNavigationIcon(defoltIcon);								//リサイズしたR.drawable.no_image
+					headImgIV.setImageResource(R.drawable.no_image);									//リサイズしたR.drawable.no_image
 					titolAL = CreateTitleList(artistMei , albumMei , titolMei);
 					subTStr =  titolAL.size() + getResources().getString(R.string.pp_kyoku);
 					dbMsg +=",titol_tv;titol; = " + subTStr;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
@@ -9990,7 +9988,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
 						dbMsg +=",resizedBitmap="+resizedBitmap;
 						drawable = new BitmapDrawable(getResources(), resizedBitmap);
-						headImgIV.setImageDrawable(drawable);		//			toolbar.setNavigationIcon(drawable);			//☆toolbar.setLogo(drawable);はセットできてもリムーブできない
+						headImgIV.setImageDrawable(drawable);
 					}
 					dbMsg +=",headImgIV[" + headImgIV.getX() +", " + headImgIV.getY() +"] " + headImgIV.getHeight();		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					mainHTF.setVisibility(View.VISIBLE);		//		getSupportActionBar().setDisplayHomeAsUpEnabled(true);

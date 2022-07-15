@@ -16,14 +16,14 @@
 	xmlns:ads="http://schemas.android.com/apk/res-auto"
  -->
 
-	<android.support.v7.widget.Toolbar
+	<androidx.appcompat.widget.Toolbar
         android:id="@+id/pp_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <!--     <android.support.v7.widget.Toolbar -->
     <!--         android:id="@+id/pp_tool_bar" -->

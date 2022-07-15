@@ -1,0 +1,883 @@
+-- Merging decision tree log ---
+manifest
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\caches\transforms-3\bfec8dfcaf6c34e166a516bbd7a3f400\transformed\material-1.6.1\AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\f053ca72a4906620f9d7f529c412475e\transformed\appcompat-1.4.2\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\34c3819cee2951fdcdce0cc29fa8544c\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:17:1-25:12
+MERGED from [androidx.media:media:1.6.0] C:\Users\hqu66\.gradle\caches\transforms-3\c4d4cccf0c402667508afcde3dd3aa23\transformed\media-1.6.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\5fb3161ccd81a2f6ccae47a4c4a9c5e3\transformed\jetified-appcompat-resources-1.4.2\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\22af41d6efc01e2b1f6684642bfbf4e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.browser:browser:1.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\048abb5d01fee1614633e357f9ba2ab7\transformed\browser-1.4.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\72de3ad0e7ea8651a6e87e246ac967c6\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:17:1-67:12
+MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.ump:user-messaging-platform:2.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\46b82e4a37b295833affb137bb66dc6f\transformed\jetified-user-messaging-platform-2.0.0\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:17:1-27:12
+MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\25cad36a9705878b7b9e65d07f62bfd4\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:17:1-28:12
+MERGED from [com.google.android.gms:play-services-measurement-base:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\dfc421ad5542c2d4c9a925112ef65d35\transformed\jetified-play-services-measurement-base-20.1.2\AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:16:1-26:12
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\hqu66\.gradle\caches\transforms-3\29bdfe4f1619e457b1b22ec172982bb4\transformed\fragment-1.3.6\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.2.4] C:\Users\hqu66\.gradle\caches\transforms-3\0344911b91ed317780bda162b2454816\transformed\jetified-activity-1.2.4\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\1d741778aec3db57fd68aa64c122ce13\transformed\jetified-emoji2-views-helper-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:17:1-37:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\a0f487a4babc02e94edd80c903b84cb8\transformed\legacy-support-core-ui-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\92389d42dacee50431fdf899a9097c97\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\9b680f4524c73cf4651435f7b7ab96a9\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\edcdf00559453ac5f7364b461524ff25\transformed\drawerlayout-1.1.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\8a6303413022a75475e0d43fea7dc5ec\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\44f59b81c87b69ad5a2c3b803c83780d\transformed\transition-1.2.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\2ffd33c42ee9142780d270ad93a06b80\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\e1b23a5846fa69c62ae6c2763eaeb253\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\a9f454f90017dca7389400a6976be6d0\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\672c698f430ef3053188faf174992e0a\transformed\slidingpanelayout-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5dc7619c10ef7678503baa0c7d18529c\transformed\swiperefreshlayout-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7f38362bc79cae2826970a4e78d0cb43\transformed\asynclayoutinflater-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\d55f9b1c6cb2370e24af439e7aff662a\transformed\recyclerview-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4256eb7d1165099cdd30ddd844e112fc\transformed\customview-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:17:1-145:12
+MERGED from [androidx.core:core:1.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\0c734a8f9451ded3159b05d46fc9a23a\transformed\core-1.7.0\AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\b62f021449e53cd8f85a380c2a59df94\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\a607378c0a63614f9eaa72616e02d783\transformed\jetified-lifecycle-viewmodel-savedstate-2.3.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ce48164422c3447ff8a6246b4d8ea9c1\transformed\jetified-savedstate-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\d6364469d2dca85a8f85e8beeb73ccf4\transformed\lifecycle-viewmodel-2.3.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7c7a8c29ecce42e20d903e3a51f8df85\transformed\cardview-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\a32d82e6af18449b0f4026f574aea670\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\f11a2796b54455e05ab8603854e4e469\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:17:1-37:12
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\9edc97b4929ab5c71815cd3246cf40bf\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd6bb23584cbf7f6f6c8d5a8c4580f53\transformed\lifecycle-livedata-2.1.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\229afd5b2ad29fd5e38d89c9d109bbfa\transformed\lifecycle-livedata-core-2.3.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\77c63bd5966e57de885a5a1ef5043d90\transformed\jetified-lifecycle-service-2.1.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ea78e3a5300ae57948a4528ff114bdc\transformed\lifecycle-runtime-2.4.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\18bea7d8b6ce63feab6ed492d57d56cb\transformed\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\c91ee04b2e3e2b4e3408d247f58d785c\transformed\documentfile-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\daafd13ed6472e5d90ee94a442cae491\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd2b858bc6569916fd0b165974e7ef03\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\bb8c114addf2605679d5bb5f7a5940c3\transformed\sqlite-framework-2.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.sqlite:sqlite:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\6fdda5ce1cff6da007d67beb60a702e0\transformed\sqlite-2.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\cc06242ea379559a7b6be7811f23a532\transformed\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:17:1-24:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+	package
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:4:5-43
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-140:12
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.BLUETOOTH_CONNECT
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:6:5-76
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:6:22-73
+uses-permission#android.permission.BLUETOOTH_SCAN
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:7:5-73
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:7:22-70
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:8:2-77
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:8:19-75
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:9:2-76
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:9:19-74
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:10:2-76
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:24:5-79
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:26:5-79
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:26:5-79
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:10:19-73
+uses-permission#android.permission.READ_CONTACTS
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:11:2-69
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:11:19-66
+uses-permission#android.permission.WRITE_CONTACTS
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:12:2-70
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:12:19-67
+uses-permission#android.permission.INTERNET
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:13:2-63
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:23:5-67
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:13:19-61
+uses-permission#android.permission.BLUETOOTH
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:15:2-64
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:15:19-62
+uses-feature#android.hardware.bluetooth
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:16:2-17:33
+	android:required
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:17:7-30
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:16:16-57
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:19:2-70
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:19:19-68
+uses-permission#android.permission.RECORD_AUDIO
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:21:2-67
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:21:19-65
+uses-permission#android.permission.MODIFY_AUDIO_SETTINGS
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:22:2-76
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:22:19-74
+uses-permission#android.permission.WAKE_LOCK
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:24:2-64
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:25:5-68
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:25:5-68
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:25:5-68
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:24:19-62
+permission#android.permission.MEDIA_CONTENT_CONTROL
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:26:2-72
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:26:14-69
+application
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:28:2-138:17
+MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\caches\transforms-3\bfec8dfcaf6c34e166a516bbd7a3f400\transformed\material-1.6.1\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\caches\transforms-3\bfec8dfcaf6c34e166a516bbd7a3f400\transformed\material-1.6.1\AndroidManifest.xml:24:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:46:5-65:19
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:46:5-65:19
+MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:25:5-20
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:25:5-20
+MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\25cad36a9705878b7b9e65d07f62bfd4\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\25cad36a9705878b7b9e65d07f62bfd4\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-measurement-base:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\dfc421ad5542c2d4c9a925112ef65d35\transformed\jetified-play-services-measurement-base-20.1.2\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-measurement-base:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\dfc421ad5542c2d4c9a925112ef65d35\transformed\jetified-play-services-measurement-base-20.1.2\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:20:5-24:19
+MERGED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:25:5-35:19
+MERGED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:25:5-35:19
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:30:5-143:19
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:30:5-143:19
+MERGED from [androidx.core:core:1.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\0c734a8f9451ded3159b05d46fc9a23a\transformed\core-1.7.0\AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\0c734a8f9451ded3159b05d46fc9a23a\transformed\core-1.7.0\AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\a32d82e6af18449b0f4026f574aea670\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\a32d82e6af18449b0f4026f574aea670\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:25:5-35:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:25:5-35:19
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:24:5-29:19
+MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:24:5-29:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\0c734a8f9451ded3159b05d46fc9a23a\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
+	android:label
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:31:3-35
+	tools:ignore
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:36:3-42
+	android:allowTaskReparenting
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:33:3-38
+	android:largeHeap
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:32:3-27
+	android:icon
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:30:3-39
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:35:3-41
+	android:usesCleartextTraffic
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:34:3-38
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:29:3-24
+meta-data#com.google.android.gms.ads.AD_MANAGER_APP
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:37:3-39:26
+	android:value
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:4-24
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:38:4-60
+meta-data#com.google.android.gms.version
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:46:4-47:60
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:47:5-58
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:46:15-60
+meta-data#NendDebuggable
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:48:4-49:29
+	android:value
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:49:5-26
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:48:15-44
+activity#com.hijiyam_koubou.marasongs.MuList
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:50:6-58:20
+	android:screenOrientation
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:51:13-49
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:53:4-27
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:52:4-35
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:50:16-38
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:54:13-57:29
+action#android.intent.action.MAIN
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:55:17-69
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:55:25-66
+category#android.intent.category.LAUNCHER
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:56:17-77
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:56:27-74
+activity#com.hijiyam_koubou.marasongs.MaraSonActivity
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:60:3-67:20
+	android:screenOrientation
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:61:7-43
+	android:label
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:62:7-39
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:63:7-38
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:60:13-44
+meta-data#com.google.android.gms.ads.APPLICATION_ID
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:64:4-66:48
+	android:value
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:66:5-46
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:65:5-61
+activity#com.hijiyam_koubou.marasongs.AllSongs
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:68:3-71:14
+	android:multiprocess
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:70:4-31
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:69:4-47
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:68:13-36
+activity#com.hijiyam_koubou.marasongs.ZenkyokuList
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:72:3-75:14
+	android:multiprocess
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:74:4-31
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:73:4-47
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:72:13-40
+activity#com.hijiyam_koubou.marasongs.CreditNameHensyuu
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:76:3-49
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:76:13-46
+activity#com.hijiyam_koubou.marasongs.MyPreferences
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:77:3-79:14
+	android:screenOrientation
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:78:4-40
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:77:13-42
+activity#com.hijiyam_koubou.marasongs.wKit
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:79:14-55
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:79:24-43
+receiver#com.hijiyam_koubou.marasongs.MusicPlayerReceiver
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:81:9-87:20
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:82:4-27
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:81:19-54
+intent-filter#action:name:android.intent.action.MEDIA_BUTTON
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:83:13-86:29
+action#android.intent.action.MEDIA_BUTTON
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:85:17-77
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:85:25-74
+service#com.hijiyam_koubou.marasongs.MusicPlayerService
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:89:9-101:19
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:90:4-27
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:89:18-52
+intent-filter#action:name:com.hijiyam_koubou.marasongs.ACTION_PAUSE+action:name:com.hijiyam_koubou.marasongs.ACTION_PLAY+action:name:com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE+action:name:com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE+action:name:com.hijiyam_koubou.marasongs.ACTION_REWIND+action:name:com.hijiyam_koubou.marasongs.ACTION_SKIP+action:name:com.hijiyam_koubou.marasongs.ACTION_STOP+action:name:com.hijiyam_koubou.marasongs.ACTION_SYUURYOU
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:91:13-100:20
+action#com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:92:17-88
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:92:25-85
+action#com.hijiyam_koubou.marasongs.ACTION_PLAY
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:93:17-83
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:93:25-80
+action#com.hijiyam_koubou.marasongs.ACTION_PAUSE
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:94:17-84
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:94:25-81
+action#com.hijiyam_koubou.marasongs.ACTION_SKIP
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:95:17-83
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:95:25-80
+action#com.hijiyam_koubou.marasongs.ACTION_REWIND
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:96:17-85
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:96:25-82
+action#com.hijiyam_koubou.marasongs.ACTION_STOP
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:97:17-83
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:97:25-80
+action#com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:98:17-92
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:98:25-89
+action#com.hijiyam_koubou.marasongs.ACTION_SYUURYOU
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:99:17-87
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:99:25-84
+receiver#com.hijiyam_koubou.marasongs.BuletoohtReceiver
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:103:9-115:19
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:4-27
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:103:19-51
+intent-filter#action:name:android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED+action:name:android.bluetooth.adapter.action.STATE_CHANGED+action:name:android.bluetooth.device.action.FOUND+action:name:android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED+action:name:android.bluetoothA2dp.action.PLAYING_STATE_CHANGED+action:name:android.intent.action.MEDIA_BUTTON+action:name:android.intent.action.PACKAGE_ADDED+action:name:android.media.AUDIO_BECOMING_NOISY
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:105:13-114:20
+action#android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:106:17-97
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:106:25-94
+action#android.bluetooth.adapter.action.STATE_CHANGED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:107:14-86
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:107:22-83
+action#android.bluetooth.device.action.FOUND
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:108:14-77
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:108:22-74
+action#android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:109:14-93
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:109:22-90
+action#android.bluetoothA2dp.action.PLAYING_STATE_CHANGED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:110:14-90
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:110:22-87
+action#android.media.AUDIO_BECOMING_NOISY
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:111:17-77
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:111:25-74
+action#android.intent.action.PACKAGE_ADDED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:113:5-88
+	android:priority
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:113:64-86
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:113:13-63
+receiver#com.hijiyam_koubou.marasongs.lsRecever
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:117:9-128:14
+	android:label
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:118:4-47
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:121:4-27
+	android:permission
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:120:4-61
+	android:description
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:119:4-65
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:117:19-43
+meta-data#android.app.device_admin
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:122:4-124:42
+	android:resource
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:124:5-40
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:123:5-44
+intent-filter#action:name:android.app.action.DEVICE_ADMIN_ENABLED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:125:4-127:20
+action#android.app.action.DEVICE_ADMIN_ENABLED
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:5-70
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:13-67
+service#com.hijiyam_koubou.marasongs.NotifRecever
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:9-49
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:18-46
+activity#com.google.android.gms.ads.AdActivity
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:3-133:6
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:49:9-53:64
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:49:9-53:64
+	android:exported
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:52:13-37
+	android:configChanges
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:131:4-113
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:132:4-52
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:13-65
+activity#com.hijiyam_koubou.marasongs.TagBrows
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:134:3-137:14
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:135:7-57
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:134:13-36
+uses-sdk
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\caches\transforms-3\bfec8dfcaf6c34e166a516bbd7a3f400\transformed\material-1.6.1\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\caches\transforms-3\bfec8dfcaf6c34e166a516bbd7a3f400\transformed\material-1.6.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.appcompat:appcompat:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\f053ca72a4906620f9d7f529c412475e\transformed\appcompat-1.4.2\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\f053ca72a4906620f9d7f529c412475e\transformed\appcompat-1.4.2\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\34c3819cee2951fdcdce0cc29fa8544c\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\34c3819cee2951fdcdce0cc29fa8544c\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:21:5-23:52
+MERGED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:21:5-23:52
+MERGED from [androidx.media:media:1.6.0] C:\Users\hqu66\.gradle\caches\transforms-3\c4d4cccf0c402667508afcde3dd3aa23\transformed\media-1.6.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.media:media:1.6.0] C:\Users\hqu66\.gradle\caches\transforms-3\c4d4cccf0c402667508afcde3dd3aa23\transformed\media-1.6.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\5fb3161ccd81a2f6ccae47a4c4a9c5e3\transformed\jetified-appcompat-resources-1.4.2\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\5fb3161ccd81a2f6ccae47a4c4a9c5e3\transformed\jetified-appcompat-resources-1.4.2\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\22af41d6efc01e2b1f6684642bfbf4e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\22af41d6efc01e2b1f6684642bfbf4e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\048abb5d01fee1614633e357f9ba2ab7\transformed\browser-1.4.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\048abb5d01fee1614633e357f9ba2ab7\transformed\browser-1.4.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\72de3ad0e7ea8651a6e87e246ac967c6\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\72de3ad0e7ea8651a6e87e246ac967c6\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.ump:user-messaging-platform:2.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\46b82e4a37b295833affb137bb66dc6f\transformed\jetified-user-messaging-platform-2.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.ump:user-messaging-platform:2.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\46b82e4a37b295833affb137bb66dc6f\transformed\jetified-user-messaging-platform-2.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\25cad36a9705878b7b9e65d07f62bfd4\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\25cad36a9705878b7b9e65d07f62bfd4\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-base:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\dfc421ad5542c2d4c9a925112ef65d35\transformed\jetified-play-services-measurement-base-20.1.2\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-measurement-base:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\dfc421ad5542c2d4c9a925112ef65d35\transformed\jetified-play-services-measurement-base-20.1.2\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7226b3b14e0e7b246d5aa530eb522a4d\transformed\jetified-play-services-basement-18.0.0\AndroidManifest.xml:18:5-43
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\hqu66\.gradle\caches\transforms-3\29bdfe4f1619e457b1b22ec172982bb4\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\hqu66\.gradle\caches\transforms-3\29bdfe4f1619e457b1b22ec172982bb4\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.2.4] C:\Users\hqu66\.gradle\caches\transforms-3\0344911b91ed317780bda162b2454816\transformed\jetified-activity-1.2.4\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.2.4] C:\Users\hqu66\.gradle\caches\transforms-3\0344911b91ed317780bda162b2454816\transformed\jetified-activity-1.2.4\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2-views-helper:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\1d741778aec3db57fd68aa64c122ce13\transformed\jetified-emoji2-views-helper-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2-views-helper:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\1d741778aec3db57fd68aa64c122ce13\transformed\jetified-emoji2-views-helper-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\a0f487a4babc02e94edd80c903b84cb8\transformed\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\a0f487a4babc02e94edd80c903b84cb8\transformed\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\92389d42dacee50431fdf899a9097c97\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\92389d42dacee50431fdf899a9097c97\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\9b680f4524c73cf4651435f7b7ab96a9\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\9b680f4524c73cf4651435f7b7ab96a9\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\edcdf00559453ac5f7364b461524ff25\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\edcdf00559453ac5f7364b461524ff25\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\8a6303413022a75475e0d43fea7dc5ec\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\8a6303413022a75475e0d43fea7dc5ec\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\44f59b81c87b69ad5a2c3b803c83780d\transformed\transition-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\44f59b81c87b69ad5a2c3b803c83780d\transformed\transition-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\2ffd33c42ee9142780d270ad93a06b80\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\2ffd33c42ee9142780d270ad93a06b80\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\e1b23a5846fa69c62ae6c2763eaeb253\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\e1b23a5846fa69c62ae6c2763eaeb253\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\a9f454f90017dca7389400a6976be6d0\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\a9f454f90017dca7389400a6976be6d0\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\672c698f430ef3053188faf174992e0a\transformed\slidingpanelayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\672c698f430ef3053188faf174992e0a\transformed\slidingpanelayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5dc7619c10ef7678503baa0c7d18529c\transformed\swiperefreshlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5dc7619c10ef7678503baa0c7d18529c\transformed\swiperefreshlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7f38362bc79cae2826970a4e78d0cb43\transformed\asynclayoutinflater-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7f38362bc79cae2826970a4e78d0cb43\transformed\asynclayoutinflater-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\d55f9b1c6cb2370e24af439e7aff662a\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\d55f9b1c6cb2370e24af439e7aff662a\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4256eb7d1165099cdd30ddd844e112fc\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4256eb7d1165099cdd30ddd844e112fc\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.core:core:1.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\0c734a8f9451ded3159b05d46fc9a23a\transformed\core-1.7.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\0c734a8f9451ded3159b05d46fc9a23a\transformed\core-1.7.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\b62f021449e53cd8f85a380c2a59df94\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\b62f021449e53cd8f85a380c2a59df94\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\a607378c0a63614f9eaa72616e02d783\transformed\jetified-lifecycle-viewmodel-savedstate-2.3.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\a607378c0a63614f9eaa72616e02d783\transformed\jetified-lifecycle-viewmodel-savedstate-2.3.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ce48164422c3447ff8a6246b4d8ea9c1\transformed\jetified-savedstate-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ce48164422c3447ff8a6246b4d8ea9c1\transformed\jetified-savedstate-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\d6364469d2dca85a8f85e8beeb73ccf4\transformed\lifecycle-viewmodel-2.3.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\d6364469d2dca85a8f85e8beeb73ccf4\transformed\lifecycle-viewmodel-2.3.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7c7a8c29ecce42e20d903e3a51f8df85\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\7c7a8c29ecce42e20d903e3a51f8df85\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\a32d82e6af18449b0f4026f574aea670\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\a32d82e6af18449b0f4026f574aea670\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\f11a2796b54455e05ab8603854e4e469\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\f11a2796b54455e05ab8603854e4e469\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\9edc97b4929ab5c71815cd3246cf40bf\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\9edc97b4929ab5c71815cd3246cf40bf\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd6bb23584cbf7f6f6c8d5a8c4580f53\transformed\lifecycle-livedata-2.1.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd6bb23584cbf7f6f6c8d5a8c4580f53\transformed\lifecycle-livedata-2.1.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\229afd5b2ad29fd5e38d89c9d109bbfa\transformed\lifecycle-livedata-core-2.3.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.1] C:\Users\hqu66\.gradle\caches\transforms-3\229afd5b2ad29fd5e38d89c9d109bbfa\transformed\lifecycle-livedata-core-2.3.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\77c63bd5966e57de885a5a1ef5043d90\transformed\jetified-lifecycle-service-2.1.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\77c63bd5966e57de885a5a1ef5043d90\transformed\jetified-lifecycle-service-2.1.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ea78e3a5300ae57948a4528ff114bdc\transformed\lifecycle-runtime-2.4.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ea78e3a5300ae57948a4528ff114bdc\transformed\lifecycle-runtime-2.4.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\18bea7d8b6ce63feab6ed492d57d56cb\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\18bea7d8b6ce63feab6ed492d57d56cb\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\c91ee04b2e3e2b4e3408d247f58d785c\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\c91ee04b2e3e2b4e3408d247f58d785c\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\daafd13ed6472e5d90ee94a442cae491\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\daafd13ed6472e5d90ee94a442cae491\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd2b858bc6569916fd0b165974e7ef03\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd2b858bc6569916fd0b165974e7ef03\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\bb8c114addf2605679d5bb5f7a5940c3\transformed\sqlite-framework-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\bb8c114addf2605679d5bb5f7a5940c3\transformed\sqlite-framework-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\6fdda5ce1cff6da007d67beb60a702e0\transformed\sqlite-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite:2.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\6fdda5ce1cff6da007d67beb60a702e0\transformed\sqlite-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\cc06242ea379559a7b6be7811f23a532\transformed\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\cc06242ea379559a7b6be7811f23a532\transformed\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:20:5-22:41
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+	tools:overrideLibrary
+		ADDED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:23:9-49
+	android:targetSdkVersion
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
+uses-permission#com.google.android.gms.permission.AD_ID
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:26:5-79
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:26:5-79
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:25:22-76
+queries
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:28:5-44:15
+intent#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+data:scheme:https
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:31:9-37:18
+action#android.intent.action.VIEW
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:32:13-65
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:32:21-62
+category#android.intent.category.BROWSABLE
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:34:13-74
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:34:23-71
+data
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:36:13-44
+	android:scheme
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:36:19-41
+intent#action:name:android.support.customtabs.action.CustomTabsService
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:40:9-42:18
+action#android.support.customtabs.action.CustomTabsService
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:41:13-90
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:41:21-87
+provider#com.google.android.gms.ads.MobileAdsInitProvider
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:55:9-59:39
+	android:authorities
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:57:13-73
+	android:exported
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:58:13-37
+	android:initOrder
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:59:13-36
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:56:13-76
+service#com.google.android.gms.ads.AdService
+ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:61:9-64:40
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:63:13-35
+	android:exported
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:64:13-37
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:62:13-64
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:20:19-85
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:31:9-39:20
+MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:31:9-39:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73efe452280fdccb4b29b6899975f817\transformed\jetified-startup-runtime-1.0.0\AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:30:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:28:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:29:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:27:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:31:13-33:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:33:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\73850b32b2c7ce32b12b91c16b2382c2\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:32:17-75
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:27:5-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:27:22-78
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:28:5-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:28:22-74
+meta-data#androidx.work.WorkManagerInitializer
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:36:13-38:52
+	android:value
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:38:17-49
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:37:17-68
+service#androidx.work.impl.background.systemalarm.SystemAlarmService
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:41:9-46:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:44:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:45:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:46:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:43:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:42:13-88
+service#androidx.work.impl.background.systemjob.SystemJobService
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:47:9-53:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:50:13-70
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:51:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:52:13-69
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:53:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:49:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:48:13-84
+service#androidx.work.impl.foreground.SystemForegroundService
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:54:9-59:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:57:13-77
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:58:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:59:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:56:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:55:13-81
+receiver#androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:61:9-66:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:64:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:65:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:66:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:63:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:62:13-88
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:67:9-77:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:70:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:71:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:72:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:69:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:68:13-106
+intent-filter#action:name:android.intent.action.ACTION_POWER_CONNECTED+action:name:android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:73:13-76:29
+action#android.intent.action.ACTION_POWER_CONNECTED
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:74:17-87
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:74:25-84
+action#android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:75:17-90
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:75:25-87
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:78:9-88:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:81:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:82:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:83:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:80:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:79:13-104
+intent-filter#action:name:android.intent.action.BATTERY_LOW+action:name:android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:84:13-87:29
+action#android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:85:17-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:85:25-74
+action#android.intent.action.BATTERY_LOW
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:86:17-76
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:86:25-73
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:89:9-99:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:92:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:93:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:94:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:91:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:90:13-104
+intent-filter#action:name:android.intent.action.DEVICE_STORAGE_LOW+action:name:android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:95:13-98:29
+action#android.intent.action.DEVICE_STORAGE_LOW
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:96:17-83
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:96:25-80
+action#android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:97:17-82
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:97:25-79
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:100:9-109:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:103:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:104:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:105:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:102:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:101:13-103
+intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:106:13-108:29
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:107:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:107:25-76
+receiver#androidx.work.impl.background.systemalarm.RescheduleReceiver
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:110:9-121:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:113:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:114:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:115:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:112:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:111:13-88
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:116:13-120:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:117:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:117:25-76
+action#android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:118:17-73
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:118:25-70
+action#android.intent.action.TIMEZONE_CHANGED
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:119:17-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:119:25-78
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:122:9-131:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:125:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:126:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:127:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:124:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:123:13-99
+intent-filter#action:name:androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:128:13-130:29
+action#androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:129:17-98
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:129:25-95
+receiver#androidx.work.impl.diagnostics.DiagnosticsReceiver
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:132:9-142:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:135:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:136:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:137:13-57
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:138:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:134:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:133:13-78
+intent-filter#action:name:androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:139:13-141:29
+action#androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:140:17-88
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:140:25-85
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:31:13-33:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:33:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\280b8c662ae12c28e2c58a98b88e76a9\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:32:17-78
+service#androidx.room.MultiInstanceInvalidationService
+ADDED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:25:9-28:40
+	android:exported
+		ADDED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:28:13-37
+	android:directBootAware
+		ADDED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:27:13-43
+	android:name
+		ADDED from [androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\8359e45259c1d1c5c107bee2a68c1852\transformed\room-runtime-2.2.5\AndroidManifest.xml:26:13-74
