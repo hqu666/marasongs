@@ -10387,7 +10387,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			artistHTF = tbContainer.findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠			artistHTF = (TextView)findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠
 			headLayout = tbContainer.findViewById(R.id.headLayout);			//ツールバーのカスタムレイアウト
 			setSupportActionBar(toolbar);
-			lvID = findViewById(android.R.id.list);	//　作成したリストアダプターをリストビューにセットする	 Id	@id/android:list
+			lvID = findViewById(R.id.pllist);	//　作成したリストアダプターをリストビューにセットする	 Id	@id/android:list
 			lvID.setTextFilterEnabled(true);						//ListViewにフォーカスを移して「a」を入力すると、以下の図のように先頭に「a」の文字がある項目だけが表示されます。
 			lvID.setFocusableInTouchMode(true);
 			registerForContextMenu(lvID);							//コンテキストメニュー
