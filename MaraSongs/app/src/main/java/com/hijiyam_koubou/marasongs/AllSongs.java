@@ -2831,8 +2831,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     /***
      * public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>>の置き換え
      * Android 11でAsyncTaskがdeprecated
-     * サンプルは　 MyTask
-     * https://akira-watson.com/android/asynctask.html
+     * サンプルは　 MyTask　https://akira-watson.com/android/asynctask.html
      * */
     private class ploglessTask {
         ExecutorService executorService;
