@@ -8,14 +8,14 @@ MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\f053ca72a4906620f9d7f529c412475e\transformed\appcompat-1.4.2\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\34c3819cee2951fdcdce0cc29fa8544c\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:17:1-25:12
+MERGED from [com.google.android.gms:play-services-ads:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4f4924a6322dec68b6f7231ab3759229\transformed\jetified-play-services-ads-21.1.0\AndroidManifest.xml:17:1-25:12
 MERGED from [androidx.media:media:1.6.0] C:\Users\hqu66\.gradle\caches\transforms-3\c4d4cccf0c402667508afcde3dd3aa23\transformed\media-1.6.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat-resources:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\5fb3161ccd81a2f6ccae47a4c4a9c5e3\transformed\jetified-appcompat-resources-1.4.2\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\22af41d6efc01e2b1f6684642bfbf4e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.browser:browser:1.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\048abb5d01fee1614633e357f9ba2ab7\transformed\browser-1.4.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\72de3ad0e7ea8651a6e87e246ac967c6\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:17:1-67:12
-MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:17:1-67:12
+MERGED from [com.google.android.gms:play-services-ads-base:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ff48db515625ee231dcf0c23757944de\transformed\jetified-play-services-ads-base-21.1.0\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.ump:user-messaging-platform:2.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\46b82e4a37b295833affb137bb66dc6f\transformed\jetified-user-messaging-platform-2.0.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:17:1-27:12
 MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:2:1-9:12
@@ -103,8 +103,8 @@ ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:9:19-74
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:10:2-76
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:24:5-79
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:24:5-79
 MERGED from [androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\2e730b3aff88889b7e6f3c346ec8a9b1\transformed\work-runtime-2.7.0\AndroidManifest.xml:26:5-79
@@ -121,8 +121,8 @@ ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:12:19-67
 uses-permission#android.permission.INTERNET
 ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:13:2-63
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:23:5-67
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:23:5-67
 	android:name
@@ -167,10 +167,10 @@ MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\
 MERGED from [com.google.android.material:material:1.6.1] C:\Users\hqu66\.gradle\caches\transforms-3\bfec8dfcaf6c34e166a516bbd7a3f400\transformed\material-1.6.1\AndroidManifest.xml:24:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\8ad4b0562467dfb6f3cd10869bd03e3f\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:46:5-65:19
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:46:5-65:19
-MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:46:5-65:19
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:46:5-65:19
+MERGED from [com.google.android.gms:play-services-ads-base:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ff48db515625ee231dcf0c23757944de\transformed\jetified-play-services-ads-base-21.1.0\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-ads-base:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ff48db515625ee231dcf0c23757944de\transformed\jetified-play-services-ads-base-21.1.0\AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:25:5-20
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:25:5-20
 MERGED from [com.google.android.gms:play-services-appset:16.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\436e6412221e4da30087bb13a36dd89a\transformed\jetified-play-services-appset-16.0.1\AndroidManifest.xml:7:5-20
@@ -421,10 +421,10 @@ ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:18-46
 activity#com.google.android.gms.ads.AdActivity
 ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:3-133:6
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:49:9-53:64
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:49:9-53:64
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:49:9-53:64
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:49:9-53:64
 	android:exported
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:52:13-37
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:52:13-37
 	android:configChanges
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:131:4-113
 	android:theme
@@ -449,8 +449,8 @@ MERGED from [androidx.appcompat:appcompat:1.4.2] C:\Users\hqu66\.gradle\caches\t
 MERGED from [androidx.appcompat:appcompat:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\f053ca72a4906620f9d7f529c412475e\transformed\appcompat-1.4.2\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\34c3819cee2951fdcdce0cc29fa8544c\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\34c3819cee2951fdcdce0cc29fa8544c\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:21:5-23:52
-MERGED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:21:5-23:52
+MERGED from [com.google.android.gms:play-services-ads:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4f4924a6322dec68b6f7231ab3759229\transformed\jetified-play-services-ads-21.1.0\AndroidManifest.xml:21:5-23:52
+MERGED from [com.google.android.gms:play-services-ads:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4f4924a6322dec68b6f7231ab3759229\transformed\jetified-play-services-ads-21.1.0\AndroidManifest.xml:21:5-23:52
 MERGED from [androidx.media:media:1.6.0] C:\Users\hqu66\.gradle\caches\transforms-3\c4d4cccf0c402667508afcde3dd3aa23\transformed\media-1.6.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.media:media:1.6.0] C:\Users\hqu66\.gradle\caches\transforms-3\c4d4cccf0c402667508afcde3dd3aa23\transformed\media-1.6.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat-resources:1.4.2] C:\Users\hqu66\.gradle\caches\transforms-3\5fb3161ccd81a2f6ccae47a4c4a9c5e3\transformed\jetified-appcompat-resources-1.4.2\AndroidManifest.xml:20:5-22:41
@@ -461,10 +461,10 @@ MERGED from [androidx.browser:browser:1.4.0] C:\Users\hqu66\.gradle\caches\trans
 MERGED from [androidx.browser:browser:1.4.0] C:\Users\hqu66\.gradle\caches\transforms-3\048abb5d01fee1614633e357f9ba2ab7\transformed\browser-1.4.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\72de3ad0e7ea8651a6e87e246ac967c6\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\72de3ad0e7ea8651a6e87e246ac967c6\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-ads-base:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\d8be8b77cd414a179faebd4886c7ab2b\transformed\jetified-play-services-ads-base-21.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads-base:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ff48db515625ee231dcf0c23757944de\transformed\jetified-play-services-ads-base-21.1.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-ads-base:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ff48db515625ee231dcf0c23757944de\transformed\jetified-play-services-ads-base-21.1.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.ump:user-messaging-platform:2.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\46b82e4a37b295833affb137bb66dc6f\transformed\jetified-user-messaging-platform-2.0.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.ump:user-messaging-platform:2.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\46b82e4a37b295833affb137bb66dc6f\transformed\jetified-user-messaging-platform-2.0.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:20:5-44
@@ -568,7 +568,7 @@ MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\hqu66\.
 INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
 INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
 	tools:overrideLibrary
-		ADDED from [com.google.android.gms:play-services-ads:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\0a074596b5259bd1ad99e84fd23cfc4c\transformed\jetified-play-services-ads-21.0.0\AndroidManifest.xml:23:9-49
+		ADDED from [com.google.android.gms:play-services-ads:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\4f4924a6322dec68b6f7231ab3759229\transformed\jetified-play-services-ads-21.1.0\AndroidManifest.xml:23:9-49
 	android:targetSdkVersion
 		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
@@ -578,53 +578,53 @@ INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.x
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
 		INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
 uses-permission#com.google.android.gms.permission.AD_ID
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:25:5-79
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:25:5-79
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:23:5-79
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4ec0defc92ece0fdb400e741ab9fd7b8\transformed\jetified-play-services-ads-identifier-18.0.0\AndroidManifest.xml:23:5-79
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:26:5-79
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:20.1.2] C:\Users\hqu66\.gradle\caches\transforms-3\f358e5d3ca5fa4cfb733d8c0f7761591\transformed\jetified-play-services-measurement-sdk-api-20.1.2\AndroidManifest.xml:26:5-79
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:25:22-76
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:25:22-76
 queries
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:28:5-44:15
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:28:5-44:15
 intent#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+data:scheme:https
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:31:9-37:18
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:31:9-37:18
 action#android.intent.action.VIEW
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:32:13-65
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:32:13-65
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:32:21-62
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:32:21-62
 category#android.intent.category.BROWSABLE
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:34:13-74
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:34:13-74
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:34:23-71
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:34:23-71
 data
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:36:13-44
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:36:13-44
 	android:scheme
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:36:19-41
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:36:19-41
 intent#action:name:android.support.customtabs.action.CustomTabsService
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:40:9-42:18
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:40:9-42:18
 action#android.support.customtabs.action.CustomTabsService
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:41:13-90
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:41:13-90
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:41:21-87
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:41:21-87
 provider#com.google.android.gms.ads.MobileAdsInitProvider
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:55:9-59:39
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:55:9-59:39
 	android:authorities
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:57:13-73
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:57:13-73
 	android:exported
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:58:13-37
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:58:13-37
 	android:initOrder
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:59:13-36
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:59:13-36
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:56:13-76
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:56:13-76
 service#com.google.android.gms.ads.AdService
-ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:61:9-64:40
+ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:61:9-64:40
 	android:enabled
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:63:13-35
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:63:13-35
 	android:exported
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:64:13-37
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:64:13-37
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:62:13-64
+		ADDED from [com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:62:13-64
 activity#com.google.android.gms.common.api.GoogleApiActivity
 ADDED from [com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:20:9-22:45
 	android:exported

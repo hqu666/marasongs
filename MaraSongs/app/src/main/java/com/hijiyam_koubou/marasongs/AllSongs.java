@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.SpannableString;
@@ -39,6 +40,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AllSongs extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
     OrgUtil ORGUT;				//自作関数集
@@ -48,7 +51,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
     public Context cContext ;
     public plogTaskCallback callback;
-    public AllSongs.plogTask pTask;
+    private  ploglessTask plTask;
+    public AllSongs.plogTask pTask;//置き換え前
 
     public ScrollView pdg_scroll;		//スクロール
     public TextView pgd_msg_tv ;
@@ -502,7 +506,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             musicPlaylist.deletPlayList(AllSongs.this.getResources().getString(R.string.all_songs_file_name));
             pd2CoundtVal=0;
             //プログレスの終端カウント設定
-            pd2MaxVal = pt_end - pt_start;									//このクラスのステップ数
+            pd2MaxVal = 2;          //pt_end - pt_start;									//このクラスのステップ数
             dbMsg +="[" +pd2CoundtVal +"/"+ pd2MaxVal +"]";
             ProgBar2.setMax(pd2MaxVal);	 //セカンドプログレスバー
 /*
@@ -1597,7 +1601,9 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 album_art = null;
                 last_year = null;
 //				myLog(TAG,dbMsg);
-                pTask = (AllSongs.plogTask) new AllSongs.plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
+                plTask  = new ploglessTask(this ,  this);
+                plTask.execute(reqCode,cursor,pdTitol,pdMessage,Kari_db,null);
+              //  pTask = (AllSongs.plogTask) new AllSongs.plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
             }
         }catch(IllegalArgumentException e){
             myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -1614,7 +1620,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * CreateKaliListEndへ
      * */
     @SuppressLint({"DefaultLocale", "Range"})
-    public Cursor kaliListBody(Cursor cursor ,SQLiteStatement stmt ) throws IOException {			//仮リスト作成		 , SQLiteStatement stmt			5041曲 [01:17 349mS]		//2016：03；Cursor finalized without prior close()７回発生?
+    public  Cursor kaliListBody(Cursor cursor, SQLiteStatement stmt) throws IOException {			//仮リスト作成		 , SQLiteStatement stmt			5041曲 [01:17 349mS]		//2016：03；Cursor finalized without prior close()７回発生?
         final String TAG = "kaliListBody";
         String dbMsg= "[AllSongs]";
         try{
@@ -1735,6 +1741,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }else{
                 stmt.bindString(13, "");				//13.MediaStore.Audio.Albums.LAST_YEAR
             }
+            /*
             Integer alubumArtistListID = AllSongs.this.shortArtistList.indexOf(sort_name)+ 1;
             String aSelection =  "SORT_NAME = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
             String[] aSelectionArgs= {String.valueOf(sort_name)};   			//音楽と分類されるファイルだけを抽出する
@@ -1745,6 +1752,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg += "、ALBUM_ARTIST_LIST_ID="+ alubumArtistListID;
             stmt.bindString(14, String.valueOf(alubumArtistListID + 10000));			//ALBUM_ARTIST_LIST_IDのID
             aCursor.close();
+            */
             if( AllSongs.this.saisinnbi == null){					//最新更新日付が拾えていなければ
                 AllSongs.this.saisinnbi = kousinnbi;
 //				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
@@ -2709,6 +2717,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     //http://www.mori-soft.com/2008-08-15-01-36-37/smartphone/111-android-toast-ui
 //http://www.java2s.com/Code/Android/UI/UsingThreadandProgressbar.htm
     public int bCount =0;
+
+    /***/
     public void setProgressValue(Integer progress) {
         final String TAG = "setProgressValue";							//long seleID  ,, int hennkou, String seleItem
         String dbMsg= "[AllSongs]";
@@ -2817,6 +2827,159 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
         });
     }
+
+    /***
+     * public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>>の置き換え
+     * Android 11でAsyncTaskがdeprecated
+     * サンプルは　 MyTask
+     * https://akira-watson.com/android/asynctask.html
+     * */
+    private class ploglessTask {
+        ExecutorService executorService;
+        private Context cContext = null;
+        private plogTaskCallback cCallback;
+        SQLiteDatabase writeDB;
+        SQLiteDatabase readDB;
+        public  SQLiteStatement stmt = null ;			//6；SQLiteStatement
+
+        public int reqCode = 0;						//処理番号
+        Cursor cCursor;
+        public CharSequence pdTitol;			//ProgressDialog のタイトルを設定
+        public CharSequence pdMessage;			//ProgressDialog のメッセージを設定
+
+        public CharSequence pdMessage_stok;			//ProgressDialog のメッセージを設定
+        public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
+        public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
+        public int pdCoundtVal=0;					//ProgressDialog表示値
+        public int pd2MaxVal;					//ProgressDialog の最大値を設定 (水平の時)
+        public int pd2CoundtVal;					//ProgressDialog表示値
+        public String _numberFormat = "%d/%d";
+        public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
+        double num;
+
+        public ploglessTask(Context context , plogTaskCallback callback) {
+            super();
+            final String TAG = "ploglessTask[ploglessTask]";
+            String dbMsg="";
+            try {
+                executorService  = Executors.newSingleThreadExecutor();
+                this.cContext = context;
+                this.cCallback = callback;
+                myLog(TAG,dbMsg );
+            } catch (Exception e) {
+                myErrorLog(TAG,"でエラー発生；"+e.toString());
+            }
+        }
+
+        /**
+         *
+         * */
+        public class TaskRun implements Runnable {
+
+            @Override
+            public void run() {
+                final String TAG = "run[ploglessTask]";
+                String dbMsg="";
+                try {
+                    dbMsg +=";"+ cCursor.getCount() + "件×"+ cCursor.getColumnCount() + "項目";
+                    if(cCursor.moveToFirst()) {
+                        switch(reqCode) {
+                            case pt_CreateKaliList:						//803;仮リスト作成
+//                                this.fn =  (String) params[5] ;			//5
+//                                dbMsg += ",db=" + fn;
+//                                del_DB(fn);		//SQLiteDatabaseを消去
+//                                zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
+//                                Kari_db = this.cContext.openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+//                                Kari_db.close();
+//                                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+                                String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+                                dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
+                                Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
+                                Kari_db.beginTransaction();
+                                stmt = Kari_db.compileStatement("insert into " + zenkyokuTName +
+                                        "(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_LIST_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+                                new ContentValues();
+                                albumCount = 0;
+                                album_art = null;
+                                last_year = null;
+                                break;
+                        }
+                        while( cCursor.moveToNext() ){
+                            switch(reqCode) {
+                                case pt_CreateKaliList:						//803;仮リスト作成
+                                    cCursor = kaliListBody( cCursor , stmt  );		//仮リスト作成
+                                    break;
+                            }
+                        }
+                    }
+
+                    new Handler(Looper.getMainLooper())
+                            .post(() -> onPostExecute());
+                    myLog(TAG,dbMsg );
+                } catch (Exception e) {
+                    myErrorLog(TAG,"でエラー発生；"+e.toString());
+                }
+            }
+        }
+
+        /**
+         * ploglessTaskの入口
+         * */
+        void execute(int req_code , Cursor cursor, String plog_title ,String plog_message,SQLiteDatabase write_db ,SQLiteDatabase read_db) {
+            final String TAG = "execute[ploglessTask]";
+            String dbMsg="";
+            try {
+                onPreExecute(req_code , cursor, plog_title ,plog_message,write_db , read_db);
+                executorService.submit(new TaskRun());
+                myLog(TAG,dbMsg );
+            } catch (Exception e) {
+                myErrorLog(TAG,"でエラー発生；"+e.toString());
+            }
+        }
+
+        /**
+         * ploglessTaskの前処理
+         * Backgroundメソッドの実行前にメインスレッドで実行
+         * */
+        void onPreExecute(int req_code , Cursor cursor, String plog_title ,String plog_message,SQLiteDatabase write_db ,SQLiteDatabase read_db) {
+            final String TAG = "onPreExecute[ploglessTask]";
+            String dbMsg="";
+            try {
+                this.reqCode = req_code;
+                dbMsg += "[" + this.reqCode + "]";
+                this.pdTitol = plog_title;
+                this.pdMessage = plog_message;
+                dbMsg += this.pdTitol + ":" + this.pdMessage ;
+                this.cCursor = cursor;
+                dbMsg += " , " + this.cCursor.getCount() + "件";
+                this.writeDB = write_db;
+                dbMsg += " , writeDB=" + this.writeDB.getPath();
+                this.readDB = read_db;
+                dbMsg += " , readDB=" + this.readDB.getPath();
+                myLog(TAG,dbMsg );
+            } catch (Exception e) {
+                myErrorLog(TAG,"でエラー発生；"+e.toString());
+            }
+        }
+
+        /**
+         * ploglessTaskの終端処理
+         * Backgroundメソッドの実行前にメインスレッドで実行
+         * */
+        void onPostExecute() {
+            final String TAG = "onPostExecute[ploglessTask]";
+            String dbMsg="";
+            try {
+                dbMsg = "reqCode="+reqCode;
+                onSuccessplogTask(reqCode);
+                myLog(TAG,dbMsg );
+            } catch (Exception e) {
+                myErrorLog(TAG,"でエラー発生；"+e.toString());
+            }
+        }
+    }
+
+
 
     /**
      * 第一引数;タスク開始時:doInBackground()に渡す引数の型,
@@ -3276,6 +3439,114 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
         }
 
+    }
+
+    /***
+     * public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>>の置き換え
+     * Android 11でAsyncTaskがdeprecated
+     * サンプルは　 AsyncExportProgress
+     * https://uchida001tmhr.hatenablog.com/entry/2020/07/25/205659
+     * */
+    public class PlogRunnable implements Runnable {
+
+       private String result;
+
+//       private Context cContext = null;
+//       private plogTaskCallback callback;
+//       //		private AllSongs ZKL;
+//       //http://uguisu.skr.jp/Windows/android_asynctask.html
+//       OrgUtil ORGUT;					//自作関数集
+//       public long start = 0;				// 開始時刻の取得
+//       public Boolean isShowProgress;
+//       public Dialog pDialog = null;	// 処理中ダイアログ	ProgressDialog	AlertDialog
+//       public int reqCode = 0;						//処理番号
+//       public CharSequence pdTitol;			//ProgressDialog のタイトルを設定
+//       public CharSequence pdMessage;			//ProgressDialog のメッセージを設定
+//       public CharSequence pdMessage_stok;			//ProgressDialog のメッセージを設定
+//       public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
+//       public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
+//       public int pdCoundtVal=0;					//ProgressDialog表示値
+//       public int pd2MaxVal;					//ProgressDialog の最大値を設定 (水平の時)
+//       public int pd2CoundtVal;					//ProgressDialog表示値
+//       public String _numberFormat = "%d/%d";
+//       public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
+//
+//       public Boolean preExecuteFiniSh=false;	//ProgressDialog生成終了
+//       public Bundle extras;
+//
+//       long stepKaisi = System.currentTimeMillis();		//この処理の開始時刻の取得
+//       long stepSyuuryou;		//この処理の終了時刻の取得
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        @Override
+        public void run() {
+            final String TAG = "run[PlogRunnable]";
+            String dbMsg="";
+            try {
+                onPreExecute();
+                result = doInBackground();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onPostExecute(result);
+                    }
+                });
+            } catch (Exception e) {
+                myErrorLog(TAG,"でエラー発生；"+e.toString());
+            }
+        }
+    }
+
+    /**
+     * PlogRunnableの前処理
+     * Backgroundメソッドの実行前にメインスレッドで実行
+     * */
+    void onPreExecute() {
+        final String TAG = "onPreExecute[PlogRunnableから]";
+        String dbMsg="";
+        try {
+            dbMsg = ":；reqCode="+reqCode;///////////////////////////
+            dbMsg +=  ",Message="+pdMessage;///////////////////////////
+            dbMsg += ",pdMaxVal="+pdMaxVal;///////////////////////////
+        } catch (Exception e) {
+            myErrorLog(TAG,"でエラー発生；"+e.toString());
+        }
+    }
+
+    /**
+     * PlogRunnableのバックグランド処理
+     * */
+    public void execute() {
+        final String TAG = "execute[PlogRunnableから]";
+        String dbMsg="";
+        try {
+            ExecutorService executorService  = Executors.newSingleThreadExecutor();
+            executorService.submit(new PlogRunnable());
+        } catch (Exception e) {
+            myErrorLog(TAG,"でエラー発生；"+e.toString());
+        }
+    }
+
+    String doInBackground() {
+        final String TAG = "doInBackground[PlogRunnableから]";
+        String dbMsg="";
+        try {
+        } catch (Exception e) {
+            myErrorLog(TAG,"でエラー発生；"+e.toString());
+        }
+        return null;
+    }
+
+    /**
+     * PlogRunnableのバックグランド処理終了後の処理をここに記述します
+     * */
+    void onPostExecute(String result) {
+        final String TAG = "onPostExecute[PlogRunnableから]";
+        String dbMsg="";
+        try {
+        } catch (Exception e) {
+            myErrorLog(TAG,"でエラー発生；"+e.toString());
+        }
     }
 
     /** Runnable のプログラム */

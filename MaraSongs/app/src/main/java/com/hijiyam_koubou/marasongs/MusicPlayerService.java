@@ -169,7 +169,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 	public MediaPlayer mPlayer;
 	public MediaPlayer mPlayer2;
-	public TelephonyManager mTelephonyManager;
+//	public TelephonyManager mTelephonyManager;		//Android 12 でPhoneStateListener が Deprecated になった
 	int musicVol ;							//音楽再生音量
 	int imanoJyoutai;
 
@@ -3410,7 +3410,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				ruikeiSTTime = 0;			//累積時間
 				ruikeikyoku = 0;			//累積曲数
 				///ここからオリジナル////////////////////////////////////////////////////////////////////////////
-				//		dbMsg="PlayerServiceで"+getApplicationContext();/////////////////////////////////////
+				/* Android 12 でPhoneStateListener が Deprecated になった  https://note.com/koh_49/n/n94a5c2ae3aa2
 				dbMsg=dbMsg +"myPid:"+ android.os.Process.myPid() + " , myTid:" + android.os.Process.myTid();/////////////////////////////////////
 				dbMsg +=  ",Telephonys設定=" + mTelephonyManager;///////////////java.lang.NullPointerException
 				if(mTelephonyManager == null ){
@@ -3420,6 +3420,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						mTelephonyManager.listen(mPhoneStateListener,PhoneStateListener.LISTEN_CALL_STATE);
 					}
 				}
+				*/
 				readPref();
 				//			setteriYomikomi();		//<onCreate	プリファレンスに記録されているデータ読み込み
 				if (21 <= android.os.Build.VERSION.SDK_INT  ) {

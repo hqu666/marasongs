@@ -65,33 +65,33 @@
 32-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:26:14-69
 33
 34    <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- Android package visibility setting -->
-34-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:25:5-79
-34-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:25:22-76
+34-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:25:5-79
+34-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:25:22-76
 35    <queries>
-35-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:28:5-44:15
+35-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:28:5-44:15
 36
 37        <!-- For browser content -->
 38        <intent>
-38-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:31:9-37:18
+38-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:31:9-37:18
 39            <action android:name="android.intent.action.VIEW" />
-39-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:32:13-65
-39-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:32:21-62
+39-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:32:13-65
+39-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:32:21-62
 40
 41            <category android:name="android.intent.category.BROWSABLE" />
-41-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:34:13-74
-41-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:34:23-71
+41-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:34:13-74
+41-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:34:23-71
 42
 43            <data android:scheme="https" />
-43-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:36:13-44
-43-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:36:19-41
+43-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:36:13-44
+43-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:36:19-41
 44        </intent>
 45        <!-- End of browser content -->
 46        <!-- For CustomTabsService -->
 47        <intent>
-47-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:40:9-42:18
+47-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:40:9-42:18
 48            <action android:name="android.support.customtabs.action.CustomTabsService" />
-48-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:41:13-90
-48-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:41:21-87
+48-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:41:13-90
+48-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:41:21-87
 49        </intent>
 50        <!-- End of CustomTabsService -->
 51    </queries>
@@ -347,7 +347,7 @@
 183            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
 183-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:131:4-113
 184            android:exported="false"
-184-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:52:13-37
+184-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:52:13-37
 185            android:theme="@android:style/Theme.Translucent" />
 185-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:132:4-52
 186        <activity
@@ -359,24 +359,24 @@
 189        </activity>
 190
 191        <provider
-191-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:55:9-59:39
+191-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:55:9-59:39
 192            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
-192-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:56:13-76
+192-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:56:13-76
 193            android:authorities="com.hijiyam_koubou.marasongs.mobileadsinitprovider"
-193-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:57:13-73
+193-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:57:13-73
 194            android:exported="false"
-194-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:58:13-37
+194-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:58:13-37
 195            android:initOrder="100" />
-195-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:59:13-36
+195-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:59:13-36
 196
 197        <service
-197-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:61:9-64:40
+197-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:61:9-64:40
 198            android:name="com.google.android.gms.ads.AdService"
-198-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:62:13-64
+198-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:62:13-64
 199            android:enabled="true"
-199-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:63:13-35
+199-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:63:13-35
 200            android:exported="false" />
-200-->[com.google.android.gms:play-services-ads-lite:21.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\4c1177f4a8a052deeda362c441c4274d\transformed\jetified-play-services-ads-lite-21.0.0\AndroidManifest.xml:64:13-37
+200-->[com.google.android.gms:play-services-ads-lite:21.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\ba38d8f45ddb5b8f1ed6d00054414dc6\transformed\jetified-play-services-ads-lite-21.1.0\AndroidManifest.xml:64:13-37
 201
 202        <activity
 202-->[com.google.android.gms:play-services-base:18.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\5754950d2c721c504e644f93e9abd0af\transformed\jetified-play-services-base-18.0.0\AndroidManifest.xml:20:9-22:45
