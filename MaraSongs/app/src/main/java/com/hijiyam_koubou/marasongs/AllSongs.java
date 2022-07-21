@@ -387,6 +387,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     break;
             }
             setTitle(pdTitol);
+            plTask  = new ploglessTask(this ,  this);
+
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg +"で"+e.toString());
         }
@@ -1571,6 +1573,15 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 if(Kari_db.isOpen()){
                     Kari_db.close();
                 }
+            }else{
+                String fn = cContext.getString(R.string.kari_file);			//kari.db
+                dbMsg += ",db=" + fn;
+                zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
+//			dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+                zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//			dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
+                Kari_db = zenkyokuHelper.getReadableDatabase();			// データベースをオープン
+                Kari_db.close();
             }
             String fn = cContext.getString(R.string.kari_file);			//kari.db
             ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
@@ -1601,8 +1612,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 album_art = null;
                 last_year = null;
 //				myLog(TAG,dbMsg);
-                plTask  = new ploglessTask(this ,  this);
-                plTask.execute(reqCode,cursor,pdTitol,pdMessage,Kari_db,null);
+                plTask.execute(reqCode,cursor,pdTitol,pdMessage);
               //  pTask = (AllSongs.plogTask) new AllSongs.plogTask(this ,  this).execute(reqCode,  pdMessage , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
             }
         }catch(IllegalArgumentException e){
@@ -1908,7 +1918,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             if(cursor.moveToFirst()){
                 reqCode = pt_CreateAllSongs;
                 pd2CoundtVal++;
-                pdMessage_stok = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" + this.cContext.getString(R.string.listmei_zemkyoku)+ this.cContext.getString(R.string.comon_sakuseicyuu) + "\n" +	//全曲リスト作成中
+                pdMessage= pdMessage_stok + "\n\n" + pd2CoundtVal + ";" + this.cContext.getString(R.string.listmei_zemkyoku)+ this.cContext.getString(R.string.comon_sakuseicyuu) + "\n" +	//全曲リスト作成中
                         getResources().getString(R.string.zl_create_zenkyoku_list) + "\n" + pdMaxVal + this.cContext.getString(R.string.pp_kyoku);		//コンピレーション	以外○○曲				dbMsg=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
                 pdCoundtVal = 0;
                 cContext.getContentResolver();
@@ -1917,6 +1927,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     if(Zenkyoku_db.isOpen()){
                         Zenkyoku_db.close();
                     }
+                }else{
+                    zenkyokuHelper = new ZenkyokuHelper(cContext , fn);		//全曲リストの定義ファイル		.
+                    zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+                    dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
+                    Zenkyoku_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
+                    Zenkyoku_db.beginTransaction();
+                    Zenkyoku_db.close();
                 }
                 fn = cContext.getString(R.string.zenkyoku_file);			//全曲リスト+ File.separator +cContext.getString(R.string.zenkyoku_file)
                 dbMsg += ",db=" + fn;
@@ -1928,7 +1945,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     setPrefStr("pref_data_url",pref_data_url,AllSongs.this);
                 }
                 myLog(TAG,dbMsg);
-                pTask = (AllSongs.plogTask) new AllSongs.plogTask(this ,  this).execute(reqCode,  pdMessage_stok , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
+                plTask.execute(reqCode,cursor,pdTitol,pdMessage);
+//                pTask = (AllSongs.plogTask) new AllSongs.plogTask(this ,  this).execute(reqCode,  pdMessage_stok , cursor ,null , null , fn );		//,jikkouStep,totalStep,calumnInfo
             }
         }catch(IllegalArgumentException e){
             myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -2718,7 +2736,10 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //http://www.java2s.com/Code/Android/UI/UsingThreadandProgressbar.htm
     public int bCount =0;
 
-    /***/
+    /**
+     * プログレス値の更新
+     * 0を渡せばprogBar1のmaxから最大値を書き込む
+     * */
     public void setProgressValue(Integer progress) {
         final String TAG = "setProgressValue";							//long seleID  ,, int hennkou, String seleItem
         String dbMsg= "[AllSongs]";
@@ -2880,17 +2901,19 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 final String TAG = "run[ploglessTask]";
                 String dbMsg="";
                 try {
+                    dbMsg +="["+ reqCode + "]";
                     dbMsg +=";"+ cCursor.getCount() + "件×"+ cCursor.getColumnCount() + "項目";
+                    String fn = cContext.getString(R.string.kari_file);			//仮ファイル
                     if(cCursor.moveToFirst()) {
                         switch(reqCode) {
                             case pt_CreateKaliList:						//803;仮リスト作成
-//                                this.fn =  (String) params[5] ;			//5
-//                                dbMsg += ",db=" + fn;
-//                                del_DB(fn);		//SQLiteDatabaseを消去
-//                                zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-//                                Kari_db = this.cContext.openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-//                                Kari_db.close();
-//                                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+                                fn = cContext.getString(R.string.kari_file);			//仮ファイル
+                                dbMsg += ",db=" + fn;
+                                del_DB(fn);		//SQLiteDatabaseを消去
+                                zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
+                                Kari_db = cContext.openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+                                Kari_db.close();
+                                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
                                 String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
                                 dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
                                 Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
@@ -2902,11 +2925,36 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                                 album_art = null;
                                 last_year = null;
                                 break;
+                            case pt_CreateAllSongs:		//807;全曲リスト作成
+                                fn = cContext.getString(R.string.zenkyoku_file);			//仮ファイル
+                                dbMsg += ",db=" + fn;
+                                if(reqCode == pt_CreateAllSongs ){
+                                    del_DB(fn);		//SQLiteDatabaseを消去
+                                    Zenkyoku_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+                                    Zenkyoku_db.close();
+                                    dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+                                }
+                                zenkyokuHelper = new ZenkyokuHelper(cContext , fn);		//全曲リストの定義ファイル		.
+                                zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+                                dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
+                                Zenkyoku_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
+                                Zenkyoku_db.beginTransaction();
+                                stmt = null;
+                                stmt = Zenkyoku_db.compileStatement("insert into " + zenkyokuTName +
+                                        "(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_LIST_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+                                new ContentValues();
+                                break;
                         }
                         while( cCursor.moveToNext() ){
                             switch(reqCode) {
                                 case pt_CreateKaliList:						//803;仮リスト作成
                                     cCursor = kaliListBody( cCursor , stmt  );		//仮リスト作成
+                                    break;
+                                case pt_CreateAllSongs:									//807;全曲リスト作成
+                                    cursor = CreateZenkyokuBody( cursor  , stmt );					//最終リスト作成
+                                    long id = 0;
+                                    id = stmt.executeInsert();
+                                    dbMsg += "文字[" + id +"]に追加";///////////////////		AllSongs.this.
                                     break;
                             }
                         }
@@ -2920,15 +2968,32 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 }
             }
         }
+        public void del_DB(String fn) {			//SQLiteDatabaseを消去
+            final String TAG = "del_DB[plogTask]";
+            String dbMsg="";
+            try{
+                File dbF = new File(fn);		//cContext.getDatabasePath(fn);			//Environment.getExternalStorageDirectory().getPath();
+                dbMsg += ",dbF=" + dbF;
+                dbMsg += ">>DB消去=" + cContext.deleteDatabase(fn);			//消去してdbF.delete();		deleteDatabase(dbF.getPath());
+                dbMsg += " , exists=" + dbF.exists() +" , canWrite=" + dbF.canWrite();
+                if(dbF.exists()){
+                    dbMsg += ">>delF=" + dbF.getPath();
+                    dbMsg += ">>ファイル消去=" + dbF.delete();
+                }
+                //			myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG,dbMsg+"；"+e.toString());
+            }
+        }
 
         /**
          * ploglessTaskの入口
          * */
-        void execute(int req_code , Cursor cursor, String plog_title ,String plog_message,SQLiteDatabase write_db ,SQLiteDatabase read_db) {
+        void execute(int req_code , Cursor cursor, String plog_title ,String plog_message) {
             final String TAG = "execute[ploglessTask]";
             String dbMsg="";
             try {
-                onPreExecute(req_code , cursor, plog_title ,plog_message,write_db , read_db);
+                onPreExecute(req_code , cursor, plog_title ,plog_message);
                 executorService.submit(new TaskRun());
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
@@ -2940,7 +3005,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
          * ploglessTaskの前処理
          * Backgroundメソッドの実行前にメインスレッドで実行
          * */
-        void onPreExecute(int req_code , Cursor cursor, String plog_title ,String plog_message,SQLiteDatabase write_db ,SQLiteDatabase read_db) {
+        void onPreExecute(int req_code , Cursor cursor, String plog_title ,String plog_message) {
             final String TAG = "onPreExecute[ploglessTask]";
             String dbMsg="";
             try {
@@ -2949,12 +3014,25 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 this.pdTitol = plog_title;
                 this.pdMessage = plog_message;
                 dbMsg += this.pdTitol + ":" + this.pdMessage ;
+                pgd_msg_tv.setText(this.pdMessage);
+                pgd_msg_tv.scrollTo(0, pgd_msg_tv.getBottom());
+
                 this.cCursor = cursor;
                 dbMsg += " , " + this.cCursor.getCount() + "件";
-                this.writeDB = write_db;
-                dbMsg += " , writeDB=" + this.writeDB.getPath();
-                this.readDB = read_db;
-                dbMsg += " , readDB=" + this.readDB.getPath();
+                pdMaxVal = this.cCursor.getCount();
+                AllSongs.this.progBar1.setMax(pdMaxVal);
+                dbMsg +=">getMax>" + progBar1.getMax();
+                pdCoundtVal = 0;
+                setProgressValue( pdCoundtVal );
+
+//                this.writeDB = write_db;
+//                if(this.writeDB != null){
+//                    dbMsg += " , writeDB=" + this.writeDB.getPath();
+//                }
+//                this.readDB = read_db;
+//                if(this.readDB != null){
+//                    dbMsg += " , readDB=" + this.readDB.getPath();
+//                }
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
                 myErrorLog(TAG,"でエラー発生；"+e.toString());
@@ -3037,7 +3115,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
          * doInBackgroundメソッドの実行前にメインスレッドで実行されます。
          * 非同期処理前に何か処理を行いたい時などに使うことができます。 */
         protected void onPreExecute() {			// onPreExecuteダイアログ表示
-            //int reqCode , String pdTitol , String pdMessage ,int pdMaxVal ,int pd2CoundtVal,int pd2MaxVal
             super.onPreExecute();
             final String TAG = "onPreExecute[plogTask]";
             String dbMsg="";
@@ -3081,7 +3158,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //				String artist_before = "";		//	ALBUM_ARTIST text,//album_artist
 //				String album_before = "";		//ALBUM text, " +					//album
 
-                pdCoundtVal = 0;
                 this.reqCode = (Integer) params[0] ;			//0.処理
                 dbMsg="reqCode = " + reqCode;
                 dbMsg +="[" + ProgBar2.getProgress() + "/" + ProgBar2.getMax() + "]";
@@ -3102,6 +3178,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 pdMaxVal = cursor.getCount();
                 AllSongs.this.progBar1.setMax(pdMaxVal);
                 dbMsg +=">getMax>" + progBar1.getMax();
+                pdCoundtVal = 0;
                 setProgressValue( pdCoundtVal );
                 long vtWidth = 500;		// 更新間隔
                 if(pdMaxVal<500){
@@ -3202,13 +3279,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //						case pt_CompList:						//806;全曲リストにコンピレーション追加
                         this.fn =  (String) params[5] ;			//5
                         dbMsg += ",db=" + fn;
-                        zenkyokuHelper = new ZenkyokuHelper(cContext , fn);		//全曲リストの定義ファイル		.
                         if(reqCode == pt_CreateAllSongs ){
                             del_DB(fn);		//SQLiteDatabaseを消去
                             Zenkyoku_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
                             Zenkyoku_db.close();
                             dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
                         }
+                        zenkyokuHelper = new ZenkyokuHelper(cContext , fn);		//全曲リストの定義ファイル		.
                         zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
                         dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
                         Zenkyoku_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
@@ -3440,113 +3517,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
     }
 
-    /***
-     * public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>>の置き換え
-     * Android 11でAsyncTaskがdeprecated
-     * サンプルは　 AsyncExportProgress
-     * https://uchida001tmhr.hatenablog.com/entry/2020/07/25/205659
-     * */
-    public class PlogRunnable implements Runnable {
-
-       private String result;
-
-//       private Context cContext = null;
-//       private plogTaskCallback callback;
-//       //		private AllSongs ZKL;
-//       //http://uguisu.skr.jp/Windows/android_asynctask.html
-//       OrgUtil ORGUT;					//自作関数集
-//       public long start = 0;				// 開始時刻の取得
-//       public Boolean isShowProgress;
-//       public Dialog pDialog = null;	// 処理中ダイアログ	ProgressDialog	AlertDialog
-//       public int reqCode = 0;						//処理番号
-//       public CharSequence pdTitol;			//ProgressDialog のタイトルを設定
-//       public CharSequence pdMessage;			//ProgressDialog のメッセージを設定
-//       public CharSequence pdMessage_stok;			//ProgressDialog のメッセージを設定
-//       public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
-//       public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
-//       public int pdCoundtVal=0;					//ProgressDialog表示値
-//       public int pd2MaxVal;					//ProgressDialog の最大値を設定 (水平の時)
-//       public int pd2CoundtVal;					//ProgressDialog表示値
-//       public String _numberFormat = "%d/%d";
-//       public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
-//
-//       public Boolean preExecuteFiniSh=false;	//ProgressDialog生成終了
-//       public Bundle extras;
-//
-//       long stepKaisi = System.currentTimeMillis();		//この処理の開始時刻の取得
-//       long stepSyuuryou;		//この処理の終了時刻の取得
-
-        Handler handler = new Handler(Looper.getMainLooper());
-        @Override
-        public void run() {
-            final String TAG = "run[PlogRunnable]";
-            String dbMsg="";
-            try {
-                onPreExecute();
-                result = doInBackground();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onPostExecute(result);
-                    }
-                });
-            } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
-            }
-        }
-    }
-
-    /**
-     * PlogRunnableの前処理
-     * Backgroundメソッドの実行前にメインスレッドで実行
-     * */
-    void onPreExecute() {
-        final String TAG = "onPreExecute[PlogRunnableから]";
-        String dbMsg="";
-        try {
-            dbMsg = ":；reqCode="+reqCode;///////////////////////////
-            dbMsg +=  ",Message="+pdMessage;///////////////////////////
-            dbMsg += ",pdMaxVal="+pdMaxVal;///////////////////////////
-        } catch (Exception e) {
-            myErrorLog(TAG,"でエラー発生；"+e.toString());
-        }
-    }
-
-    /**
-     * PlogRunnableのバックグランド処理
-     * */
-    public void execute() {
-        final String TAG = "execute[PlogRunnableから]";
-        String dbMsg="";
-        try {
-            ExecutorService executorService  = Executors.newSingleThreadExecutor();
-            executorService.submit(new PlogRunnable());
-        } catch (Exception e) {
-            myErrorLog(TAG,"でエラー発生；"+e.toString());
-        }
-    }
-
-    String doInBackground() {
-        final String TAG = "doInBackground[PlogRunnableから]";
-        String dbMsg="";
-        try {
-        } catch (Exception e) {
-            myErrorLog(TAG,"でエラー発生；"+e.toString());
-        }
-        return null;
-    }
-
-    /**
-     * PlogRunnableのバックグランド処理終了後の処理をここに記述します
-     * */
-    void onPostExecute(String result) {
-        final String TAG = "onPostExecute[PlogRunnableから]";
-        String dbMsg="";
-        try {
-        } catch (Exception e) {
-            myErrorLog(TAG,"でエラー発生；"+e.toString());
-        }
-    }
 
     /** Runnable のプログラム */
     //http://techbooster.jpn.org/andriod/ui/9564/
