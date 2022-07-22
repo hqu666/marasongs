@@ -2887,7 +2887,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 this.cCallback = callback;
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
+                myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
 
@@ -2905,17 +2905,16 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     dbMsg +=";"+ cCursor.getCount() + "件×"+ cCursor.getColumnCount() + "項目";
                     String fn = cContext.getString(R.string.kari_file);			//仮ファイル
                     if(cCursor.moveToFirst()) {
+                        String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+                        dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
                         switch(reqCode) {
                             case pt_CreateKaliList:						//803;仮リスト作成
                                 fn = cContext.getString(R.string.kari_file);			//仮ファイル
                                 dbMsg += ",db=" + fn;
                                 del_DB(fn);		//SQLiteDatabaseを消去
                                 zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-                                Kari_db = cContext.openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-                                Kari_db.close();
+                                Kari_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE , null);	// | Context.MODE_ENABLE_WRITE_AHEAD_LOGGING Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
                                 dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-                                String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-                                dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
                                 Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
                                 Kari_db.beginTransaction();
                                 stmt = Kari_db.compileStatement("insert into " + zenkyokuTName +
@@ -2928,15 +2927,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                             case pt_CreateAllSongs:		//807;全曲リスト作成
                                 fn = cContext.getString(R.string.zenkyoku_file);			//仮ファイル
                                 dbMsg += ",db=" + fn;
-                                if(reqCode == pt_CreateAllSongs ){
-                                    del_DB(fn);		//SQLiteDatabaseを消去
-                                    Zenkyoku_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-                                    Zenkyoku_db.close();
-                                    dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-                                }
+                                del_DB(fn);		//SQLiteDatabaseを消去
+                                Zenkyoku_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+                                Zenkyoku_db.close();
+                                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
                                 zenkyokuHelper = new ZenkyokuHelper(cContext , fn);		//全曲リストの定義ファイル		.
-                                zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-                                dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
                                 Zenkyoku_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
                                 Zenkyoku_db.beginTransaction();
                                 stmt = null;
@@ -2964,7 +2959,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                             .post(() -> onPostExecute());
                     myLog(TAG,dbMsg );
                 } catch (Exception e) {
-                    myErrorLog(TAG,"でエラー発生；"+e.toString());
+                    myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
                 }
             }
         }
@@ -2997,7 +2992,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 executorService.submit(new TaskRun());
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
+                myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
 
@@ -3035,7 +3030,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //                }
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
+                myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
 
@@ -3051,7 +3046,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 onSuccessplogTask(reqCode);
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
+                myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
     }
@@ -3105,7 +3100,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 }
                 //		myLog(TAG, dbMsg);
             } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
+                myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
         //			http://greety.sakura.ne.jp/redo/2011/02/asynctask.html
@@ -3123,7 +3118,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 dbMsg +=  ",Message="+pdMessage;///////////////////////////
                 dbMsg += ",pdMaxVal="+pdMaxVal;///////////////////////////
             } catch (Exception e) {
-                myErrorLog(TAG,"でエラー発生；"+e.toString());
+                myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
 
