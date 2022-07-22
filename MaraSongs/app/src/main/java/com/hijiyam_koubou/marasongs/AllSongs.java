@@ -256,6 +256,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         return retStr;
     }
 
+    /**
+     * 渡されたcursorからアルバムアーティスト名を返す
+     * MediaStore.Audio.Media.ARTISTが拾えなければALBUM_ARTIST,ファイルパスの下から3番目、COMPOSERを割り当てる
+     * コンピレーション、さまざまなアーティストなどは"Compilations"に統一
+     * */
     public String setAlbumArtist(Cursor cursor) {
         final String TAG = "setAlbumArtist";
         String dbMsg = "[AllSongs]";
@@ -264,50 +269,70 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             @SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
             String motoName = artistN;
             String aArtintName = getUrl2Artist(cursor);
-            dbMsg += ">>" + aArtintName ;
-            @SuppressLint("Range") String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
-            dbMsg += ",composer=" + composer ;
-            if( artistN == null ){
-                if( composer != null ){
-                    artistN = composer;
-                } else{
-                    artistN = aArtintName;
-                }
+            dbMsg += ">>" + aArtintName;
+            @SuppressLint("Range") String albumArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ARTIST));
+            dbMsg += ",albumArtist=" + albumArtist ;
+            if( albumArtist != null ){
+                artistN = albumArtist;
             } else {
-                String comp10 = getResources().getString(R.string.comon_compilation);			//コンピレーション
-                String comp11 = comp10.toUpperCase();											//大文字化
-                String comp12 = comp10.toLowerCase();											//小文字化
-                String comp20 = getResources().getString(R.string.comon_compilation0);	//さまざまなアーティスト
-                String comp21 = comp20.toUpperCase();											//大文字化
-                String comp22 = comp20.toLowerCase();											//小文字化
-                String comp30 = getResources().getString(R.string.comon_compilation2);	//Various Artists
-                String comp31 = comp30.toUpperCase();											//大文字化
-                String comp32 = comp30.toLowerCase();											//小文字化
-                if(artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
-                        artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
-                        artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32) ){
-                    artistN = "Compilations";
-                }else{
-                    for(String Junl : genleList){
-                        if(aArtintName.equals(Junl)){
-                            artistN = Junl;
+                @SuppressLint("Range") String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
+                dbMsg += ",composer=" + composer;
+                if (artistN == null) {
+                    if (aArtintName != null) {
+                        artistN = aArtintName;
+                    } else if (composer != null) {
+                        artistN = composer;
+                    } else {
+                        artistN = "unknownARTIST";
+                    }
+                } else {
+                    String comp10 = getResources().getString(R.string.comon_compilation);            //コンピレーション
+                    String comp11 = comp10.toUpperCase();                                            //大文字化
+                    String comp12 = comp10.toLowerCase();                                            //小文字化
+                    String comp20 = getResources().getString(R.string.comon_compilation0);    //さまざまなアーティスト
+                    String comp21 = comp20.toUpperCase();                                            //大文字化
+                    String comp22 = comp20.toLowerCase();                                            //小文字化
+                    String comp30 = getResources().getString(R.string.comon_compilation2);    //Various Artists
+                    String comp31 = comp30.toUpperCase();                                            //大文字化
+                    String comp32 = comp30.toLowerCase();                                            //小文字化
+                    if (artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
+                            artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
+                            artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32)) {
+                        artistN = "Compilations";
+                    } else {
+                        for (String Junl : genleList) {
+                            if (aArtintName.equals(Junl)) {
+                                artistN = Junl;
+                            }
                         }
                     }
                 }
-            }
 
-            if(retStr.equals("")){
-                retStr = aArtintName;
-            }
-            if(! motoName.equals(artistN)
+                if (retStr.equals("")) {
+                    retStr = aArtintName;
+                }
+                if (!motoName.equals(artistN)
 //					&& ! retStr.equals("Compilations")
-            ){
-                retStr = artistN;
-                dbMsg += ":::artist=" + artistN ;
-                dbMsg += ">>" + retStr ;
-//				myLog(TAG, dbMsg);
+                ) {
+                }
             }
-
+            String comp10 = getResources().getString(R.string.comon_compilation);            //コンピレーション
+            String comp11 = comp10.toUpperCase();                                            //大文字化
+            String comp12 = comp10.toLowerCase();                                            //小文字化
+            String comp20 = getResources().getString(R.string.comon_compilation0);    //さまざまなアーティスト
+            String comp21 = comp20.toUpperCase();                                            //大文字化
+            String comp22 = comp20.toLowerCase();                                            //小文字化
+            String comp30 = getResources().getString(R.string.comon_compilation2);    //Various Artists
+            String comp31 = comp30.toUpperCase();                                            //大文字化
+            String comp32 = comp30.toLowerCase();                                            //小文字化
+            if (artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
+                    artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
+                    artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32)) {
+                artistN = "Compilations";
+            }
+            retStr = artistN;
+            dbMsg += ":::artist=" + artistN;
+//				myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
@@ -1641,8 +1666,10 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             progBar1.setProgress(pdCoundtVal);
             dbMsg += pdCoundtVal +"/"+ progBar1.getMax();
             String dataFPN = null;
+
             dataFPN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             dbMsg += dataFPN ;
+//            String[] dataPasses = dataFPN.split(File.pathSeparator);
             map = ORGUT.data2msick(dataFPN , getApplicationContext());			//URLからアーティスト～拡張子を分離させて返す
             boolean kakikae = false;
             String mPass = map.get( "mPass" );
@@ -1652,7 +1679,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg += "[_ID:" + ｒID + "]";
             stmt.bindString(1, String.valueOf(ｒID));								//1.元々のID
             String motoName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-            dbMsg += motoName ;
+            dbMsg += ",元のアーティスト名="+ motoName ;
+            if(motoName == null || motoName=="<unknown>"){
+                motoName=getUrl2Artist(cursor);
+                dbMsg += ">>"+ motoName ;
+            }
             String artistN = setAlbumArtist(cursor);
             dbMsg += ":" + artistN ;
             String sort_name = ORGUT.ArtistPreFix(artistN.toUpperCase());	//大文字化してアーティスト名のTheを取る
@@ -1716,10 +1747,17 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 }else {
                     nTitol = getApplicationContext().getResources().getString(R.string.comon_nuKnow_album);
                 }
-                dbMsg +=">>" +  nTitol ;/////////////////////////////////////
+                dbMsg +=">>" +  nTitol ;
             }
             stmt.bindString(7, nTitol);																		//7.title;タイトル
-            stmt.bindString(8, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));	//8.duration;再生時間
+            dbMsg +=">>" +  nTitol ;
+            String duranation = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+            dbMsg +=",再生時間=" +  duranation ;
+            if(duranation==null){
+                duranation="180000";
+                dbMsg +=">>" +  duranation ;
+            }
+            stmt.bindString(8, duranation);	//8.duration;再生時間
             readStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
             dbMsg +=",YEAR=" +readStr ;/////////////////////////////////////
             if(readStr != null){
@@ -3090,9 +3128,9 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             super();
             //,int reqCode , String pdTitol , String pdMessage ,int pdMaxVal ,int pd2CoundtVal,int pd2MaxVal){
             final String TAG = "plogTask[plogTask]";
+            String dbMsg = "cContext="+cContext;///////////////////////////
             try{
                 ORGUT = new OrgUtil();				//自作関数集
-                String dbMsg = "cContext="+cContext;///////////////////////////
                 if( cContext != null ){
                     this.cContext = cContext;
                     this.callback = callback;

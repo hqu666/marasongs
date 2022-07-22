@@ -1146,7 +1146,11 @@ public class OrgUtil  extends Activity{				//
 		return retInt;
 	}
 
-	public String ArtistPreFix(String aName ){					//アーティスト名のTheを取る
+	/**
+	 * アーティスト名のThe や 動作不備につながる文字を削除
+	 * ゲスト参加も除去
+	 * */
+	public String ArtistPreFix(String aName ){
 		final String TAG = "ArtistPreFix";
 		String dbMsg="[OrgUtil];";/////////////////////////////////////
 		try{
@@ -1410,8 +1414,8 @@ public class OrgUtil  extends Activity{				//
 		return retBool;
 	}
 
-	/**アルバムアートのURLを返す
-	 *
+	/**
+	 *　アルバムアートのURLを返す
 	 * android - ALBUM_ART列はAPI 29などから非推奨
 	 * **/
 	@SuppressLint("Range")
