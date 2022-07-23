@@ -1594,21 +1594,22 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
             System.currentTimeMillis();
             cContext.getContentResolver();
+            String fn = cContext.getString(R.string.kari_file);			//kari.db
+            dbMsg += ",db=" + fn;
             if(Kari_db != null){									//全曲の仮ファイル	kari.db
                 if(Kari_db.isOpen()){
                     Kari_db.close();
                 }
+                Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
             }else{
-                String fn = cContext.getString(R.string.kari_file);			//kari.db
-                dbMsg += ",db=" + fn;
                 zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 //			dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
                 zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-//			dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
-                Kari_db = zenkyokuHelper.getReadableDatabase();			// データベースをオープン
-                Kari_db.close();
+                Kari_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE , null);	// | Context.MODE_ENABLE_WRITE_AHEAD_LOGGING Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
             }
-            String fn = cContext.getString(R.string.kari_file);			//kari.db
+            dbMsg += ",isOpen=" + Kari_db.isOpen();
+            dbMsg +=",isReadOnly=" + Kari_db.isReadOnly();
             ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
             Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
             String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
@@ -1833,7 +1834,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     }
                 }
             }
-
 //			if( (! artistN.equals(motoName) && (
 //					! artistN.equals("Compilations" )||
 //					! artistN.equals("Soundtrack"))
@@ -1842,7 +1842,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //				myLog(TAG,dbMsg);
 //			}else if(sort_name.contains("The")){
 //				dbMsg = ">The抜けず>" ;
-//				myLog(TAG,dbMsg);
+	//			myLog(TAG,dbMsg);
 //			}
 
         }catch(IllegalArgumentException e){
@@ -1866,38 +1866,34 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         String dbMsg= "[AllSongs]";
         try{
             cursor.close();
-            if(Kari_db != null){									//全曲の仮ファイル	kari.db
-                if(Kari_db.isOpen()){
-                    Kari_db.close();
-                }
+            dbMsg +="Kari_db.isOpen=" + Kari_db.isOpen();
+            if(Kari_db.isOpen()){
+                Kari_db.close();
             }
-            pNFVeditor = sharedPref.edit();
-            dbMsg +=kyoku+"曲";
-            pNFVeditor.putString( "pref_file_kyoku", String.valueOf(kyoku));		//総曲数
-            dbMsg +="、更新日="+ AllSongs.this.saisinnbi;
-            pNFVeditor.putString( "pref_file_saisinn", AllSongs.this.saisinnbi);					//最新更新日
-            dbMsg= dbMsg +",メモリーカード="+AllSongs.this.exDir;
-            if(! AllSongs.this.exDir.equals("")){
-                pNFVeditor.putString( "pref_file_ex", File.separator + AllSongs.this.exDir);								//メモリーカード
-            }
-            dbMsg= dbMsg +",内蔵メモリ="+ AllSongs.this.inDir;		//+"（合計；"+mDir.size();
-            if(! AllSongs.this.inDir.equals("")){
-                pNFVeditor.putString( "pref_file_in", File.separator + AllSongs.this.inDir);								//内蔵メモリ
-            }
-            boolean kakikomi = pNFVeditor.commit();	// データの保存
-            dbMsg= dbMsg+ "、書き込み" + kakikomi;
-
-//			dbMsg += " , Kari_db = " + Kari_db;//////
-            String fn = cContext.getString(R.string.kari_file);			//kari.db
-            dbMsg += ",db=" + fn;
-            zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-//			dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-            zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-//			dbMsg += "；全曲リストテーブル=" + zenkyokuTName;
             Kari_db = zenkyokuHelper.getReadableDatabase();			// データベースをオープン
+            dbMsg +=",isReadOnly=" + Kari_db.isReadOnly();
+//            pNFVeditor = sharedPref.edit();
+//            dbMsg +="、更新日="+ AllSongs.this.saisinnbi;
+//            pNFVeditor.putString( "pref_file_saisinn", AllSongs.this.saisinnbi);					//最新更新日
+//            dbMsg= dbMsg +",メモリーカード="+AllSongs.this.exDir;
+//            if(! AllSongs.this.exDir.equals("")){
+//                pNFVeditor.putString( "pref_file_ex", File.separator + AllSongs.this.exDir);								//メモリーカード
+//            }
+//            dbMsg= dbMsg +",内蔵メモリ="+ AllSongs.this.inDir;		//+"（合計；"+mDir.size();
+//            if(! AllSongs.this.inDir.equals("")){
+//                pNFVeditor.putString( "pref_file_in", File.separator + AllSongs.this.inDir);								//内蔵メモリ
+//            }
+//            boolean kakikomi = pNFVeditor.commit();	// データの保存
+//            dbMsg+= "、書き込み" + kakikomi;
+
+//            String fn = cContext.getString(R.string.kari_file);			//kari.db
+//            dbMsg += ",読み込むdb=" + fn;
+//            zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
+//            zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
             String c_groupBy=  " SORT_NAME";	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
             String c_having=null;										// "COUNT(*) > 1"	降順はDESC
             cursor = Kari_db.query(zenkyokuTName, null , null , null , c_groupBy, c_having , null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
+            dbMsg+= "、Kari_dbには" + cursor.getCount()+"件";
             souNinzuuk = cursor.getCount();
             c_groupBy= "ALBUM , SORT_NAME";		//で587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
             cursor = Kari_db.query(zenkyokuTName, null , null , null , c_groupBy, c_having , null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
@@ -1905,7 +1901,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             c_groupBy= null;	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
             cursor = Kari_db.query(zenkyokuTName, null , null , null , c_groupBy, c_having , null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
             souKyokuSuu = cursor.getCount();
-            dbMsg +=";; " + pdMaxVal + "件 ; " + cursor.getColumnCount() + "項目";//////
+            dbMsg +=";; " + pdMaxVal + "件 ; " + cursor.getColumnCount() + "項目を書き込む";//////
             cursor.close();
             long end=System.currentTimeMillis();						// 終了時刻の取得
             String dousaJikann = ORGUT.sdf_mss.format( (int)((end - startPart)));
@@ -2673,8 +2669,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         return stmt;
     }
 
-//A SQLiteConnection object for database '/data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db' was leaked!  Please fix your application to end transactions in progress properly and to close the database when it is no longer needed.
-//A SQLiteConnection object for database '/data/data/com.hijiyam_koubou.marasongs/databases/shyuusei.db' was leaked!  Please fix your application to end transactions in progress properly and to close the database when it is no longer needed.
     /**	終了表示とデータベースをクローズ
      *	このクラスを終了
      **/
@@ -2949,11 +2943,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                             case pt_CreateKaliList:						//803;仮リスト作成
                                 fn = cContext.getString(R.string.kari_file);			//仮ファイル
                                 dbMsg += ",db=" + fn;
-                                del_DB(fn);		//SQLiteDatabaseを消去
-                                zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
-                                Kari_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE , null);	// | Context.MODE_ENABLE_WRITE_AHEAD_LOGGING Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-                                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-                                Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
+//                                del_DB(fn);		//SQLiteDatabaseを消去
+//                                zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
+////                                Kari_db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE , null);	// | Context.MODE_ENABLE_WRITE_AHEAD_LOGGING Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+////                                dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+//                                Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
                                 Kari_db.beginTransaction();
                                 stmt = Kari_db.compileStatement("insert into " + zenkyokuTName +
                                         "(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_LIST_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
@@ -2978,19 +2972,50 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                                 new ContentValues();
                                 break;
                         }
+                        long id = 0;
                         while( cCursor.moveToNext() ){
                             switch(reqCode) {
-                                case pt_CreateKaliList:						//803;仮リスト作成
-                                    cCursor = kaliListBody( cCursor , stmt  );		//仮リスト作成
+                                case pt_CreateKaliList:						//;								//804;仮リスト作成
+                                    @SuppressLint("Range") String albumMei = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                                    @SuppressLint("Range") String kyokuYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
+                                    String testStr =albumMei;
+                                    if(kyokuYear != null){
+                                        testStr = testStr + kyokuYear;
+                                    }
+                                    cursor = kaliListBody( cursor , stmt  );		//仮リスト作成
+                                    id = stmt.executeInsert();
                                     break;
                                 case pt_CreateAllSongs:									//807;全曲リスト作成
+//							case pt_CompList:													//808;全曲リストにコンピレーション追加
                                     cursor = CreateZenkyokuBody( cursor  , stmt );					//最終リスト作成
-                                    long id = 0;
                                     id = stmt.executeInsert();
-                                    dbMsg += "文字[" + id +"]に追加";///////////////////		AllSongs.this.
+                                    break;
+                                default:
+                                    pdCoundtVal =  AllSongs.this.pdCoundtVal ;
+                                    dbMsg = reqCode+")"+pdCoundtVal + "/" + pdMaxVal ;
+                                    //					myLog(TAG, dbMsg);
                                     break;
                             }
                         }
+                        dbMsg += ",最終[" + id +"]に追加";///////////////////		AllSongs.this.
+                        switch(reqCode) {
+                            case pt_KaliArtistList:						//803;仮アーティスト作成
+                                endTS(kariArtist_db);			//setTransactionSuccessful
+                                break;
+                            case pt_artistList_yomikomi:					//807;アーティストリストを読み込む(db未作成時は-)
+                                endTS(artist_db);			//setTransactionSuccessful
+                                break;
+                            case pt_CreateKaliList:							//803;仮リスト作成
+                                endTS(Kari_db);									//setTransactionSuccessful
+                                break;
+
+                            case pt_CreateAllSongs:					//805;全曲リスト作成
+//						case pt_CompList:									//806;全曲リストにコンピレーション追加
+                                endTS(Zenkyoku_db);			//setTransactionSuccessful
+                                break;
+                        }
+                        Thread.sleep(300);			//書ききる為の時間（100msでは不足）
+            //            publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
                     }
 
                     new Handler(Looper.getMainLooper())
@@ -3013,7 +3038,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     dbMsg += ">>delF=" + dbF.getPath();
                     dbMsg += ">>ファイル消去=" + dbF.delete();
                 }
-                //			myLog(TAG,dbMsg);
+                			myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG,dbMsg+"；"+e.toString());
             }
@@ -3081,12 +3106,68 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String dbMsg="";
             try {
                 dbMsg = "reqCode="+reqCode;
-                onSuccessplogTask(reqCode);
+                dbMsg= "reqCode=" + reqCode;			/////////////////////////////////////
+                switch(reqCode) {
+                    case MaraSonActivity.syoki_start_up:		//100;初回起動とプリファレンスリセット後
+                    case MaraSonActivity.syoki_start_up_sai:	//再起動
+                    case MaraSonActivity.syoki_Yomikomi:		//126;preRead
+                    case pt_start:
+                        preReadEnd(cursor);								//dataURIを読み込みながら欠けデータ確認
+                        break;
+                    case pt_mastKopusin:						//802;メディアストア更新  ←preReadで欠けが見つかった場合のみ
+                        mastKopusinEnd();							//メディアストア更新のレコード処理
+                        break;
+                    case pt_KaliArtistList:						//803;仮アーティスト作成
+                        kaliAartistListEnd();				//803;仮アーティストリストの終了
+                        break;
+                    case pt_artistList_yomikomi:					//811;アーティストリストを読み込む(db未作成時は-)
+                        CreateArtistListEnd();		//アーティストリスト作成終了
+                        break;
+                    case pt_CreateKaliList:						//804;仮リスト作成
+                        CreateKaliListEnd();
+                        break;
+                    case pt_CreateAllSongs:			//809;全曲リスト作成
+                        CreateAllSongsEnd();
+                        break;
+//			case pt_CompList:		//807;全曲リストにコンピレーション追加
+//				dbMsg= dbMsg+",comCount=" + comCount;			/////////////////////////////////////
+//	//			myLog(TAG,dbMsg );
+//				comCount++;
+//				if(comCount < compList.length){
+//					addCompListBody();		//コンピレーション追加ループの中身
+//				}else{
+//					addCompListEnd();		//コンピレーション追加終了
+//				}
+//				break;
+                    //			default:
+//				break;
+                }
                 myLog(TAG,dbMsg );
             } catch (Exception e) {
                 myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
             }
         }
+
+        /**
+         * Transactionの終端
+         * */
+        public void endTS(SQLiteDatabase sql_db) {
+            final String TAG = "endTS";
+            String dbMsg="";
+            try{
+                try{
+                    dbMsg= "sql_db = " + sql_db;//////
+                    sql_db.setTransactionSuccessful();
+                } finally {
+                    sql_db.endTransaction();
+                }
+                      sql_db.close();
+                			myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG,dbMsg+"；"+e.toString());
+            }
+        }
+
     }
 
 
