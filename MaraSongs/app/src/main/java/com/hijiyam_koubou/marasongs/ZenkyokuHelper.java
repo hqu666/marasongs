@@ -19,7 +19,7 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 			dbName = dFn;							//第２引数; fileName ;データベースファイルの名前です。この引数にnullを指定すると、データベースはメモリー上に作られます。
 			dbMsg += " , db= " + dbName;
 			dbMsg +=" ,バージョン="+DB_VERSION;	//第4引数; version ;データベースのバージョンを指定します。
-//			myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
