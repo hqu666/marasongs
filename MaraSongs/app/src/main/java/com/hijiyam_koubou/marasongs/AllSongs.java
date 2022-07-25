@@ -1619,7 +1619,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
             String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
             String c_orderBy=MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
-//			String c_orderBy=MediaStore.Audio.Media.ARTIST  + " , " + MediaStore.Audio.Media.ALBUM+ " , " + MediaStore.Audio.Media.TRACK ; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
             //全音楽ファイル抽出
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
             dbMsg +=";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
