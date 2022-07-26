@@ -1611,7 +1611,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
             System.currentTimeMillis();
             cContext.getContentResolver();
-            del_DB(pref_commmn_music + File.separator +  cContext.getString(R.string.kari_file));
+            del_DB(cContext.getString(R.string.kari_file));             //pref_commmn_music + File.separator +
             String fn = cContext.getString(R.string.kari_file);			//kari.db
             dbMsg += ",db=" + fn;
             ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
@@ -1922,7 +1922,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             System.currentTimeMillis();
 //            String fn = cContext.getString(R.string.kari_file);			//仮ファイル
 //            dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
-            del_DB(pref_commmn_music + File.separator +  cContext.getString(R.string.zenkyoku_file));
+            del_DB(cContext.getString(R.string.zenkyoku_file));         //pref_commmn_music + File.separator +
             all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
 //            AllSongs.this.allSongsID = musicPlaylist.getPlaylistId(cContext.getString(R.string.all_songs_file_name) );
             dbMsg += "all_songs_file_name=" + all_songs_file_name;
@@ -2017,7 +2017,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     cCount++;
                 }
             }
-            myLog(TAG,dbMsg);
+   //         myLog(TAG,dbMsg);
         }catch(IllegalArgumentException e){
             myErrorLog(TAG,dbMsg +"で"+e.toString());
         }catch (Exception e) {
