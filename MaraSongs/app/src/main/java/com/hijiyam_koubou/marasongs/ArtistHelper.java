@@ -3,7 +3,6 @@ package com.hijiyam_koubou.marasongs;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class ArtistHelper extends SQLiteOpenHelper {
 	final static private int DB_VERSION = 1;
@@ -35,8 +34,8 @@ public class ArtistHelper extends SQLiteOpenHelper {
 			dbMsg="テーブル名= "+ tName;/////////////////////////////////////
 			String tSet = "create table " + tName +" (" +			//テーブル名；artist_rw_table
 					"_id  integer primary key autoincrement not null, "+
-					"ARTIST_ID text not null," +	//1.MediaStore.Audio.Media.ARTIST_ID
-					"SORT_NAME text not null," +	//2.the抜き大文字
+					"ARTIST_ID text," +	//1.MediaStore.Audio.Media.ARTIST_ID
+					"SORT_NAME text," +	//2.the抜き大文字
 					"ARTIST text," +				//3,MediaStore.Audio.Albums.ARTIST
 					"ALBUM_ARTIST text," +			//4,ALBUM_ARTIST
 					"ALBUM text, " +				//5,MediaStore.Audio.Albums.ALBUM
@@ -45,7 +44,7 @@ public class ArtistHelper extends SQLiteOpenHelper {
 					");"; 
 			dbMsg="tSet= "+tSet;/////////////////////////////////////
 			db.execSQL(tSet);
-	//		myLog(TAG, dbMsg);
+			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
