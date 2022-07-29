@@ -293,50 +293,40 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg += ">>" + aArtintName;
             @SuppressLint("Range") String albumArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ARTIST));
             dbMsg += ",albumArtist=" + albumArtist ;
-            if( albumArtist != null ){
-                artistN = albumArtist;
-            } else {
-                @SuppressLint("Range") String composer = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
-                dbMsg += ",composer=" + composer;
-                if (artistN == null) {
-                    if (aArtintName != null) {
-                        artistN = aArtintName;
-                    } else if (composer != null) {
-                        artistN = composer;
-                    } else {
-                        artistN = "unknownARTIST";
-                    }
-                } else {
-                    String comp10 = getResources().getString(R.string.comon_compilation);            //コンピレーション
-                    String comp11 = comp10.toUpperCase();                                            //大文字化
-                    String comp12 = comp10.toLowerCase();                                            //小文字化
-                    String comp20 = getResources().getString(R.string.comon_compilation0);    //さまざまなアーティスト
-                    String comp21 = comp20.toUpperCase();                                            //大文字化
-                    String comp22 = comp20.toLowerCase();                                            //小文字化
-                    String comp30 = getResources().getString(R.string.comon_compilation2);    //Various Artists
-                    String comp31 = comp30.toUpperCase();                                            //大文字化
-                    String comp32 = comp30.toLowerCase();                                            //小文字化
-                    if (artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
-                            artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
-                            artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32)) {
-                        artistN = compilationsNameStr;
-                    } else {
-                        for (String Junl : genleList) {
-                            if (aArtintName.equals(Junl)) {
-                                artistN = Junl;
-                            }
-                        }
-                    }
-                }
-
-                if (retStr.equals("")) {
+            @SuppressLint("Range") String genre = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.GENRE));
+            dbMsg += ",genre=" + genre ;
+            if( albumArtist == null ){
+                if(artistN==null){
                     retStr = aArtintName;
+                }else{
+                    retStr = artistN;
                 }
-                if (!motoName.equals(artistN)
-//					&& ! retStr.equals(compilationsNameStr)
-                ) {
-                }
+            }else{
+                retStr = albumArtist;
             }
+            dbMsg += ",読み取り結果=" + retStr;
+
+            if(retStr.equals(aArtintName)){
+            }else{
+                retStr = aArtintName;
+                dbMsg += ",フォルダ名に置き換え";
+            }
+//                        for (String Junl : genleList) {
+//                            if (aArtintName.equals(Junl)) {
+//                                artistN = Junl;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (retStr.equals("")) {
+//                    retStr = aArtintName;
+//                }
+//                if (!motoName.equals(artistN)
+////					&& ! retStr.equals(compilationsNameStr)
+//                ) {
+//                }
+//            }
             String comp10 = getResources().getString(R.string.comon_compilation);            //コンピレーション
             String comp11 = comp10.toUpperCase();                                            //大文字化
             String comp12 = comp10.toLowerCase();                                            //小文字化
@@ -346,13 +336,12 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String comp30 = getResources().getString(R.string.comon_compilation2);    //Various Artists
             String comp31 = comp30.toUpperCase();                                            //大文字化
             String comp32 = comp30.toLowerCase();                                            //小文字化
-            if (artistN.equals(comp10) || artistN.equals(comp11) || artistN.equals(comp12) ||
-                    artistN.equals(comp20) || artistN.equals(comp21) || artistN.equals(comp22) ||
-                    artistN.equals(comp30) || artistN.equals(comp31) || artistN.equals(comp32)) {
-                artistN = compilationsNameStr;
+            if (retStr.equals(comp10) || retStr.equals(comp11) || retStr.equals(comp12) ||
+                    retStr.equals(comp20) || retStr.equals(comp21) || retStr.equals(comp22) ||
+                    retStr.equals(comp30) || retStr.equals(comp31) || retStr.equals(comp32)) {
+                retStr = compilationsNameStr;
             }
-            retStr = artistN;
-            dbMsg += ":::artist=" + artistN;
+            dbMsg += ":結果=" + retStr;
 //				myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1484,6 +1473,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 albaumArtistID=0;
 
                 myLog(TAG,dbMsg);
+                checkCarsol(cursor);
                 plTask.execute(reqCode,cursor,pdTitol,pdMessage);
             }
         }catch(IllegalArgumentException e){
@@ -1532,8 +1522,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
             String artistN = setAlbumArtist(cursor);
             dbMsg += ":" + artistN ;
-            artistN=artistN.replaceAll("/", "");
-            dbMsg += " >> "+ artistN;
+//            artistN=artistN.replaceAll("/", "");
+//            dbMsg += " >> "+ artistN;
 
             if(artistN.equals(bArtistN)){
                 bArtistN = artistN;
@@ -1654,7 +1644,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             aCursor.close();
             */
             if(artistN.equals(compilationsNameStr)){
-                stmt.bindString(14, String.valueOf(laseAlbaumArtistID));
+                stmt.bindString(14, String.valueOf(laseAlbaumArtistID));            //ALBUM_ARTIST_LIST_ID
             }else{
                 stmt.bindString(14, String.valueOf(albaumArtistID));
             }
@@ -1721,6 +1711,10 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         final String TAG = "CreateKaliListEnd";
         String dbMsg= "[AllSongs]";
         try{
+            cursor.moveToLast();
+            cursor.moveToPrevious();
+            cursor.moveToPrevious();
+            checkCarsol(cursor);
             cursor.close();
             dbMsg +="Kari_db.isOpen=" + Kari_db.isOpen()+",isReadOnly=" + Kari_db.isReadOnly();
             if(Kari_db.isOpen()){
@@ -1787,7 +1781,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg += ">isOpen=" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
 			String c_selection = null;          //"SORT_NAME <> ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs = null;          //new String[]{ compilationsNameStr };  			//	 {"%" + artistMei + "%" , albumMei };
-            String c_orderBy= "ALBUM_ARTIST,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
+            String c_orderBy= "ALBUM_ARTIST_LIST_ID";//"ALBUM_ARTIST,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
             cursor = Kari_db.query(zenkyokuTName, null, c_selection, c_selectionArgs , null, null, c_orderBy, null);	//リString table, String[] columns,new String[] {MotoN, albamN}
             pdMaxVal = cursor.getCount();
             dbMsg += "；" + pdMaxVal + "件";
@@ -2079,7 +2073,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String[] selectionArgs = null;	//new String[]{ comp };
             String groupBy = "ALBUM_ARTIST";					//groupBy句を指定します。
             String having =null;					//having句を指定します。
-            String orderBy = "ALBUM_ARTIST_LIST_ID";
+            String orderBy = null;  //"ALBUM_ARTIST_LIST_ID";
             String limit = null;					//検索結果の上限レコードを数を指定します。
             Cursor cursor = Zenkyoku_db.query( table ,columns, selections,  selectionArgs,  groupBy,  having,  orderBy,  limit) ;
             dbMsg = ",ALBUM_ARTIST=" + cursor.getCount() + "件";
@@ -2136,7 +2130,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                         dbMsg += " スキップ ";
                         // "(ARTIST_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,ALBUM_ART,SUB_TEXT)
                     } else{
-                        @SuppressLint("Range") String cVal = String.valueOf(cursor.getString(cursor.getColumnIndex(cName)));
+                        @SuppressLint("Range") String cVal = String.valueOf(cursor.getString(cPosition));
                         dbMsg += " = "+ cVal;
                         if( cName.equals("ARTIST_ID")){      //1.MediaStore.Audio.Media.ARTIST_ID
                             stmt.bindString(1, cVal);
@@ -2993,6 +2987,59 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             myErrorLog(TAG,dbMsg+"；"+e.toString());
         }
     }
+
+    /**
+     * 渡されたCursorの中身をlogに書き出す
+     * */
+    public void checkCarsol(Cursor cursor) {
+        final String TAG = "checkCarsol";
+        String dbMsg= "[AllSongs]";
+        try{
+            dbMsg += "[" + cursor.getPosition() +"/"+ cursor.getCount() + "]";				//progBar1.getMax()
+            int cCount = 1;
+            String[] columnNames = cursor.getColumnNames();
+            dbMsg +=columnNames.length + "項目";
+            for(String cName:columnNames){
+                dbMsg += "\n" + cCount+")" + cName;
+                int cPosition = cursor.getColumnIndex(cName);
+                dbMsg += "『" + cPosition+"』";
+                if(0<cPosition){
+                    int colType = cursor.getType(cPosition);
+                    dbMsg += ",Type=" + colType + ",";
+                    switch (colType){
+                        case Cursor.FIELD_TYPE_NULL:          //0
+                            dbMsg += "null" ;
+                            break;
+                        case Cursor.FIELD_TYPE_INTEGER:         //1
+                            @SuppressLint("Range") int cInt = cursor.getInt(cPosition);
+                            dbMsg += cInt+"【int】";
+                            break;
+                        case Cursor.FIELD_TYPE_FLOAT:         //2
+                            @SuppressLint("Range") float cFlo = cursor.getFloat(cPosition);
+                            dbMsg += cFlo+"【float】";
+                            break;
+                        case Cursor.FIELD_TYPE_STRING:          //3
+                            @SuppressLint("Range") String cStr = cursor.getString(cPosition);
+                            dbMsg +=  cStr+"【String】";
+                            break;
+                        case Cursor.FIELD_TYPE_BLOB:         //4
+                            //@SuppressLint("Range") String cBlob = String.valueOf(cursor.getBlob(cPosition));
+                            dbMsg +=  "【Blob】";
+                            break;
+                        default:
+                            @SuppressLint("Range") String cVal = String.valueOf(cursor.getString(cPosition));
+                            dbMsg +=  cVal;
+                            break;
+                    }
+                }
+                cCount++;
+            }
+			myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG,dbMsg+"；"+e.toString());
+        }
+    }
+
 
     /**
      * public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>>の置き換え
