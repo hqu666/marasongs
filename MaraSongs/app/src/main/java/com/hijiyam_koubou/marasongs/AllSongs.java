@@ -234,7 +234,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
             pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
             pref_commmn_music = myPreferences.pref_commmn_music;
-            all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u8";
+            all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u";  //m3u8だとYutbMusicで読み込めない？
             dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
             pref_data_url = myPreferences.pref_data_url;
 
@@ -1440,11 +1440,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
             Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 
-            String c_groupBy=  "ALBUM_ARTIST";	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+            String c_groupBy=  "ARTIST";	// ALBUM_ARTISTはほとんどnull
+
             cursor = resolver.query(cUri, null , null , null , c_groupBy,  null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
-            dbMsg += ",AlbaumArtist=" + cursor.getCount() + "件";
-            laseAlbaumArtistID=cursor.getCount()*9;
-            dbMsg += ",laseAlbaumArtistID=" + laseAlbaumArtistID;
+            laseAlbaumArtistID=cursor.getCount();               //ゲスト参加があるのでALBUM_ARTIST数より多い
+            dbMsg += ",Artist(laseAlbaumArtistID)=" + laseAlbaumArtistID;
 
             String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
             String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
@@ -1452,6 +1452,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String c_orderBy=MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
             //全音楽ファイル抽出
             cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
+            laseAlbaumArtistID=cursor.getCount();
+            dbMsg += ",laseAlbaumArtistID=" + laseAlbaumArtistID;
             dbMsg +=";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
             //		myLog(TAG,dbMsg);
             if(cursor.moveToFirst()){
@@ -1461,10 +1463,10 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 reqCode = pt_CreateKaliList;
                 pd2CoundtVal++;
                 pdMessage = pdMessage_stok + "\n\n" + pd2CoundtVal + ";" +
-                        this.cContext.getString(R.string.comon_album)+ this.cContext.getString(R.string.comon_matome)+ ";" +	//">アルバム"">まとめ</string>
+                        kyoku+ this.cContext.getString(R.string.comon_kyoku)+ this.cContext.getString(R.string.comon_kara) +	//">アルバム"">まとめ</string>
                         this.cContext.getString(R.string.comon_karifile)+ this.cContext.getString(R.string.comon_sakuseicyuu) +"\n"+	//仮ファイル作成中
                         getResources().getString(R.string.zl_coment_create_kali_list);		//..アーティスト名からゲスト参加などの付属情報を削除\n..The抜き、大文字でソート
-                dbMsg=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
+                dbMsg+=reqCode + "ループ前" + pd2CoundtVal +"/"+ pd2MaxVal + ";" + pdMessage  ;
                 pdCoundtVal = 0;
                 pdMaxVal = cursor.getCount();
                 albumCount = 0;
@@ -1522,13 +1524,12 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
             String artistN = setAlbumArtist(cursor);
             dbMsg += ":" + artistN ;
-//            artistN=artistN.replaceAll("/", "");
-//            dbMsg += " >> "+ artistN;
 
-            if(artistN.equals(bArtistN)){
+            if(! artistN.equals(bArtistN)){
                 bArtistN = artistN;
                 albaumArtistID++;
-                dbMsg += "[" + albaumArtistID + "]" + bArtistN;
+                dbMsg += ",albaumArtistID[" + albaumArtistID + "]" + artistN;
+                myLog(TAG,dbMsg);
             }
             String sort_name = ORGUT.ArtistPreFix(artistN.toUpperCase());	//大文字化してアーティスト名のTheを取る
             dbMsg += ",sort_name=" + sort_name ;
@@ -1643,11 +1644,27 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
             aCursor.close();
             */
-            if(artistN.equals(compilationsNameStr)){
-                stmt.bindString(14, String.valueOf(laseAlbaumArtistID));            //ALBUM_ARTIST_LIST_ID
+            int artistIndex = laseAlbaumArtistID;
+            if(artistN.equals(compilationsNameStr)) {
+            }else if(artistN.equals("Soundtrack")){
+                artistIndex--;
+            }else if(artistN.equals("Classic")){
+                artistIndex=laseAlbaumArtistID-2;
+            }else if(artistN.equals("Blues")){
+                artistIndex=laseAlbaumArtistID-3;
+            }else if(artistN.equals("Jazz")){
+                artistIndex=laseAlbaumArtistID-4;
+            }else if(artistN.equals("Pop")){
+                artistIndex=laseAlbaumArtistID-5;
             }else{
-                stmt.bindString(14, String.valueOf(albaumArtistID));
+                artistIndex=albaumArtistID;
             }
+            stmt.bindLong(14, Integer.valueOf(artistIndex));               //ALBUM_ARTIST_LIST_ID
+            if(artistIndex!=albaumArtistID){
+                dbMsg += ",Artist[" + albaumArtistID + " >> " + artistIndex + "]" + artistN;
+                myLog(TAG, dbMsg);
+            }
+
             if( AllSongs.this.saisinnbi == null){					//最新更新日付が拾えていなければ
                 AllSongs.this.saisinnbi = kousinnbi;
 //				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
@@ -2044,7 +2061,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 		}
 	}
 
-
     /**
      * アーティストリスト作成
      * @ 無し
@@ -2071,9 +2087,9 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
             String selections = null;	//"ALBUM_ARTIST = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
             String[] selectionArgs = null;	//new String[]{ comp };
-            String groupBy = "ALBUM_ARTIST";					//groupBy句を指定します。
+            String groupBy = "SORT_NAME";					//groupBy句を指定します。
             String having =null;					//having句を指定します。
-            String orderBy = null;  //"ALBUM_ARTIST_LIST_ID";
+            String orderBy = "ALBUM_ARTIST_LIST_ID";  //"ALBUM_ARTIST_LIST_ID";
             String limit = null;					//検索結果の上限レコードを数を指定します。
             Cursor cursor = Zenkyoku_db.query( table ,columns, selections,  selectionArgs,  groupBy,  having,  orderBy,  limit) ;
             dbMsg = ",ALBUM_ARTIST=" + cursor.getCount() + "件";
@@ -2132,7 +2148,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     } else{
                         @SuppressLint("Range") String cVal = String.valueOf(cursor.getString(cPosition));
                         dbMsg += " = "+ cVal;
-                        if( cName.equals("ARTIST_ID")){      //1.MediaStore.Audio.Media.ARTIST_ID
+                        if( cName.equals("ALBUM_ARTIST_LIST_ID")){      //1.MediaStore.Audio.Media.ARTIST_ID
                             stmt.bindString(1, cVal);
                         } else if( cName.equals("SORT_NAME")){      //2.the抜き大文字
                             stmt.bindString(2, cVal);
@@ -2176,7 +2192,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
 
             dbMsg += "、リスト" + AllSongs.this.aArtistList.size() +"件";
-//			myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg +"で"+e.toString());
         }
@@ -2195,45 +2211,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         try{
             dbMsg += "；アーティストリストテーブル=" + artistTName;
             artist_db = artistHelper.getReadableDatabase();			// データベースをオープン
-//            dbMsg += " , artist_db = " + artist_db;//////
-//            if(0 < compGenList.size()){
-//                for(String Junl : genleList){
-//                    for(String comp : compGenList){
-//                        if(comp.equals(Junl)){
-//                            Integer alubumArtistListID = AllSongs.this.shortArtistList.indexOf(comp)+1;
-//                            SQLiteStatement stmt = artist_db.compileStatement("insert into " + artistTName +
-//                                    "(ARTIST_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,ALBUM_ART,SUB_TEXT) values (?, ?, ?, ?, ?, ?, ?);");
-//                            stmt = stmtWrite2(String.valueOf(alubumArtistListID) ,  stmt , 1);				//1.MediaStore.Audio.Media.ARTIST_ID
-//                            stmt = stmtWrite2(comp ,  stmt , 2);				//2.the抜き大文字
-//                            stmt = stmtWrite2(comp ,  stmt ,  3);				//3,MediaStore.Audio.Albums.ARTIST
-//                            stmt = stmtWrite2(comp,  stmt , 4);			//4,ALBUM_ARTIST
-//                            stmt = stmtWrite2("" ,  stmt ,  5);		//5,MediaStore.Audio.Albums.ALBUM
-//                            stmt = stmtWrite2("" ,  stmt ,  6);		//6,MediaStore.Audio.Albums.ALBUM_ART
-//                            stmt = stmtWrite2("" ,  stmt ,  7);		//7.アーティストリスト生成用の集約情報
-//                            long id = stmt.executeInsert();
-//                            dbMsg += "文字[" + id +"]に追加";///////////////////		AllSongs.this.
-//                        }
-//                    }
-//                }
-//            }
-
             cursor = artist_db.query(artistTName, null , null , null , null, null , null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
             pdMaxVal = cursor.getCount();
-//            if(cursor.moveToFirst()){
-//                do{
-//                    @SuppressLint("Range") String _id = String.valueOf(cursor.getString(cursor.getColumnIndex("_id")));
-//                    dbMsg += "\n" + _id + ")";
-//                    @SuppressLint("Range") String ｃArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ARTIST")));
-//                    dbMsg += " " + ｃArtist;
-//                    @SuppressLint("Range") String sortName = String.valueOf(cursor.getString(cursor.getColumnIndex("SORT_NAME")));		//
-//                    dbMsg += " : " + sortName;
-//                    @SuppressLint("Range") String aArtist = String.valueOf(cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST")));		//SORT_NAME
-//                    dbMsg += " : " + aArtist;
-//
-//                }while(cursor.moveToNext());
-//            }
-//            cursor.close();
-
             dbMsg +=";; " + pdMaxVal + "人 ; " + cursor.getColumnCount() + "項目";//////
             long end=System.currentTimeMillis();						// 終了時刻の取得
             String dousaJikann = ORGUT.sdf_mss.format( (int)((end - startPart)));

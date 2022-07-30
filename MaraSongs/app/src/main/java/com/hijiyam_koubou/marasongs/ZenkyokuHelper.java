@@ -55,7 +55,7 @@ public class ZenkyokuHelper extends SQLiteOpenHelper {
 					"MODIFIED text, " +				//11.idkousinnbi = cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
 					"COMPOSER text, " +				//12.idcomposer = cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER);
 					"LAST_YEAR text, " +				//13.MediaStore.Audio.Albums.LAST_YEAR
-					"ALBUM_ARTIST_LIST_ID " +		//14.ALBUM_ARTIST_LIST_IDのID
+					"ALBUM_ARTIST_LIST_ID integer" +		//14.ALBUM_ARTIST_LIST_IDのID
 						");";
 			dbMsg +=",tSet= "+tSet;/////////////////////////////////////
 			db.execSQL(tSet);

@@ -2958,7 +2958,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String[] c_selectionArgs= null;				//compList;
 			String groupBy = null;
 			String having =null;					//having句を指定します。
-			String orderBy  = null;
+			String orderBy  = "ARTIST_ID";
 			String limit = null;					//検索結果の上限レコードを数を指定します。
 			cursorA = artist_db.query( table ,columns, c_selection,  c_selectionArgs,  groupBy,  having,  orderBy,  limit) ;
 			retInt = cursorA.getCount();
