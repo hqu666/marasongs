@@ -1747,8 +1747,8 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			if(aCursor.moveToFirst()){
 				alubumArtistListID = aCursor.getInt(aCursor.getColumnIndex("_id") );
 			}
-			dbMsg += "、ALBUM_ARTIST_LIST_ID="+ alubumArtistListID;
-			stmt.bindString(14, String.valueOf(alubumArtistListID + 10000));			//ALBUM_ARTIST_LIST_IDのID
+			dbMsg += "、ALBUM_ARTIST_INDEX="+ alubumArtistListID;
+			stmt.bindString(14, String.valueOf(alubumArtistListID + 10000));			//ALBUM_ARTIST_INDEXのID
 			aCursor.close();
 			if( ZenkyokuList.this.saisinnbi == null){					//最新更新日付が拾えていなければ
 				ZenkyokuList.this.saisinnbi = kousinnbi;
@@ -1898,7 +1898,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			dbMsg += " , fn = " + fn;		//03-28java.lang.IllegalArgumentException:  contains a path separator
 			Kari_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
 			dbMsg += ">isOpen=" + Kari_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-			String c_orderBy= "ALBUM_ARTIST_LIST_ID,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
+			String c_orderBy= "ALBUM_ARTIST_INDEX,LAST_YEAR,ALBUM,TRACK";	//降順はDESC		YEAR	ALBUM_ARTIST,LAST_YEAR,TRACK SORT_NAME,
 			cursor = Kari_db.query(zenkyokuTName, null, null, null , null, null, c_orderBy, null);	//リString table, String[] columns,new String[] {MotoN, albamN}
 			pdMaxVal = cursor.getCount();
 			dbMsg += "；" + pdMaxVal + "件";
@@ -3016,7 +3016,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							Kari_db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
 							Kari_db.beginTransaction();
 							stmt = Kari_db.compileStatement("insert into " + zenkyokuTName +
-									"(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_LIST_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+									"(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_INDEX) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 							new ContentValues();
 							albumCount = 0;
 							album_art = null;
@@ -3058,7 +3058,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 							Zenkyoku_db.beginTransaction();
 							stmt = null;
 							stmt = Zenkyoku_db.compileStatement("insert into " + zenkyokuTName +
-									"(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_LIST_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+									"(AUDIO_ID,SORT_NAME,ARTIST,ALBUM_ARTIST,ALBUM,TRACK,TITLE,DURATION,YEAR,DATA,MODIFIED,COMPOSER,LAST_YEAR,ALBUM_ARTIST_INDEX) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 							new ContentValues();
 							break;
 					}
