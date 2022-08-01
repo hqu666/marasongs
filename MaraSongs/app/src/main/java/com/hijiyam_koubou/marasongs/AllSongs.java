@@ -206,6 +206,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public ContentValues cv;
     public String udIdName;							//アップデートする名前
     public String allSonglist = "";
+    public String compSonglist = "";
 
 
     public void readPref() {        //プリファレンスの読込み
@@ -951,6 +952,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             int cCount = 1;
             String[] columnNames = cursor.getColumnNames();
             dbMsg +=columnNames.length + "項目";
+            String dataUriStr = "";
             for(String cName:columnNames){
                 dbMsg += "," + cCount+")" + cName;
                 @SuppressLint("Range") String cVal = String.valueOf(ｃursor.getString(cursor.getColumnIndex(cName)));
@@ -963,20 +965,25 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                         dbMsg += ",末尾項目[" + rLong + "]" + album_artist;
 //                        myLog(TAG,dbMsg);
                         stmt.bindLong(cCount, rLong);
+                        compSonglist += dataUriStr +"\n";
                     }else if(! album_artist.equals(bArtistN)){
                         bArtistN = album_artist;
                         albaumArtistID++;
                         dbMsg += ",加算[" + albaumArtistID + "]" + album_artist;
                         stmt.bindLong(cCount, albaumArtistID);
+                        allSonglist += dataUriStr +"\n";
                     }else{
                         dbMsg += ",そのまま[" + albaumArtistID + "]" + album_artist;
                         stmt.bindLong(cCount, albaumArtistID);
+                        allSonglist += dataUriStr +"\n";
                     }
 
                 } else {
                     stmt.bindString(cCount, cVal);
                     if(cName.equals("DATA")){
-                        allSonglist += cVal +"\n";
+                        String[] uris = cVal.split(File.separator,-1);
+                        dataUriStr = uris[uris.length-3] + File.separator +  uris[uris.length-2] + File.separator +  uris[uris.length-1] ;
+                        dbMsg += ",dataUriStr=" + dataUriStr;
                     }else if(cName.equals("ALBUM_ARTIST")){
                         album_artist= cVal;
                     }
@@ -1020,6 +1027,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                     this.cContext.getString(R.string.pp_kyoku);		//コンピレーション	以外○○曲
             pdMessage_stok = pdMessage_stok +"[" +dousaJikann + "mS]";		//所要時間
             cursor.close();
+            allSonglist += compSonglist;
+            dbMsg += ",allSonglist=" + allSonglist.length() + "文字";
             myLog(TAG,dbMsg );
        //     reTry=0;					//再処理リミット
             CreateArtistList();
