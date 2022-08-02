@@ -2842,6 +2842,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			dbMsg += ";reqC=" + reqC  ;/////////////////////////////////////
 			if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
 				sigotoFuriwake(reqC , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け		, albumAL
+			}else if( nowList.equals(getResources().getString(R.string.listmei_list_all))){
+				sigotoFuriwake(reqC , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け		, albumAL
 			}else{
 				String pdMessage = nowList + getResources().getString(R.string.data_lad);			//データ読み込み中
 				CreatePLList( Long.valueOf(MuList.this.sousalistID) , pdMessage);		//プレイリストの内容取得		MuList.this.sousalist_data,
@@ -2933,12 +2935,32 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	/**
-	 * artist_dbの読み込み(	Ver1.1.1からZenkyokuListで作成したアイテムを無条件で読み込む)
-	 * 読出し元
-	 * sigotoFuriwakeで、	reqCode = MaraSonActivity.v_artist;	　/
-	 * listReWriteで、		artistSL== null
-	 * readDBで				artistALが読み込まれていない
+	 * 端末内のプレイリスト一覧表示
 	 * */
+	public int listOfList_yomikomi(){																				//①ⅵ；アーティストリストを読み込む(db未作成時は-)
+		int retInt = -1;
+		final String TAG = "listOfList_yomikomi";
+		String dbMsg = "[MuList]";
+		try{
+
+
+
+			dbMsg += ">レコード>" + artistAL.size() + "件";
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retInt;
+	}
+
+
+			/**
+             * artist_dbの読み込み(	Ver1.1.1からZenkyokuListで作成したアイテムを無条件で読み込む)
+             * 読出し元
+             * sigotoFuriwakeで、	reqCode = MaraSonActivity.v_artist;	　/
+             * listReWriteで、		artistSL== null
+             * readDBで				artistALが読み込まれていない
+             * */
 	@SuppressLint("Range")
 	public int artistList_yomikomi(){																				//①ⅵ；アーティストリストを読み込む(db未作成時は-)
 		int retInt = -1;
@@ -4378,9 +4400,12 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 				}
 				dbMsg += ",album=" + MuList.this.albumName;////////////////////////////////////
 				switch(reqCode) {			//backCode
-				case MaraSonActivity.v_artist:				//195;2131558436  アルバム
-					quitMe();
-//					MuList.this.finish();
+				case MaraSonActivity.v_artist:				//<<quitMe();<<MuList.this.finish();
+					dbMsg +=",クリックしたのはartistリストのヘッド" ;
+					reqCode = MaraSonActivity.v_play_list;
+					dbMsg +=",現在[" + sousalistID + "]" + sousalistName +"次はプレイリスト一覧：" + reqCode ;
+					senntakuItem = sousalistName;
+					sigotoFuriwake(reqCode , sousalistName , null  , null , null);		//表示するリストの振り分け		, albumAL
 					break;
 				case MaraSonActivity.v_alubum:				//2131558442  アルバム
 					dbMsg +=",クリックしたのはalbumリストのヘッド" ;////////////////////////////////////
@@ -5083,14 +5108,14 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 
 						// 全データ取得　//////////////////////////////
 						for ( int i = 0 ; i < koumoku ; i++ ) {
-							dbMsg += "\n[" + i + "/" + koumoku + "]";
+//							dbMsg += "\n[" + i + "/" + koumoku + "]";
 							String cName = playLists.getColumnName(i);
-							dbMsg += cName;
+//							dbMsg += cName;
 							cVal = playLists.getString(i);
 							if ( cVal != null ) {
 								cVal = cVal;
 							}
-							dbMsg += "=" + cVal;
+//							dbMsg += "=" + cVal;
 							objMap.put(cName , cVal);
 							if ( cName.equals("name") ) {
 								plNameSL.add(cVal);
@@ -9895,14 +9920,25 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			String saisei_fname = getPrefStr( "pref_data_url" ,  "" , MuList.this);
 			dbMsg +=  ",reqC=" + reqC +") artist;" + ";album=" + albumMei + ",titolMei=" + titolMei ;
 			switch(reqC) {
+				case MaraSonActivity.v_play_list:
+					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+					mainHTF.setVisibility(View.VISIBLE);
+					pl_sp.setVisibility(View.GONE);
+					mainTStr = getResources().getString(R.string.listmei_list_all);
+					mainHTF.setText(mainTStr);					//ヘッダーのメインテキスト表示枠
+					subTStr =  plNameSL.size() +  getResources().getString(R.string.comon_ken);
+					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
+					makePlainList( plNameSL);
+					break;
 				case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
 					dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
 					mainHTF.setVisibility(View.GONE);
-					pl_sp.setVisibility(View.VISIBLE);
-					makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
-					artistList_yomikomi();
+//					pl_sp.setVisibility(View.VISIBLE);
+//					makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
+//					artistList_yomikomi();
 					dbMsg +=",pref_list_simple= " + pref_list_simple;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					int selPosition = artistSL.indexOf(artistMei);
 					int artistCount =  artistSL.size();
@@ -10163,6 +10199,11 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 						if(nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
 							dbMsg += ",全曲リスト";
 							switch(reqCode) {
+								case MaraSonActivity.v_play_list:                                                    //169...334
+									dbMsg += ",plNameSL = " + plNameSL.size() + "件";
+									//				myLog(TAG,dbMsg);
+									sigotoFuriwake(reqCode , nowList , null , null , null);        //表示するリストの振り分け		artistAL ,
+									break;
 								case MaraSonActivity.v_artist:                                                    //169...334
 									dbMsg += ",artistAL = " + artistAL.size() + "件";
 									//				myLog(TAG,dbMsg);

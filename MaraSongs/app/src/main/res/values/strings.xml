@@ -235,6 +235,7 @@
 
      <!-- com.hijiyam_koubou.marasongs.PlayerService -->
     <!-- 全曲リスト -->
+    <string name="listmei_list_all">プレイリスト一覧</string>
     <string name="listmei_zemkyoku">全曲リスト</string>
     <string name="medst_artist_make">アーティストリスト作成中</string>
     <string name="medst_start">データ確認中</string>

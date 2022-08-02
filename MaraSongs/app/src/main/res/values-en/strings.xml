@@ -517,5 +517,6 @@
 	<string name="comon_kara_mark">...</string>
 	<string name="common_nitibun">days</string>
 	<string name="common_reading">Reading</string>
+    <string name="listmei_list_all">List of playlists</string>
 
 </resources>

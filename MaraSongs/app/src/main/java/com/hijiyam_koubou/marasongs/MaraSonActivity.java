@@ -201,7 +201,8 @@ public class MaraSonActivity extends AppCompatActivity
 	public static final int LyricCheck = Visualizer_type_FFT + 1;					//歌詞の有無確認
 	public static final int LyricEnc= LyricCheck+1;					//歌詞の再エンコード
 	public static final int LyricWeb = LyricEnc+1;					//192;歌詞のweb表示
-	public static final int v_artist = LyricWeb+1;					//アーティストリスト表示
+	public static final int v_play_list = LyricWeb+1;					//アーティストリスト表示
+	public static final int v_artist = v_play_list+1;					//アーティストリスト表示
 	public static final int v_alubum = v_artist+1;					//アルバムリスト表示
 	public static final int v_titol = v_alubum+1;						//タイトルリスト表示
 	public static final int rp_artist = v_titol +1;					//アーティストリピート指定ボタン
