@@ -73,7 +73,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;			//AndroidXからはV7不要？
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
@@ -9908,6 +9908,7 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
 	}
+	Handler handler = new Handler();
 
 	/**
 	 *  全曲リストの場合はプレイヤーでタップされたフィールドに応じてたリストを表示する */
@@ -9929,7 +9930,23 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					mainHTF.setText(mainTStr);					//ヘッダーのメインテキスト表示枠
 					subTStr =  plNameSL.size() +  getResources().getString(R.string.comon_ken);
 					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
-					makePlainList( plNameSL);
+					ArrayAdapter<String> arrayAdapter =
+							new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, plNameSL);
+					lvID.setAdapter(arrayAdapter);
+//					if(handler == null){
+//						handler = new Handler();
+//					}
+//					handler.post(new Runnable() {
+//						public void run() {
+//							final String TAG = "setProgressValue.run[AllSongs]";
+//							String dbMsg="";
+//							try {
+//								makePlainList( plNameSL);
+//							} catch (Exception e) {
+//								myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
+//							}
+//						}		//run
+//					});			//handler.post(new Runnable() {
 					break;
 				case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
 					dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
