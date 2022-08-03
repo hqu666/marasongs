@@ -4134,9 +4134,9 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 					break;
 				}
 			}else if( sousalistName.equals(plNameSL.get(position)) ){
+				int listID = musicPlaylist.getPlaylistId(MuList.this.sousalistName);
 				String pdMessage = MuList.this.sousalistName;
-				CreatePLList(  Long.valueOf(MuList.this.sousalistID) , pdMessage);		//プレイリストの内容取得			MuList.this.sousalist_data,
-
+				CreatePLList( listID , pdMessage);		//プレイリストの内容取得			MuList.this.sousalist_data,
 			}else{		//操作対象リストID		 if( 0 < sousalistID   )
 				dbMsg +=",全曲以外" ;
 				int depth;
@@ -5266,14 +5266,17 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + MuList.this.sousalistName ;
 			if( 0 < playlistId ){
-//				if( MuList.this.sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
 					if(treeAdapter != null ) {			//既にリストが出来ていたら
 						return;			//中断
 					}
-					MuList.this.tuikaSakiListName = getResources().getString(R.string.playlist_namae_saikintuika);		//最近追加
-					MuList.this.tuikaSakiListID = siteiListSakusi( MuList.this.tuikaSakiListName );
-					dbMsg +=  "[" + tuikaSakiListID + "]" +MuList.this.tuikaSakiListName + "へ";
-					final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", tuikaSakiListID);
+				if( MuList.this.sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
+					MuList.this.tuikaSakiListName = getResources().getString(R.string.playlist_namae_saikintuika);        //最近追加
+					MuList.this.tuikaSakiListID = siteiListSakusi(MuList.this.tuikaSakiListName);
+					playlistId=MuList.this.tuikaSakiListID;
+				}
+
+					dbMsg += "[" + playlistId + "]" + pdMessage + "へ";
+					final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 					final String[] columns = null;			//{ idKey, nameKey };
 					String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 					playLists = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
@@ -8859,7 +8862,8 @@ public class MuList extends AppCompatActivity implements plogTaskCallback, View.
 	}
 
 	/**
-	 *  指定された名称のリストを作成する;既に有ればlistIDを返し、無ければ作成してIdを返す */
+	 *  指定された名称のリストを作成する;既に有ればlistIDを返し、無ければ作成してIdを返す
+	 *  */
 	public int siteiListSakusi( String listName){				//指定された名称のリストを作成する
 		int listID = 0;
 		final String TAG = "siteiListSakusi";
