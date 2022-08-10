@@ -2,10 +2,8 @@ package com.hijiyam_koubou.marasongs;
 
 public final class MyConstants {
 
-    //	動作経路
+    //	MaraSonActivityの動作経路
     static final int RESULT_ENABLE = 1;
-    public int shigot_bangou = 0;
-    public int kidou_jyoukyou= 100;
     public static final int kidou_std = 100;										//通常のリストから起動
     public static final int kidou_notif = kidou_std + 1;						//ノティフィケーションからの起動
     public static final int syoki_start_up = kidou_notif +1;						//終了後、onCreateまで戻る
@@ -18,6 +16,7 @@ public final class MyConstants {
     public static final int syoki_1stsentaku = syoki_activty_set+5;	//リスト選択されなかった・一人目のアーティストからアルバムリストへ
     public static final int syoki_1stsentaku1 = syoki_1stsentaku+1;	//リスト選択されなかった・一枚目のアルバムリスト～タイトルリストへ
     public static final int syoki_1stsentaku2 = syoki_1stsentaku1+1;	//リスト選択されなかった・タイトルリストから一曲目を選択して再生準備
+    /**全曲リスト読み込み*/
     public static final int syoki_Yomikomi = syoki_1stsentaku2+5;				//
     public static final int syoki_Yomi1 = syoki_Yomikomi+1;				//CreateArtistListの初回作成
     public static final int syoki_Yomi2 = syoki_Yomi1+1;				//リストから重複削除
@@ -50,16 +49,27 @@ public final class MyConstants {
     public static final int LyricCheck = Visualizer_type_FFT + 1;					//歌詞の有無確認
     public static final int LyricEnc= LyricCheck+1;					//歌詞の再エンコード
     public static final int LyricWeb = LyricEnc+1;					//192;歌詞のweb表示
-    public static final int v_play_list = LyricWeb+1;					//アーティストリスト表示
-    public static final int v_artist = v_play_list+1;					//アーティストリスト表示
-    public static final int v_alubum = v_artist+1;					//アルバムリスト表示
-    public static final int v_titol = v_alubum+1;						//タイトルリスト表示
+    /**プレイリスト表示?*/
+    public static final int v_play_list = LyricWeb+1;
+    /**アーティストリスト表示*/
+    public static final int v_artist = v_play_list+1;
+    /**アルバムリスト表示*/
+    public static final int v_alubum = v_artist+1;
+    /**タイトルリスト表示*/
+    public static final int v_titol = v_alubum+1;						//
     public static final int rp_artist = v_titol +1;					//アーティストリピート指定ボタン
-    public static final int rp_album = rp_artist +1;					//アルバムリピート指定ボタン
-    public static final int rp_titol = rp_album +1;					//タイトルリピート指定ボタン
-    public static final int rp_point = rp_titol +1;					//二点間リピート
+    /**アルバムリピート指定ボタン*/
+    public static final int rp_album = rp_artist +1;					//
+    /**タイトルリピート指定ボタン*/
+    public static final int rp_titol = rp_album +1;					//
+    /**二点間リピート*/
+    public static final int rp_point = rp_titol +1;					//
     public static final int settei_hyouji = rp_point+5;					//設定表示			startActivityForResult(intent , reqCode );でjava.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     public static final int quit_all = settei_hyouji+1;					//すべて終了
+    /**汎用プレイリスト一覧*/
+    public static final int PUPRPOSE_lIST=rp_point+50;				//
+    /**汎用プレイリストの曲リスト*/
+    public static final int PUPRPOSE_SONG=PUPRPOSE_lIST+1;				//
 
 
     private MyConstants (){}

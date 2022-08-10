@@ -121,7 +121,6 @@ import java.util.concurrent.Executors;
  * **/
 public class MuList extends AppCompatActivity implements  View.OnClickListener , View.OnKeyListener {
 	                                                                 //plogTaskCallback,
-	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
 	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 	public OrgUtil ORGUT;						//自作関数集
 	public Util UTIL;
@@ -131,8 +130,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	private MuList.ploglessTask plTask;
 
 	/**定数*/
-	MyConstants CONST;
-	public MaraSonActivity MSA ;				//メインアクティビティ
 	public Locale locale;							// アプリで使用されているロケール情報を取得
 
 	//プリファレンス
@@ -317,10 +314,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public static final int reTryMse = reTrySart+1;							//全曲リスト作成から戻ってメッセージ表示
 	public static final int quite_list = reTryMse+1;							//リストの終了
 //	public static final int m3u_list = quite_list+1;							//m3uファイル選択
-	/**汎用プレイリスト一覧*/
-	public static final int PUPRPOSE_lIST=MaraSonActivity.v_play_list+50;				//
-	/**汎用プレイリストの曲リスト*/
-	public static final int PUPRPOSE_SONG=PUPRPOSE_lIST+1;				//
 	public static final int make_list_head = 500;		//ヘッド作成
 	public static final int MENU_MU_OPTION = make_list_head+10;
 	public static final int MENU_FILTER_MUSCK = MENU_MU_OPTION+1;			//プレイリストなどの選択処理
@@ -1029,8 +1022,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					menu.add(0, CONTEXT_add_playlist, 0, getResources().getString(R.string.list_contex_add_playlist));		//プレイリストに追加
 					menu.add(0, CONTEXT_make_playlist, 0, getResources().getString(R.string.list_contex_make_playlist));		//新規プレイリストを作成して追加
 					break;
-				case MaraSonActivity.v_artist:							//195アーティスト
-				case MaraSonActivity.v_alubum:							//196アルバム
+				case MyConstants.v_artist:							//195アーティスト
+				case MyConstants.v_alubum:							//196アルバム
 					 albumCMCreate( menu);
 					break;
 				}
@@ -1123,7 +1116,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ",exists=" + shyuFile.exists();
 				this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
 				dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-				preRead( MaraSonActivity.syoki_Yomikomi , null);
+				preRead( MyConstants.syoki_Yomikomi , null);
 				return true;
 			default:
 				return super.onContextItemSelected(item);
@@ -1562,7 +1555,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						final String TAG = "shyuuseiuList";
 						String dbMsg = "[MuList]";
 						try {
-							preRead( MaraSonActivity.syoki_Yomikomi , null);
+							preRead( MyConstants.syoki_Yomikomi , null);
 							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1579,7 +1572,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",選択していたリスト=" + b_reqCode;///////////////////
 							reqCode = b_reqCode;										//元の選択リストに戻す
 							switch(b_reqCode) {
-							case MaraSonActivity.v_artist:							//195アーティスト
+							case MyConstants.v_artist:							//195アーティスト
 								dbMsg += ",sousa_artist=" + sousa_artist ;				//それまで参照していたアーティスト名	b_artist
 								dbMsg += ",artistSL="+artistSL.size() ;
 								artistSL.remove(MuList.this.SelectLocation);		//アルバム名
@@ -1596,7 +1589,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 									setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 								}
 								break;
-							case MaraSonActivity.v_alubum:							//196アルバム
+							case MyConstants.v_alubum:							//196アルバム
 								dbMsg += ",sousa_alubm=" + sousa_alubm ;
 								dbMsg += ",albumList="+albumList.size() ;
 								albumList.remove(MuList.this.SelectLocation);		//アルバム名
@@ -2177,7 +2170,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			lss_builder.setNegativeButton(getResources().getString(R.string.comon_cyusi),  new DialogInterface.OnClickListener() {	//中止</string>
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					reqCode = MaraSonActivity.v_artist;
+					reqCode = MyConstants.v_artist;
 					listReWrite( false );			//修正リスト操作後の再描画
 				}
 			});
@@ -2238,7 +2231,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			//	☆再描画させないとThe content of the adapter has changed but ListView did not receive a notification
 			dbMsg += ",reqCode=" + reqCode;///////////////////
 			switch(reqCode) {						//7340?
-			case MaraSonActivity.v_artist:				//...7334アーティスト
+			case MyConstants.v_artist:				//...7334アーティスト
 				if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 			//		dbMsg += "artistSL=" + artistSL;///////////////////
 					if( artistSL== null ){
@@ -2258,7 +2251,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 				}
 				break;
-			case MaraSonActivity.v_alubum:				//2131361804アルバム
+			case MyConstants.v_alubum:				//2131361804アルバム
 				if( pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 					if(reMove){													//リスト編集後、済んだ項目を
 						albumList.remove(SelectLocation);
@@ -2274,7 +2267,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
 				}
 				break;
-			case MaraSonActivity.v_titol:						//2131361809	タイトル
+			case MyConstants.v_titol:						//2131361809	タイトル
 				break;
 			default:
 				break;
@@ -2346,8 +2339,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",reqCode = " + reqCode;
 			switch(reqCode) {
 			case listType_2ly2:				// = listType_2ly + 1;albumとtitolの２階層
-			case MaraSonActivity.v_alubum:							//2131427340アルバム
-			case MaraSonActivity.v_titol:
+			case MyConstants.v_alubum:							//2131427340アルバム
+			case MyConstants.v_titol:
 				headImgIV.setVisibility(View.GONE);
 				mainHTF.setVisibility(View.VISIBLE);
 				artistHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
@@ -2410,7 +2403,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		//全曲リストで	|| -1 == nowList_id
 						if( dataFN != null && ! dataFN.equals("null")){																				//前回再生曲があれば
 							dbMsg += ">>プレイヤーへ";
-							send2Player(dataFN,false);																			//プレイヤーにuriを送る
+		//22020810一時停止					send2Player(dataFN,false);																			//プレイヤーにuriを送る
 						}else{																								//前回再生曲が無ければ
 							dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);							//選曲して下さい。
 							dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);							//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
@@ -2432,7 +2425,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 									dbMsg +=  ","+ dataFN + "を" + list_dataUMUCursor.getCount() + "件検出";
 									if( list_dataUMUCursor.moveToFirst() ){
 										if ( imanoJyoutai == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-											send2Player(dataFN,false );														//プレイヤーにuriを送る
+											//22020810一時停止								send2Player(dataFN,false );														//プレイヤーにuriを送る
 										}
 									}else {																			//指定されたリストが無ければ
 										dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
@@ -2463,7 +2456,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dtitol = getResources().getString(R.string.syokairiyou_dt);				//全曲リストを作成作成させ下さい。
 					dMessege = getResources().getString(R.string.syokairiyou_dm);				//１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n
 				} else {
-					send2Player(dataFN,false );														//プレイヤーにuriを送る
+//22020810一時停止					send2Player(dataFN,false );														//プレイヤーにuriを送る
 				}
 			} else {
 				dbMsg +=  "；pref_file_kyoku == null || pref_file_saisinn == null";
@@ -2513,10 +2506,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 													 dtitol.equals(getResources().getString(R.string.syokairiyou_dt))                    //全曲リストを作成作成させ下さい。
 										) {
 											//			dismissDialog(0);//基本はこっち。showDialogを再度すると、前のダイアログが使いまわされる
-											//			MaraSonActivity.this.removeDialog(0);//手動でダイアログの消去と、ダイアログ使い回しを破棄をしたい場合。
+											//			MyConstants.this.removeDialog(0);//手動でダイアログの消去と、ダイアログ使い回しを破棄をしたい場合。
 											dbMsg += "ファイルに変更あり";/////////////////////////////////////
 											myLog(TAG , dbMsg);
-											preRead(MaraSonActivity.syoki_Yomikomi , null);            //syoki_start_up
+											preRead(MyConstants.syoki_Yomikomi , null);            //syoki_start_up
 										} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t)) ) {            //プレイリストを選択して下さい。
 										} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t)) ) {        //選曲して下さい。
 											nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
@@ -2699,7 +2692,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",reqCode= " + reqCode;
 					reqKariCode = reqCode;
 				}
-				reqCode = MaraSonActivity.v_artist;							//アーティスト
+				reqCode = MyConstants.v_artist;							//アーティスト
 				dbMsg += ",artistAL= " + artistAL;
 				if(artistAL != null){
 					dbMsg += "L= " + artistAL.size();
@@ -2787,7 +2780,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",reqCode= " + reqCode;
 					reqKariCode = reqCode;
 				}
-//				reqCode = MaraSonActivity.v_artist;							//アーティスト
+//				reqCode = MyConstants.v_artist;							//アーティスト
 				dbMsg += ",plAL= " + MuList.this.plAL;
 				if(MuList.this.plAL != null){
 					int listSize =  MuList.this.plAL.size();
@@ -2911,7 +2904,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						final String TAG = "preReadJunbi[MuList]";
 						String dbMsg = "[MuList]";
 						try {
-							preRead( MaraSonActivity.syoki_Yomikomi , null);			//syoki_start_up
+							preRead( MyConstants.syoki_Yomikomi , null);			//syoki_start_up
 							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2993,7 +2986,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			/**
              * artist_dbの読み込み(	Ver1.1.1からZenkyokuListで作成したアイテムを無条件で読み込む)
              * 読出し元
-             * sigotoFuriwakeで、	reqCode = MaraSonActivity.v_artist;	　/
+             * sigotoFuriwakeで、	reqCode = MyConstants.v_artist;	　/
              * listReWriteで、		artistSL== null
              * readDBで				artistALが読み込まれていない
              * */
@@ -3003,7 +2996,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "artistList_yomikomi[MuList]";
 		String dbMsg = "[MuList]";
 		try{
-			reqCode = MaraSonActivity.v_artist;							//アーティスト
+			reqCode = MyConstants.v_artist;							//アーティスト
 			artistDBOpen();									//artist_dbを開く
 			if(cursorA != null){
 				if(! cursorA.isClosed()){
@@ -3054,7 +3047,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				aArtist = "";
 				albumMei = "";
 				artURL = null;
-				reqCode = MaraSonActivity.v_artist ;
+				reqCode = MyConstants.v_artist ;
 				String pdTitol = getResources().getString(R.string.jyunbicyuu);					//準備中
 				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 		//		myLog(TAG,dbMsg);
@@ -3200,7 +3193,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			String subText =getResources().getString(R.string.pp_artist) + " ; "  + artintCo + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
 			subHTF.setText(subText );
-	//		reqCode = MaraSonActivity.v_alubum;							//アーティスト
+	//		reqCode = MyConstants.v_alubum;							//アーティスト
 				if( 0< mIndex ){
 					dbMsg += " ,mIndex= " + mIndex;/////////////////////////////////////
 					Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
@@ -3689,7 +3682,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				intent.putExtra( "pref_zenkai_saiseKyoku",pref_zenkai_saiseKyoku);
 //				dbMsg += pref_zenkai_saiseijikann +"mS";/////////////////////////////////////
 				intent.putExtra( "pref_zenkai_saiseijikann",pref_zenkai_saiseijikann);
-				intent.putExtra("kidou_jyoukyou",MaraSonActivity.kidou_std);
+				intent.putExtra("kidou_jyoukyou",MyConstants.kidou_std);
 //				dbMsg += ",pref_lockscreen=" + pref_lockscreen;/////////////////////////////////////
 				intent.putExtra("pref_lockscreen",pref_lockscreen);
 //				dbMsg += ",pref_notifplayer=" + pref_notifplayer;/////////////////////////////////////
@@ -4020,7 +4013,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 				}
 			});
-			if(reqCode == MaraSonActivity.v_play_list){
+			if(reqCode == MyConstants.v_play_list){
 				return;
 			}
 
@@ -4107,29 +4100,29 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				dbMsg +=",reqCode=" + reqCode;
 				switch(reqCode) {
-				case MaraSonActivity.v_artist:							//195 ;2131558436 アーティスト
+				case MyConstants.v_artist:							//195 ;2131558436 アーティスト
 					dbMsg +="=アーティストから";
 					itemStr = String.valueOf(artistSL.get(position));		//クレジットされているアーティスト名
 					sousa_artist = itemStr;
 					sousa_alubm = null;
 					sousa_titol = null;
-					reqCode= MaraSonActivity.v_alubum;
+					reqCode= MyConstants.v_alubum;
 					dbMsg += ",reqCode=" + reqCode;/////////////////////////////////////
 					dbMsg +=",sousa_artist="+ sousa_artist +"のアルバムリスト作成"  ;////////////////////////////////////
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け	, albumAL
 					break;
-				case MaraSonActivity.v_alubum:							//196;2131558442 アルバム
+				case MyConstants.v_alubum:							//196;2131558442 アルバム
 					dbMsg +=",アルバムから";
 					dbMsg +=",albumList=" + albumList.size() +"件";
 					itemStr = albumList.get(position);		//アルバム名
 					dbMsg +=",itemStr=" +itemStr;
 					sousa_alubm = itemStr;
 					sousa_titol = null;
-					reqCode= MaraSonActivity.v_titol;
+					reqCode= MyConstants.v_titol;
 					dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm  +"のタイトルリスト作成" ;////////////////////////////////////
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け		, albumAL
 					break;
-				case MaraSonActivity.v_titol:						// ; 2131558448 タイトル
+				case MyConstants.v_titol:						// ; 2131558448 タイトル
 					dbMsg +=",タイトルから";
 					dbMsg +=",titolList=" + titolList.size() +"件";
 					itemStr = titolList.get(position);		//曲名
@@ -4322,21 +4315,21 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				b_reqCode=reqCode;							//処理コードの保留;選択していたリスト
 				switch(reqCode) {
-				case MaraSonActivity.v_artist:							//2131427334アーティスト
+				case MyConstants.v_artist:							//2131427334アーティスト
 					itemStr = String.valueOf(artistSL.get(position));		//クレジットされているアーティスト名
 					sousa_artist = itemStr;
 					sousa_alubm = null;
 					sousa_titol = null;
 					layerCode = lyer_artist ;							//アーティスト
 					break;
-				case MaraSonActivity.v_alubum:							//2131558442 アルバム
+				case MyConstants.v_alubum:							//2131558442 アルバム
 					dbMsg +=",アルバムから";
 					itemStr = albumList.get(position);		//アルバム名
 					sousa_alubm = itemStr;
 					sousa_titol = null;
 					layerCode = lyer_album ;			//アルバム
 					break;
-				case MaraSonActivity.v_titol:						//2131558448 タイトル
+				case MyConstants.v_titol:						//2131558448 タイトル
 					dbMsg +=",タイトルから";
 					itemStr = titolList.get(position);		//曲名
 					dbMsg += "artist=" + sousa_artist+ "・・・" + sousa_alubmArtist;/////////////////////////////////////
@@ -4439,29 +4432,29 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg = "操作中のリスト="+sousalistName;////////"リスト；parent="+parent+",view="+view+
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				dbMsg +=",現在;reqCode=" + reqCode + ",albumArtist=" + MuList.this.albumArtist;////////////////////////////////////
-				if( reqCode != MaraSonActivity.v_artist && MuList.this.albumArtist == null){
+				if( reqCode != MyConstants.v_artist && MuList.this.albumArtist == null){
 					albumArtist = Artist2albumAetist( creditArtistName) ;
 					dbMsg +=">>" + albumArtist ;////////////////////////////////////
 				}
 				dbMsg += ",album=" + MuList.this.albumName;////////////////////////////////////
 				switch(reqCode) {			//backCode
-				case MaraSonActivity.v_artist:				//<<quitMe();<<MuList.this.finish();
+				case MyConstants.v_artist:				//<<quitMe();<<MuList.this.finish();
 					dbMsg +=",クリックしたのはartistリストのヘッド" ;
-					reqCode = MaraSonActivity.v_play_list;
+					reqCode = MyConstants.v_play_list;
 					dbMsg +=",現在[" + sousalistID + "]" + sousalistName +"次はプレイリスト一覧：" + reqCode ;
 					senntakuItem = sousalistName;
 					sigotoFuriwake(reqCode , sousalistName , null  , null , null);		//表示するリストの振り分け		, albumAL
 					break;
-				case MaraSonActivity.v_alubum:				//2131558442  アルバム
+				case MyConstants.v_alubum:				//2131558442  アルバム
 					dbMsg +=",クリックしたのはalbumリストのヘッド" ;////////////////////////////////////
-					reqCode = MaraSonActivity.v_artist;
+					reqCode = MyConstants.v_artist;
 					dbMsg +=",sousa_artist="+ sousa_artist  ;////////////////////////////////////
 					senntakuItem = sousa_artist;
 					sigotoFuriwake(reqCode , sousa_artist , null  , null , null);		//表示するリストの振り分け		, albumAL
 					break;
-				case MaraSonActivity.v_titol:						//2131558448 	タイトル
+				case MyConstants.v_titol:						//2131558448 	タイトル
 					dbMsg +=",クリックしたのはtitolリストのヘッド" ;////////////////////////////////////
-					reqCode = MaraSonActivity.v_alubum;
+					reqCode = MyConstants.v_alubum;
 					dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm ;////////////////////////////////////
 					senntakuItem = sousa_alubm ;
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , null , null);		//表示するリストの振り分け		, albumAL
@@ -4571,12 +4564,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg +=")" + ItemAL.get(i).get("main") ;///////////////////////////////////////////////////////////////////////////////////////////
 
 					switch(reqCode) {
-					case MaraSonActivity.v_artist:					//195	...334
+					case MyConstants.v_artist:					//195	...334
 							break;
-					case MaraSonActivity.v_alubum:					//196	...340
+					case MyConstants.v_alubum:					//196	...340
 						MuList.this.albumName = titleStr;
 						break;
-					case MaraSonActivity.v_titol:					//197
+					case MyConstants.v_titol:					//197
 						if(i<9){
 							rStr = "0"+ ( i + 1 ) + ";" ;
 						}else{
@@ -4987,7 +4980,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg +=" ,保存場所= " + sousalist_data ;
 							dbMsg +=" ,yobidashiItem= " + yobidashiItem ;
 							dbMsg +=" ,maeList= " + maeList ;         						//20190506
-							if( yobidashiItem == MaraSonActivity.v_artist  || ! maeList.equals(MuList.this.sousalistName)){		//プレイヤー画面でタップされたアイテム
+							if( yobidashiItem == MyConstants.v_artist  || ! maeList.equals(MuList.this.sousalistName)){		//プレイヤー画面でタップされたアイテム
 								dbMsg +=" ,cursorA= " + cursorA;
 								if(cursorA != null){							//既に読み込み中に誤動作したら読み込み処理に入らない
 									dbMsg +=" ,isClosed= " +  cursorA.isClosed() ;
@@ -5008,7 +5001,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							saikin_sisei_jyunbi( MuList.this.sousalistID );				//最近再生された楽曲
 						} else if( sousalistName.equals(getResources().getString(R.string.playlist_namae_repeat)) ){					//リピート再生
 							dbMsg += ",repeatType="+repeatType;
-							if( repeatType == MaraSonActivity.rp_artist ){				//リピート再生の種類	2131558548
+							if( repeatType == MyConstants.rp_artist ){				//リピート再生の種類	2131558548
 								dbMsg += ",repeatArtist="+repeatArtist ;
 								plAlbumTitol( MuList.this.sousalistID , repeatArtist);		//指定したプレイリストから特定アーティストのアルバムとタイトル内容取得
 							}else{
@@ -5324,7 +5317,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						MuList.this.nowListSub = MuList.this.listKyokuSuu + getResources().getString(R.string.pp_kyoku);
 					}
 					dbMsg += "→"+MuList.this.nowListSub;
-					reqCode = PUPRPOSE_lIST;	//MENU_TAKAISOU ;			//多階層リスト選択選択中
+					reqCode = MyConstants.PUPRPOSE_lIST;	//MENU_TAKAISOU ;			//多階層リスト選択選択中
 					dbMsg += ",reqCode="+reqCode;
 					int koumoku = playLists.getColumnCount();
 					String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
@@ -5556,7 +5549,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",単階層指定="+plef_tankaisou ;
 
 			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){		//最近追加
-				reqCode = PUPRPOSE_SONG;	//	MENU_TAKAISOU2 ;									//538;3階層リスト
+				reqCode = MyConstants.PUPRPOSE_SONG;	//	MENU_TAKAISOU2 ;									//538;3階層リスト
 				dbMsg += ">reqCode="+reqCode;
 				listType = listType_plane;									// 0;//情報なし
 				if( retInt < Integer.valueOf(pref_artist_bunnri) ){
@@ -6072,7 +6065,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String songTitol =  (String) plAL.get(i).get(MediaStore.Audio.Playlists.Members.TITLE );
 			dbMsg += ",Titol="+songTitol;
 			MuList.this.titolLayer  = MuList.this.albumLayer.add(songTitol);
-			if(songTitol.equals(MuList.this.titolName) && reqCode == MaraSonActivity.v_titol){				//それまで参照していたアーティスト名
+			if(songTitol.equals(MuList.this.titolName) && reqCode == MyConstants.v_titol){				//それまで参照していたアーティスト名
 				MuList.this.titolePosition = MuList.this.titoleCount;		//選択させるタイトル
 				dbMsg += ",titolePosition="+MuList.this.titolePosition;
 			}
@@ -6174,7 +6167,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "treeAdapter=" + MuList.this.treeAdapter.getCount() +"件" ;
 			TreeEntry treeEntry;
 			dbMsg += ",artistPosition=" + artistPosition;
-			if( 0 <= artistPosition){		//選択させるアーティスト					 && yobidashiItem == MaraSonActivity.v_artist
+			if( 0 <= artistPosition){		//選択させるアーティスト					 && yobidashiItem == MyConstants.v_artist
 				treeEntry = (TreeEntry)lvID.getItemAtPosition(artistPosition);		//選択させるアーティスト
 				//	int depth = treeEntry.getDepth();
 				treeEntry.expand();			//指定したTreeEntryを開く
@@ -6182,13 +6175,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				alubmPosition= artistPosition+  1 + alubmPosition;
 			}
 			dbMsg += ",alubmPosition=" + alubmPosition;
-			if( 0 <= alubmPosition ){		//選択させるアルバム	 && yobidashiItem == MaraSonActivity.v_alubum
+			if( 0 <= alubmPosition ){		//選択させるアルバム	 && yobidashiItem == MyConstants.v_alubum
 				treeEntry = (TreeEntry)lvID.getItemAtPosition(alubmPosition);		//選択させるアルバム
 				treeEntry.expand();						//指定したTreeEntryを開く
 				titolePosition = alubmPosition+ + 1 + titolePosition;
 			}
 			dbMsg += ",titolePosition=" + titolePosition;
-			if( 0 <= titolePosition && yobidashiItem == MaraSonActivity.v_titol){			//選択させるタイトル
+			if( 0 <= titolePosition && yobidashiItem == MyConstants.v_titol){			//選択させるタイトル
 				lvID.setSelection(titolePosition);		//選択させるタイトル
 				lvID.setFocusable(true);
 				lvID.setFocusableInTouchMode(true);
@@ -8475,15 +8468,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				zenkyokuAri = true;			//全曲リスト有り
 				dbMsg += ",アルバム="+ albumName;
 				switch(reqCode) {
-				case MaraSonActivity.rp_album:			//2131558548 アーティストリピート指定ボタン
+				case MyConstants.rp_album:			//2131558548 アーティストリピート指定ボタン
 					c_selection = "ALBUM_ARTIST LIKE ? AND ALBUM = ?";
 					String[] c_selectionArgs3= {"%" + albumArtist + "%" , albumName };
 					c_orderBy= "TRACK"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 					cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs3 , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 					dbMsg += "は"+ cursor.getCount() + "件";
 					break;
-				case MaraSonActivity.rp_titol:			//2131558549 タイトルリピート指定ボタン
-				case MaraSonActivity.rp_point:			//2131558550 二点間リピート指定ボタン
+				case MyConstants.rp_titol:			//2131558549 タイトルリピート指定ボタン
+				case MyConstants.rp_point:			//2131558550 二点間リピート指定ボタン
 					dbMsg += ",タイトル="+ titolName;
 					c_selection = "ALBUM_ARTIST LIKE ? AND ALBUM = ? AND TITLE = ?";
 					String[] c_selectionArgs4= {"%" + albumArtist + "%" , albumName , titolName };
@@ -8507,16 +8500,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if( cursor.moveToFirst() ){
 					dbMsg += ",アルバム="+ albumName;
 					switch(reqCode) {
-		//			case MaraSonActivity.rp_artist:			//2131558547 アーティストリピート指定ボタン
-					case MaraSonActivity.rp_album:			//2131558548 アーティストリピート指定ボタン
+		//			case MyConstants.rp_artist:			//2131558547 アーティストリピート指定ボタン
+					case MyConstants.rp_album:			//2131558548 アーティストリピート指定ボタン
 						c_selection = MediaStore.Audio.Media.ARTIST + " LIKE ? AND " + MediaStore.Audio.Media.ALBUM + " = ?";
 						String[] c_selectionArgs3= {"%" + albumArtist + "%" , albumName };
 						c_orderBy=MediaStore.Audio.Media.TRACK;			// "TRACK"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 						cursor = getContentResolver().query( cUri ,c_columns, c_selection, c_selectionArgs3, c_orderBy) ;
 						dbMsg += "は"+ cursor.getCount() + "件";
 						break;
-					case MaraSonActivity.rp_titol:			//2131558549 タイトルリピート指定ボタン
-					case MaraSonActivity.rp_point:			//2131558550 二点間リピート指定ボタン
+					case MyConstants.rp_titol:			//2131558549 タイトルリピート指定ボタン
+					case MyConstants.rp_point:			//2131558550 二点間リピート指定ボタン
 						dbMsg += ",タイトル="+ titolName;
 						c_selection = MediaStore.Audio.Media.ARTIST + " LIKE ? AND " + MediaStore.Audio.Media.ALBUM + " = ? AND " + MediaStore.Audio.Media.TITLE + " = ?";
 						String[] c_selectionArgs4= {"%" + albumArtist + "%" , albumName , titolName };
@@ -8808,7 +8801,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ",送信先ComponentName=" + MPSName;/////////////////////////////////////
 				dbMsg += " ,b_reqCode=" + b_reqCode;/////////////////////////////////////
 				if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
-					reqCode = MaraSonActivity.v_titol;						//2131558439	タイトル
+					reqCode = MyConstants.v_titol;						//2131558439	タイトル
 				}else{
 					reqCode = b_reqCode;							//処理コードの保留
 				}
@@ -9573,7 +9566,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							case CONTEXT_saikintuika_end:	//最近追加リストのプレイリスト作成
 							case CONTEXT_saikintuika_Wr:				//最近追加リストのファイル作成
 							case CONTEXT_rumdam_wr:			//ランダム再生リストの書込み
-							case PUPRPOSE_SONG:
+							case MyConstants.PUPRPOSE_SONG:
 //								pdMaxVal = (int) params[2];		//プレイリスト用ArrayList
 								dbMsg += ", pdMaxVal = " + pdMaxVal + "件"  ;
 								break;
@@ -9602,7 +9595,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							case CONTEXT_rumdam_arrayi:		//ランダム再生;配列書込み
 							case CONTEXT_rumdam_wr:			//ランダム再生リストの書込み
 							case CONTEXT_M3U2_PL:		//汎用プレイリストをAndroidのプレイリストに転記
-							case PUPRPOSE_SONG:
+							case MyConstants.PUPRPOSE_SONG:
 								dbMsg += ", pdCoundtVal = " + pdCoundtVal ;
 								for(pdCoundtVal =0 ; pdCoundtVal < pdMaxVal;pdCoundtVal ++){
 									switch(reqCode) {
@@ -9620,7 +9613,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											plTowBody(pdCoundtVal);		//単階層+2階層プレイリストの2階層作成							break;
 											break;
 										case MENU_TAKAISOU2:			//536;多階層リスト書き込み中
-										case PUPRPOSE_SONG:
+										case MyConstants.PUPRPOSE_SONG:
 											plWrightBody(pdCoundtVal);	//3階層プレイリストの描画
 											break;
 										case CONTEXT_saikintuika_end:	//654 最近追加リストのプレイリスト作成
@@ -9648,12 +9641,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								if(cCursor.moveToFirst()){
 									dbMsg +=  "；ループ前；"+ cCursor.getPosition() +"/ " + pdMaxVal;	/////////////////////////////////////////////////////////////
 									switch(reqCode) {
-										//						case MaraSonActivity.v_artist:							//アーティスト
+										//						case MyConstants.v_artist:							//アーティスト
 										//							comp = getResources().getString(R.string.comon_compilation);			//コンピレーション
 										//							break;
-										case MaraSonActivity.v_alubum:							//アルバム
+										case MyConstants.v_alubum:							//アルバム
 											break;
-										case MaraSonActivity.v_titol:						//タイトル
+										case MyConstants.v_titol:						//タイトル
 											break;
 										//					default:
 										//						break;
@@ -9673,7 +9666,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											case MENU_TAKAISOU:				//537;多階層リスト選択選択中:CreatePLList
 											case listType_2ly2:				//  listType_2ly + 1;albumとtitolの２階層
 											case MENU_MUSCK_PLIST:			//プレイリスト選択中
-											case PUPRPOSE_lIST:
+											case MyConstants.PUPRPOSE_lIST:
 												cCursor = CreatePLListBody(cCursor);		//プレイリストの内容取得
 												break;
 											case CONTEXT_del_playlist:					//624;このリストを削除
@@ -9690,12 +9683,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 												delC = delOneLineBody(pUri , Integer.valueOf(delID));			//プレイリストから指定された行を削除する
 												dbMsg += ">削除>" + delC + "件" ;///////////////////////////////////
 												break;
-											case MaraSonActivity.v_artist:							//196 アーティスト
+											case MyConstants.v_artist:							//196 アーティスト
 												cCursor = artistList_yomikomiLoop( cCursor );					//, comp
 												break;
-											case MaraSonActivity.v_alubum:							//アルバム
+											case MyConstants.v_alubum:							//アルバム
 												break;
-											case MaraSonActivity.v_titol:						//タイトル
+											case MyConstants.v_titol:						//タイトル
 												break;
 											case CONTEXT_saikin_sisei0:		//655;最近再生された楽曲(重複削除)
 												dbMsg +=  ",最近追加リスト;CONTEXT_saikin_sisei0" ;
@@ -9868,7 +9861,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						break;
 					case MENU_TAKAISOU:				//537 多階層リスト選択選択中
 					case MENU_MUSCK_PLIST:			//540	プレイリスト選択中
-					case PUPRPOSE_lIST:
+					case MyConstants.PUPRPOSE_lIST:
 						CreatePLListEnd(cCursor);				//プレイリストの内容取得
 						break;
 					case CONTEXT_del_playlist:			//648 このリストを削除
@@ -9883,7 +9876,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						break;
 					case MENU_2KAISOU:				//536;2階層リスト選択選択中
 					case MENU_TAKAISOU2:				//538多階層リスト書き込み中
-					case PUPRPOSE_SONG:
+					case MyConstants.PUPRPOSE_SONG:
 						plWrightEnd();					//プレイリストの描画
 						break;
 					case MENU_infoKaisou:			//539 ;情報付きリスト書き込み中:CreatePLListEnd
@@ -9938,12 +9931,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					case CONTEXT_dell_request:					//リクエスト解除
 						requestListResetEnd();
 						break;
-					case MaraSonActivity.v_artist:			//アーティスト
+					case MyConstants.v_artist:			//アーティスト
 						artistList_yomikomiEnd();					//アーティストリストの終了処理
 						break;
-					case MaraSonActivity.v_alubum:							//アルバム
+					case MyConstants.v_alubum:							//アルバム
 						break;
-					case MaraSonActivity.v_titol:						//タイトル
+					case MyConstants.v_titol:						//タイトル
 						break;
 					case CONTEXT_M3U2_PL:		//汎用プレイリストをAndroidのプレイリストに転記
 						allSongArtistList();
@@ -10200,12 +10193,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //						if(cursor.moveToFirst()){
 //							dbMsg +=  "；ループ前；"+ cursor.getPosition() +"/ " + pdMaxVal;	/////////////////////////////////////////////////////////////
 //							switch(reqCode) {
-//		//						case MaraSonActivity.v_artist:							//アーティスト
+//		//						case MyConstants.v_artist:							//アーティスト
 //		//							comp = getResources().getString(R.string.comon_compilation);			//コンピレーション
 //		//							break;
-//								case MaraSonActivity.v_alubum:							//アルバム
+//								case MyConstants.v_alubum:							//アルバム
 //									break;
-//								case MaraSonActivity.v_titol:						//タイトル
+//								case MyConstants.v_titol:						//タイトル
 //									break;
 //			//					default:
 //			//						break;
@@ -10243,12 +10236,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //		//								int playOrder = cursor.getPosition() +1;
 //		//								readSaikinTuikaDB_body(cursor , playOrder);				//最近追加された楽曲fairuyomiro
 //		//								break;
-//								case MaraSonActivity.v_artist:							//195 アーティスト
+//								case MyConstants.v_artist:							//195 アーティスト
 //									cursor = artistList_yomikomiLoop( cursor );					//, comp
 //									break;
-//								case MaraSonActivity.v_alubum:							//アルバム
+//								case MyConstants.v_alubum:							//アルバム
 //									break;
-//								case MaraSonActivity.v_titol:						//タイトル
+//								case MyConstants.v_titol:						//タイトル
 //									break;
 //								case CONTEXT_saikin_sisei0:		//655;最近再生された楽曲(重複削除)
 //									dbMsg +=  ",最近追加リスト;CONTEXT_saikin_sisei0" ;
@@ -10463,12 +10456,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			case CONTEXT_dell_request:					//リクエスト解除
 //				requestListResetEnd();
 //				break;
-//			case MaraSonActivity.v_artist:			//アーティスト
+//			case MyConstants.v_artist:			//アーティスト
 //				artistList_yomikomiEnd();					//アーティストリストの終了処理
 //				break;
-//			case MaraSonActivity.v_alubum:							//アルバム
+//			case MyConstants.v_alubum:							//アルバム
 //				break;
-//			case MaraSonActivity.v_titol:						//タイトル
+//			case MyConstants.v_titol:						//タイトル
 //				break;
 //			case CONTEXT_M3U2_PL:		//汎用プレイリストをAndroidのプレイリストに転記
 //				allSongArtistList();
@@ -10518,13 +10511,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						shyouMain( yobidashiItem );		//onCleateの続きで仕掛けの仕込み		reqCode
 //					}
 						break;
-					case MaraSonActivity.CONTEXT_runum_sisei:			//184 ランダム再生
+					case MyConstants.CONTEXT_runum_sisei:			//184 ランダム再生
 						randumPlay();			//ランダム再生
 						break;
-					case MaraSonActivity.rp_artist:			//2131558547 アーティストリピート指定ボタン
-					case MaraSonActivity.rp_album:			//2131558548 アーティストリピート指定ボタン
-					case MaraSonActivity.rp_titol:			//2131558549 タイトルリピート指定ボタン
-					case MaraSonActivity.rp_point:			//2131558550 二点間リピート指定ボタン
+					case MyConstants.rp_artist:			//2131558547 アーティストリピート指定ボタン
+					case MyConstants.rp_album:			//2131558548 アーティストリピート指定ボタン
+					case MyConstants.rp_titol:			//2131558549 タイトルリピート指定ボタン
+					case MyConstants.rp_point:			//2131558550 二点間リピート指定ボタン
 						repeatPlay();			//リピート再生
 						break;
 					case quite_me:										//99;終了
@@ -10550,7 +10543,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String saisei_fname = getPrefStr( "pref_data_url" ,  "" , MuList.this);
 			dbMsg +=  ",reqC=" + reqC +") artist;" + ";album=" + albumMei + ",titolMei=" + titolMei ;
 			switch(reqC) {
-				case MaraSonActivity.v_play_list:
+				case MyConstants.v_play_list:
 					dbMsg +=",アーティストリストのヘッダータップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -10563,8 +10556,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += "、選択リスト名=" + artistMei;
 					listOfList_yomikomi( artistMei);
 					break;
-				case MaraSonActivity.v_artist:							//195;	2131558436 :アーティスト
-					backCode = MaraSonActivity.v_play_list;		//上のリスト
+				case MyConstants.v_artist:							//195;	2131558436 :アーティスト
+					backCode = MyConstants.v_play_list;		//上のリスト
 					dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -10589,8 +10582,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					lvID.setFocusableInTouchMode(true);
 					lvID.requestFocus();
 					break;
-				case MaraSonActivity.v_alubum:			//196 ; 2131558442	アルバム
-					backCode = MaraSonActivity.v_artist;		//上のリスト
+				case MyConstants.v_alubum:			//196 ; 2131558442	アルバム
+					backCode = MyConstants.v_artist;		//上のリスト
 					dbMsg +=",アーティストをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
@@ -10637,8 +10630,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					myLog(TAG, dbMsg);
 
 					break;
-				case MaraSonActivity.v_titol:						//197；2131558448 ;タイトル
-					backCode = MaraSonActivity.v_alubum;		//上のリスト
+				case MyConstants.v_titol:						//197；2131558448 ;タイトル
+					backCode = MyConstants.v_alubum;		//上のリスト
 					dbMsg +=",アルバムをタップ；backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
@@ -10733,173 +10726,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-//	@Override
-//	protected void onActivityResult (int requestCode, int resultCode, Intent intent) { // startActivityForResult で起動させたアクティビティがfinish() により破棄されたときにコールされる
-//		super.onActivityResult (requestCode, resultCode, intent);
-//		final String TAG = "onActivityResult";
-//		String dbMsg = "[MuList]";
-//		try {
-//			backTime= System.currentTimeMillis();						//このActivtyに戻った時間
-//			Bundle bundle = null;
-//			boolean kakikomi  = false;
-//			if( intent != null ){
-//				bundle = intent.getExtras();
-//				dbMsg += "requestCode="+requestCode;
-//				dbMsg +=",resultCode="+resultCode;
-////				myLog(TAG, dbMsg);
-//				Boolean retBool;
-//				switch(requestCode) {
-//					case MaraSonActivity.syoki_Yomikomi:		//128；全曲リスト更新
-//						dbMsg += "全曲リスト更新後";
-//						String pref_data_url = getPrefStr("pref_data_url" , "",MuList.this);
-//						String albumArtist = musicPlaylist.uri2Item(pref_data_url,0);
-//						sigotoFuriwake(MaraSonActivity.v_artist,albumArtist,"","", "");
-//						break;
-//					case settei_hyouji:
-//						dbMsg += "設定表示";
-//						retBool = Boolean.valueOf(bundle.getString("key.pref_list_simple"));						//プレイヤーの背景
-//						dbMsg +="シンプルなリスト表示="+ retBool +"(今は"+ pref_list_simple +")";	////////////////
-//						if( retBool != pref_list_simple){
-//							pref_list_simple = retBool;
-//							simpleSyousai( pref_list_simple );
-//						}
-//						pref_lockscreen = Boolean.valueOf(bundle.getBoolean("key.pref_lockscreen")) ;				//ロックスクリーンプレイヤー</string>
-//						pref_notifplayer = Boolean.valueOf( bundle.getBoolean("key.pref_notifplayer")) ;					//ノティフィケーションプレイヤー</string>
-//						retBool = false;
-//						retBool = Boolean.valueOf(bundle.getString("key.pref_listup_reset"));						//調整リスト消去
-//						if( retBool ){
-//							dbMsg +=",調整リスト消去="+ retBool ;	////////////////
-//							String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
-//							File shyuFile = new File(fn);
-//							dbMsg += ",exists=" + shyuFile.exists();
-//							this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
-//							dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-//							preRead( MaraSonActivity.syoki_Yomikomi , null);
-//						}
-//						break;
-//					case quite_me:
-//						dbMsg += "設定表示";
-//						MuList.this.finish();
-//						break;
-//					default:
-//					case chyangeSong:
-//						dbMsg += ",プレイヤーから戻って曲変更";
-//						reqCode =bundle.getInt("reqCode");
-//						dbMsg +=",reqCode= " + reqCode;
-////						psSarviceUri = bundle.getString("psSarviceUri");
-//						nowList_id = bundle.getInt("nowList_id");
-////						nowList_id = Integer.valueOf(bundle.getString("nowList_id"));
-//						dbMsg +="[プレイリストID= " + nowList_id;
-//						nowList = bundle.getString("nowList");
-//						dbMsg +="]" + nowList;//			// 全曲リスト
-//						mIndex = bundle.getInt("mIndex");
-//						dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
-//						senntakuItem = bundle.getString("senntakuItem");
-//						dbMsg += "]再生しているファイル="+senntakuItem;
-//						int mcPosition = bundle.getInt("mcPosition");
-//						dbMsg += "]mcPosition="+mcPosition;
-////						saisei_fname = bundle.getString("dataFN");
-////						dbMsg +=",dataFN=" + saisei_fname;/////////////////////////////////////
-//						albumArtist = bundle.getString("albumArtist");
-//						dbMsg += ",アルバムアーティスト="+albumArtist;           //b_artist +  ">"+
-//						creditArtistName = bundle.getString("creditArtistName");
-//						sousa_artist = creditArtistName;
-//						dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
-//						albumName = bundle.getString("albumName");
-//						sousa_alubm = albumName;
-//						dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
-//						titolName = bundle.getString("titolName");
-//						sousa_titol = titolName;
-//						dbMsg +=",曲名=" + titolName;/////////////////////////////////////
-//						albumArt = bundle.getString("albumArt");
-//						dbMsg +=",albumArt;アルバムアートのURI=" + albumArt;/////////////////////////////////////
-//						IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
-//						dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
-//						dbMsg +=  ",MPSIntent=" + MPSIntent;
-//						if( MPSIntent == null){
-//							MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-//							dbMsg +=  ">>" + MPSIntent;
-//						}
-//						setChronometer(mcPosition , IsPlaying ) ;
-//						IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
-//						dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
-//						pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
-//						dbMsg += ",/シンプルなリスト表示= " + pref_list_simple;
-//						setListPlayer( creditArtistName , albumMei , titolName, albumArt);
-//						b_artist = b_artist + "";
-//						b_album = b_album + "";
-//						makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
-//						dbMsg += "＞makePlayListSPN後＞";
-//						if(nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
-//							dbMsg += ",全曲リスト";
-//							switch(reqCode) {
-//								case MaraSonActivity.v_play_list:                                                    //169...334
-//									dbMsg += ",plNameSL = " + plNameSL.size() + "件";
-//									//				myLog(TAG,dbMsg);
-//									sigotoFuriwake(reqCode , nowList , null , null , null);        //表示するリストの振り分け		artistAL ,
-//									break;
-//								case MaraSonActivity.v_artist:                                                    //169...334
-//									dbMsg += ",artistAL = " + artistAL.size() + "件";
-//									//				myLog(TAG,dbMsg);
-//									sigotoFuriwake(reqCode , albumArtist , null , null , null);        //表示するリストの振り分け		artistAL ,
-//									break;
-//								case MaraSonActivity.v_alubum:                                                //196...340
-//									dbMsg += ",albumAL = " + albumAL.size() + "件";
-//
-//									if ( b_artist.equals(albumArtist) && b_album.equals(albumName) ) {
-//									} else {    //それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
-////									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
-////									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
-//										sigotoFuriwake(reqCode , albumArtist , albumName , null , null);        //表示するリストの振り分け	albumAL ,
-//									}
-//									break;
-//								case MaraSonActivity.v_titol:                                                    //197
-//									dbMsg += ",曲リスト = " + titolAL.size() + "件";
-////								//							if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
-////								//							} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
-////									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
-////									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
-////									dbMsg +=">>曲リスト = " + titolAL.size() + "件";
-////															}
-//									sigotoFuriwake(reqCode , albumArtist , albumName , null , null);        //表示するリストの振り分けtitolAL ,
-//									break;
-//								default:
-//									break;
-//							}
-//							if( IsSeisei ){					//		IsPlaying
-////							showMyPlayer();					//プレイヤー表示
-//							} else{
-////							list_player.setVisibility(View.GONE);
-//							}
-//						}else if(nowList.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){
-//							dbMsg += ",最近追加";
-//							sousalistID = nowList_id;
-//							sousalistName = nowList;
-//							dbMsg += "[" + sousalistID + "]" + sousalistName;
-//							pref_zenkyoku_list_id = getAllSongItems();
-//							dbMsg += " [全曲リスト； " + pref_zenkyoku_list_id + "]";/////////////////////////////////////
-//							mIndex = musicPlaylist.getPlaylistItemOrder(sousalistID,senntakuItem);			//Item.getMPItem( senntakuItem );
-//							dbMsg += "[" + mIndex + "]";
-//							if(treeAdapter != null ){
-//								dbMsg += ">>選択のみ";
-//								selectTreePosition(mIndex);
-//							}else{
-//								CreatePLList(Long.valueOf(nowList_id) , nowList);									//プレイリストの内容取得
-//							}
-//
-//						}else if(nowList.equals(getResources().getString(R.string.playlist_namae_saikinsisei))){
-//							dbMsg += ",最近再生";
-//						}
-//
-//						break;
-//				}
-//			}
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-
 	/**遷移先からの戻り*/
 	ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
 			new ActivityResultContracts.StartActivityForResult(),
@@ -10927,11 +10753,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				myLog(TAG, dbMsg);
 								Boolean retBool;
 								switch(requestCode) {
-									case MaraSonActivity.syoki_Yomikomi:		//128；全曲リスト更新
+									case MyConstants.syoki_Yomikomi:		//128；全曲リスト更新
 										dbMsg += "全曲リスト更新後";
 										String pref_data_url = getPrefStr("pref_data_url" , "",MuList.this);
 										String albumArtist = musicPlaylist.uri2Item(pref_data_url,0);
-										sigotoFuriwake(MaraSonActivity.v_artist,albumArtist,"","", "");
+										sigotoFuriwake(MyConstants.v_artist,albumArtist,"","", "");
 										break;
 									case settei_hyouji:
 										dbMsg += "設定表示";
@@ -10952,7 +10778,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											dbMsg += ",exists=" + shyuFile.exists();
 											this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
 											dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-											preRead( MaraSonActivity.syoki_Yomikomi , null);
+											preRead( MyConstants.syoki_Yomikomi , null);
 										}
 										break;
 									case quite_me:
@@ -11011,17 +10837,17 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										if(nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
 											dbMsg += ",全曲リスト";
 											switch(reqCode) {
-												case MaraSonActivity.v_play_list:                                                    //169...334
+												case MyConstants.v_play_list:                                                    //169...334
 													dbMsg += ",plNameSL = " + plNameSL.size() + "件";
 													//				myLog(TAG,dbMsg);
 													sigotoFuriwake(reqCode , nowList , null , null , null);        //表示するリストの振り分け		artistAL ,
 													break;
-												case MaraSonActivity.v_artist:                                                    //169...334
+												case MyConstants.v_artist:                                                    //169...334
 													dbMsg += ",artistAL = " + artistAL.size() + "件";
 													//				myLog(TAG,dbMsg);
 													sigotoFuriwake(reqCode , albumArtist , null , null , null);        //表示するリストの振り分け		artistAL ,
 													break;
-												case MaraSonActivity.v_alubum:                                                //196...340
+												case MyConstants.v_alubum:                                                //196...340
 													dbMsg += ",albumAL = " + albumAL.size() + "件";
 
 													if ( b_artist.equals(albumArtist) && b_album.equals(albumName) ) {
@@ -11031,7 +10857,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 														sigotoFuriwake(reqCode , albumArtist , albumName , null , null);        //表示するリストの振り分け	albumAL ,
 													}
 													break;
-												case MaraSonActivity.v_titol:                                                    //197
+												case MyConstants.v_titol:                                                    //197
 													dbMsg += ",曲リスト = " + titolAL.size() + "件";
 //								//							if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
 //								//							} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
