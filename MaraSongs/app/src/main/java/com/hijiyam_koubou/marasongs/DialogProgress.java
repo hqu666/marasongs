@@ -2,6 +2,7 @@ package com.hijiyam_koubou.marasongs;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -23,7 +24,7 @@ public class DialogProgress extends Activity {
     public String pdTitol;
     public String pdMessage;
     public int pdMaxVal;
-    public int progVal;
+    public int pdCoundtVal=0;					//ProgressDialog表示値
 
     @Override
     public void onCreate(Bundle savedInstanceState) {                                    //①起動
@@ -42,8 +43,14 @@ public class DialogProgress extends Activity {
  //       progress_titol_tv.setText(pdTitol);
         progress_message_tv.setText(pdMessage);
         progress_pb.setMax(pdMaxVal);
-        progVal=0;
-        progress_pb.setProgress(progVal);
+        pdCoundtVal=0;
+
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MuList.EXTRA_MESSAGE);
+//        pdCoundtVal = Integer.valueOf(message);
+//        progress_pb.setProgress(pdCoundtVal);
+
     }
 
     public void setMax(int maxInt) {

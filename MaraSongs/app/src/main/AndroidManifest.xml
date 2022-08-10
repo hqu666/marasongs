@@ -77,7 +77,13 @@
         <activity
             android:name=".DialogProgress"
             android:multiprocess="true"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog"
+            android:parentActivityName=".MuList"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MuList" />
+        </activity>
         <activity
             android:name=".ZenkyokuList"
             android:multiprocess="true"
