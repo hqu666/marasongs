@@ -2885,7 +2885,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-	Cursor cursorA ;
+//	Cursor cursorA ;
 	/**
 	 *  全曲再生リスト作成を促すダイアログ表示
 	 * 呼出し元　jyoukyouBunkiで全曲リストの作成形跡なし/artistList_yomikomiでレコード0件
@@ -2998,11 +2998,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			reqCode = MyConstants.v_artist;							//アーティスト
 			artistDBOpen();									//artist_dbを開く
-			if(cursorA != null){
-				if(! cursorA.isClosed()){
-					cursorA.close();
-				}
-			}
+//			if(cursorA != null){
+//				if(! cursorA.isClosed()){
+//					cursorA.close();
+//				}
+//			}
 			String table =artistTName;			//テーブル名を指定します。
 			String[] columns =null;
 			String c_selection = null;					// compSelection;
@@ -3011,12 +3011,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String having =null;					//having句を指定します。
 			String orderBy  = "ARTIST_ID";
 			String limit = null;					//検索結果の上限レコードを数を指定します。
-			cursorA = artist_db.query( table ,columns, c_selection,  c_selectionArgs,  groupBy,  having,  orderBy,  limit) ;
-			retInt = cursorA.getCount();
+			Cursor cCursor = artist_db.query( table ,columns, c_selection,  c_selectionArgs,  groupBy,  having,  orderBy,  limit) ;
+			retInt = cCursor.getCount();
 			dbMsg = "；アーティスト=" + retInt + "人";
-			if(cursorA.moveToFirst()){
+			if(cCursor.moveToFirst()){
 				zenkyokuAri = true;
-				dbMsg += "；" +  cursorA.getString(cursorA.getColumnIndex("ARTIST"));
+				dbMsg += "；" +  cCursor.getString(cCursor.getColumnIndex("ARTIST"));
 				mainTStr = getResources().getString(R.string.listmei_zemkyoku);			//全曲リスト
 				subTStr =  getResources().getString(R.string.pp_artist)+retInt +  getResources().getString(R.string.comon_nin);			//アーティスト
 				mainHTF.setText(mainTStr);					//ヘッダーのメインテキスト表示枠
@@ -3051,11 +3051,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String pdTitol = getResources().getString(R.string.jyunbicyuu);					//準備中
 				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 		//		myLog(TAG,dbMsg);
-				plTask.execute(reqCode,cursorA,pdTitol,pdMessage,cursorA.getCount());
-	//			plogTask pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage,retInt).execute(reqCode,  pdMessage , cursorA ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
-//java.lang.IllegalStateException: attempt to re-open an already-closed object: SQLiteQuery: SELECT * FROM artist_table ORDER BY _id
-				//アルバムリストから戻る時
-
+			//	plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
+				do{
+					cCursor=artistList_yomikomiLoop(cCursor);
+				}while( cCursor.moveToNext() ) ;
+				artistList_yomikomiEnd();
 			} else {
 				zenkyokuAri = false;
 				String dlTitol = getResources().getString(R.string.syokairiyou_dt);			//全曲リストを作成作成させ下さい。
@@ -3157,7 +3157,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "artistList_yomikomiEnd";
 		String dbMsg = "[MuList]";
 		try{
-			cursorA.close();
+	//		cursorA.close();
 			dbMsg += "；artist_db isOpen=" + artist_db.isOpen();
 			artist_db.close();
 			dbMsg += ">>" + artist_db.isOpen();
@@ -4981,15 +4981,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg +=" ,yobidashiItem= " + yobidashiItem ;
 							dbMsg +=" ,maeList= " + maeList ;         						//20190506
 							if( yobidashiItem == MyConstants.v_artist  || ! maeList.equals(MuList.this.sousalistName)){		//プレイヤー画面でタップされたアイテム
-								dbMsg +=" ,cursorA= " + cursorA;
-								if(cursorA != null){							//既に読み込み中に誤動作したら読み込み処理に入らない
-									dbMsg +=" ,isClosed= " +  cursorA.isClosed() ;
-									if( cursorA.isClosed()){
-										artistList_yomikomi();
-									}
-								}else{
+//								dbMsg +=" ,cursorA= " + cursorA;
+//								if(cursorA != null){							//既に読み込み中に誤動作したら読み込み処理に入らない
+//									dbMsg +=" ,isClosed= " +  cursorA.isClosed() ;
+//									if( cursorA.isClosed()){
+//										artistList_yomikomi();
+//									}
+//								}else{
 									artistList_yomikomi();
-								}
+//								}
 							}
 //						}else if( MuList.this.sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){		//最近追加
 
@@ -10961,9 +10961,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			"MusicPlayer (RemoteControl)", MusicPlayerRemoteControlActivity.class,
 	};
 
-
-
-
 //Permission確認、レシーバー破棄、起動中のサービス確認、スレッド起動確認、リスト画面の構成物読み込み、getPList()	へ
 	@Override
 	public void onCreate(Bundle savedInstanceState) {									//①起動
@@ -11191,6 +11188,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +="shigot_bangou="+shigot_bangou;
 			receiverSeisei();		//
 			dbMsg +="レシーバーを生成";
+			artistList_yomikomi();
 			myLog(TAG, dbMsg);
 			oFR();
 		}catch (Exception e) {

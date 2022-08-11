@@ -22,13 +22,11 @@
         android:name="android.hardware.bluetooth"
         android:required="true" /> <!-- リモコン操作 -->
     <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE"/> -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <!-- ビジュアライザー -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- ビジュアライザー -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- BluetoothA2dpの取得も兼ねる -->
     <!-- 未使用 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- Android package visibility setting -->
@@ -51,7 +49,8 @@
     </queries>
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- ノティフィケーションプレイヤー -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name="com.hijiyam_koubou.marasongs.MyApp"
         android:allowTaskReparenting="true"
@@ -68,12 +67,10 @@
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true" />
         <!--
-        ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
+   ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
 		<meta-data
         -->
         <!-- android:requestLegacyExternalStorage="true" Android Q -->
-
-
         <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
         <!-- android:value="@string/banner_ad_unit_id"/> -->
         <meta-data
@@ -106,18 +103,24 @@
         <activity
             android:name="com.hijiyam_koubou.marasongs.AllSongs"
             android:multiprocess="true"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name="com.hijiyam_koubou.marasongs.DialogProgress"
+            android:multiprocess="true"
+            android:parentActivityName="com.hijiyam_koubou.marasongs.MuList"
             android:theme="@android:style/Theme.Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MuList" />
         </activity>
         <activity
             android:name="com.hijiyam_koubou.marasongs.ZenkyokuList"
             android:multiprocess="true"
-            android:theme="@android:style/Theme.Dialog" >
-        </activity>
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name="com.hijiyam_koubou.marasongs.CreditNameHensyuu" />
         <activity
             android:name="com.hijiyam_koubou.marasongs.MyPreferences"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity android:name="com.hijiyam_koubou.marasongs.wKit" />
 
         <receiver
@@ -185,8 +188,7 @@
             android:theme="@android:style/Theme.Translucent" />
         <activity
             android:name="com.hijiyam_koubou.marasongs.TagBrows"
-            android:theme="@style/Theme.TranslucentBackground" >
-        </activity>
+            android:theme="@style/Theme.TranslucentBackground" />
 
         <provider
             android:name="com.google.android.gms.ads.MobileAdsInitProvider"
