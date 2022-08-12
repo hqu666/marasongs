@@ -1,13 +1,9 @@
 package com.hijiyam_koubou.marasongs;
-import java.text.SimpleDateFormat;
+
+import android.widget.BaseAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import android.provider.MediaStore;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 
 public abstract class BaseTreeAdapter extends BaseAdapter {			//abstract class BaseTreeAdapter extends BaseAdapter
 	TreeEntry rootEntry = null;

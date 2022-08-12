@@ -1,6 +1,5 @@
 package com.hijiyam_koubou.marasongs;
 
-import android.R.color;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
@@ -87,7 +86,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 			dbMsg +=",layerName= " + layerName;
 			int listType = treeEntry.getListType();
 			dbMsg +=",listType= " + listType;
-			int albumID = -1;
+			long albumID = -1;
 			switch (layerName) {					//rowDepth
 			case MuList.lyer_artist:			//rowDepth = 0; 最上位；アーティスト
 				lrow_image.setVisibility(View.GONE);
@@ -249,7 +248,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 	}
 
 	@SuppressLint("Range")
-	public void setIMG(ViewGroup parent , int albumID , ImageView lrow_image) {						//アルバムアート描画
+	public void setIMG(ViewGroup parent , long albumID , ImageView lrow_image) {						//アルバムアート描画
 		final String TAG = "setIMG[MyTreeAdapter]";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
