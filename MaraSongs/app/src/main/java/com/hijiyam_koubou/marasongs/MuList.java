@@ -280,6 +280,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String mainTStr = null;
 	public String subTStr;
 	public ploglessTask pTask;
+	public ReadList plogDialog;
 	public int artintCo = 0;
 	public int albamCo = 0;
 	public int titolCo = 0;
@@ -2404,10 +2405,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						if( dataFN != null && ! dataFN.equals("null")){																				//前回再生曲があれば
 							dbMsg += ">>プレイヤーへ";
 		//22020810一時停止					send2Player(dataFN,false);																			//プレイヤーにuriを送る
-						}else{																								//前回再生曲が無ければ
-							dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);							//選曲して下さい。
-							dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);							//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
-							readDB();										//全曲リストの読み込み
+//						}else{																								//前回再生曲が無ければ
+//							dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);							//選曲して下さい。
+//							dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);							//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
+//							readDB();										//全曲リストの読み込み
 						}
 					}else{																				//その他のリストを
 						dbMsg += ">>全曲以外";
@@ -2427,19 +2428,19 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										if ( imanoJyoutai == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
 											//22020810一時停止								send2Player(dataFN,false );														//プレイヤーにuriを送る
 										}
-									}else {																			//指定されたリストが無ければ
-										dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
-										dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);		//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
+//									}else {																			//指定されたリストが無ければ
+//										dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
+//										dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m);		//（初めてのご利用か）前回再生していた曲が読み込めませんでした。</string>
 									}
 									list_dataUMUCursor.close();
-								}else{																			//再生する曲が無ければ
-									dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
-									dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m2);	//プレイリストから再生するファイルを選択して下さい。</string>
-									readDB();										//全曲リストの読み込み
+//								}else{																			//再生する曲が無ければ
+//									dtitol = getResources().getString(R.string.jyoukyouBunki_titol_t);		//選曲して下さい。
+//									dMessege = getResources().getString(R.string.jyoukyouBunki_titol_m2);	//プレイリストから再生するファイルを選択して下さい。</string>
+//									readDB();										//全曲リストの読み込み
 								}
-							}else{																			//指定されたリストが無ければ
-								dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。
-								dMessege = getResources().getString(R.string.jyoukyouBunki_list_m);		//（初めてのご利用か）前回利用したリストが読み込めませんでした。既存のリストから選曲しますか?
+//							}else{																			//指定されたリストが無ければ
+//								dtitol = getResources().getString(R.string.jyoukyouBunki_list_t);		//プレイリストを選択して下さい。
+//								dMessege = getResources().getString(R.string.jyoukyouBunki_list_m);		//（初めてのご利用か）前回利用したリストが読み込めませんでした。既存のリストから選曲しますか?
 							}
 							listUMUCursor1.close();
 						}
@@ -2511,9 +2512,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											myLog(TAG , dbMsg);
 											preRead(MyConstants.syoki_Yomikomi , null);            //syoki_start_up
 										} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t)) ) {            //プレイリストを選択して下さい。
-										} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t)) ) {        //選曲して下さい。
-											nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
-											artistList_yomikomi();
+//										} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t)) ) {        //選曲して下さい。
+//											nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
+//											artistList_yomikomi();
 										}
 										myLog(TAG , dbMsg);
 									} catch (Exception e) {
@@ -2537,9 +2538,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											quitMe();        //このアプリを終了する
 										}
 									} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t)) ) {            //プレイリストを選択して下さい。
-									} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t)) ) {        //選曲して下さい。
-										nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
-										artistList_yomikomi();
+//									} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t)) ) {        //選曲して下さい。
+//										nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
+//										artistList_yomikomi();
 									}
 									myLog(TAG , dbMsg);
 								}
@@ -5330,10 +5331,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
 					int retInt = playLists.getCount();
 					int maxVal = playLists.getCount();
+					pdMessage +=  getResources().getString(R.string.common_yomitori);
+					plogDialog = new ReadList(this,pdTitol,pdMessage,maxVal);
 				//	plTask.execute(reqCode,playLists,pdTitol,pdMessage,maxVal);
 					do{
 						playLists=CreatePLListBody(playLists);
+						int pVal = playLists.getPosition();
+						plogDialog.setProgVal(pVal);
 					}while( playLists.moveToNext() ) ;
+			//		plogDialog.dismiss();
 					CreatePLListEnd(playLists);
 				}else{
 					dbMsg += "MediaStore.Audio.Playlists以外";
@@ -9446,6 +9452,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+
 	long startPart;		// 開始時刻の取得
 	public static final String EXTRA_MESSAGE = "0";
 	/**
@@ -9456,7 +9463,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public class ploglessTask {
 		ExecutorService executorService;
 		private Context cContext = null;
-		public DialogProgress progressDialog;	// 処理中ダイアログ	ProgressDialog	AlertDialog
+//		public DialogProgress progressDialog;	// 処理中ダイアログ	ProgressDialog	AlertDialog
 		Intent intentDP;
 		SQLiteDatabase writeDB;
 		SQLiteDatabase readDB;
@@ -9860,7 +9867,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			final String TAG = "onPostExecute";
 			String dbMsg = "[MuList・lvID]";
 			try{
-				progressDialog.dismiss();
+//				progressDialog.dismiss();
 				dbMsg +=  "reqCode=" + reqCode;/////////////////////////////////////
 				switch(reqCode) {
 					case CONTEXT_listup_jyunbi:					//リストアップ準備;アーティスト/作曲者名
