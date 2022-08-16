@@ -5279,6 +5279,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		//..m3u8	ファイルの種類を「M3U8(Unicode)プレイリスト」
 	}
 
+
+	public Cursor rCursor;
+
 	/** 指定したプレイリストの内容取得 */
 	public void CreatePLList( long playlistId , String pdMessage){		//playlistIdで指定したMediaStore.Audio.Playlists.Membersの内容取得		String volumeName,
 		final String TAG = "CreatePLList";
@@ -5287,20 +5290,31 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + MuList.this.sousalistName ;
-			if( 0 < playlistId ){
-					if(treeAdapter != null ) {			//既にリストが出来ていたら
-						return;			//中断
-					}
+//			if( 0 < playlistId ){
+//					if(treeAdapter != null ) {			//既にリストが出来ていたら
+//						return;			//中断
+//					}
 				if( MuList.this.sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
 					MuList.this.tuikaSakiListName = getResources().getString(R.string.playlist_namae_saikintuika);        //最近追加
 					MuList.this.tuikaSakiListID = siteiListSakusi(MuList.this.tuikaSakiListName);
 					playlistId=MuList.this.tuikaSakiListID;
 				}
+				Intent intent = new Intent(this, ReadList.class);
+				reqCode = MyConstants.PUPRPOSE_lIST;	//MENU_TAKAISOU ;			//多階層リスト選択選択中
+				dbMsg += ",reqCode=" + reqCode;
+				intent.putExtra("reqCode", reqCode);
+				intent.putExtra("leadlistId", (int) playlistId);
+				intent.putExtra("leadlistName", sousalistName);
+				String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
+				intent.putExtra("pdTitol", pdTitol);
+//				intent.putExtra("pdMessage", pdMessage);
+				resultLauncher.launch(intent);
+				/*
 					dbMsg += "[" + playlistId + "]" + pdMessage + "へ";
 					final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 					final String[] columns = null;			//{ idKey, nameKey };
 					String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-				Cursor playLists= this.getContentResolver().query(uri, columns, null, null, c_orderBy );
+				Cursor rCursor= this.getContentResolver().query(uri, columns, null, null, c_orderBy );
 //				}else{
 //					treeAdapter = null;
 //					Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
@@ -5308,16 +5322,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
 //					playLists = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
 //				}
-				dbMsg += ",playLists=" + playLists.getCount() + "件";
-				if( playLists.moveToFirst() ){
+				dbMsg += ",rCursor=" + rCursor.getCount() + "件";
+				if( rCursor.moveToFirst() ){
 					Util UTIL = new Util();
-					UTIL.dBaceColumnCheck(playLists ,0);
+					UTIL.dBaceColumnCheck(rCursor ,0);
 					MuList.this.plAL = new ArrayList<Map<String, Object>>();
 					MuList.this.plAL.clear();
 					MuList.this.plSL =  new ArrayList<String>();				//プレイリスト用簡易リスト
 					MuList.this.plSL.clear();
 					MuList.this.saisei_fnameList = new ArrayList<String>();		//uri配列
-					MuList.this.listKyokuSuu = playLists.getCount();		//リストにある曲数
+					MuList.this.listKyokuSuu = rCursor.getCount();		//リストにある曲数
 					dbMsg += ","+MuList.this.nowListSub;
 					if( MuList.this.nowListSub != null ){
 						MuList.this.nowListSub = MuList.this.nowListSub + "  " + MuList.this.listKyokuSuu + getResources().getString(R.string.pp_kyoku);
@@ -5325,22 +5339,27 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						MuList.this.nowListSub = MuList.this.listKyokuSuu + getResources().getString(R.string.pp_kyoku);
 					}
 					dbMsg += "→"+MuList.this.nowListSub;
-					reqCode = MyConstants.PUPRPOSE_lIST;	//MENU_TAKAISOU ;			//多階層リスト選択選択中
 					dbMsg += ",reqCode="+reqCode;
-					int koumoku = playLists.getColumnCount();
-					String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
-					int retInt = playLists.getCount();
-					int maxVal = playLists.getCount();
+					int koumoku = rCursor.getColumnCount();
+					int retInt = rCursor.getCount();
+					int maxVal = rCursor.getCount();
 					pdMessage +=  getResources().getString(R.string.common_yomitori);
-					plogDialog = new ReadList(this,pdTitol,pdMessage,maxVal);
-				//	plTask.execute(reqCode,playLists,pdTitol,pdMessage,maxVal);
-					do{
-						playLists=CreatePLListBody(playLists);
-						int pVal = playLists.getPosition();
-						plogDialog.setProgVal(pVal);
-					}while( playLists.moveToNext() ) ;
-			//		plogDialog.dismiss();
-					CreatePLListEnd(playLists);
+					Intent intent = new Intent(this, ReadList.class);
+					intent.putExtra("reqCode", reqCode);
+					intent.putExtra("pdTitol", pdTitol);
+					intent.putExtra("pdMessage", pdMessage);
+					intent.putExtra("pdMaxVal",maxVal);
+					intent.putExtra("rCursor", (Parcelable) rCursor);
+					resultLauncher.launch(intent);
+//					plogDialog = new ReadList(this,pdTitol,pdMessage,maxVal);
+//				//	plTask.execute(reqCode,playLists,pdTitol,pdMessage,maxVal);
+//					do{
+//						playLists=CreatePLListBody(playLists);
+//						int pVal = rCursor.getPosition();
+//						plogDialog.setProgVal(pVal);
+//					}while( playLists.moveToNext() ) ;
+//			//		plogDialog.dismiss();
+//					CreatePLListEnd(playLists);
 				}else{
 					dbMsg += "MediaStore.Audio.Playlists以外";
 					if(nowList.equals(getResources().getString(R.string.playlist_namae_request))){					// リクエスト</string>
@@ -5359,7 +5378,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						Dlg.create().show();			// 表示
 					}
 				}
-			}
+				*/
+
+//			}
 			myLog(TAG, dbMsg);
 		}catch(IllegalArgumentException e){
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5525,18 +5546,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	/**
 	 * 取得されたPlayListのメンバーを条件に合わせてリストに書き込む準備*/
-	public void CreatePLListEnd(Cursor playLists) {		//プレイリストの内容取得            指定
+	public void CreatePLListEnd() {		//プレイリストの内容取得            指定
 		final String TAG = "CreatePLListEnd";
 		String dbMsg = "[MuList]";
 		try{
-			if(playLists != null){
-				dbMsg += ",isClosed=" + playLists.isClosed();
-				if(! playLists.isClosed()){
-					//リーク対策
-					playLists.close();
-					dbMsg += ">>" + playLists.isClosed();
-				}
-			}
+//			if(playLists != null){
+//				dbMsg += ",isClosed=" + playLists.isClosed();
+//				if(! playLists.isClosed()){
+//					//リーク対策
+//					playLists.close();
+//					dbMsg += ">>" + playLists.isClosed();
+//				}
+//			}
 			int sPosition = 0;
 			ArrayList<MyTreeAdapter> tList = null;				//ArrayList<MyTreeAdapter> tList = null;
 			tList = new ArrayList<MyTreeAdapter>();				//tList = new ArrayList<MyTreeAdapter>()
@@ -8009,7 +8030,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MuList.this.b_album = "";
 			pref_zenkyoku_list_id = getAllSongItems();
 			dbMsg += " [全曲リスト； " + pref_zenkyoku_list_id + "]";/////////////////////////////////////
-			CreatePLListEnd(playLists);				//プレイリストの内容取得
+			CreatePLListEnd();				//プレイリストの内容取得
 			dbMsg +=">CreatePLList>追加した曲=" + tuikaItemName;
 			dbMsg +="、plAL=" + plAL.size();
 			myLog(TAG, dbMsg);
@@ -9886,7 +9907,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					case MENU_TAKAISOU:				//537 多階層リスト選択選択中
 					case MENU_MUSCK_PLIST:			//540	プレイリスト選択中
 					case MyConstants.PUPRPOSE_lIST:
-						CreatePLListEnd(cCursor);				//プレイリストの内容取得
+						CreatePLListEnd();				//プレイリストの内容取得
 						break;
 					case CONTEXT_del_playlist:			//648 このリストを削除
 						deletPlayListEnd();					//指定したプレイリストを削除する
@@ -10761,6 +10782,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				final String TAG = "resultLauncher";
 				String dbMsg = "[MuList]";
 				try {
+					dbMsg += ",reqCode="+reqCode;
 					int resultCode = result.getResultCode();
 					dbMsg += "resultCode=" + resultCode;
 					if (result.getResultCode() == Activity.RESULT_OK) {
@@ -10769,14 +10791,21 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							backTime= System.currentTimeMillis();						//このActivtyに戻った時間
 							Bundle bundle = null;
 							boolean kakikomi  = false;
-								bundle = intent.getExtras();
-								int requestCode = bundle.getInt("key.requestCode");
-								dbMsg += "requestCode="+requestCode;
-//								int resultCode = bundle.getInt("key.resultCode");
-//								dbMsg +=",resultCode="+resultCode;
-//				myLog(TAG, dbMsg);
+						//		bundle = intent.getExtras();
+								int reqCode = intent.getIntExtra("reqCode" , 0);
+								dbMsg += ",reqCode="+reqCode;
 								Boolean retBool;
-								switch(requestCode) {
+								switch(reqCode) {
+									case MyConstants.PUPRPOSE_lIST:
+										dbMsg += ",汎用プレイリスト読み込み";
+											plSL= intent.getStringArrayListExtra("plSL");				//(List<String>)	プレイリスト用簡易リスト
+										dbMsg += ",plSL=" + plSL.size() + "件";
+										plAL= (List<Map<String, Object>>) intent.getSerializableExtra("plAL");				//プレイリスト用ArrayList
+//										plAL= (List<Map<String, Object>> )intent.getParcelableExtra("plAL");				//プレイリスト用ArrayList
+										dbMsg += ",plAL=" + plAL.size() + "件";
+									//	objMap= intent.getParcelableExtra("objMap");			//汎用マップ
+										CreatePLListEnd();
+										break;
 									case MyConstants.syoki_Yomikomi:		//128；全曲リスト更新
 										dbMsg += "全曲リスト更新後";
 										String pref_data_url = getPrefStr("pref_data_url" , "",MuList.this);

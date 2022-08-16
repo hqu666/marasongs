@@ -75,7 +75,7 @@
             android:multiprocess="true"
             android:theme="@android:style/Theme.Dialog"></activity>
         <activity
-            android:name=".DialogProgress"
+            android:name=".ReadList"
             android:multiprocess="true"
             android:theme="@android:style/Theme.Dialog"
             android:parentActivityName=".MuList"
