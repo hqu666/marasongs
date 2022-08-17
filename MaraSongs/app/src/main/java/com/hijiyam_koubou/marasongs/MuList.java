@@ -5660,6 +5660,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String pdMessage = MuList.this.sousalistName + " ; " + subText;
 			dbMsg += ",pdMessage="+pdMessage;
 			int maxVal = MuList.this.plAL.size();
+			nowList = sousalistName;
 //			plTask.execute(reqCode,null,pdTitol,pdMessage,maxVal);
 			for(int pdCoundtVal =0 ; pdCoundtVal < maxVal ; pdCoundtVal ++){
 				plInfoSinglBody(pdCoundtVal);
@@ -11241,12 +11242,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +="shigot_bangou="+shigot_bangou;
 			receiverSeisei();		//
 			dbMsg +=":レシーバーを生成";
-			dbMsg +="[" + nowList_id + "]" + nowList;
-			if(nowList.equals(getString(R.string.listmei_zemkyoku))){
-				artistList_yomikomi();
-			}else{
-				CreatePLList(Long.valueOf(nowList_id) , nowList);
-			}
+//			dbMsg +="[" + nowList_id + "]" + nowList;
+//			if(nowList.equals(getString(R.string.listmei_zemkyoku))){
+//				artistList_yomikomi();
+//			}else{
+//				CreatePLList(Long.valueOf(nowList_id) , nowList);
+//			}
 			myLog(TAG, dbMsg);
 			oFR();
 		}catch (Exception e) {
