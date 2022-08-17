@@ -4467,13 +4467,20 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					senntakuItem = sousa_alubm ;
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , null , null);		//表示するリストの振り分け		, albumAL
 					break;
+				default:
+					reqCode = MyConstants.v_play_list;
+					sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+					//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
+					break;
 				}
 				dbMsg +=",次は;reqCode=" + reqCode ;////////////////////////////////////
 			}else{
 				dbMsg +=",imanoJyoutai=" + imanoJyoutai ;////////////////////////////////////
 				switch(reqCode) {			//backCode
 					case listType_2ly:				// = listType_info + 1;アーティストの単階層リストとalbumとtitolの２階層
-						MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
+						reqCode = MyConstants.v_play_list;
+						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+						//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
 						break;
 					case MENU_TAKAISOU:						//535多階層リスト選択選択中
 						headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
@@ -4498,7 +4505,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						}
 						break;
 					default:
-						MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
+						reqCode = MyConstants.v_play_list;
+						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+						//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
 						break;
 				}
 			}
@@ -4652,6 +4661,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				lvID.setFocusableInTouchMode(true);
 				lvID.requestFocus();
 			}else{
+				mainHTF.setText(nowList);					//ヘッダーのメインテキスト表示枠
+				subHTF.setText(ItemAL.size() + getResources().getString(R.string.comon_kyoku));					//ヘッダーのサブテキスト表示枠
+
 				dbMsg += ",mIndex= " + mIndex;
 				lvID.setSelection(mIndex);
 			}
