@@ -5675,10 +5675,17 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			nowList = sousalistName;
 //			plTask.execute(reqCode,null,pdTitol,pdMessage,maxVal);
 			for(int pdCoundtVal =0 ; pdCoundtVal < maxVal ; pdCoundtVal ++){
-				plInfoSinglBody(pdCoundtVal);
+				if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
+					plWrightBody(pdCoundtVal);
+				}else{
+					plInfoSinglBody(pdCoundtVal);
+				}
 			}
-		//	plWrightEnd();
-			setHeadImgList(plAL );				//イメージとサブテキストを持ったリストを構成
+			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
+				plWrightEnd();
+			}else{
+				setHeadImgList(plAL );				//イメージとサブテキストを持ったリストを構成
+			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

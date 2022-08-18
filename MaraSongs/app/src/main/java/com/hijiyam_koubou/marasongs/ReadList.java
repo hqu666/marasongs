@@ -40,6 +40,8 @@ public class ReadList extends Activity {
     public ProgressBar progress_pb;
     public TextView progress_message_tv ;
     public TextView progress_titol_tv ;
+    public TextView progress_val_tv ;
+    public TextView progress_max_tv ;
 
     public Context gContext;
     public String pdTitol;
@@ -73,7 +75,7 @@ public class ReadList extends Activity {
             dbMsg += "[" + leadlistId+ "]" + leadlistName;
             pdTitol=intent.getStringExtra("pdTitol");
             pdMessage= leadlistName;                    //intent.getStringExtra("pdMessage");
-            pdMaxVal=intent.getIntExtra("pdMaxVal",100);
+            pdMaxVal=intent.getIntExtra("pdMaxVal",1000);
             dbMsg += ",pdTitol=" + pdTitol+ ",pdMessage=" + pdMessage+ ",pdMaxVal=" + pdMaxVal;
 
             setContentView(R.layout.dialog_progress);				//			setContentView(R.layout.main);
@@ -86,7 +88,11 @@ public class ReadList extends Activity {
             progress_message_tv = findViewById(R.id.progress_message);
             progress_message_tv.setText(pdMessage);
             progress_pb.setMax(pdMaxVal);
+            progress_max_tv = findViewById(R.id.progress_max);
+            progress_max_tv.setText(String.valueOf(pdMaxVal));
             pdCoundtVal=0;
+            progress_val_tv = findViewById(R.id.progress_val);
+            progress_val_tv.setText(String.valueOf(pdCoundtVal));
 
             plTask  = new ReadList.ploglessTask(this);
 
@@ -351,20 +357,63 @@ public class ReadList extends Activity {
         return playLists;
     }
 
+    Handler handler = new Handler();
     /**プログレスを更新して、maxに達すればダイアログを閉じる*/
     public void setProgVal(int progInt) {
         final String TAG = "setProgVal";
         String dbMsg = "";
         try{
-            pdCoundtVal = progInt;
-            dbMsg += "pdCoundtVal=" + progress_pb.getProgress();
-            progress_pb.setProgress(pdCoundtVal);
-            dbMsg += ">>" + progress_pb.getProgress()+ "/" + progress_pb.getProgress();
-            if(progress_pb.getMax()<=progress_pb.getProgress()){
-                plogDialogView.dismiss();
-                dbMsg += ">>dismiss" ;
-
+            if(handler == null){
+                handler = new Handler();
             }
+            handler.post(new Runnable() {
+                public void run() {
+                    final String TAG = "setProgressValue.run[AllSongs]";
+                    String dbMsg="";
+                    try {
+                        pdCoundtVal = progInt;
+                        if(progress_pb.getProgress() <= progress_pb.getMax()){
+                            dbMsg += "pdCoundtVal=" + progress_pb.getProgress();
+                            progress_pb.setProgress(pdCoundtVal);
+                            progress_val_tv.setText(String.valueOf(pdCoundtVal));
+                            dbMsg += ">>" + progress_pb.getProgress()+ "/" + progress_pb.getMax();
+//                plogDialogView.dismiss();
+//                dbMsg += ">>dismiss" ;
+
+                        }
+                    } catch (Exception e) {
+                        myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
+                    }
+                }		//run
+            });			//handler.post(new Runnable() {
+            myLog(TAG,dbMsg);
+        }catch (Exception e) {
+            myErrorLog(TAG,dbMsg + "で"+e.toString());
+        }
+    }
+
+    /**プログレスの最大値設定*/
+    public void setProgMax(int progMax) {
+        final String TAG = "setProgMax";
+        String dbMsg = "";
+        try{
+            dbMsg += "getMax=" + progress_pb.getMax();
+            if(handler == null){
+                handler = new Handler();
+            }
+            handler.post(new Runnable() {
+                public void run() {
+                    final String TAG = "setProgressValue.run[AllSongs]";
+                    String dbMsg="";
+                    try {
+                        progress_pb.setMax(progMax);
+                        dbMsg += ">>" + progress_pb.getMax();
+                        progress_max_tv.setText(String.valueOf(pdMaxVal));
+                    } catch (Exception e) {
+                        myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
+                    }
+                }		//run
+            });			//handler.post(new Runnable() {
             myLog(TAG,dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -517,13 +566,15 @@ public class ReadList extends Activity {
                         default:
                             if(cCursor != null) {
                                 pdMaxVal = cCursor.getCount();
+                                setProgMax(pdMaxVal);
                             }
                             dbMsg += ", cCursor = " + pdMaxVal + "件"  ;
                             break;
                     }
                     long id = 0;
-                    List<String> testList = null;	//最近再生された楽曲のID
-                    testList =  new ArrayList<String>();	//最近再生された楽曲のID
+                    setProgVal(0);
+//                    List<String> testList = null;	//最近再生された楽曲のID
+//                    testList =  new ArrayList<String>();	//最近再生された楽曲のID
                     switch(reqCode) {
                         case MyConstants.PUPRPOSE_SONG:
                             dbMsg += ", pdCoundtVal = " + pdCoundtVal ;
@@ -533,7 +584,7 @@ public class ReadList extends Activity {
                                  //       plInfoSinglBody(pdCoundtVal);
                                         break;
                                 }
-//									publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
+                                setProgVal(pdCoundtVal);
                             }
                             dbMsg += ">>" + pdCoundtVal ;
                             break;
@@ -546,32 +597,20 @@ public class ReadList extends Activity {
                                 int delC = 0;
                                 int rCol = 0;
                                 do{
-                                    //				dbMsg +=  "[cursor="+  cCursor.getPosition() +  "/" + pdMaxVal + ";progressDialog=" + progressDialog.getProgress() +"]" ;
-                                    dbMsg += ",isClosed=" + cCursor.isClosed() ;
+                        //            dbMsg += ",isClosed=" + cCursor.isClosed() ;
                                     switch(reqCode) {
                                         case MyConstants.PUPRPOSE_lIST:
                                             cCursor = CreatePLListBody(cCursor);		//プレイリストの内容取得
                                             break;
                                     }
                                     pdCoundtVal =  cCursor.getPosition() +1;
-//										intentDP.putExtra(EXTRA_MESSAGE, String.valueOf(pdCoundtVal));
-                                    //	progressDialog.setProgVal(pdCoundtVal);
-                                    dbMsg += "(reqCode=" +reqCode+")pdCoundtVal="+pdCoundtVal + "/" + pdMaxVal ;
-                                    long nTime = System.currentTimeMillis() ;
-//										if(nTime  > vTime ){
-//											publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
-//											if( vtWidth > 1 ){
-//												vtWidth = vtWidth/2;
-//											}
-//											vTime = System.currentTimeMillis() + vtWidth;		// 更新タイミング
-//										}
-                                }while( cCursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
+                                    setProgVal(pdCoundtVal);
+                                }while( cCursor.moveToNext() ) ;
                             }
                             break;
                     }
-                    //	Thrd.sleep(200);			//書ききる為の時間（100msでは不足）
 
-                    dbMsg += ",最終[" + id +"]に追加";///////////////////		AllSongs.this.
+                    dbMsg += ",最終[" + pdCoundtVal +"]に追加";///////////////////		AllSongs.this.
 //						switch(reqCode) {
 //							case pt_CreateKaliList:							//803;仮リスト作成
 //								endTS(Kari_db);
@@ -645,18 +684,21 @@ public class ReadList extends Activity {
             final String TAG = "onPostExecute";
             String dbMsg = "";
             try{
-                dbMsg +=  "reqCode=" + reqCode;/////////////////////////////////////
-                quitMe();
-//                switch(reqCode) {
-//                    case MyConstants.PUPRPOSE_lIST:
-//                        CreatePLListEnd(cCursor);				//プレイリストの内容取得
-//                        break;
-//                    case MyConstants.PUPRPOSE_SONG:
-//                        plWrightEnd();					//プレイリストの描画
-//                        break;
-////			default:
-////				break;
-//                }
+                if(! cCursor.isClosed() ) {
+                    cCursor.close();
+                }
+                quitMe(reqCode);
+//                Intent intentSub = new Intent();
+//                dbMsg +=  ",reqCode=" + reqCode;
+//                intentSub.putExtra("reqCode",reqCode);
+//                dbMsg += ",plSL=" + plSL.size() + "件";
+//                //  intentSub.putStringArrayListExtra("plSL", plSL);
+//                intentSub.putExtra("plSL", (Serializable) plSL);   //  cannot be cast to android.os.Parcelable
+//                dbMsg += "plAL=" + plAL.size() + "件";
+//                //       intentSub.putParcelableArrayListExtra("plAL", plAL);
+//                intentSub.putExtra("plAL", (Serializable) plAL);
+//                setResult(RESULT_OK, intentSub);
+//                ReadList.this.finish();
                 myLog(TAG, dbMsg);
             }catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -664,7 +706,7 @@ public class ReadList extends Activity {
         }
     }
 
-    void quitMe() {
+    public void quitMe(int reqCode) {
         final String TAG = "quitMe";
         String dbMsg = "";
         try{
@@ -677,9 +719,11 @@ public class ReadList extends Activity {
             dbMsg += "plAL=" + plAL.size() + "件";
      //       intentSub.putParcelableArrayListExtra("plAL", plAL);
             intentSub.putExtra("plAL", (Serializable) plAL);
+            Thread.sleep(200);			//書ききる為の時間（100msでは不足）
             setResult(RESULT_OK, intentSub);
-            finish();
+            Thread.sleep(200);			//書ききる為の時間（100msでは不足）
             myLog(TAG, dbMsg);
+            ReadList.this.finish();
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
