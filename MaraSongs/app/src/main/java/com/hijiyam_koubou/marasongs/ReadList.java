@@ -714,14 +714,18 @@ public class ReadList extends Activity {
             dbMsg +=  ",reqCode=" + reqCode;
             intentSub.putExtra("reqCode",reqCode);
             dbMsg += ",plSL=" + plSL.size() + "件";
-          //  intentSub.putStringArrayListExtra("plSL", plSL);
             intentSub.putExtra("plSL", (Serializable) plSL);   //  cannot be cast to android.os.Parcelable
+//            String plSLJson = new JSONArray(plSL).toString();
+//            dbMsg += ",plSLJson=" + plSLJson;
+//            intentSub.putExtra("plSLJson",plSLJson);
             dbMsg += "plAL=" + plAL.size() + "件";
-     //       intentSub.putParcelableArrayListExtra("plAL", plAL);
             intentSub.putExtra("plAL", (Serializable) plAL);
-            Thread.sleep(200);			//書ききる為の時間（100msでは不足）
+//            String plALJson = new JSONArray(plAL).toString();
+//            dbMsg += ",plALJson=" + plALJson;
+//            intentSub.putExtra("plALJson", plALJson);
+            //    Thread.sleep(200);			//書ききる為の時間（100msでは不足）
             setResult(RESULT_OK, intentSub);
-            Thread.sleep(200);			//書ききる為の時間（100msでは不足）
+          //  Thread.sleep(200);			//書ききる為の時間（100msでは不足）
             myLog(TAG, dbMsg);
             ReadList.this.finish();
         }catch (Exception e) {

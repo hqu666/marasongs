@@ -67,6 +67,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
+import android.widget.ProgressBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -5293,6 +5294,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 
 	public Cursor rCursor;
+	public AlertDialog plogDialogView;
+	public LinearLayout progress_dlog_ll;
+	public ProgressBar progress_pb;
+	public TextView progress_message_tv ;
+	public TextView progress_titol_tv ;
+	public TextView progress_val_tv ;
+	public TextView progress_max_tv ;
 
 	/** 指定したプレイリストの内容取得 */
 	public void CreatePLList( long playlistId , String pdMessage){		//playlistIdで指定したMediaStore.Audio.Playlists.Membersの内容取得		String volumeName,
@@ -5302,10 +5310,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + MuList.this.sousalistName ;
-//			if( 0 < playlistId ){
-//					if(treeAdapter != null ) {			//既にリストが出来ていたら
-//						return;			//中断
-//					}
+			String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
+			/*
 				if( MuList.this.sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
 					MuList.this.tuikaSakiListName = getResources().getString(R.string.playlist_namae_saikintuika);        //最近追加
 					MuList.this.tuikaSakiListID = siteiListSakusi(MuList.this.tuikaSakiListName);
@@ -5317,12 +5323,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				intent.putExtra("reqCode", reqCode);
 				intent.putExtra("leadlistId", (int) playlistId);
 				intent.putExtra("leadlistName", sousalistName);
-				String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
 				intent.putExtra("pdTitol", pdTitol);
 //				intent.putExtra("pdMessage", pdMessage);
 				resultLauncher.launch(intent);
-				/*
-					dbMsg += "[" + playlistId + "]" + pdMessage + "へ";
+				*/
+
+					dbMsg += "[" + playlistId + "]" + sousalistName + "へ";
 					final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 					final String[] columns = null;			//{ idKey, nameKey };
 					String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
@@ -5336,6 +5342,22 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				}
 				dbMsg += ",rCursor=" + rCursor.getCount() + "件";
 				if( rCursor.moveToFirst() ){
+					TextView tvMessage = new TextView(MuList.this);
+					tvMessage.setText(sousalistName);
+					plogDialogView=new AlertDialog.Builder(MuList.this)
+							.setTitle( pdTitol )
+							.setView( tvMessage )
+							.show();
+//					setContentView(R.layout.dialog_progress);				//			setContentView(R.layout.main);
+//					Window gWindow = this.getWindow();
+//					gWindow.setTitle(pdTitol);
+//					progress_dlog_ll = findViewById(R.id.progress_dlog_ll);
+//					progress_pb = findViewById(R.id.progress);
+//					progress_titol_tv = findViewById(R.id.progress_titol);
+//					progress_titol_tv.setText(pdTitol);
+//					progress_message_tv = findViewById(R.id.progress_message);
+//					progress_message_tv.setText(pdMessage);
+
 					Util UTIL = new Util();
 					UTIL.dBaceColumnCheck(rCursor ,0);
 					MuList.this.plAL = new ArrayList<Map<String, Object>>();
@@ -5355,23 +5377,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					int koumoku = rCursor.getColumnCount();
 					int retInt = rCursor.getCount();
 					int maxVal = rCursor.getCount();
-					pdMessage +=  getResources().getString(R.string.common_yomitori);
-					Intent intent = new Intent(this, ReadList.class);
-					intent.putExtra("reqCode", reqCode);
-					intent.putExtra("pdTitol", pdTitol);
-					intent.putExtra("pdMessage", pdMessage);
-					intent.putExtra("pdMaxVal",maxVal);
-					intent.putExtra("rCursor", (Parcelable) rCursor);
-					resultLauncher.launch(intent);
+
 //					plogDialog = new ReadList(this,pdTitol,pdMessage,maxVal);
 //				//	plTask.execute(reqCode,playLists,pdTitol,pdMessage,maxVal);
-//					do{
-//						playLists=CreatePLListBody(playLists);
+					do{
+						playLists=CreatePLListBody(rCursor);
 //						int pVal = rCursor.getPosition();
 //						plogDialog.setProgVal(pVal);
-//					}while( playLists.moveToNext() ) ;
+					}while( playLists.moveToNext() ) ;
 //			//		plogDialog.dismiss();
-//					CreatePLListEnd(playLists);
+					plogDialogView.dismiss();
+					rCursor.close();
+					CreatePLListEnd();
 				}else{
 					dbMsg += "MediaStore.Audio.Playlists以外";
 					if(nowList.equals(getResources().getString(R.string.playlist_namae_request))){					// リクエスト</string>
@@ -5390,7 +5407,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						Dlg.create().show();			// 表示
 					}
 				}
-				*/
+
 
 //			}
 			myLog(TAG, dbMsg);
@@ -5492,7 +5509,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=  "="+cVal;
 					}else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
 						String cVal = playLists.getString(i);
-						cVal = UTIL.checKTrack( cVal);
+					//	cVal = UTIL.checKTrack( cVal);
 						MuList.this.objMap.put(cName ,cVal );
 					}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
 						String cVal = String.valueOf(playLists.getInt(i));
@@ -10818,10 +10835,53 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								switch(reqCode) {
 									case MyConstants.PUPRPOSE_lIST:
 										dbMsg += ",汎用プレイリスト読み込み";
-											plSL= intent.getStringArrayListExtra("plSL");				//(List<String>)	プレイリスト用簡易リスト
+										plSL= intent.getStringArrayListExtra("plSL");				//(List<String>)	プレイリスト用簡易リスト
+//										plSL = new ArrayList<>();
+//										String plSLStr = intent.getStringExtra("plSLJson");
+//										try {
+//											JSONArray jarray = new JSONArray(plSLStr);
+//											for (int i = 0; i < jarray.length(); ++ i) {
+//												JSONObject json = jarray.getJSONObject(i);
+//												Iterator it = json.keys();
+//												while (it.hasNext()) {
+//													objMap = new HashMap<String, Object>();
+//													String cName = (String) it.next();
+//													String cVal = json.getString(cName);
+//													objMap.put(cName ,cVal );
+//													objMap.put("main" ,cVal );
+//													dbMsg +=  "="+cVal;
+//													this.plSL.add(cVal);
+//												}
+//											}
+//										}
+//										catch (org.json.JSONException e) {
+//											myErrorLog(TAG ,  dbMsg + "で" + e);
+//										}
 										dbMsg += ",plSL=" + plSL.size() + "件";
 										plAL= (List<Map<String, Object>>) intent.getSerializableExtra("plAL");				//プレイリスト用ArrayList
-//										plAL= (List<Map<String, Object>> )intent.getParcelableExtra("plAL");				//プレイリスト用ArrayList
+//										plAL = new ArrayList<Map<String, Object>>();
+//										String plALStr = intent.getStringExtra("plALJson");
+//										try {
+//											JSONArray j2array = new JSONArray(plALStr);
+//											for (int i = 0; i < j2array.length(); ++ i) {
+//												JSONObject json = j2array.getJSONObject(i);
+//												Iterator it2 = json.keys();
+//												while (it2.hasNext()) {
+//													objMap = new HashMap<String, Object>();
+//													String cName = (String) it2.next();
+//													dbMsg +=  "," + cName;
+//													String cVal = json.getString(cName);
+//													dbMsg +=  "="+cVal;
+//													if(cVal != null){
+//														objMap.put(cName ,cVal );
+//													}
+//												}
+//												plAL.add(objMap);
+//											}
+//										}
+//										catch (org.json.JSONException e) {
+//											myErrorLog(TAG ,  dbMsg + "で" + e);
+//										}
 										dbMsg += ",plAL=" + plAL.size() + "件";
 									//	objMap= intent.getParcelableExtra("objMap");			//汎用マップ
 										CreatePLListEnd();
