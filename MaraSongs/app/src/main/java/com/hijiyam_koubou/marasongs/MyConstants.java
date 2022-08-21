@@ -56,21 +56,22 @@ public final class MyConstants {
     /**アルバムリスト表示*/
     public static final int v_alubum = v_artist+1;
     /**タイトルリスト表示*/
-    public static final int v_titol = v_alubum+1;						//
+    public static final int v_titol = v_alubum+1;
     public static final int rp_artist = v_titol +1;					//アーティストリピート指定ボタン
     /**アルバムリピート指定ボタン*/
-    public static final int rp_album = rp_artist +1;					//
+    public static final int rp_album = rp_artist +1;
     /**タイトルリピート指定ボタン*/
-    public static final int rp_titol = rp_album +1;					//
+    public static final int rp_titol = rp_album +1;
     /**二点間リピート*/
-    public static final int rp_point = rp_titol +1;					//
+    public static final int rp_point = rp_titol +1;
     public static final int settei_hyouji = rp_point+5;					//設定表示			startActivityForResult(intent , reqCode );でjava.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     public static final int quit_all = settei_hyouji+1;					//すべて終了
     /**汎用プレイリスト一覧*/
-    public static final int PUPRPOSE_lIST=rp_point+50;				//
+    public static final int PUPRPOSE_lIST=rp_point+50;
     /**汎用プレイリストの曲リスト*/
-    public static final int PUPRPOSE_SONG=PUPRPOSE_lIST+1;				//
-
+    public static final int PUPRPOSE_SONG=PUPRPOSE_lIST+1;
+    /**楽曲選択*/
+    public static final int SELECT_SONG=PUPRPOSE_SONG+1000;
 
     private MyConstants (){}
 }
