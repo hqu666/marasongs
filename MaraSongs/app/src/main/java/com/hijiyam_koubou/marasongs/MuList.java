@@ -2954,41 +2954,45 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 			dbMsg += "、plNameAL=" + plNameAL.size() + "件";
 			dbMsg += "、選択リスト名=" + selectListName;
-			dbMsg += "、シンプルリスト作成";
-		//	makePlainList( plNameSL);			//階層化しないシンプルなリスト
-			ArrayAdapter<String> arrayAdapter =new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, plNameSL);
-			lvID.setAdapter(arrayAdapter);
-			lvID.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					final String TAG = "onItemClick";
-					String dbMsg = "[listOfList_yomikomi]";
-					try{
-						dbMsg += ",position=" + position;
-						long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
-						sousalistID = Math.toIntExact(readID);
-						sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
-						dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
-						if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
-							artistList_yomikomi();
-						}else{
-						//	listClick( parent, view, position, id);			//共有：クリックの処理
-							CreatePLList(readID , nowList);
+			dbMsg += "、pref_list_simple=" + pref_list_simple;
+			if( pref_list_simple ) {                    //シンプルなリスト表示（サムネールなど省略）
+				dbMsg += "、シンプルリスト作成";
+				//	makePlainList( plNameSL);			//階層化しないシンプルなリスト
+				ArrayAdapter<String> arrayAdapter =new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, plNameSL);
+				lvID.setAdapter(arrayAdapter);
+				lvID.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+						final String TAG = "onItemClick";
+						String dbMsg = "[listOfList_yomikomi]";
+						try{
+							dbMsg += ",position=" + position;
+							long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
+							sousalistID = Math.toIntExact(readID);
+							sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
+							dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
+							if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
+								artistList_yomikomi();
+							}else{
+								//	listClick( parent, view, position, id);			//共有：クリックの処理
+								CreatePLList(readID , nowList);
+							}
+							myLog(TAG, dbMsg);
+						}catch (Exception e) {
+							myErrorLog(TAG ,  dbMsg + "で" + e);
 						}
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
-				}
-			});
-
+				});
+			}else{
+				reqCode = MyConstants.v_play_list;
+				setHeadImgList(plNameAL);
+			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 		return retInt;
 	}
-
 
 			/**
              * artist_dbの読み込み(	Ver1.1.1からZenkyokuListで作成したアイテムを無条件で読み込む)
@@ -4575,69 +4579,93 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				CustomData item1 = new CustomData();
 				String rStr = null;
 				switch(reqCode) {
-				case MENU_infoKaisou:							//539				//537;情報付き曲名リスト書き込み中
-					rStr = (String) ItemAL.get(i).get("img");
-					dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-					item1.setimageUrl(rStr);
-					rStr =  (String) ItemAL.get(i).get("main");
-					dbMsg +=",main=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-					item1.setTextData(rStr);
-					rStr =  (String) ItemAL.get(i).get("sub");
-					dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-					if(rStr != null){
-						if(! rStr.equals("") ){
-							item1.setSubData(rStr);
+					case MENU_infoKaisou:							//539				//537;情報付き曲名リスト書き込み中
+						rStr = (String) ItemAL.get(i).get("img");
+						dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						item1.setimageUrl(rStr);
+						rStr =  (String) ItemAL.get(i).get("main");
+						dbMsg +=",main=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						item1.setTextData(rStr);
+						rStr =  (String) ItemAL.get(i).get("sub");
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setSubData(rStr);
+							}
 						}
-					}
-					rStr =  (String) ItemAL.get(i).get("DATA");
-					dbMsg +=",DATA=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-					if(rStr != null){
-						if(! rStr.equals("") ){
-							item1.setDataUri(rStr);
+						rStr =  (String) ItemAL.get(i).get("DATA");
+						dbMsg +=",DATA=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setDataUri(rStr);
+							}
 						}
-					}
-					break;
-				default:
-					rStr = (String) ItemAL.get(i).get("img");
-					dbMsg +=",img=" +rStr ;
-					item1.setimageUrl(rStr);
-					String titleStr =  (String) ItemAL.get(i).get("main");
-					if( titleStr.equals(senntakuItem) ){
-						sPosition = i;
-					}
-					item1.setTextData((String) ItemAL.get(i).get("main"));
-					dbMsg +=")" + ItemAL.get(i).get("main") ;///////////////////////////////////////////////////////////////////////////////////////////
-
-					switch(reqCode) {
-					case MyConstants.v_artist:					//195	...334
-							break;
-					case MyConstants.v_alubum:					//196	...340
-						MuList.this.albumName = titleStr;
 						break;
-					case MyConstants.v_titol:					//197
-						if(i<9){
-							rStr = "0"+ ( i + 1 ) + ";" ;
-						}else{
-							rStr = ( i + 1 ) + ";";
+					case MyConstants.v_play_list:
+						rStr =  (String) ItemAL.get(i).get("title");
+						dbMsg +=",title=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						item1.setTextData(rStr);
+//						rStr = (String) ItemAL.get(i).get("img");
+//						dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+//						item1.setimageUrl(rStr);
+						rStr =  "[" + (String) ItemAL.get(i).get("_id") + "]";
+						rStr +=  (String) ItemAL.get(i).get("date_modified") + getResources().getString(R.string.comon_kousinn);
+						//date_modified" -> "1656773613"
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setSubData(rStr);
+							}
 						}
-						item1.setNom(rStr);
+						rStr =  (String) ItemAL.get(i).get("_data");
+						dbMsg +=",_data=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setDataUri(rStr);
+							}
+						}
+						break;
 					default:
-						break;
-					}
-					rStr =  (String) ItemAL.get(i).get("sub");
-					dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-					if(rStr != null){
-						if(! rStr.equals("") ){
-							item1.setSubData(rStr);
+						rStr = (String) ItemAL.get(i).get("img");
+						dbMsg +=",img=" +rStr ;
+						item1.setimageUrl(rStr);
+						String titleStr =  (String) ItemAL.get(i).get("main");
+						if( titleStr.equals(senntakuItem) ){
+							sPosition = i;
 						}
-					}
-					rStr =  (String) ItemAL.get(i).get("DATA");
-					dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-					if(rStr != null){
-						if(! rStr.equals("") ){
-							item1.setDataUri(rStr);
+						item1.setTextData((String) ItemAL.get(i).get("main"));
+						dbMsg +=")" + ItemAL.get(i).get("main") ;///////////////////////////////////////////////////////////////////////////////////////////
+
+						switch(reqCode) {
+						case MyConstants.v_artist:					//195	...334
+								break;
+						case MyConstants.v_alubum:					//196	...340
+							MuList.this.albumName = titleStr;
+							break;
+						case MyConstants.v_titol:					//197
+							if(i<9){
+								rStr = "0"+ ( i + 1 ) + ";" ;
+							}else{
+								rStr = ( i + 1 ) + ";";
+							}
+							item1.setNom(rStr);
+							default:
+								break;
 						}
-					}
+						rStr =  (String) ItemAL.get(i).get("sub");
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setSubData(rStr);
+							}
+						}
+						rStr =  (String) ItemAL.get(i).get("DATA");
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setDataUri(rStr);
+							}
+						}
 					break;
 				}
 				isList.add(item1);
@@ -5309,7 +5337,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			}
 			playLists.close();
-			dbMsg += ">>"+plNameAL.toString()+ ",reqCode="+ reqCode ;
+			dbMsg += ">plNameAL>"+plNameAL.toString()+ ",reqCode="+ reqCode ;
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
