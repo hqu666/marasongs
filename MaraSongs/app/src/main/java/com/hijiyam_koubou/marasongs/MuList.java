@@ -6180,7 +6180,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if(AlbumName.equals(MuList.this.albumName)){				//それまで参照していたアーティスト名
 					MuList.this.alubmPosition = MuList.this.alubmCount;		//選択させるアルバム
 					dbMsg += ",alubmPosition="+MuList.this.alubmPosition;
-		//			myLog(TAG,dbMsg);
 				}
 				MuList.this.b_album = AlbumName;
 			}
