@@ -26,7 +26,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 
 
 	public MyTreeAdapter(ArrayList<MyTreeAdapter> tList) {
-		final String TAG = "MyTreeAdapter[MyTreeAdapter]";
+		final String TAG = "MyTreeAdapter";
 		String dbMsg= "開始";
 		try{
 			if(tList != null){
@@ -47,8 +47,8 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 	 *  class TreeEntryを生成する */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		final String TAG = "getView[MyTreeAdapter]";
-		String dbMsg= "[MyTreeAdapter]";
+		final String TAG = "getView";
+		String dbMsg= "";
 		try{
 			dbMsg += "position= " + position;
 		//	dbMsg +=",convertView= " + convertView;
@@ -103,7 +103,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				}
 				break;
 			case MuList.lyer_album:			//rowDepth = 1; 2層目；アルバム
-				lrow_image.setVisibility(View.GONE);
+				lrow_image.setVisibility(View.VISIBLE);
 				nomText.setVisibility(View.GONE);
 				subText.setVisibility(View.VISIBLE);
 		//		mainText.setBackgroundColor(parent.getContext().getResources().getColor(R.color.red_dark));
@@ -111,8 +111,8 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				albumPosition = position;
 				switch (listType) {
 				case MuList.listType_plane:					//情報無し
-					nomText.setVisibility(View.VISIBLE);
-					nomText.setText(pOrderStr);
+			//		nomText.setVisibility(View.VISIBLE);
+			//		nomText.setText(pOrderStr);
 					leftPad = 15;					//rowDepth * 25;
 					subText.setVisibility(View.GONE);
 					break;
@@ -240,7 +240,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				break;
 			}
 			nomText.setPadding(leftPad, nomText.getPaddingTop(), nomText.getPaddingRight(), nomText.getPaddingBottom());
-	//		myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,dbMsg+"で"+e.toString());
 		}
@@ -249,7 +249,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 
 	@SuppressLint("Range")
 	public void setIMG(ViewGroup parent , long albumID , ImageView lrow_image) {						//アルバムアート描画
-		final String TAG = "setIMG[MyTreeAdapter]";
+		final String TAG = "setIMG";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
 			lrow_image.setVisibility(View.VISIBLE);
@@ -285,7 +285,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 				lrow_image.setImageBitmap(mDummyAlbumArt);
 			}
 			cursor.close();
-			//		myLog(TAG,dbMsg);
+					myLog(TAG,dbMsg);
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,dbMsg+"で"+e.toString());
 		}
@@ -294,12 +294,12 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		Util.myLog(TAG , "[MyTreeAdapter]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG , "[MyTreeAdapter]" + dbMsg);
 	}
 
 }
