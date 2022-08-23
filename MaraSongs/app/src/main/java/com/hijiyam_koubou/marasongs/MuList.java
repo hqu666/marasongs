@@ -2943,6 +2943,27 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+	/**プレイリスト一覧のクリック*/
+	public void listOfListClick(AdapterView<?> parent, View view, int position, long id) {
+		final String TAG = "listOfListClick";
+		String dbMsg = "";
+		try{
+			dbMsg += ",position=" + position;
+			long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
+			sousalistID = Math.toIntExact(readID);
+			sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
+			dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
+			//	listClick( parent, view, position, id);			//共有：クリックの処理
+			CreatePLList(readID , nowList);
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
+
+
 	/**
 	 * 端末内のプレイリスト一覧表示
 	 * */
@@ -2955,6 +2976,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "、plNameAL=" + plNameAL.size() + "件";
 			dbMsg += "、選択リスト名=" + selectListName;
 			dbMsg += "、pref_list_simple=" + pref_list_simple;
+			sousalistName = getString(R.string.listmei_list_all);
+			reqCode = MyConstants.v_play_list;
 			if( pref_list_simple ) {                    //シンプルなリスト表示（サムネールなど省略）
 				dbMsg += "、シンプルリスト作成";
 				//	makePlainList( plNameSL);			//階層化しないシンプルなリスト
@@ -2965,26 +2988,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 						final String TAG = "onItemClick";
 						String dbMsg = "[listOfList_yomikomi]";
-						try{
-							dbMsg += ",position=" + position;
-							long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
-							sousalistID = Math.toIntExact(readID);
-							sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
-							dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
-							if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
-								artistList_yomikomi();
-							}else{
-								//	listClick( parent, view, position, id);			//共有：クリックの処理
-								CreatePLList(readID , nowList);
-							}
-							myLog(TAG, dbMsg);
-						}catch (Exception e) {
-							myErrorLog(TAG ,  dbMsg + "で" + e);
+						if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
+							artistList_yomikomi();
+						}else {
+							listOfListClick(parent, view, position, id);
 						}
+//						try{
+//							dbMsg += ",position=" + position;
+//							long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
+//							sousalistID = Math.toIntExact(readID);
+//							sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
+//							dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
+//								//	listClick( parent, view, position, id);			//共有：クリックの処理
+//								CreatePLList(readID , nowList);
+//							myLog(TAG, dbMsg);
+//						}catch (Exception e) {
+//							myErrorLog(TAG ,  dbMsg + "で" + e);
+//						}
 					}
 				});
 			}else{
-				reqCode = MyConstants.v_play_list;
 				setHeadImgList(plNameAL);
 			}
 			myLog(TAG, dbMsg);
@@ -4103,12 +4126,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",シンプルなリスト表示="+pref_list_simple+ ":position="+position+",[id="+id+"]";////////"リスト；parent="+parent+",view="+view+
 			dbMsg += ",artist="+sousa_artist+ ":album="+sousa_alubm + ",titol=" + sousa_titol;
 			dbMsg += ",プレイリスト="+sousalistName;////////"リスト；parent="+parent+",view="+view+
-
-//			artist=null:album=null　の場合リストポジションからアーティスト名取得
-//			そのアーティストの1枚目・一曲を初期値に入れる
-//			E/listClick: [MuList]reqCode=195,シンプルなリスト表示=false:position=37,[id=37],artist=null:album=null,titol=null,プレイリスト=最近追加した曲,全曲以外,sousalist[16028]最近追加した曲でjava.lang.ClassCastException: com.hijiyam_koubou.marasongs.CustomData cannot be cast to com.hijiyam_koubou.marasongs.BaseTreeAdapter$TreeEntry
-
-
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ) {        // 全曲リストのアーティスト選択
 				dbMsg += ",reqCode=" + reqCode;
 				switch (reqCode) {
@@ -4157,6 +4174,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						send2Player(dataFN, true);                                                //プレイヤーにuriを送る
 						break;
 				}
+			}else if( sousalistName.equals(getString(R.string.listmei_list_all)) || reqCode == MyConstants.v_play_list) {
+				listOfListClick(parent, view, position, id);
 			}else if( sousalistName.equals(plNameSL.get(position)) &&
 						!sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika))
 				){
@@ -4500,6 +4519,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					sigotoFuriwake(reqCode , sousa_artist , sousa_alubm  , null , null);		//表示するリストの振り分け		, albumAL
 					break;
 				default:
+					dbMsg +=",reqCode = MyConstants.v_play_listに変更" ;////////////////////////////////////
 					reqCode = MyConstants.v_play_list;
 					sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
 					//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
@@ -10737,8 +10757,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					mainHTF.setText(mainTStr);					//ヘッダーのメインテキスト表示枠
 					subTStr =  plNameSL.size() +  getResources().getString(R.string.comon_ken);
 					subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
-					dbMsg += "、選択リスト名=" + artistMei;
-					listOfList_yomikomi( artistMei);
+					dbMsg += "、選択リスト名=" + sousalistName;
+					listOfList_yomikomi( sousalistName);
 					break;
 				case MyConstants.v_artist:							//195;	2131558436 :アーティスト
 					backCode = MyConstants.v_play_list;		//上のリスト
