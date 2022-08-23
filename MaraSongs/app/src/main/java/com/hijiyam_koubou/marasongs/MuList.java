@@ -4638,14 +4638,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
 							dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
 							dbMsg +=  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-//							String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-//							String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-//							String c_selection = null;
-//							String[] c_selectionArgs= null;
-//							String c_groupBy = "null";
-//							String c_having = null;
-//							String c_orderBy = "ARTIST"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
-//							cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , c_groupBy, c_having, c_orderBy);
 							lineCount = Zenkyoku_db.getPageSize();
 						}else{
 							// ファイルパス
@@ -4667,6 +4659,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								item1.setDataUri(rStr);
 							}
 						}
+						nowList = getResources().getString(R.string.listmei_list_all);
 						break;
 					default:
 						rStr = (String) ItemAL.get(i).get("img");
@@ -4759,6 +4752,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				lvID.setFocusable(true);
 				lvID.setFocusableInTouchMode(true);
 				lvID.requestFocus();
+			}else if( nowList.equals(getResources().getString(R.string.listmei_list_all))){
+				mainHTF.setText(nowList);					//ヘッダーのメインテキスト表示枠
+				subHTF.setText(ItemAL.size() + getResources().getString(R.string.comon_ken));					//ヘッダーのサブテキスト表示枠
 			}else{
 				mainHTF.setText(nowList);					//ヘッダーのメインテキスト表示枠
 				subHTF.setText(ItemAL.size() + getResources().getString(R.string.comon_kyoku));					//ヘッダーのサブテキスト表示枠
