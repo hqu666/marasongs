@@ -89,6 +89,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2953,16 +2956,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			sousalistID = Math.toIntExact(readID);
 			sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
 			dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
-			//	listClick( parent, view, position, id);			//共有：クリックの処理
-			CreatePLList(readID , nowList);
+			if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
+				artistList_yomikomi();
+			}else {
+				CreatePLList(readID , sousalistName);		//nowList
+			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
-
-
-
 
 	/**
 	 * 端末内のプレイリスト一覧表示
@@ -2988,22 +2991,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 						final String TAG = "onItemClick";
 						String dbMsg = "[listOfList_yomikomi]";
-						if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
-							artistList_yomikomi();
-						}else {
+//						if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
+//							artistList_yomikomi();
+//						}else {
 							listOfListClick(parent, view, position, id);
-						}
-//						try{
-//							dbMsg += ",position=" + position;
-//							long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
-//							sousalistID = Math.toIntExact(readID);
-//							sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
-//							dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
-//								//	listClick( parent, view, position, id);			//共有：クリックの処理
-//								CreatePLList(readID , nowList);
-//							myLog(TAG, dbMsg);
-//						}catch (Exception e) {
-//							myErrorLog(TAG ,  dbMsg + "で" + e);
 //						}
 					}
 				});
@@ -4622,15 +4613,47 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						}
 						break;
 					case MyConstants.v_play_list:
-						rStr =  (String) ItemAL.get(i).get("title");
-						dbMsg +=",title=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-						item1.setTextData(rStr);
-//						rStr = (String) ItemAL.get(i).get("img");
-//						dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-//						item1.setimageUrl(rStr);
-						rStr =  "[" + (String) ItemAL.get(i).get("_id") + "]";
-						rStr +=  (String) ItemAL.get(i).get("date_modified") + getResources().getString(R.string.comon_kousinn);
-						//date_modified" -> "1656773613"
+						String title = (String) ItemAL.get(i).get("title");
+						dbMsg +=",title=" + title ;///////////////////////////////////////////////////////////////////////////////////////////
+						item1.setTextData(title);
+////						rStr = (String) ItemAL.get(i).get("img");
+////						dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+////						item1.setimageUrl(rStr);
+//						rStr =  "[" + (String) ItemAL.get(i).get("_id") + "]";
+//						rStr +=  (String) ItemAL.get(i).get("date_modified") + getResources().getString(R.string.comon_kousinn);
+						rStr = "[" + (String) objMap.get("_id") + "]";
+						rStr += sdf.format(new Date(Long.valueOf((String) ItemAL.get(i).get("date_modified"))*1000))  + getResources().getString(R.string.comon_kousinn);
+						dbMsg +=",_data=" +(String) ItemAL.get(i).get("_data") ;
+						long lineCount =0;
+						if( title.equals(getResources().getString(R.string.listmei_zemkyoku))) {        // ;		// 全曲リスト</string>
+							if(Zenkyoku_db != null){
+								if( Zenkyoku_db.isOpen()){
+									Zenkyoku_db.close();
+									dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+								}
+							}
+							String fn = getString(R.string.zenkyoku_file);			//全曲リスト名
+							dbMsg +=  ",fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+							zenkyokuHelper = new ZenkyokuHelper(MuList.this , fn);		//全曲リストの定義ファイル		.
+							Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
+							dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+							dbMsg +=  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+//							String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
+//							String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
+//							String c_selection = null;
+//							String[] c_selectionArgs= null;
+//							String c_groupBy = "null";
+//							String c_having = null;
+//							String c_orderBy = "ARTIST"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+//							cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , c_groupBy, c_having, c_orderBy);
+							lineCount = Zenkyoku_db.getPageSize();
+						}else{
+							// ファイルパス
+							Path path = Paths.get((String) ItemAL.get(i).get("_data"));
+							// ファイルの行数
+							lineCount = Files.lines(path).count()-1;
+						}
+						rStr += " " +lineCount+ getResources().getString(R.string.comon_kyoku);
 						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
 						if(rStr != null){
 							if(! rStr.equals("") ){
