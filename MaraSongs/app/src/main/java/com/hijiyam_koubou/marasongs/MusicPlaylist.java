@@ -42,7 +42,7 @@ public class MusicPlaylist {
             myPreferences = new MyPreferences();
             pref_commmn_music= myPreferences.pref_commmn_music;		//共通音楽フォルダ
 
-//            myLog(TAG,dbMsg);
+            myLog(TAG,dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg + "で"+e.toString());
         }

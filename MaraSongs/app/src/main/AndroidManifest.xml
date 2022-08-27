@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.hijiyam_koubou.marasongs">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -54,7 +55,9 @@
         <activity
             android:name=".MuList"
             android:exported="true"
-            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,6 +67,8 @@
         <activity
             android:name=".MaraSonActivity"
             android:label="@string/app_name"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
