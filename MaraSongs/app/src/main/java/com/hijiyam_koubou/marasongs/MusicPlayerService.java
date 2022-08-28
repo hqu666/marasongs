@@ -759,9 +759,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				int Duration = getPrefInt( "pref_duration" ,0 , MusicPlayerService.this);
 				dbMsg += "[" + mIndex + "]" + dataFN + "." + mcPosition + "/" + Duration +"[ms]" ;
 				dbMsg += ",dataFN="+dataFN;
-				dbMsg +=",リスト中" + mIndex;
-				int listEnd =  musicPlaylist.getUserListMaxPlayOrder(nowList_id);
-				dbMsg += "/" + listEnd;/////////////////////////////////////
+				dbMsg +=",リスト中" + mIndex + "/" + listEnd;/////////////////////////////////////
 				if(nowList.equals(getResources().getString(R.string.playlist_namae_request))){			//既にリクエストリスト実行中で
 					int nokori = 0;
 					Cursor cursor = null;
@@ -860,20 +858,20 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg +=">>" +mIndex;/////////////////////////////////////
 				}
 
-				Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
-				if(playingItem.moveToFirst()){
-					creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
+//				Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
+//				if(playingItem.moveToFirst()){
+//					creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
 					dbMsg +=" ,クレジット⁼ " + creditArtistName;
-					albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
+//					albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
 					dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-					titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
+//					titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
 					dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-					int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+//					int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
 					dbMsg +=" ,audioId= " + audioId;
 //				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//playingItem.album_artist;	//アルバムアーティスト名
 //				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
-					Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
-					dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+//					Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
+//					dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
 					dbMsg +=",読込確認；dataFN=" +dataFN;/////////////////////////////////////
 					if( ! yomiKomiCheck(dataFN)){
 						dbMsg +=">>次の曲へ" ;/////////////////////////////////////
@@ -888,7 +886,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					try {
 						mPlayer.setLooping(true);						//☆以下二つより先に行わないとIllegalStateExceptionが発生
 						mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-						mPlayer.setDataSource(getApplicationContext(), dataUri );				//☆MediaPlayer.createではjava.lang.IllegalStateException		http://umezo.hatenablog.jp/entry/20100531/1275319329
+						mPlayer.setDataSource(getApplicationContext(), Uri.parse(dataFN));				//☆MediaPlayer.createではjava.lang.IllegalStateException		http://umezo.hatenablog.jp/entry/20100531/1275319329
 						dbMsg += ";データセット；";						// +mPlayer.getDuration() + "[ms]";			/////////////////////////////////////
 						mPlayer.prepareAsync();							//データを非同期で読み込み、読み込み完了と同時にonCompletionを実行
 						siseizumiDataFN = dataFN;				//前回再生済みのファイル名
@@ -900,13 +898,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						myErrorLog(TAG,dbMsg+"で"+e);
 					}
 
-				}else{
-					Toast.makeText(this, "No available music to play. Place some music on your external storage device (e.g. your SD card) and try again.", Toast.LENGTH_LONG).show();
-					myLog(TAG,dbMsg);
-					processStopRequest(true); // stop everything!
-					return;
-				}
-				playingItem.close();
+//				}else{
+//					Toast.makeText(this, "No available music to play. Place some music on your external storage device (e.g. your SD card) and try again.", Toast.LENGTH_LONG).show();
+//					myLog(TAG,dbMsg);
+//					processStopRequest(true); // stop everything!
+//					return;
+//				}
+//				playingItem.close();
 			} catch (IOException e) {
 					myErrorLog(TAG,dbMsg+"で"+e);
 			}
