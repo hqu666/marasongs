@@ -4173,6 +4173,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	int listId = 0;
 	public int selPosition;
 
+	/**リストクリック時の処理分岐*/
 	public void listClick(AdapterView<?> parent, View view, int position, long id) {			//共有：クリックの処理
 		System.currentTimeMillis();
 		final String TAG = "listClick";
@@ -4185,8 +4186,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String rStr;
 			dbMsg += ",シンプルなリスト表示="+pref_list_simple+ ":position="+position+",[id="+id+"]";////////"リスト；parent="+parent+",view="+view+
 			dbMsg += ",artist="+sousa_artist+ ":album="+sousa_alubm + ",titol=" + sousa_titol;
-			dbMsg += ",プレイリスト="+sousalistName;////////"リスト；parent="+parent+",view="+view+
-			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ) {        // 全曲リストのアーティスト選択
+			dbMsg += ",プレイリスト:sousalistName="+sousalistName + ",nowList:"+nowList;
+			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) && reqCode <=MyConstants.v_titol) {        // 全曲リストのアーティスト選択
 				dbMsg += ",全曲リストでreqCode=" + reqCode;
 				switch (reqCode) {
 					case MyConstants.v_artist:                            //195 ;2131558436 アーティスト
@@ -4225,10 +4226,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						titolName = itemStr;        //曲名	titolList.get(position)
 						String dataFN = String.valueOf(titolAL.get(position).get("DATA"));
 						dbMsg += ",再生するのは=" + dataFN;
-//					setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
 						setPrefInt("pref_position", 0, MuList.this);
-//					myEditor.putString ("nowList_id", nowList_id);
-//					myEditor.putString ("nowList", nowList);
 						dbMsg += ",呼出し元=" + yobidashiMoto;    //yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 						dbMsg += ">>プレイヤーへ";
 						send2Player(dataFN, true);                                                //プレイヤーにuriを送る
@@ -4246,14 +4244,131 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ",再生するのは[" + mIndex;
 				String dataFN = String.valueOf(plAL.get(position).get(MediaStore.Audio.Playlists.Members.DATA));
 				dbMsg += "]" + dataFN;
-
-//					dataFN = String.valueOf(plAL.get(position).get("DATA"));
-//					dbMsg += ",dataFN=" + dataFN;/////////////////////////////////////
-//					setPrefStr( "pref_data_url" ,  saisei_fname , MuList.this);
-//					setPrefInt("pref_position" ,  0 , MuList.this);
 				dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 				send2Player(dataFN , true)  ;
-//					back2Player( dataFN);												//プレイヤーにuriを送る
+			}else if( reqCode == MyConstants.SELECT_TREE ||
+					nowList.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ||
+					sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika))
+			){
+				dbMsg += ">>最近追加";
+				int depth;
+				int artistID;
+				int albumID;
+				int audioID;
+				String duration;
+				String Modified;
+				boolean kakikomi;
+				treeEntry = (TreeEntry)parent.getItemAtPosition(position);
+				depth = treeEntry.getDepth();
+				dbMsg += ",depth=" + depth;
+				if(treeEntry.isExpanded()) {
+					expandMap.remove(depth);
+					treeEntry.collapse();											//閉じる
+				} else {
+					if(treeEntry.hasChild()) {
+						if(expandMap.containsKey(depth)) {
+							expandMap.get(depth).collapse();			//expandMap.get(depth).collapse();ではメソッド collapse() は型 Object で未定義
+						}
+						treeEntry.expand();											//開く
+						dbMsg += ",treeEntry=" + treeEntry;
+						expandMap.put(depth, treeEntry);
+					}else{
+//						dbMsg +=",LayerName=タイトル" ;
+//						play_order = treeEntry.getPlayOrder();
+//						dbMsg +="(play_order= " + play_order ;
+//						artistID = treeEntry.getArtistID();
+//						dbMsg +=" ,artistID= " + artistID ;
+//						albumID = treeEntry.getAlbumID();
+//						dbMsg +=" ,r_albumID= " + albumID ;
+//						audioID = treeEntry.getAudioID();
+//						dbMsg +=" ,audioID= " + audioID ;
+						String dataFN = treeEntry.getDataURL();      //null?
+						dbMsg +=")" + dataFN ;
+						setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
+//						duration = treeEntry.getDuration();
+//						dbMsg +=",再生時間=" + duration ;
+//						Modified = treeEntry.getModified();
+//						setPrefInt("pref_position" ,  0 , MuList.this);
+//						dbMsg +=" ,Modified= " + Modified ;
+//						mIndex = play_order;
+//						dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
+//						if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
+							send2Player(dataFN,true );												//プレイヤーにuriを送る
+//						}
+					}
+				}
+//				itemStr = treeEntry.getData().toString();
+//				dbMsg += ",表記=" + itemStr;
+
+//				int rLayerName = treeEntry.getLayerName();
+//				switch(rLayerName) {
+//					case lyer_artist:				// 10;アーティスト
+//						dbMsg +=",LayerName=アーティスト" ;
+//						break;
+//					case lyer_album:				// lyer_artist + 10;アルバム
+//						dbMsg +=",LayerName=アルバム" ;
+//						break;
+//					case lyer_titol:				// lyer_album + 10;タイトル
+//						dbMsg +=",LayerName=タイトル" ;
+////						play_order = treeEntry.getPlayOrder();
+////						dbMsg +="(play_order= " + play_order ;
+//////						dbMsg +=")nowList_data= " + nowList_data ;
+////						artistID = treeEntry.getArtistID();
+////						dbMsg +=" ,artistID= " + artistID ;
+////						albumID = treeEntry.getAlbumID();
+////						dbMsg +=" ,r_albumID= " + albumID ;
+////						audioID = treeEntry.getAudioID();
+////						dbMsg +=" ,audioID= " + audioID ;
+////						String dataFN = treeEntry.getDataURL();      //null?
+////						dbMsg +=")" + dataFN ;
+////						duration = treeEntry.getDuration();
+////						dbMsg +=",再生時間=" + duration ;
+////						Modified = treeEntry.getModified();
+////						setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
+////						setPrefInt("pref_position" ,  0 , MuList.this);
+////						dbMsg +=" ,Modified= " + Modified ;
+////						mIndex = play_order;
+////						dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
+////						if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
+////							send2Player(dataFN,true );												//プレイヤーにuriを送る
+////						}
+//						break;
+//					case MENU_TAKAISOU:				//535 多階層リスト選択選択中
+//						dbMsg += ",parent=" + parent;
+//						dbMsg += ",view=" + view;
+//						treeEntry = (TreeEntry)parent.getItemAtPosition(position);
+//						depth = treeEntry.getDepth();
+//						dbMsg += ",depth=" + depth;
+//						if(treeEntry.isExpanded()) {
+//							expandMap.remove(depth);
+//							treeEntry.collapse();											//閉じる
+//						} else {
+//							if(treeEntry.hasChild()) {
+//								if(expandMap.containsKey(depth)) {
+//									expandMap.get(depth).collapse();			//expandMap.get(depth).collapse();ではメソッド collapse() は型 Object で未定義
+//								}
+//								treeEntry.expand();											//開く
+//								dbMsg += ",treeEntry=" + treeEntry;
+//								expandMap.put(depth, treeEntry);		//型の安全性: メソッド put(Object, Object) は raw 型 Map に属しています。総称型 Map<K,V> への参照はパラメーター化される必要があります
+//							}
+//						}
+//						itemStr = treeEntry.getData().toString();
+//						dbMsg += ",表記=" + itemStr;
+//						switch(depth) {
+//							case 0:													//アーティスト
+//								break;
+//							case 1:													//アルバム
+//								break;
+//							case 2:													//曲
+//								String dataFN = treeEntry.getDataURL();
+//								dbMsg +=")" + dataFN ;
+//								if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
+//									send2Player(dataFN ,true);												//プレイヤーにuriを送る
+//								}
+//								break;
+//						}
+//						break;
+//				}
 			}else if( sousalistName.equals(plNameSL.get(position)) &&
 						!sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika))
 				){
@@ -4264,15 +4379,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					CreatePLList( listID , pdMessage);		//プレイリストの内容取得			MuList.this.sousalist_data,
 				}
 			}else{		//操作対象リストID		 if( 0 < sousalistID   )
-				dbMsg +=",全曲以外" ;
-				int depth;
-				int artistID;
-				int albumID;
-				int audioID;
-				String duration;
-				String Modified;
-				boolean kakikomi;
-
 				dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
 				if( reqCode == listType_2ly ){					//3
 					dbMsg +=",listType_2ly";
@@ -4284,152 +4390,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					sousaAlbumArtist = itemStr;	//操作対象のアルバムアーティスト名
 					dbMsg += sousaAlbumArtist + "の2階層化へ";
 					plAlbumTitol( sousalistID , sousaAlbumArtist);		//指定したプレイリストから特定アーティストのアルバムとタイトル内容取得
-//				} else if( reqCode == MENU_infoKaisou || reqCode == MyConstants.SELECT_SONG){					//539,1253
-//					dbMsg +=",MENU_infoKaisou";
-//					dbMsg += ",plAL=" + plAL.get(position).toString();
-//					titolName = String.valueOf(plAL.get(position).get("main"));				//= (String) plAL.get(position).get("main");
-//					dbMsg += ",titolName=" + titolName;
-//					mIndex = position;
-//					dbMsg += ",再生するのは[" + mIndex;
-//					String dataFN = String.valueOf(plAL.get(position).get(MediaStore.Audio.Playlists.Members.DATA));
-//					dbMsg += ",再生するのは=" + dataFN;
-//
-////					dataFN = String.valueOf(plAL.get(position).get("DATA"));
-////					dbMsg += ",dataFN=" + dataFN;/////////////////////////////////////
-////					setPrefStr( "pref_data_url" ,  saisei_fname , MuList.this);
-////					setPrefInt("pref_position" ,  0 , MuList.this);
-//					dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-//					send2Player(dataFN , true)  ;
-////					back2Player( dataFN);												//プレイヤーにuriを送る
-				} else {
-					treeEntry = (TreeEntry)parent.getItemAtPosition(position);
-					depth = treeEntry.getDepth();
-					dbMsg += ",depth=" + depth;
-					if(treeEntry.isExpanded()) {
-						expandMap.remove(depth);
-						treeEntry.collapse();											//閉じる
-					} else {
-						if(treeEntry.hasChild()) {
-							if(expandMap.containsKey(depth)) {
-								expandMap.get(depth).collapse();			//expandMap.get(depth).collapse();ではメソッド collapse() は型 Object で未定義
-							}
-							treeEntry.expand();											//開く
-							dbMsg += ",treeEntry=" + treeEntry;
-							expandMap.put(depth, treeEntry);			//expandMap.get(depth).collapse();ではメソッド collapse() は型 Object で未定義
-						}else{
-							dbMsg +=",LayerName=タイトル" ;
-							play_order = treeEntry.getPlayOrder();
-							dbMsg +="(play_order= " + play_order ;
-//						dbMsg +=")nowList_data= " + nowList_data ;
-							artistID = treeEntry.getArtistID();
-							dbMsg +=" ,artistID= " + artistID ;
-							albumID = treeEntry.getAlbumID();
-							dbMsg +=" ,r_albumID= " + albumID ;
-							audioID = treeEntry.getAudioID();
-							dbMsg +=" ,audioID= " + audioID ;
-							String dataFN = treeEntry.getDataURL();      //null?
-							dbMsg +=")" + dataFN ;
-							duration = treeEntry.getDuration();
-							dbMsg +=",再生時間=" + duration ;
-							Modified = treeEntry.getModified();
-							setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
-							setPrefInt("pref_position" ,  0 , MuList.this);
-							dbMsg +=" ,Modified= " + Modified ;
-							mIndex = play_order;
-							dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-							if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-								send2Player(dataFN,true );												//プレイヤーにuriを送る
-							}
-						}
-					}
-					itemStr = treeEntry.getData().toString();
-					dbMsg += ",表記=" + itemStr;
-
-					int rLayerName = treeEntry.getLayerName();
-					switch(rLayerName) {
-					case lyer_artist:				// 10;アーティスト
-						dbMsg +=",LayerName=アーティスト" ;
-						break;
-					case lyer_album:				// lyer_artist + 10;アルバム
-						dbMsg +=",LayerName=アルバム" ;
-						break;
-					case lyer_titol:				// lyer_album + 10;タイトル
-						dbMsg +=",LayerName=タイトル" ;
-//						play_order = treeEntry.getPlayOrder();
-//						dbMsg +="(play_order= " + play_order ;
-////						dbMsg +=")nowList_data= " + nowList_data ;
-//						artistID = treeEntry.getArtistID();
-//						dbMsg +=" ,artistID= " + artistID ;
-//						albumID = treeEntry.getAlbumID();
-//						dbMsg +=" ,r_albumID= " + albumID ;
-//						audioID = treeEntry.getAudioID();
-//						dbMsg +=" ,audioID= " + audioID ;
-//						String dataFN = treeEntry.getDataURL();      //null?
-//						dbMsg +=")" + dataFN ;
-//						duration = treeEntry.getDuration();
-//						dbMsg +=",再生時間=" + duration ;
-//						Modified = treeEntry.getModified();
-//						setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
-//						setPrefInt("pref_position" ,  0 , MuList.this);
-//						dbMsg +=" ,Modified= " + Modified ;
-//						mIndex = play_order;
-//						dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-//						if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-//							send2Player(dataFN,true );												//プレイヤーにuriを送る
-//						}
-						break;
-					case MENU_TAKAISOU:				//535 多階層リスト選択選択中
-						dbMsg += ",parent=" + parent;
-						dbMsg += ",view=" + view;
-						treeEntry = (TreeEntry)parent.getItemAtPosition(position);
-						depth = treeEntry.getDepth();
-						dbMsg += ",depth=" + depth;
-						if(treeEntry.isExpanded()) {
-							expandMap.remove(depth);
-							treeEntry.collapse();											//閉じる
-						} else {
-							if(treeEntry.hasChild()) {
-								if(expandMap.containsKey(depth)) {
-									expandMap.get(depth).collapse();			//expandMap.get(depth).collapse();ではメソッド collapse() は型 Object で未定義
-								}
-								treeEntry.expand();											//開く
-								dbMsg += ",treeEntry=" + treeEntry;
-								expandMap.put(depth, treeEntry);		//型の安全性: メソッド put(Object, Object) は raw 型 Map に属しています。総称型 Map<K,V> への参照はパラメーター化される必要があります
-							}
-						}
-						itemStr = treeEntry.getData().toString();
-						dbMsg += ",表記=" + itemStr;
-						switch(depth) {
-						case 0:													//アーティスト
-							break;
-						case 1:													//アルバム
-							break;
-						case 2:													//曲
-//							play_order = treeEntry.getPlayOrder();
-//							dbMsg +="(play_order= " + play_order ;
-//							artistID = treeEntry.getArtistID();
-//							dbMsg +=" ,artistID= " + artistID ;
-//							albumID = treeEntry.getAlbumID();
-//							dbMsg +=" ,r_albumID= " + albumID ;
-//							audioID = treeEntry.getAudioID();
-//							dbMsg +=" ,audioID= " + audioID ;
-//							dataFN = treeEntry.getDataURL();
-//							dbMsg +=")" + dataFN ;
-//							duration = treeEntry.getDuration();
-//							dbMsg +=",再生時間=" + duration ;
-//							Modified = treeEntry.getModified();
-//							dbMsg +=" ,Modified= " + Modified ;
-//							mIndex = play_order;					//play_order
-////							setPrefStr( "pref_data_url" ,  saisei_fname , MuList.this);
-////							setPrefInt("pref_position" ,  0 , MuList.this);
-////							dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-//							if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-//								send2Player(dataFN ,true);												//プレイヤーにuriを送る
-//							}
-							break;
-						}
-						break;
-					}
 				}
 			}
 			myLog(TAG, dbMsg);
@@ -4859,7 +4819,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					sousalistName.equals(getResources().getString(R.string.playlist_namae_randam)) 			//="">ランダム再生</string>
 					){			//R.id.plistDPTF
 			}
-			reqCode = MyConstants.SELECT_SONG;
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5743,14 +5702,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",sousalistName="+sousalistName ;
 			dbMsg += ",単階層指定="+plef_tankaisou ;
 
-			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){		//最近追加
-				reqCode = MyConstants.PUPRPOSE_SONG;	//253	MENU_TAKAISOU2 ;									//538;3階層リスト
+			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){
 				dbMsg += ">reqCode="+reqCode;
 				listType = listType_plane;									// 0;//情報なし
 				if( retInt < Integer.valueOf(pref_artist_bunnri) ){
 					dbMsg += ",リストが長すぎるので" ;
-//					reqCode =MENU_infoKaisou:
-//					reqCode = MENU_INFO_KAISOU;								//539情報付きリスト書き込み中
 					dbMsg += ">reqCode="+reqCode;
 					if(pref_list_simple){											//シンプルなリスト表示（サムネールなど省略）
 						listType = listType_plane;									// 0;//情報なし
@@ -5834,6 +5790,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				plWrightEnd();
 			}else{
 				setHeadImgList(plAL );				//イメージとサブテキストを持ったリストを構成
+			}
+			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){
+
+
+				reqCode = MyConstants.SELECT_TREE;
+			}else{
+				reqCode = MyConstants.SELECT_SONG;
 			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -6366,7 +6329,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( nowList_id == sousalistID ){
 				selectTreePosition(mIndex);
 			}
-			reqCode = MyConstants.SELECT_SONG;
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -10856,6 +10818,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String subTStr = "";
 			String saisei_fname = getPrefStr( "pref_data_url" ,  "" , MuList.this);
 			dbMsg +=  ",reqC=" + reqC +") artist;" + ";album=" + albumMei + ",titolMei=" + titolMei ;
+//			if(nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
+//				if(MyConstants.v_titol <= reqC){
+//					reqC = MyConstants.v_artist;
+//					dbMsg +=  ">>" + reqC ;
+//				}
+//			}
 			switch(reqC) {
 				case MyConstants.v_play_list:
 					dbMsg +=",アーティストリストのヘッダータップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
@@ -11283,7 +11251,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg +=",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
 				dbMsg +=",reqCode;" + reqCode;
 				switch(shigot_bangou) {
-					case reTryMse:				//全曲リスト作成から戻ってメッセージ表示
+					case reTryMse:				//208　全曲リスト作成から戻ってメッセージ表示
 						dbMsg +=",reTryMse;";
 						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 						alertDialogBuilder.setTitle(dtitol);

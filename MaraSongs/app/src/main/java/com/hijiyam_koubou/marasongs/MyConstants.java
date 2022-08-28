@@ -118,8 +118,11 @@ public final class MyConstants {
     public static final int PUPRPOSE_SONG=PUPRPOSE_lIST+1;
     /**楽曲選択*/
     public static final int SELECT_SONG=PUPRPOSE_SONG+1000;
+    /**多階層リスト操作中*/
+    public static final int SELECT_TREE = SELECT_SONG+1;
+
     /**プレイリスト用簡易リスト*/
-    public List<String> plSL;					//
+    public List<String> plSL;
 
     private MyConstants (){}
 }
