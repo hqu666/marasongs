@@ -1,7 +1,5 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.util.List;
-
 public final class MyConstants {
 
     //プリファレンス
@@ -122,7 +120,7 @@ public final class MyConstants {
     public static final int SELECT_TREE = SELECT_SONG+1;
 
     /**プレイリスト用簡易リスト*/
-    public List<String> plSL;
+//    public List<String> plSL;//MyConstants.plSLは参照できない
 
     private MyConstants (){}
 }

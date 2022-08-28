@@ -753,7 +753,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 
 			dbMsg += ">最終；nowList>" + nowList;
-			if( nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){                               	  // && -1 < Integer.valueOf(nowList_id) 
+			if( nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){                               	  // && -1 < Integer.valueOf(nowList_id)
 				nowList_id = pref_zenkyoku_list_id;
 				nowList_data = null;
 				dbMsg +=  ">修正結果[" + nowList_id + "]" + nowList + "" + dataFN;
@@ -2083,7 +2083,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	/** 非表示アーティスト対策；アーティストと作曲者名リスト */
-	public void hihyoujiArtist2() {	
+	public void hihyoujiArtist2() {
 		final String TAG = "hihyoujiArtist2";
 		String dbMsg = "";
 		try{
@@ -5787,6 +5787,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			}
 			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ) {        //最近追加
+				mainHTF.setText(nowList);					//ヘッダーのメインテキスト表示枠
+				subHTF.setText(maxVal + getResources().getString(R.string.comon_kyoku));					//ヘッダーのサブテキスト表示枠
 				plWrightEnd();
 			}else{
 				setHeadImgList(plAL );				//イメージとサブテキストを持ったリストを構成
@@ -6260,7 +6262,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String track = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
 			Util UTIL = new Util();
 			track = UTIL.checKTrack( track);
-			String dataURL = String.valueOf(plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
+			String dataURL = String.valueOf(plAL.get(i).get( MediaStore.Audio.Playlists.Members.DATA ));
 			dbMsg +=  ",dataURL="+dataURL;
 			String duration = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.DURATION ));
 //			dbMsg +=  ",duration="+duration;
@@ -7806,7 +7808,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",targetDate="+ targetDate + "=" + sdffiles.format(targetDate);
 			saikinTuikaLimt = targetDate.getTime() /1000;// / (24 * 60 * 60);  //1,558,969,836
 			dbMsg +=",saikinTuikaLimt="+ saikinTuikaLimt ;
-			
+
 			MuList.this.sousalistName = getResources().getString(R.string.playlist_namae_saikintuika);
 			sousalistID = siteiListSakusi( MuList.this.sousalistName );		//最近追加
 			dbMsg += "、作成list[ID=" + tuikaSakiListID + "]"+ MuList.this.sousalistName;
