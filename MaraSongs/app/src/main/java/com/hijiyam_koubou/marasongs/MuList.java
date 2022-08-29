@@ -3661,13 +3661,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	/**サービスとレシーバに再生ファイルを指定*/
-	public void send2Service(String dataFN) {																		//操作対応②ⅰ
+	public boolean send2Service(String dataFN , String listName ,boolean IsPlaying) {																		//操作対応②ⅰ
 		final String TAG = "send2Service";
 		String dbMsg = "";
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
 			dbMsg +=" 、dataFN="+ dataFN;
-			dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+			dbMsg +=" 、listName="+ listName;
+			dbMsg +=" 、IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+	//		dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
 			if(mFilter == null){
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
@@ -3682,16 +3684,22 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}else{
 				stopService(MPSIntent);
 			}
-			dbMsg +=" 、[ " + nowList_id+ "] " + nowList + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
 			MPSIntent.putExtra("nowList_id",nowList_id);
-			MPSIntent.putExtra("nowList",nowList);
+			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("mIndex",mIndex);
 			MPSIntent.putExtra("pref_data_url",dataFN);
 			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
 			MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
 			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
 			MPSIntent.putExtra("continu_status","toPlay");
-
+			if(! IsPlaying){
+				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+				IsPlaying = false;
+			}else{
+				MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+				IsPlaying = true;
+			}
 //			dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 //			if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
 //				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
@@ -3716,6 +3724,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
+		return IsPlaying;
 	}
 
 	/**
@@ -3724,7 +3733,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	 *  onClickでプレイヤーのクリック
 	 *  jyoukyouBunki
 	 *  */
-	public void send2Player(String pref_data_url ,boolean toPlaying) {																//プレイヤーにuriを送る   , String aName
+	public void send2Player(String pref_data_url , String listName ,boolean toPlaying) {																//プレイヤーにuriを送る   , String aName
 		final String TAG = "send2Player";
 		String dbMsg = "";
 		try{
@@ -3747,8 +3756,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			retBool = setPrefInt("nowList_id" , nowList_id , MuList.this);        //プリファレンスの読込み
 			dbMsg += "を書込み" + retBool;
-			dbMsg += "]" + nowList;/////////////////////////////////////
-			retBool = setPrefStr("nowList" , nowList , MuList.this);        //プリファレンスの読込み
+			dbMsg += "]" + listName;/////////////////////////////////////
+			retBool = setPrefStr("nowList" , listName , MuList.this);        //プリファレンスの読込み
 			dbMsg += "を書込み" + retBool;
 //				dbMsg += "/" + plAL.size() + "]";		//プレイリスト用ArrayList
 			dbMsg += "]pref_data_url=" + pref_data_url;
@@ -3756,7 +3765,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "を書込み" + retBool;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
-			send2Service( pref_data_url);
+			toPlaying = send2Service( pref_data_url,listName,toPlaying);
+			dbMsg += ",toPlaying=" + toPlaying;
 /*
 
 			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
@@ -4229,7 +4239,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						setPrefInt("pref_position", 0, MuList.this);
 						dbMsg += ",呼出し元=" + yobidashiMoto;    //yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 						dbMsg += ">>プレイヤーへ";
-						send2Player(dataFN, true);                                                //プレイヤーにuriを送る
+						send2Player(dataFN, sousalistName,true);                                                //プレイヤーにuriを送る
 						break;
 				}
 			}else if( sousalistName.equals(getString(R.string.listmei_list_all)) || reqCode == MyConstants.v_play_list) {
@@ -4245,7 +4255,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String dataFN = String.valueOf(plAL.get(position).get(MediaStore.Audio.Playlists.Members.DATA));
 				dbMsg += "]" + dataFN;
 				dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-				send2Player(dataFN , true)  ;
+				send2Player(dataFN , sousalistName,true)  ;
 			}else if( reqCode == MyConstants.SELECT_TREE ||
 					nowList.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ||
 					sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika))
@@ -4293,7 +4303,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //						mIndex = play_order;
 //						dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 //						if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-							send2Player(dataFN,true );												//プレイヤーにuriを送る
+							send2Player(dataFN,getResources().getString(R.string.playlist_namae_saikintuika),true );												//プレイヤーにuriを送る
 //						}
 					}
 				}
@@ -9541,7 +9551,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			b_album = albumName;			//それまで参照していたアルバム名
 			dbMsg +=" , クリックされたのは" + v.getId();
 			if (v == lp_ppPButton) {
-				send2Service(dataFN);
+				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {
+					IsPlaying = false;
+				}else{
+					IsPlaying = true;
+				}
+				IsPlaying =	send2Service(dataFN , nowList , IsPlaying);
 //				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
 //				if(mFilter == null){
 //					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
@@ -9576,7 +9591,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					lp_ppPButton.setImageResource(R.drawable.play_notif);
 					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
 					lp_chronometer.stop();
-					IsPlaying = false;
 				} else {
 					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
@@ -9587,11 +9601,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
 					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
 					lp_chronometer.start();
-					IsPlaying = true;
 				}
 			} else if (v == rc_fbace) {	//プレイヤーフィールド部の土台
 				dbMsg +=  "クリックされたのはrc_fbace";
-				send2Player(dataFN ,false );
+				send2Player(dataFN ,nowList,false );
 			} else if (v == lp_stop) {
 				dbMsg +=  "クリックされたのはlp_stop";
 			//	Intent intent = new Intent( MuList.this, MusicPlayerService.class);
