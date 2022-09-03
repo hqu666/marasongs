@@ -785,8 +785,15 @@ public class Util {
 		try {
 			dbMsg +=",context=" + context;
 			String pefName = context.getResources().getString(R.string.pref_main_file);
+			dbMsg +=  ",pefName="  + pefName;
 			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-			retStr = sharedPref.getString(keyNmae , defaultVal);
+			if(sharedPref.contains(keyNmae)){
+				dbMsg +=  ">sharedPrefから>";
+				retStr = sharedPref.getString(keyNmae , defaultVal);
+			}else{
+				dbMsg +=  ">defaultValで>";
+				retStr = defaultVal;
+			}
 			dbMsg +=  ",retStr="  + retStr;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {

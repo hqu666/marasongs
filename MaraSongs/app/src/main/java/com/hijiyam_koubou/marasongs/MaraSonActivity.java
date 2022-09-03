@@ -5549,18 +5549,18 @@ public class MaraSonActivity extends AppCompatActivity
 			///////////////////////////////////スレッド起動確認//
 			readPref();       //					setteriYomikomi();		//<onCreate	プリファレンスに記録されているデータ読み込み
 
-			Intent intent = getIntent();
-			reqCode = intent.getIntExtra("reqCode", 0);
-			dbMsg += ",reqCode=" + reqCode;
-			nowList_id = intent.getIntExtra("nowList_id", 0);
-			nowList=intent.getStringExtra("nowList");
-			dbMsg += "[" + nowList_id+ "]" + nowList;
-			mIndex=intent.getIntExtra("mIndex",0);
-			dbMsg += ",mIndex=" + mIndex;
-
-			dbMsg += ",found="+ found ;/////////////////////////////////////
-//			Bundle extras = getIntent().getExtras();				//起動されたアクティビティからデータを受け取る
-//			dbMsg += ",extras="+ extras ;/////////////////////////////////////
+//			Intent intent = getIntent();
+//			reqCode = intent.getIntExtra("reqCode", 0);
+//			dbMsg += ",reqCode=" + reqCode;
+//			nowList_id = intent.getIntExtra("nowList_id", 0);
+//			nowList=intent.getStringExtra("nowList");
+//			dbMsg += "[" + nowList_id+ "]" + nowList;
+//			mIndex=intent.getIntExtra("mIndex",0);
+//			dbMsg += ",mIndex=" + mIndex;
+//
+//			dbMsg += ",found="+ found ;/////////////////////////////////////
+////			Bundle extras = getIntent().getExtras();				//起動されたアクティビティからデータを受け取る
+////			dbMsg += ",extras="+ extras ;/////////////////////////////////////
 
 			receiverHaki();		//レシーバーを破棄
 

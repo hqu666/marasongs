@@ -386,12 +386,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		Util.myLog(TAG ,  "[MuList]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG ,  "[MuList]" + dbMsg);
 	}
 
 	public static String getPrefStr(String keyNmae , String defaultVal,Context context) {        //プリファレンスの読込み
@@ -2948,16 +2948,32 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-	/**プレイリスト一覧のクリック*/
+	/**
+	 * プレイリスト一覧のクリック
+	 * 再生対象リストの確定
+	 * */
 	public void listOfListClick(AdapterView<?> parent, View view, int position, long id) {
 		final String TAG = "listOfListClick";
 		String dbMsg = "";
 		try{
 			dbMsg += ",position=" + position;
-			long readID = Long.valueOf((String) plNameAL.get(position).get("_id"));
+			long readID = Long.valueOf((String) plNameAL.get(position).get(MediaStore.Audio.Playlists._ID));
 			sousalistID = Math.toIntExact(readID);
-			sousalistName = (String) plNameAL.get(position).get("title");			//plNameSL.get(position);
-			dbMsg +=",sousalist["+sousalistID + "]" + sousalistName;
+			nowList_id = sousalistID;
+			sousalistName = (String) plNameAL.get(position).get(MediaStore.Audio.Playlists.TITLE);			//"title"
+			nowList = sousalistName;
+			dbMsg +=",["+sousalistID + "]" + nowList;
+			if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku)) ){
+				nowList_id =-1;
+				dbMsg += ">>" + nowList_id;
+			}
+			dbMsg +=">>["+sousalistID + "]" + nowList;
+			boolean retBool = setPrefInt("nowList_id", nowList_id, MuList.this);        //プリファレンスの読込み
+			dbMsg += "を書込み" + retBool;
+			dbMsg += "]" + sousalistName;/////////////////////////////////////
+			retBool = setPrefStr("nowList" , sousalistName , MuList.this);        //プリファレンスの読込み
+			dbMsg += "を書込み" + retBool;
+
 			if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
 				artistList_yomikomi();
 				reqCode = MyConstants.v_artist;
@@ -3687,11 +3703,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
 			MPSIntent.putExtra("nowList_id",nowList_id);
 			MPSIntent.putExtra("nowList",listName);
-			MPSIntent.putExtra("mIndex",mIndex);
 			MPSIntent.putExtra("pref_data_url",dataFN);
-			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
-			MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
-			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
+//			MPSIntent.putExtra("mIndex",mIndex);
+//			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+//			MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
+//			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
 			MPSIntent.putExtra("continu_status","toPlay");
 			if(! IsPlaying){
 				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
@@ -3700,7 +3716,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 				IsPlaying = true;
 			}
-//			dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 //			if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
 //				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //				lp_ppPButton.setImageResource(R.drawable.play_notif);
@@ -3714,12 +3729,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				lp_chronometer.start();
 //				IsPlaying = true;
 //			}
-//			dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
+			dbMsg += ">action>" + MPSIntent.getAction();
+			dbMsg += " , IsPlaying=" + IsPlaying;
+			MPSIntent.putExtra("IsPlaying",IsPlaying);
 			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-			dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
-			dbMsg +=  ">>startService";
-
-			dbMsg +=  "(mIndex=" + mIndex  +")";			//+ sentakuCyuu ;/////////////////////////////////////
+			dbMsg += " ,MPSName=" + MPSName + "でstartService";
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3742,34 +3756,19 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "を書込み" + retBool;
 			dbMsg += ",setPref=" + toPlaying;/////////////////////////////////////
 			if(toPlaying){
-//				Intent intent = new Intent( MuList.this, MusicPlayerService.class);
-//				intent.setAction(MusicPlayerService.ACTION_SYUURYOU);
-//				startService(intent) ;
 				imanoJyoutai = chyangeSong;
 				IsPlaying = false;
-				sousinnMaeSyori( pref_data_url );
+//				sousinnMaeSyori( pref_data_url );
 			}
-			dbMsg += ",プレイリスト[ID=" + nowList_id;
-			if( nowList.equals(getResources().getString(R.string.listmei_zemkyoku)) ){
-				nowList_id =-1;
-				dbMsg += ">>" + nowList_id;
-			}
-			retBool = setPrefInt("nowList_id" , nowList_id , MuList.this);        //プリファレンスの読込み
-			dbMsg += "を書込み" + retBool;
-			dbMsg += "]" + listName;/////////////////////////////////////
-			retBool = setPrefStr("nowList" , listName , MuList.this);        //プリファレンスの読込み
-			dbMsg += "を書込み" + retBool;
-//				dbMsg += "/" + plAL.size() + "]";		//プレイリスト用ArrayList
+			dbMsg += ",プレイリスト[ID=" + nowList_id + "]" + listName;
 			dbMsg += "]pref_data_url=" + pref_data_url;
-			retBool = setPrefStr("pref_data_url" , pref_data_url , MuList.this);        //プリファレンスの読込み
-			dbMsg += "を書込み" + retBool;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
 			toPlaying = send2Service( pref_data_url,listName,toPlaying);
 			dbMsg += ",toPlaying=" + toPlaying;
 /*
-
 			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
+
 			intent.putExtra("reqCode",imanoJyoutai);
 			intent.putExtra("nowList_id",nowList_id);
 			intent.putExtra("nowList",nowList);
@@ -3807,7 +3806,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				intent.putExtra("set_pref",toPlaying);
 			resultLauncher.launch(intent);
 				*/
-				myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -4037,7 +4036,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	 * */
 	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service	onClick
 		final String TAG = "receiverSeisei";
-		String dbMsg= "[MuList]";
+		String dbMsg= "";
 		try{
 			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			dbMsg= dbMsg +",mReceiver=" + mReceiver;////////////////////////
@@ -4227,8 +4226,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg += ",titolList=" + titolList.size() + "件";
 						itemStr = titolList.get(position);        //曲名
 						dbMsg += ",itemStr=" + itemStr;/////////////////////////////////////
-						setPrefStr("nowList", sousalistName, MuList.this);                //他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
-						setPrefStr("nowList_id", String.valueOf(sousalistID), MuList.this);
+//						setPrefStr("nowList", sousalistName, MuList.this);                //他のプレイリストに該当曲が無ければ全曲に戻されるのでプリファレンスも修正
+//						setPrefStr("nowList_id", String.valueOf(sousalistID), MuList.this);
 						sousa_titol = itemStr;
 						contextTitile = sousa_artist + "/" + sousa_alubm + "/" + sousa_titol;
 						b_artist = albumArtist;                //それまで参照していたアーティスト名
@@ -5093,7 +5092,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if(nowList == null){
 				spSyokiPosition = 0;		//プレイリスト選択の初期位置
 			}else{
-				spSyokiPosition = ORGUT.retArreyIndex(MuList.this.plNameAL , MediaStore.Audio.Playlists.NAME , nowList);					//plNameSL.indexOf(nowList);		String.valueOf(nowList_id)
+				spSyokiPosition = ORGUT.retArreyIndex(MuList.this.plNameAL , MediaStore.Audio.Playlists.NAME , nowList);
 			}
 			dbMsg +=">>"+spSyokiPosition+"番目)";
 			String[] spinnerItems = plNameSL.toArray(new String[plNameSL.size()]);
@@ -5333,9 +5332,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							}
 //							dbMsg += "=" + cVal;
 							objMap.put(cName , cVal);
-							if ( cName.equals("name") ) {
+							if ( cName.equals(MediaStore.Audio.Playlists.NAME) ) {			//"name"
 								plNameSL.add(cVal);
-							}else if( cName.equals("_id") ) {
+							}else if( cName.equals(MediaStore.Audio.Playlists._ID) ) {				//"_id"
 								listId = Integer.parseInt(cVal);
 							}
 						}
@@ -5446,7 +5445,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		//Android端末とMP3で苦労したので覚え書き	http://kato-h.cocolog-nifty.com/khweblog/2013/12/androidmp3-d572.html
 		//..m3u8	ファイルの種類を「M3U8(Unicode)プレイリスト」
 	}
-
 
 	public Cursor rCursor;
 
@@ -8084,7 +8082,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			boolean retBool = setPrefStr("nowList_id" , String.valueOf(nowList_id) , MuList.this);        //プリファレンスの読込み
 			dbMsg += "," + nowList + " の　" + mIndex + " 番目　";
-			retBool = setPrefStr("nowList" , nowList , MuList.this);        //プリファレンスの読込み
+//			retBool = setPrefStr("nowList" , nowList , MuList.this);        //プリファレンスの読込み
 			retBool = setPrefInt("pref_mIndex" , mIndex , MuList.this);        //プリファレンスの読込み
 			dbMsg += "を書込み" + retBool + "]";
 			if( 0 < mIndex){
@@ -9556,7 +9554,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}else{
 					IsPlaying = true;
 				}
-				IsPlaying =	send2Service(dataFN , nowList , IsPlaying);
+		//20220831		IsPlaying =	send2Service(dataFN , nowList , IsPlaying);
 //				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
 //				if(mFilter == null){
 //					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
