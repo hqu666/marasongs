@@ -3710,12 +3710,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
 			MPSIntent.putExtra("continu_status","toPlay");
 			if(! IsPlaying){
-				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+		//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 				IsPlaying = false;
 			}else{
-				MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+		//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 				IsPlaying = true;
 			}
+			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
 //			if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
 //				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //				lp_ppPButton.setImageResource(R.drawable.play_notif);
