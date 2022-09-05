@@ -419,12 +419,18 @@ public class MaraSonActivity extends AppCompatActivity
 
 			Intent intentSub = new Intent();
 			dbMsg +=  ",reqCode=" + reqCode;
+			if(reqCode != MyConstants.v_artist && reqCode != MyConstants.v_alubum && reqCode != MyConstants.v_titol) {
+				reqCode = MyConstants.v_play_list;
+				dbMsg +=  ">>" + reqCode;
+			}
 			intentSub.putExtra("reqCode",reqCode);
 			dbMsg += "[" + nowList_id+ "]" + nowList;
 			intentSub.putExtra("nowList_id",nowList_id);
 			intentSub.putExtra("nowList",nowList);
 			dbMsg += ",mIndex=" + mIndex;
 			intentSub.putExtra("mIndex",mIndex);
+			dbMsg += ",dataURL=" + dataURL;
+			intentSub.putExtra("pref_data_url",dataURL);
 			setResult(RESULT_OK, intentSub);
 
 			MaraSonActivity.this.finish ();
@@ -493,6 +499,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public int adWidth = 0;
 	public int adHight = 0;
 
+	/**ADSens生成*/
 	public void setADSens() {
 		final String TAG = "setADSens";
 		String dbMsg="";
@@ -611,6 +618,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**Nend生成*/
 	public void setNend() {               		//https://github.com/fan-ADN/nendSDK-Android/wiki/%E3%83%90%E3%83%8A%E3%83%BC%E5%9E%8B%E5%BA%83%E5%91%8A_%E5%AE%9F%E8%A3%85%E6%89%8B%E9%A0%86
 		final String TAG = "setNend";
 		String dbMsg="";
@@ -4279,11 +4287,11 @@ public class MaraSonActivity extends AppCompatActivity
 //				mIndex = rINdex;
 //				dbMsg +=">>"+ mIndex;			// リストの一曲目=0
 //			}
-			if(mIndex < 0){			//20200419:全曲リストの作成失敗対策
+		//	if(mIndex < 0){			//20200419:全曲リストの作成失敗対策
 //				mIndex = 0;
 //				dbMsg +=">>"+ mIndex;			// リストの一曲目=0
 				quitMe();
-			}
+		//	}
 //			intent.putExtra("mIndex",mIndex);
 //			dbMsg +="]選択アイテム="+selName;	//			// ]選択アイテム=10cc
 //			if(selName ==null){
@@ -4482,10 +4490,12 @@ public class MaraSonActivity extends AppCompatActivity
 			} else if (v == artist_tv) {					//mButtonStop
 				maenoArtist =albumArtist;	//前に再生していたアルバムアーティスト名
 				dbMsg+=albumArtist + "を選択してアーティスト選択リストを表示";
-				callListView(v_artist ,albumArtist ,mcPosition);							//リストビュー読出し
+				reqCode = MyConstants.v_artist;
+				callListView(MyConstants.v_artist ,albumArtist ,mcPosition);							//リストビュー読出し
 			} else if (v == alubum_tv) {					//mButtonStop
 				dbMsg+=  "alubum_tv設定";
 				albumName =alubum_tv.getText().toString();		//アルバム名
+				reqCode = MyConstants.v_alubum;
 //				if(albumName != null){
 //					if(albumName.equals("")){
 //						albumName = playingItem.album;					//選択しておくアイテムアイテム
@@ -4496,6 +4506,7 @@ public class MaraSonActivity extends AppCompatActivity
 				callListView(v_alubum ,albumName  ,mcPosition);						//リストビュー読出し
 			} else if (v == titol_tv) {					//mButtonStop
 				dbMsg+=  "titol_tv設定";
+				reqCode = MyConstants.v_titol;
 				callListTitolList();
 			}
 			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
@@ -5100,6 +5111,74 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**サービスとレシーバに再生ファイルを指定*/
+	public boolean send2Service(String dataFN , String listName ,boolean IsPlaying) {																		//操作対応②ⅰ
+		final String TAG = "send2Service";
+		String dbMsg = "";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
+			dbMsg +=" 、dataFN="+ dataFN;
+			dbMsg +=" 、listName="+ listName;
+			dbMsg +=" 、IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+			//		dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+			if(mFilter == null){
+				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
+				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
+				mFilter = new IntentFilter();
+				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+				registerReceiver(mReceiver, mFilter);
+//					dbMsg +=">>" + psSarviceUri.toString();
+			}
+			if( MPSIntent == null){
+				MPSIntent = new Intent(MaraSonActivity.this,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+				dbMsg +=  ",MPSIntent=null";
+			}else{
+				stopService(MPSIntent);
+			}
+			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+			MPSIntent.putExtra("nowList_id",nowList_id);
+			MPSIntent.putExtra("nowList",listName);
+			MPSIntent.putExtra("pref_data_url",dataFN);
+//			MPSIntent.putExtra("mIndex",mIndex);
+//			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+//			MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
+//			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
+			MPSIntent.putExtra("continu_status","toPlay");
+			if(! IsPlaying){
+				//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+				IsPlaying = false;
+			}else{
+				//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+				IsPlaying = true;
+			}
+			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
+//			if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
+//				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+//				lp_ppPButton.setImageResource(R.drawable.play_notif);
+//				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
+//				lp_chronometer.stop();
+//				IsPlaying = false;
+//			} else {
+//				MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
+//				lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
+//				lp_chronometer.start();
+//				IsPlaying = true;
+//			}
+			dbMsg += ">action>" + MPSIntent.getAction();
+			dbMsg += " , IsPlaying=" + IsPlaying;
+			MPSIntent.putExtra("IsPlaying",IsPlaying);
+			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+			dbMsg += " ,MPSName=" + MPSName + "でstartService";
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return IsPlaying;
+	}
+
+
+
 	// 動作系コールバック	// ///////////////////////////////////////////////
 	/**startActivityForResult で起動させたアクティビティがfinish() により破棄されたときにコールされる
 	 * @ requestCode : startActivityForResult の第二引数で指定した値が渡される
@@ -5449,6 +5528,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**shigot_bangou振り分け、*/
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {		//①ⅱヘッドのイメージは実際にローディンされた時点で設定表示と同時にウィジェットの高さや幅を取得したいときは大抵ここで取る。
 		if (hasFocus) {
@@ -5549,14 +5629,14 @@ public class MaraSonActivity extends AppCompatActivity
 			///////////////////////////////////スレッド起動確認//
 			readPref();       //					setteriYomikomi();		//<onCreate	プリファレンスに記録されているデータ読み込み
 
-//			Intent intent = getIntent();
-//			reqCode = intent.getIntExtra("reqCode", 0);
-//			dbMsg += ",reqCode=" + reqCode;
-//			nowList_id = intent.getIntExtra("nowList_id", 0);
-//			nowList=intent.getStringExtra("nowList");
-//			dbMsg += "[" + nowList_id+ "]" + nowList;
-//			mIndex=intent.getIntExtra("mIndex",0);
-//			dbMsg += ",mIndex=" + mIndex;
+			Intent intent = getIntent();
+			reqCode = intent.getIntExtra("reqCode", 0);
+			dbMsg += ",reqCode=" + reqCode;
+			nowList_id = intent.getIntExtra("nowList_id", 0);
+			nowList=intent.getStringExtra("nowList");
+			dbMsg += "[" + nowList_id+ "]" + nowList;
+			dataURL=intent.getStringExtra("pref_data_url");
+			dbMsg += ",dataURL=" + dataURL;
 //
 //			dbMsg += ",found="+ found ;/////////////////////////////////////
 ////			Bundle extras = getIntent().getExtras();				//起動されたアクティビティからデータを受け取る
@@ -5731,6 +5811,8 @@ public class MaraSonActivity extends AppCompatActivity
 			plSL.clear();
 
 			shigot_bangou =  syoki_activty_set ;			//	onWindowFocusChangedを経てaSetei； ;ボタンなどへのイベント割付け
+			toPlaying = send2Service( dataURL,nowList,toPlaying);
+			dbMsg += ",toPlaying=" + toPlaying;
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg +=" ,経過=" +(int)((end - start)) + "mS";		//	<string name="">所要時間</string>
 			myLog(TAG, dbMsg);
@@ -5752,7 +5834,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	/**レシーバを生成*/
+	/**アフェリエイト、レシーバを生成*/
 	@Override
 	protected void onResume() {										//MediaPlayerを生成
 		super.onResume();
@@ -5808,6 +5890,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**アフェリエイトにpause*/
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@SuppressLint("NewApi")
 	@Override
@@ -5856,6 +5939,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**未使用*/
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -5871,6 +5955,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**アフェリエイト、レシーバ解除*/
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

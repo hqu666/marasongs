@@ -3677,70 +3677,70 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	/**サービスとレシーバに再生ファイルを指定*/
-	public boolean send2Service(String dataFN , String listName ,boolean IsPlaying) {																		//操作対応②ⅰ
-		final String TAG = "send2Service";
-		String dbMsg = "";
-		try{
-			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
-			dbMsg +=" 、dataFN="+ dataFN;
-			dbMsg +=" 、listName="+ listName;
-			dbMsg +=" 、IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
-	//		dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
-			if(mFilter == null){
-				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
-				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
-				mFilter = new IntentFilter();
-				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
-				registerReceiver(mReceiver, mFilter);
-//					dbMsg +=">>" + psSarviceUri.toString();
-			}
-			if( MPSIntent == null){
-				MPSIntent = new Intent(MuList.this,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-				dbMsg +=  ",MPSIntent=null";
-			}else{
-				stopService(MPSIntent);
-			}
-			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
-			MPSIntent.putExtra("nowList_id",nowList_id);
-			MPSIntent.putExtra("nowList",listName);
-			MPSIntent.putExtra("pref_data_url",dataFN);
-//			MPSIntent.putExtra("mIndex",mIndex);
-//			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
-//			MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
-//			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
-			MPSIntent.putExtra("continu_status","toPlay");
-			if(! IsPlaying){
-		//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
-				IsPlaying = false;
-			}else{
-		//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
-				IsPlaying = true;
-			}
-			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
-//			if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
-//				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
-//				lp_ppPButton.setImageResource(R.drawable.play_notif);
-//				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
-//				lp_chronometer.stop();
+//	public boolean send2Service(String dataFN , String listName ,boolean IsPlaying) {																		//操作対応②ⅰ
+//		final String TAG = "send2Service";
+//		String dbMsg = "";
+//		try{
+//			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
+//			dbMsg +=" 、dataFN="+ dataFN;
+//			dbMsg +=" 、listName="+ listName;
+//			dbMsg +=" 、IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+//	//		dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+//			if(mFilter == null){
+//				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
+//				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
+//				mFilter = new IntentFilter();
+//				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+//				registerReceiver(mReceiver, mFilter);
+////					dbMsg +=">>" + psSarviceUri.toString();
+//			}
+//			if( MPSIntent == null){
+//				MPSIntent = new Intent(MuList.this,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+//				dbMsg +=  ",MPSIntent=null";
+//			}else{
+//				stopService(MPSIntent);
+//			}
+//			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+//			MPSIntent.putExtra("nowList_id",nowList_id);
+//			MPSIntent.putExtra("nowList",listName);
+//			MPSIntent.putExtra("pref_data_url",dataFN);
+////			MPSIntent.putExtra("mIndex",mIndex);
+////			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+////			MPSIntent.putExtra("pref_lockscreen",pref_lockscreen);
+////			MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
+//			MPSIntent.putExtra("continu_status","toPlay");
+//			if(! IsPlaying){
+//		//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //				IsPlaying = false;
-//			} else {
-//				MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
-//				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
-//				lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
-//				lp_chronometer.start();
+//			}else{
+//		//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 //				IsPlaying = true;
 //			}
-			dbMsg += ">action>" + MPSIntent.getAction();
-			dbMsg += " , IsPlaying=" + IsPlaying;
-			MPSIntent.putExtra("IsPlaying",IsPlaying);
-			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-			dbMsg += " ,MPSName=" + MPSName + "でstartService";
-			myLog(TAG, dbMsg);
-		}catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return IsPlaying;
-	}
+//			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
+////			if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
+////				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+////				lp_ppPButton.setImageResource(R.drawable.play_notif);
+////				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
+////				lp_chronometer.stop();
+////				IsPlaying = false;
+////			} else {
+////				MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+////				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
+////				lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
+////				lp_chronometer.start();
+////				IsPlaying = true;
+////			}
+//			dbMsg += ">action>" + MPSIntent.getAction();
+//			dbMsg += " , IsPlaying=" + IsPlaying;
+//			MPSIntent.putExtra("IsPlaying",IsPlaying);
+//			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+//			dbMsg += " ,MPSName=" + MPSName + "でstartService";
+//			myLog(TAG, dbMsg);
+//		}catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return IsPlaying;
+//	}
 
 	/**
 	 *  プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台
@@ -3765,48 +3765,49 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "]pref_data_url=" + pref_data_url;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
-			toPlaying = send2Service( pref_data_url,listName,toPlaying);
-			dbMsg += ",toPlaying=" + toPlaying;
-/*
+//			toPlaying = send2Service( pref_data_url,listName,toPlaying);
+//			dbMsg += ",toPlaying=" + toPlaying;
+
 			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
 
 			intent.putExtra("reqCode",imanoJyoutai);
 			intent.putExtra("nowList_id",nowList_id);
 			intent.putExtra("nowList",nowList);
-			intent.putExtra("mIndex" , mIndex);
+			intent.putExtra("pref_data_url",pref_data_url);
+//		intent.putExtra("mIndex" , mIndex);
 			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
 			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
-			if(toPlaying) {
-				intent.putExtra("to_play",true);
-			}else{
-				intent.putExtra("to_play",false);
-			}
+//			if(toPlaying) {
+//				intent.putExtra("to_play",true);
+//			}else{
+//				intent.putExtra("to_play",false);
+//			}
 			intent.putExtra("toPlaying",toPlaying);
-			intent.putExtra("nowList_data",nowList_data);
-			dbMsg +="/"+saiseiJikan +"mS";
-			intent.putExtra("saiseiJikan",saiseiJikan);
-				dbMsg +=",imanoJyoutai="+imanoJyoutai;
-				intent.putExtra("imanoJyoutai",imanoJyoutai);
-//				dbMsg +=",Bluetoothの接続に連携=" + pref_bt_renkei;/////////////////////////////////////
-				intent.putExtra( "pref_bt_renkei",pref_bt_renkei);
-//				dbMsg +=",前回=" + pref_zenkai_saiseKyoku +"曲";/////////////////////////////////////
-				intent.putExtra( "pref_zenkai_saiseKyoku",pref_zenkai_saiseKyoku);
-//				dbMsg += pref_zenkai_saiseijikann +"mS";/////////////////////////////////////
-				intent.putExtra( "pref_zenkai_saiseijikann",pref_zenkai_saiseijikann);
-				intent.putExtra("kidou_jyoukyou",MyConstants.kidou_std);
-//				dbMsg += ",pref_lockscreen=" + pref_lockscreen;/////////////////////////////////////
-				intent.putExtra("pref_lockscreen",pref_lockscreen);
-//				dbMsg += ",pref_notifplayer=" + pref_notifplayer;/////////////////////////////////////
-				intent.putExtra("pref_notifplayer",pref_notifplayer);
-//				dbMsg += ",点間リピート中="+rp_pp;/////////////////////////////////////
-				intent.putExtra("rp_pp",rp_pp);
-//				dbMsg += ",リピート区間開始点="+pp_start;/////////////////////////////////////
-				intent.putExtra("pp_start",pp_start);
-//				dbMsg += ",リピート区間終了点="+pp_end;/////////////////////////////////////
-				intent.putExtra("pp_end",pp_end);
-				intent.putExtra("set_pref",toPlaying);
+//			intent.putExtra("nowList_data",nowList_data);
+//			dbMsg +="/"+saiseiJikan +"mS";
+//			intent.putExtra("saiseiJikan",saiseiJikan);
+//				dbMsg +=",imanoJyoutai="+imanoJyoutai;
+//				intent.putExtra("imanoJyoutai",imanoJyoutai);
+////				dbMsg +=",Bluetoothの接続に連携=" + pref_bt_renkei;/////////////////////////////////////
+//				intent.putExtra( "pref_bt_renkei",pref_bt_renkei);
+////				dbMsg +=",前回=" + pref_zenkai_saiseKyoku +"曲";/////////////////////////////////////
+//				intent.putExtra( "pref_zenkai_saiseKyoku",pref_zenkai_saiseKyoku);
+////				dbMsg += pref_zenkai_saiseijikann +"mS";/////////////////////////////////////
+//				intent.putExtra( "pref_zenkai_saiseijikann",pref_zenkai_saiseijikann);
+//				intent.putExtra("kidou_jyoukyou",MyConstants.kidou_std);
+////				dbMsg += ",pref_lockscreen=" + pref_lockscreen;/////////////////////////////////////
+//				intent.putExtra("pref_lockscreen",pref_lockscreen);
+////				dbMsg += ",pref_notifplayer=" + pref_notifplayer;/////////////////////////////////////
+//				intent.putExtra("pref_notifplayer",pref_notifplayer);
+////				dbMsg += ",点間リピート中="+rp_pp;/////////////////////////////////////
+//				intent.putExtra("rp_pp",rp_pp);
+////				dbMsg += ",リピート区間開始点="+pp_start;/////////////////////////////////////
+//				intent.putExtra("pp_start",pp_start);
+////				dbMsg += ",リピート区間終了点="+pp_end;/////////////////////////////////////
+//				intent.putExtra("pp_end",pp_end);
+//				intent.putExtra("set_pref",toPlaying);
 			resultLauncher.launch(intent);
-				*/
+
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -11132,52 +11133,63 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										break;
 									default:
 									case chyangeSong:
+									case MyConstants.v_play_list:
+									case MyConstants.v_artist:
+									case MyConstants.v_alubum:
+									case MyConstants.v_titol:
+										//			if(reqCode !=  && reqCode != MyConstants. && reqCode != MyConstants.) {
 										dbMsg += ",プレイヤーから戻って曲変更";
 					//					reqCode =bundle.getInt("reqCode");
 										dbMsg +="[プレイリストID= " + nowList_id+ "]" + sousalistName;
 
-//						psSarviceUri = bundle.getString("psSarviceUri");
-									//	nowList_id = bundle.getInt("nowList_id");
-//						nowList_id = Integer.valueOf(bundle.getString("nowList_id"));
-							//			nowList = bundle.getString("nowList");
-//										dbMsg +="]" + nowList;//			// 全曲リスト
-//										mIndex = bundle.getInt("mIndex");
-//										dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
-//										senntakuItem = bundle.getString("senntakuItem");
-//										dbMsg += "]再生しているファイル="+senntakuItem;
+								//		psSarviceUri = bundle.getString("psSarviceUri");
+										nowList_id = bundle.getInt("nowList_id");
+		//				nowList_id = Integer.valueOf(bundle.getString("nowList_id"));
+										nowList = bundle.getString("nowList");
+										dbMsg +="]" + nowList;//			// 全曲リスト
+										mIndex = bundle.getInt("mIndex");
+										dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
+										pref_data_url = bundle.getString("pref_data_url");
+										dbMsg += "]再生しているファイル="+pref_data_url;
 										int mcPosition = bundle.getInt("mcPosition");
-										dbMsg += "]mcPosition="+mcPosition;
+										dbMsg += " の "+mcPosition + "ms";
+										String[] names = pref_data_url.split(File.pathSeparator);
+
+										albumArtist = names[names.length-2];
+										albumName = names[names.length-1];
+										titolName = names[names.length];
+
 //						saisei_fname = bundle.getString("dataFN");
 //						dbMsg +=",dataFN=" + saisei_fname;/////////////////////////////////////
-										albumArtist = bundle.getString("albumArtist");
-										dbMsg += ",アルバムアーティスト="+albumArtist;           //b_artist +  ">"+
-										creditArtistName = bundle.getString("creditArtistName");
-										sousa_artist = creditArtistName;
-										dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
-										albumName = bundle.getString("albumName");
-										sousa_alubm = albumName;
-										dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
-										titolName = bundle.getString("titolName");
-										sousa_titol = titolName;
-										dbMsg +=",曲名=" + titolName;/////////////////////////////////////
-										albumArt = bundle.getString("albumArt");
-										dbMsg +=",albumArt;アルバムアートのURI=" + albumArt;/////////////////////////////////////
-										IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
-										dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
-										dbMsg +=  ",MPSIntent=" + MPSIntent;
-										if( MPSIntent == null){
-											MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-											dbMsg +=  ">>" + MPSIntent;
-										}
+//										albumArtist = bundle.getString("albumArtist");
+//										dbMsg += ",アルバムアーティスト="+albumArtist;           //b_artist +  ">"+
+//										creditArtistName = bundle.getString("creditArtistName");
+//										sousa_artist = creditArtistName;
+//										dbMsg += ",クレジットされているアーティスト名=" + creditArtistName;////////////////////////////////
+//										albumName = bundle.getString("albumName");
+//										sousa_alubm = albumName;
+//										dbMsg += ",アルバム名=" +b_album + ">" + albumName;/////////////////////////////////////
+//										titolName = bundle.getString("titolName");
+//										sousa_titol = titolName;
+//										dbMsg +=",曲名=" + titolName;/////////////////////////////////////
+//										albumArt = bundle.getString("albumArt");
+//										dbMsg +=",albumArt;アルバムアートのURI=" + albumArt;/////////////////////////////////////
+//										IsPlaying = bundle.getBoolean("IsPlaying");			//再生中か
+//										dbMsg +=",IsPlaying=" + IsPlaying;/////////////////////////////////////
+//										dbMsg +=  ",MPSIntent=" + MPSIntent;
+//										if( MPSIntent == null){
+//											MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+//											dbMsg +=  ">>" + MPSIntent;
+//										}
 										setChronometer(mcPosition , IsPlaying ) ;
 										IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
 										dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
-										pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
+//										pref_list_simple = bundle.getBoolean("pref_list_simple");			//再生中か
 										dbMsg += ",/シンプルなリスト表示= " + pref_list_simple;
-										setListPlayer( creditArtistName , albumMei , titolName, albumArt);
-										b_artist = b_artist + "";
-										b_album = b_album + "";
-								//		makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
+//										setListPlayer( creditArtistName , albumMei , titolName, albumArt);
+//										b_artist = b_artist + "";
+//										b_album = b_album + "";
+//								//		makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
 										dbMsg += "＞makePlayListSPN後＞";
 										if(nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
 											dbMsg += ",全曲リスト";
@@ -11188,22 +11200,22 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 													sigotoFuriwake(reqCode , nowList , null , null , null);        //表示するリストの振り分け		artistAL ,
 													break;
 												case MyConstants.v_artist:                                                    //169...334
-													dbMsg += ",artistAL = " + artistAL.size() + "件";
+//													dbMsg += ",artistAL = " + artistAL.size() + "件";
 													//				myLog(TAG,dbMsg);
 													sigotoFuriwake(reqCode , albumArtist , null , null , null);        //表示するリストの振り分け		artistAL ,
 													break;
 												case MyConstants.v_alubum:                                                //196...340
-													dbMsg += ",albumAL = " + albumAL.size() + "件";
-
-													if ( b_artist.equals(albumArtist) && b_album.equals(albumName) ) {
-													} else {    //それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
+//													dbMsg += ",albumAL = " + albumAL.size() + "件";
+//
+//													if ( b_artist.equals(albumArtist) && b_album.equals(albumName) ) {
+//													} else {    //それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
 //									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
 //									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
 														sigotoFuriwake(reqCode , albumArtist , albumName , null , null);        //表示するリストの振り分け	albumAL ,
-													}
+//													}
 													break;
 												case MyConstants.v_titol:                                                    //197
-													dbMsg += ",曲リスト = " + titolAL.size() + "件";
+//													dbMsg += ",曲リスト = " + titolAL.size() + "件";
 //								//							if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
 //								//							} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
 //									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成

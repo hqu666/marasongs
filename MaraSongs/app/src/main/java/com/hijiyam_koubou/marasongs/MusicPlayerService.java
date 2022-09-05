@@ -435,7 +435,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg +=",isPlaying " + mPlayer.isPlaying();/////////////////////////////////////
 				mPlayer.pause();
 				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
-				setPref();								//プリファレンス記載
+				int mcPosition=  mPlayer.getCurrentPosition();
+				dbMsg += " , mcPosition= " + mcPosition + "[ms]";
+				setPrefInt("pref_position", mcPosition, MusicPlayerService.this);        //sharedPref.getInt("pref_position" , 0);
+
+				//	setPref();								//プリファレンス記載
 		//		sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
 			}
 			myLog(TAG,dbMsg);
@@ -450,20 +454,21 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "processSkipRequest[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
-			dbMsg += "mPlayer="+ mPlayer;/////////////////////////////////////
-			if(mPlayer != null){
-				if( mPlayer.isPlaying() ){
-					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
-				}
-			}
-			frCount++;
-			dbMsg +=  "," + mIndex +"+"+ frCount+";選択中="+ sentakuCyuu;/////////////////////////////////////
-			if( mPlayer == null){
-			//	Thread.sleep(1000);			//書ききる為の時間
-				okuriMpdosi(frCount);
-				frCount = 0;
-			}
-		//	myLog(TAG,dbMsg);
+			playNextSong(false);
+//			dbMsg += "mPlayer="+ mPlayer;/////////////////////////////////////
+//			if(mPlayer != null){
+//				if( mPlayer.isPlaying() ){
+//					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
+//				}
+//			}
+//			frCount++;
+//			dbMsg +=  "," + mIndex +"+"+ frCount+";選択中="+ sentakuCyuu;/////////////////////////////////////
+//			if( mPlayer == null){
+//			//	Thread.sleep(1000);			//書ききる為の時間
+//				okuriMpdosi(frCount);
+//				frCount = 0;
+//			}
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
