@@ -2,6 +2,12 @@ package com.hijiyam_koubou.marasongs;
 
 public final class MyConstants {
 
+    //MusicPlayerServiceから設定
+    /**リスト中のインデックス*/
+    public static int mIndex;						//play_order
+    /**リストの総登録曲数*/
+    public static int listEnd;
+
     //プリファレンス
     public String ruikei_artist;					//アーティスト累計
     public String pref_compBunki = "40";			//コンピレーション分岐点 曲数
