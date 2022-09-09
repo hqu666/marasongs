@@ -131,7 +131,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public boolean pref_lockscreen =true;				//ロックスクリーンプレイヤー</string>
 	public boolean pref_notifplayer =true;				//ノティフィケーションプレイヤー</string>
 	public String alPFN = "al_pref";
-
+	public int mcPosition;
 	public String pref_artist_bunnri = "100";		//アーティストリストを分離する曲数
 	public String pref_saikin_tuika = "1";			//最近追加リストのデフォルト枚数
 	public String pref_saikin_sisei = "100";		//最近再生加リストのデフォルト枚数
@@ -968,7 +968,7 @@ public class MaraSonActivity extends AppCompatActivity
 						//逐次更新*/
 						IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
 						dbMsg +=  ",再生中= "+ IsPlaying  + "(b_Playing= "+ b_Playing + ")";/////////////////////////////////////
-						int mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
+					//	int mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
 						int saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
 						int rInt = intent.getIntExtra("mcPosition" , 0);        //DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 						if(0 < rInt){
@@ -1285,10 +1285,10 @@ public class MaraSonActivity extends AppCompatActivity
 
 	/**
 	 * レシーバーを生成
-	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 	onClick		keizoku2Service	onStopTrackingTouch	onKey
+	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 			keizoku2Service	onStopTrackingTouch	onKey
 	 * ☆サービスからサービスは呼び出せないのでこのアクティビティから呼び出す。
 	 * */
-	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service	onClick
+	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service
 		final String TAG = "receiverSeisei";
 		String dbMsg= "";
 		try{
@@ -4197,6 +4197,7 @@ public class MaraSonActivity extends AppCompatActivity
 //			dbMsg +=">> " + mcPosition +"ms)";
 //		//	int mIndex = MyConstants.mIndex;			//getPrefInt("mIndex" , 0 , MaraSonActivity.this);
 //			sendPlaying( MPSIntent , dataFN , mcPosition , MyConstants.mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
+			MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4429,20 +4430,21 @@ public class MaraSonActivity extends AppCompatActivity
 //			String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
 //			b_dataFN = dataFN;
 			b_album = albumName;			//それまで参照していたアルバム名
-			int mcPosition = saiseiSeekMP.getProgress();
+	//		int mcPosition = saiseiSeekMP.getProgress();
 			int saiseiJikan = saiseiSeekMP.getMax();
 			dbMsg += ",現在="+mcPosition + "/" + saiseiJikan + "[ms]";/////saiseiJikan　⁼0？
 			dbMsg += " , クリックされたのは" + v.getId();/////////////////////////////////////
 
 			if (v == ppPBT) {
 				dbMsg += " 、ppPBT;Description="+ ppPBT.getContentDescription();/////////////////////////////////////
-				dbMsg +=  ",生成中= "+ IsSeisei;
+//				dbMsg +=  ",生成中= "+ IsSeisei;
 				dbMsg += " 、IsPlaying="+ IsPlaying;
 				if (ppPBT.getContentDescription().equals(getResources().getText(R.string.play)) || IsPlaying) {      //getContentDescription だけでは誤動作？20191112
 					dbMsg += " 、pausedへ";
 					paused();
 					ppPBT.setContentDescription(getResources().getText(R.string.pause));
 				} else {
+					dbMsg += " 、mcPosition=" + mcPosition;
 					dbMsg += " 、playingへ";
 					playing(mcPosition);
 					ppPBT.setContentDescription(getResources().getText(R.string.play));

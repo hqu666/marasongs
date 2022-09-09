@@ -3703,7 +3703,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += ",読み込み前= "+ pref_data_url;		// + "の" + saiseiJikan + "から";
 				String readUrl=intent.getStringExtra("pref_data_url");
 				dbMsg += ",渡されたのは= " + readUrl;
-				if(pref_data_url == null || !readUrl.equals(pref_data_url)){
+				if(pref_data_url != null || !readUrl.equals(pref_data_url)){
 					pref_data_url = readUrl;
 					dbMsg += ">>"+ pref_data_url;
 				}
