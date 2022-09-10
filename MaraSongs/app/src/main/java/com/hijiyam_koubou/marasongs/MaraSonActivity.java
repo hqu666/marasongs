@@ -279,6 +279,11 @@ public class MaraSonActivity extends AppCompatActivity
 	public int artistIDTotal;			//全アーティスト数
 	public String nowList;				//再生中のプレイリスト名
 	public int nowList_id = 0;			//再生中のプレイリストID
+	/**リスト中のインデックス*/
+	public int mIndex;
+	/**リストの総登録曲数*/
+	public int listEnd;
+
 	public String nowList_data = null;		//再生中のプレイリストの保存場所
 	public String creditArtistName;		//クレジットされているアーティスト名
 	public String albumArtist ="";		//リストアップしたアルバムアーティスト名
@@ -337,7 +342,6 @@ public class MaraSonActivity extends AppCompatActivity
 	public String psSarviceUri;
 	public ComponentName MPSName;
 	public MusicPlayerService MPS;
-	private int mIndex;										//playList中の再生順
 	public MusicReceiver mReceiver;
 	public Handler mHandler = new Handler();
 	public IntentFilter mFilter;
@@ -422,8 +426,8 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += "[" + nowList_id+ "]" + nowList;
 			intentSub.putExtra("nowList_id",nowList_id);
 			intentSub.putExtra("nowList",nowList);
-			dbMsg += ",mIndex=" + MyConstants.mIndex;
-			intentSub.putExtra("mIndex",MyConstants.mIndex);
+			dbMsg += ",mIndex=" + mIndex;
+			intentSub.putExtra("mIndex",mIndex);
 			dbMsg += ",dataURL=" + dataURL;
 			intentSub.putExtra("pref_data_url",dataURL);
 			setResult(RESULT_OK, intentSub);
@@ -783,8 +787,8 @@ public class MaraSonActivity extends AppCompatActivity
 			}else {
 //				dbMsg +=",reqCode="+reqCode;/////////////////////////////////////
 		//		int mIndex = getPrefInt("pref_mIndex" , 0 , MaraSonActivity.this);
-				dbMsg +=",mIndex="+ MyConstants.mIndex + ">>mData2Service";/////////////////////////////////////
-//				mData2Service(MyConstants.mIndex);										//サービスにプレイヤー画面のデータを送る
+				dbMsg +=",mIndex="+ mIndex + ">>mData2Service";/////////////////////////////////////
+//				mData2Service(mIndex);										//サービスにプレイヤー画面のデータを送る
 			}
 			switch(visualizerType) {
 			case Visualizer_type_wave:			//Visualizerはwave表示
@@ -1025,12 +1029,13 @@ public class MaraSonActivity extends AppCompatActivity
 						dbMsg +=  "以前のファイル=" + b_dataFN +  ">>再生中のファイル名=" + dataFN;
 						if( dataFN.equals("") || dataFN==null) {
 						}else{
-							int mIndex = intent.getIntExtra("mIndex", 0);
-							dbMsg += "[mIndex=" + mIndex + "]";
+							mIndex = intent.getIntExtra("mIndex", 0);
+							dbMsg += "[mIndex=" + mIndex;
+							listEnd = intent.getIntExtra("listEnd", 9999);
+							dbMsg += "/" + listEnd + "]";
 							if(! dataFN.equals(b_dataFN) ){			//曲が変わったら || nowList_id != b_List_id           && ! dataFN.equals("") )         || ! b_titolName.equals(titolName)
 								b_dataFN = dataFN;
 								dbMsg += ">曲ごとの更新";
-								url2FSet(dataFN);		//urlからプレイヤーの書き込みを行う		albumArtist
 
 								b_index = Integer.valueOf( String.valueOf(songIDPTF.getText() ));				//前の曲順
 								t_index = Integer.valueOf( String.valueOf(titolAllPTF.getText() ));				//そのリストの曲数
@@ -1080,6 +1085,7 @@ public class MaraSonActivity extends AppCompatActivity
 //								albumArtist =intent.getStringExtra("albumArtist");
 //								creditArtistName =intent.getStringExtra("creditArtistName");
 //								dbMsg +=" ,クレジット⁼ " + creditArtistName;
+								url2FSet(dataFN);		//urlからプレイヤーの書き込みを行う		albumArtist
 
 								if( mVisualizer != null ){
 									mVisualizer.release();
@@ -1414,7 +1420,7 @@ public class MaraSonActivity extends AppCompatActivity
 	 * onReceive、onWindowFocusChanged後の処理
 	 * */
 	@SuppressLint("Range")
-	public void url2FSet(String urlStr){		//②ⅱ；　起動時のプリファレンスから		 , String artistMei , int mIndex
+	public void url2FSet(String urlStr){		//②ⅱ；　起動時のプリファレンスから
 		final String TAG = "url2FSet";
 		String dbMsg= "";
 		try{
@@ -1458,7 +1464,7 @@ public class MaraSonActivity extends AppCompatActivity
 							toolbar.setTitle(nowList);
 							dbMsg += "(mIndex=" + mIndex+")" ;
 							songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
-							songIDTotal=MyConstants.listEnd;		//plSL.size();
+							songIDTotal=listEnd;		//plSL.size();
 							dbMsg +="/" + songIDTotal +"曲";
 							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
 							dbMsg +=" ,クレジット⁼ " + creditArtistName;
@@ -1467,6 +1473,21 @@ public class MaraSonActivity extends AppCompatActivity
 							alubum_tv.setText(albumName);											//アルバム
 							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 							titol_tv.setText(titolName);					//タイトル
+
+							dbMsg += "(mIndex=" + mIndex+")" ;
+							songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
+							songIDTotal = musicPlaylist.getUserListMaxPlayOrder(nowList_id);
+							dbMsg +="/" + songIDTotal +"曲";
+							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
+							String[] items = urlStr.split(File.separator);
+							albumArtist = items[items.length-3];
+							dbMsg +=",albumArtist=" + albumArtist;
+							artistID = artisIndex(albumArtist);								//アーティストリストの中でアルバムアーティスト名が何番目にあるか
+							albumID = albumIndex(albumArtist , albumName);					//アルバムアーティスト名のアルバムリストの中でアルバムが何番目にあるか
+							int rInt = titolIndex(albumArtist ,  albumName , titolName) + 1;				//タイトルリストの中でそのタイトルが何番目にあるか
+							dbMsg +=",rInt=" + rInt + "曲目";
+							nIDPTF.setText(String.valueOf(rInt));										//タイトルカウント
+
 							dbMsg +=" ,audioId= " + audioId;
 							if( b_albumArt == null ){
 								b_albumArt = "";
@@ -4157,7 +4178,8 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 			dbMsg +=">>" + MPSIntent.getAction();/////////////////////////////////////
 			MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
-			dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
+			dbMsg +=" ,ComponentName=" + MPSName;
+			//Timerも停止するので書き換えが起きない
 			ppPBT.setImageResource(R.drawable.pl_r_btn);
 			ppPBT.setContentDescription(getResources().getText(R.string.pause));
 			myLog(TAG, dbMsg);
@@ -4195,8 +4217,8 @@ public class MaraSonActivity extends AppCompatActivity
 //			}
 //			String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
 //			dbMsg +=">> " + mcPosition +"ms)";
-//		//	int mIndex = MyConstants.mIndex;			//getPrefInt("mIndex" , 0 , MaraSonActivity.this);
-//			sendPlaying( MPSIntent , dataFN , mcPosition , MyConstants.mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
+//		//	int mIndex = mIndex;			//getPrefInt("mIndex" , 0 , MaraSonActivity.this);
+//			sendPlaying( MPSIntent , dataFN , mcPosition , mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 			MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -4216,13 +4238,14 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY_READ);
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
 //			int mIndex = getPrefInt("pref_mIndex" , 0, MaraSonActivity.this);
-			sendPlaying( MPSIntent , dataFN , mcPosition , MyConstants.mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
+			sendPlaying( MPSIntent , dataFN , mcPosition , mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
 
+	/**リストで選択された曲でプレーヤーを開く*/
 	public void sendPlaying( Intent intent ,String dataFN ,int mcPosition ,int mIndex ) {						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 		final String TAG = "sendPlaying";
 		String dbMsg= "";
@@ -4234,10 +4257,10 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg +=  ">>" + saiseiJikan +"[ms]";
 			}
 			intent.putExtra("dataFN",dataFN);
-			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]mIndex=" + MyConstants.mIndex;
+			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]mIndex=" + mIndex;
 			intent.putExtra("mcPosition",mcPosition);	//再生ポジション
 			intent.putExtra("saiseiJikan",saiseiJikan);
-			intent.putExtra("mIndex",MyConstants.mIndex);
+			intent.putExtra("mIndex",mIndex);
 			intent.putExtra("pref_lockscreen",pref_lockscreen);
 			intent.putExtra("pref_notifplayer",pref_notifplayer);
 			MPSName = startService(intent);
@@ -4900,8 +4923,8 @@ public class MaraSonActivity extends AppCompatActivity
 					if(event.getAction() == KeyEvent.ACTION_DOWN){					//リストから戻った時はUPになっている
 						String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
 //						int mIndex = getPrefInt("pref_mIndex" , 0 , MaraSonActivity.this);
-						dbMsg +=",mIndex=" + MyConstants.mIndex;/////////////////////////////////////
-						sendPlaying( MPSIntent , dataFN , mcPosition , MyConstants.mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
+						dbMsg +=",mIndex=" + mIndex;/////////////////////////////////////
+						sendPlaying( MPSIntent , dataFN , mcPosition , mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 						quitMe();		//このアプリを終了する
 					}
 					return true;
@@ -5145,7 +5168,7 @@ public class MaraSonActivity extends AppCompatActivity
 			}else{
 				stopService(MPSIntent);
 			}
-			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + MyConstants.mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
 			MPSIntent.putExtra("nowList_id",nowList_id);
 			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("pref_data_url",dataFN);
