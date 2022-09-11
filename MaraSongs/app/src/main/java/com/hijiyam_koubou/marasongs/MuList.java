@@ -9545,7 +9545,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			} else if (v == lp_stop) {
 				dbMsg +=  "クリックされたのはlp_stop";
 			//	Intent intent = new Intent( MuList.this, MusicPlayerService.class);
-				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);
+//				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
 				dbMsg +=  ">>startService";
 				startService(MPSIntent) ;
 				quitBody();

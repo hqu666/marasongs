@@ -973,7 +973,6 @@ public class MaraSonActivity extends AppCompatActivity
 						IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
 						dbMsg +=  ",再生中= "+ IsPlaying  + "(b_Playing= "+ b_Playing + ")";/////////////////////////////////////
 					//	int mcPosition = getPrefInt("pref_position" , 0, context);		//sharedPref.getInt("pref_position" , 0);
-						int saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
 						int rInt = intent.getIntExtra("mcPosition" , 0);        //DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 						if(0 < rInt){
 							mcPosition = rInt;
@@ -1036,7 +1035,9 @@ public class MaraSonActivity extends AppCompatActivity
 							if(! dataFN.equals(b_dataFN) ){			//曲が変わったら || nowList_id != b_List_id           && ! dataFN.equals("") )         || ! b_titolName.equals(titolName)
 								b_dataFN = dataFN;
 								dbMsg += ">曲ごとの更新";
-
+								saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
+								dbMsg += ",mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+								setSeekMax( saiseiJikan );
 								b_index = Integer.valueOf( String.valueOf(songIDPTF.getText() ));				//前の曲順
 								t_index = Integer.valueOf( String.valueOf(titolAllPTF.getText() ));				//そのリストの曲数
 								dbMsg += "[b_index=" + b_index + "/" + t_index  + "]";
