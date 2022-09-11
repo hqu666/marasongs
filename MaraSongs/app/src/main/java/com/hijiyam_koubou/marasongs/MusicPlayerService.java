@@ -815,8 +815,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						dbMsg += pref_data_url;
 						getDataInfo(pref_data_url);
 //						if(mPlayer == null){
-							mPlayer = MediaPlayer.create(this, Uri.parse(pref_data_url));
-						//	mPlayer = getMediaPlayer(this);  //createMediaPlayerIfNeeded()?
+//							mPlayer = MediaPlayer.create(this, Uri.parse(pref_data_url));
+							mPlayer = getMediaPlayer(this,pref_data_url);  //createMediaPlayerIfNeeded()?
 							mPlayer.setLooping(true);						//☆以下二つより先に行わないとIllegalStateExceptionが発生
 							mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 //						}else{
@@ -1035,13 +1035,15 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * Should have subtitle controller already set対策
 	 * http://stackoverflow.com/questions/20087804/should-have-subtitle-controller-already-set-mediaplayer-error-android
 	 * */
-	static MediaPlayer getMediaPlayer(Context context){
+	static MediaPlayer getMediaPlayer(Context context , String pref_data_url){
 		final String TAG = "getMediaPlayer[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		MediaPlayer mediaplayer = null;
 		try{
 			dbMsg += "context="  + context;//////////////////////////////
-			mediaplayer = new MediaPlayer();
+			mediaplayer = MediaPlayer.create(context, Uri.parse(pref_data_url));
+
+			//	mediaplayer = new MediaPlayer();
 			dbMsg +=",mediaplayer"  + mediaplayer;//////////////////////////////
 			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
 				return mediaplayer;
@@ -1120,7 +1122,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				mPlayer = null;
 				createMediaPlayerIfNeeded();				//再起して作り直し
 			} else {
-				mPlayer = getMediaPlayer( this.getApplicationContext() );			//			?rContext
+				mPlayer = getMediaPlayer( this.getApplicationContext() , pref_data_url);			//			?rContext
 				if (21 <= android.os.Build.VERSION.SDK_INT  ) {
 				}else if (14 <= android.os.Build.VERSION.SDK_INT  ){
 					makeLockScreenP( mPlayer );					//ロックスクリーン作成 < songInfoSett
@@ -3254,14 +3256,40 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 	/**指定されたリストを内部配列に読み込む*/
 	@SuppressLint("Range")
-	public ArrayList<String> readCalentList(int playlistId){
+	public ArrayList<String> readCalentList(int playlistId , String listName){
 		final String TAG = "readCalentList";
 		String dbMsg= "";
 		ArrayList<String> pSL =  new ArrayList<String>();				//Urlだけのプレイリスト用簡易リスト
 		try{
-			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]";
+			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + listName;
 			pSL.clear();
-			if(0<playlistId){
+			if(listName.equals(MusicPlayerService.this.getResources().getString(R.string.all_songs_file_name))){
+				ZenkyokuHelper zenkyokuHelper = null;				//全曲リストヘルパー
+				SQLiteDatabase Zenkyoku_db;		//全曲リストファイル
+				zenkyokuHelper = new ZenkyokuHelper(this ,  getString(R.string.zenkyoku_file));		//全曲リストの定義ファイル		.
+				Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
+				dbMsg =  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+				dbMsg =  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+				String table = getResources().getString(R.string.zenkyoku_table);
+				Zenkyoku_db = zenkyokuHelper.getReadableDatabase();			// データベースをオープン
+				String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+				String selections = null;	//"ALBUM_ARTIST = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+				String[] selectionArgs = null;	//new String[]{ comp };
+				String groupBy = null;					//groupBy句を指定します。
+				String having =null;					//having句を指定します。
+				String orderBy = null;  //"ALBUM_ARTIST_INDEX";
+				String limit = null;					//検索結果の上限レコードを数を指定します。
+				Cursor zCursor = Zenkyoku_db.query( table ,columns, selections,  selectionArgs,  groupBy,  having,  orderBy,  limit) ;
+				dbMsg = ",全曲=" + zCursor.getCount() + "件";
+				if(zCursor.moveToFirst()){
+					do{
+						@SuppressLint("Range")  String cVal = zCursor.getString(zCursor.getColumnIndex("DATA"));
+						pSL.add(cVal);
+					}while( zCursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
+				}
+				zCursor.close();
+
+			}else{
 				final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 				String[] columns = null;				//{ idKey, nameKey };
 				String c_selection = null;				//MediaStore.Audio.Playlists.NAME +" = ? ";
@@ -3275,28 +3303,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					}while( rCursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
 				}
 				rCursor.close();
-			}else{
-				ZenkyokuHelper zenkyokuHelper = null;				//全曲リストヘルパー
-				SQLiteDatabase Zenkyoku_db;		//全曲リストファイル
-				zenkyokuHelper = new ZenkyokuHelper(this ,  getString(R.string.zenkyoku_file));		//全曲リストの定義ファイル		.
-				Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
-				dbMsg =  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-				dbMsg =  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-				String zenkyokuTName = getResources().getString(R.string.zenkyoku_table);			//全曲リストのテーブル名
-				String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
-				String c_selection = null;
-				String[] c_selectionArgs= null;
-				String c_groupBy = "ARTIST";
-				String c_having = null;
-				String c_orderBy = "ARTIST"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
-				Cursor cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , c_groupBy, c_having, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
-				if(cursor.moveToFirst()){
-					do{
-						String cVal = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-						pSL.add(cVal);
-					}while( cursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
-				}
-				cursor.close();
+
 			}
 			dbMsg += "、"+pSL.size() + "件";
 			myLog(TAG, dbMsg);
@@ -3734,7 +3741,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if(plSL == null || plSL.size()<1){
 					plSL =  new ArrayList<String>();				//プレイリスト用簡易リスト
 					plSL.clear();
-					plSL = readCalentList(nowList_id);
+					plSL = readCalentList(nowList_id,nowList);
 					listEnd = plSL.size();
 					mPlayer2 = null;
 				}
