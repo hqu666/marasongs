@@ -406,7 +406,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if (mState == State.Stopped) {		// actually play the song
 					dbMsg += " , Stopped>>次曲へ " ;
 					playNextSong(mIndex,true);
-				} else if (mState == State.Paused  ) {			//0531元SoucsはPausedだけ   || 0 < mcPosition
+				} else if (mState == State.Paused
+				|| 0< mPlayer.getCurrentPosition()
+				) {			//0531元SoucsはPausedだけ   || 0 < mcPosition
 					configAndStartMediaPlayer();					//ポーズを解除
 				} else {
 					dbMsg += " , 次曲へ " ;
@@ -477,6 +479,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //			}
 			playNextSong(nextIndex,true);
 			sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
+			changeCount( mPlayer );
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -527,6 +530,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //				frCount = 0;
 //			}
 			sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
+			changeCount( mPlayer );
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -1256,15 +1260,15 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 										return;
 									}
 								}
-								if( action.equals(MusicPlayerService.ACTION_SKIP) || action.equals(MusicPlayerService.ACTION_REWIND)){
-									long sTime = System.currentTimeMillis() - stTime ;
-									dbMsg += ",sTime="+ sTime + "mS後[ "+ stTime+"]";/////////////////////////////////////
-									if( 1000 < sTime){
-										dbMsg +="のfrCount= " + MusicPlayerService.this.frCount;/////////////////////////////////////
-							//			okuriMpdosi(MusicPlayerService.this.frCount);		//送り戻しの実行
-										MusicPlayerService.this.frCount = 0;
-									}
-								} else {
+//								if( action.equals(MusicPlayerService.ACTION_SKIP) || action.equals(MusicPlayerService.ACTION_REWIND)){
+//									long sTime = System.currentTimeMillis() - stTime ;
+//									dbMsg += ",sTime="+ sTime + "mS後[ "+ stTime+"]";/////////////////////////////////////
+//									if( 1000 < sTime){
+//										dbMsg +="のfrCount= " + MusicPlayerService.this.frCount;/////////////////////////////////////
+//							//			okuriMpdosi(MusicPlayerService.this.frCount);		//送り戻しの実行
+//										MusicPlayerService.this.frCount = 0;
+//									}
+//								} else {
 									intent.putExtra("mcPosition", mcPosition);
 									ruikeikasannTime = mcPosition;			//累積加算時間
 									intent.putExtra("saiseiJikan", saiseiJikan);
@@ -1305,11 +1309,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 												kankaku = kankaku/2;
 												dbMsg +=">>" +kankaku  ;/////////////////////////////////////
 											}
-										}else{
-											onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
+//										}else{
+//											onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 										}
 									}
-								}
+//								}
 //								myLog(TAG,dbMsg);
 							} catch (Exception e) {
 								myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -2307,10 +2311,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		String dbMsg="";
 		try {
 			dbMsg += ",操作指定=" + action + "<<b_state=" + b_state;
-			Context context = getApplicationContext();
-			nowList_id = getPrefInt("nowList_id", pref_zenkyoku_list_id, context);
+		//	Context context = getApplicationContext();
+		//	nowList_id = getPrefInt("nowList_id", pref_zenkyoku_list_id, context);
 			dbMsg += ",再生中のプレイリスト[" + nowList_id + "]";
-			nowList = getPrefStr("nowList", context.getResources().getString(R.string.listmei_zemkyoku), context);    //sharedPref.getString("nowList" , context.getResources().getString(R.string.listmei_zemkyoku));
+		//	nowList = getPrefStr("nowList", context.getResources().getString(R.string.listmei_zemkyoku), context);    //sharedPref.getString("nowList" , context.getResources().getString(R.string.listmei_zemkyoku));
 			dbMsg += nowList;
 //			mIndex = getPrefInt("pref_mIndex" , 0 , MusicPlayerService.this);
 			dbMsg += " ,mIndex " + mIndex;
@@ -2331,10 +2335,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //				dbMsg += " ,audioId= " + audioId;
 //				int duration = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)));
 			int mcPosition =0;
+			IsPlaying =false;
 			if (mPlayer != null){
 				mcPosition = mPlayer.getCurrentPosition();
+				IsPlaying = mPlayer.isPlaying();
 			}
 			dbMsg += ">>mcPosition=" + mcPosition + "/" + saiseiJikan + "mS]";
+			dbMsg += ",再生中か= " + IsPlaying;
 
 			Intent intent = new Intent(ACTION_STATE_CHANGED);
 			intent.putExtra("nowList_id", nowList_id);
@@ -2343,13 +2350,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			intent.putExtra("data", pref_data_url.toString());
 			intent.putExtra("mcPosition", mcPosition);
 			intent.putExtra("saiseiJikan", saiseiJikan);
-//			intent.putExtra("_id", audioId);
 			intent.putExtra("albumArtist", albumArtistName);
 			intent.putExtra("creditArtistName", creditArtistName);
 			intent.putExtra("albumName", albumName);
 			intent.putExtra("titolName", titolName);
-			dbMsg += ",再生中か= " + IsPlaying;//////////////////////////////////
 			intent.putExtra("IsPlaying", IsPlaying);
+			sendBroadcast(intent);                    //APIL1
+			dbMsg += ";Broadcast送信>>mcPosition=" + mcPosition + "/" + saiseiJikan + "mS]";
 //				saiseiJikan = duration;
 //				dbMsg += saiseiJikan + "mS]";
 //				String dataFN = getPrefStr("pref_data_url", "", MusicPlayerService.this);
@@ -2457,8 +2464,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //				dbMsg += ">>>> " + b_Album + ">albumName>" + albumName;/////////////////////////////////////
 //				intent.putExtra("songLyric", songLyric);
 //				b_state = action;
-				dbMsg += ";Broadcast送信>>mcPosition=" + mcPosition + "/" + saiseiJikan + "mS]";
-				sendBroadcast(intent);                    //APIL1
 //					/*アーティストリピート	>	>songInfoSett
 //					 * onCompletNow=false,操作指定=LISTSEL,送り戻し待ち曲数=0,player=android.media.MediaPlayer@41f4ccd0[List_id=43408]
 //					 * リピート再生[mIndex=0/238],URi=/storage/sdcard0/Music/The Beatles/Past Masters, Vol. 1 [2009 Stereo Remaster]/1-01 Love Me Do [Original Single Ver.wma,rInt=0[145960mS] , mState=Playing

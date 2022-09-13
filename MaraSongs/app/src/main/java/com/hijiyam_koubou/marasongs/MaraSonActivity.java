@@ -4481,7 +4481,7 @@ public class MaraSonActivity extends AppCompatActivity
 				}
 				 saiseiSeekMP.setProgress(mcPosition);
 				 saiseiSeekMP.setMax(saiseiJikan);
-				ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
+			//	ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
 				MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);
 				MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
@@ -4495,7 +4495,7 @@ public class MaraSonActivity extends AppCompatActivity
 				}
 				saiseiSeekMP.setProgress(mcPosition);
 				saiseiSeekMP.setMax(saiseiJikan);
-				ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
+		//		ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
 				MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
 				MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_REWIND));
