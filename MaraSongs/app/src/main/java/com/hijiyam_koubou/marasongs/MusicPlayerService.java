@@ -190,7 +190,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 	public Item playingItem;
 	public String album_artist =null;		//リストアップしたアルバムアーティスト名
-	public int crossFeadTime;		//再生終了時、何ms前に次の曲に切り替えるか
+	public int crossFeadTime = 500;		//再生終了時、何ms前に次の曲に切り替えるか
 //	public int mcPosition;			//現在の再生ポジション☆生成時は最初から
 	public int saiseiJikan;				//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 	public long ruikeiSTTime;			//累積時間
@@ -239,6 +239,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg += "[" + nowList_id+"]" + nowList;
 			String dataURL = myPreferences.saisei_fname;
 			dbMsg += ",dataURL= " + dataURL;
+			String	retString = myPreferences.pref_gyapless;	//クロスフェード時間
+			if(retString != null){
+				crossFeadTime = Integer.parseInt(retString);	//クロスフェード時間
+			}
+			dbMsg += ",crossFeadTime="+ crossFeadTime;				///////////////
 			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
 			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
@@ -382,35 +387,32 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				return;
 			}
 
-			mState = State.Playing;			// Pause media player and cancel the 'foreground service' state.
-			dbMsg +=">> " + mState;/////////////////////////////////////
-			dbMsg +=",mPlayer " + mPlayer;/////////////////////////////////////
-			if( mPlayer != null){
-				dbMsg +=",isPlaying " + mPlayer.isPlaying();/////////////////////////////////////
-				mPlayer.seekTo(mcPosition);		//先頭に戻す
-				action = MusicPlayerService.ACTION_PLAY;
-				mPlayer.start();
-				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
-				setPref();								//プリファレンス記載
-				//		sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
-			}
+//			dbMsg +=",mPlayer " + mPlayer;/////////////////////////////////////
+//			if( mPlayer != null){
+//				dbMsg +=",isPlaying " + mPlayer.isPlaying();/////////////////////////////////////
+//				mPlayer.seekTo(mcPosition);		//先頭に戻す
+//				action = MusicPlayerService.ACTION_PLAY;
+//				mPlayer.start();
+//				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
+//				mState = State.Playing;			// Pause media player and cancel the 'foreground service' state.
+//				dbMsg +=",mState=" + mState;/////////////////////////////////////
+//			}
 
 			tryToGetAudioFocus();
 			dbMsg +="mPlayer= " + mPlayer ;
-//			if(mPlayer == null){
-//				playNextSong(false);			// If we're stopped, just go ahead to the next song and start playing
-//			} else{
-//				if (mState == State.Stopped) {		// actually play the song
-//					dbMsg += " , Stopped>>次曲へ " ;
-//					playNextSong(false);			// If we're stopped, just go ahead to the next song and start playing
-//				} else if (mState == State.Paused  ) {			//0531元SoucsはPausedだけ   || 0 < mcPosition
-//					mState = State.Playing;			// If we're paused, just continue playback and restore the 'foreground service' state.
-//					configAndStartMediaPlayer();					//ポーズを解除
-//				} else {
-//					dbMsg += " , 次曲へ " ;
-//					playNextSong(false);			// If we're stopped, just go ahead to the next song and start playing
-//				}
-//			}
+			if(mPlayer == null){
+				playNextSong(mIndex,true);
+			} else{
+				if (mState == State.Stopped) {		// actually play the song
+					dbMsg += " , Stopped>>次曲へ " ;
+					playNextSong(mIndex,true);
+				} else if (mState == State.Paused  ) {			//0531元SoucsはPausedだけ   || 0 < mcPosition
+					configAndStartMediaPlayer();					//ポーズを解除
+				} else {
+					dbMsg += " , 次曲へ " ;
+					playNextSong(mIndex,true);
+				}
+			}
 			sendPlayerState( mPlayer );					//一曲分のデータ抽出して他のActvteyに渡す。
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -429,18 +431,16 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				mStartPlayingAfterRetrieve = false;			// If we are still retrieving media, clear the flag that indicates we should start playing when we're ready
 				return;
 			}
-			mState = State.Paused;			// Pause media player and cancel the 'foreground service' state.
 			dbMsg +=">> " + mState;/////////////////////////////////////
 			dbMsg +=",mPlayer " + mPlayer;/////////////////////////////////////
 			if( mPlayer != null){
 				dbMsg +=",isPlaying=" + mPlayer.isPlaying();/////////////////////////////////////
 				mPlayer.pause();
+				mState = State.Paused;			// Pause media player and cancel the 'foreground service' state.
 				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
 				int mcPosition=  mPlayer.getCurrentPosition();
 				dbMsg += " , mcPosition= " + mcPosition + "[ms]";
 				setPrefInt("pref_position", mcPosition, MusicPlayerService.this);        //sharedPref.getInt("pref_position" , 0);
-
-				//	setPref();								//プリファレンス記載
 				sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
 			}
 			myLog(TAG,dbMsg);
@@ -455,17 +455,19 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "processSkipRequest[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
+			dbMsg +=  "[" + mIndex;
 			nextIndex = mIndex + 1;
-			if(listEnd < nextIndex){
+			if(listEnd <= nextIndex){
+				dbMsg +=  "/" + listEnd;
 				nextIndex = 0;
 			}
-			playNextSong(nextIndex,true);
-//			dbMsg += "mPlayer="+ mPlayer;/////////////////////////////////////
-//			if(mPlayer != null){
-//				if( mPlayer.isPlaying() ){
-//					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
-//				}
-//			}
+			dbMsg +=  ">>" + nextIndex;
+			dbMsg += "mPlayer="+ mPlayer;/////////////////////////////////////
+			if(mPlayer != null){
+				if( mPlayer.isPlaying() ){
+					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
+				}
+			}
 //			frCount++;
 //			dbMsg +=  "," + mIndex +"+"+ frCount+";選択中="+ sentakuCyuu;/////////////////////////////////////
 //			if( mPlayer == null){
@@ -473,6 +475,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //				okuriMpdosi(frCount);
 //				frCount = 0;
 //			}
+			playNextSong(nextIndex,true);
+			sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -480,40 +484,40 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	}
 
 	/**
-	 *  再生ポジションが3秒未満の場合、前の曲に戻す**/
+	 *  前の曲に戻す**/
 	private void processRewindRequest() {															//②ⅲRew?
 		final String TAG = "processRewindRequest[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg += "mPlayer="+ mPlayer.getTrackInfo();
-			if( mPlayer != null){
-				mPlayer.pause();
-				int mcPosition = mPlayer.getCurrentPosition();
-				dbMsg +=",mcPosition=" + mcPosition;/////////////////////////////////////
-				if( mcPosition > 3000 ){					//3秒以上なら
-					if(rp_pp){						//2点間リピート中で//リピート区間終了点
-						mcPosition = pp_start;		//リピート区間開始点
-					}else {
-						mcPosition = 0;
-					}
-					mPlayer.seekTo(mcPosition);		//先頭に戻す
-					action = MusicPlayerService.ACTION_PLAY;
-					mPlayer.start();
-				}else{											//1秒未満なら
+//			if( mPlayer != null){
+//				mPlayer.pause();
+//				int mcPosition = mPlayer.getCurrentPosition();
+//				dbMsg +=",mcPosition=" + mcPosition;/////////////////////////////////////
+//				if( mcPosition > 3000 ){					//3秒以上なら
+//					if(rp_pp){						//2点間リピート中で//リピート区間終了点
+//						mcPosition = pp_start;		//リピート区間開始点
+//					}else {
+//						mcPosition = 0;
+//					}
+//					mPlayer.seekTo(mcPosition);		//先頭に戻す
+//					action = MusicPlayerService.ACTION_PLAY;
+//					mPlayer.start();
+//				}else{											//1秒未満なら
 					if(mPlayer != null){
 						if( mPlayer.isPlaying() ){
 							processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
 						}
 					}
-				}
-			}
+//				}
+//			}
 			dbMsg +=",[" + mIndex + "]";
 			dbMsg += "/" + listEnd+ "]";
 			nextIndex = mIndex - 1;
-			if(nextIndex <0){
-				nextIndex = listEnd;
+			if(nextIndex < 0){
+				nextIndex = listEnd-1;
 			}
-			dbMsg +=">>[" + nextIndex;
+			dbMsg +=">>[" + nextIndex + "]";
 			mPlayer2 = null;
 			playNextSong(nextIndex,true);
 //			frCount--;
@@ -522,6 +526,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //				okuriMpdosi(frCount);
 //				frCount = 0;
 //			}
+			sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -529,7 +534,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	}
 
 	@SuppressLint("Range")
-	public void okuriMpdosi(int tIDCo) {		//送り戻しの実行;加算数を渡す <run[changeCount.MusicPlayerService
+	public void okuriMpdosi(int tIDCo) {		//送り戻しの実行;加算数を渡す
 		final String TAG = "okuriMpdosi[MusicPlayerService]";
 		String dbMsg="";
 		try{
@@ -608,7 +613,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			}
 		//		myLog(TAG,dbMsg);
 			dbMsg="mState=" + mState;/////////////////////////////////////
-			if (mState == State.Playing || mState == State.Paused ) {				//	 force////
+			if ( mPlayer.isPlaying()) {				//	mState == State.Playing || mState == State.Paused
+				mPlayer.stop();
 				mState = State.Stopped;
 				stopCount();		//タイマーオブジェクトを破棄
 	//			dbMsg += " , mPlayer=" + mPlayer;/////////////////////////////////////
@@ -731,7 +737,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		}
 	}
 
-	private void tryToGetAudioFocus() {				//AudioFocus.Focusedと設定する
+	/**AudioFocus.Focusedと設定する*/
+	private void tryToGetAudioFocus() {
 		final String TAG = "tryToGetAudioFocus[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
@@ -805,10 +812,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			getDataInfo(pref_data_url);
 //						if(mPlayer == null){
 			if(mPlayer != null){
-				mPlayer.stop();
+				if (mPlayer.isPlaying()) {
+					mPlayer.stop();
+					stopCount();
+				}
 				try {
 					mPlayer.reset();
 					mPlayer.release();
+					mPlayer = null;
 				} catch (IllegalStateException e) {
 					myErrorLog(TAG,dbMsg+"で"+e);
 				}
@@ -825,6 +836,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			if(toPlay){
 				mPlayer.start();
 				mState = State.Playing;
+//				changeCount( mPlayer );						//タイマーオブジェクトを使ったカウンタ更新を追加
 			}
 			changeCount(mPlayer);                        //タイマーオブジェクトを使ったカウンタ更新を追加
 			mIndex = itemIndex;
@@ -1036,13 +1048,15 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		try{
 			dbMsg += "context="  + context;//////////////////////////////
 			mediaplayer = MediaPlayer.create(context, Uri.parse(pref_data_url));
-
 			//	mediaplayer = new MediaPlayer();
-			dbMsg +=",mediaplayer"  + mediaplayer;//////////////////////////////
+		//	mediaplayer.prepare();
+//			mediaplayer.setOnCompletionListener((OnCompletionListener) context);
+			dbMsg +=",mediaplayer="  + mediaplayer.getTrackInfo();
+//			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+//				return mediaplayer;
+//			}
 			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
-				return mediaplayer;
-			}
-			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+				dbMsg +=",SDK_INT="  + android.os.Build.VERSION_CODES.KITKAT;//////////////////////////////
 				try {
 					Class<?> cMediaTimeProvider = Class.forName( "android.media.MediaTimeProvider" );
 					Class<?> cSubtitleController = Class.forName( "android.media.SubtitleController" );
@@ -1173,7 +1187,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	/**タイマーオブジェクトを破棄*/
 	public void stopCount(){
 	final String TAG = "stopCount";
-	String dbMsg="開始";/////////////////////////////////////
+	String dbMsg="";
 		try{
 			dbMsg +=",タイマー設定；g_timer="+g_timer;/////////////////////////////////////
 	  		if(g_timer != null){
@@ -1231,13 +1245,23 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									IsSeisei  = true ;				//生成中
 								}
 								dbMsg += "[" + mcPosition + "/"+saiseiJikan + "]";/////////////////////////////////////
-
+								int nokori = saiseiJikan - mcPosition-kankaku;
+								if( ( nokori <= crossFeadTime
+//											|| (rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
+								)){			//	&&  (Build.VERSION.SDK_INT <16)
+									if(mPlayer.isPlaying()){
+										dbMsg +="," + titolName +"再生中の残" + nokori + "/" + crossFeadTime + "mSで次曲へ";/////////////////////////////////////
+										myLog(TAG,dbMsg);
+										onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
+										return;
+									}
+								}
 								if( action.equals(MusicPlayerService.ACTION_SKIP) || action.equals(MusicPlayerService.ACTION_REWIND)){
 									long sTime = System.currentTimeMillis() - stTime ;
 									dbMsg += ",sTime="+ sTime + "mS後[ "+ stTime+"]";/////////////////////////////////////
 									if( 1000 < sTime){
 										dbMsg +="のfrCount= " + MusicPlayerService.this.frCount;/////////////////////////////////////
-										okuriMpdosi(MusicPlayerService.this.frCount);		//送り戻しの実行
+							//			okuriMpdosi(MusicPlayerService.this.frCount);		//送り戻しの実行
 										MusicPlayerService.this.frCount = 0;
 									}
 								} else {
@@ -1251,8 +1275,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									dbMsg +=",再生中か= " + IsPlaying;//////////////////////////////////
 									intent.putExtra("IsPlaying", IsPlaying);
 									intent.putExtra("data", pref_data_url.toString());
-									int nokori = saiseiJikan - mcPosition-kankaku;
-									dbMsg +="," + titolName +"再生中の残" + nokori + "/" + crossFeadTime + "mSで次曲へ";/////////////////////////////////////
+									sendBroadcast(intent);					//APIL1
+									dbMsg +=";Broadcast送信";
 	//								dbMsg +="mBluetoothAdapter=" +mBluetoothAdapter;
 									if(stateBaseStr != null && b_stateStr != null){
 										if( ! b_stateStr.equals(stateBaseStr)){
@@ -1261,20 +1285,20 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 											b_stateStr = stateBaseStr;
 										}
 									}
-									if( ( nokori <= crossFeadTime ||
-											(rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
+									if( ( nokori <= crossFeadTime
+//											|| (rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
 											)){			//	&&  (Build.VERSION.SDK_INT <16)
-										dbMsg +="[ " + mIndex +",再生時間="+ saiseiJikan;/////////////////////////////////////
-					//					myLog(TAG,dbMsg);
-										onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
-												dbMsg +=">残り時間> " + nokori + "( crossFead=" + crossFeadTime +")"  ;/////////////////////////////////////
+//										dbMsg +="[ " + mIndex +",再生時間="+ saiseiJikan;/////////////////////////////////////
+//										myLog(TAG,dbMsg);
+//										onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
+//												dbMsg +=">残り時間> " + nokori + "( crossFead=" + crossFeadTime +")"  ;/////////////////////////////////////
 									} else {							// if( nokori <= crossFeadTime-100  )
 										imanoJyoutai =  MuList.sonomama ;
 										onCompletNow = false;			//曲間処理中
-										if(saiseiJikan-mcPosition > 75){
-											dbMsg +=";Broadcast送信";
-											sendBroadcast(intent);					//APIL1
-										}
+//										if(saiseiJikan-mcPosition > 75){
+//											dbMsg +=";Broadcast送信";
+//											sendBroadcast(intent);					//APIL1
+//										}
 										if(nokori > kankaku){
 											if((kankaku * 3 > nokori)  &&  (1 < kankaku)){						//
 												dbMsg +=  ",間隔= " +kankaku  ;/////////////////////////////////////
@@ -1307,10 +1331,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	long tunagiJikan;		//測定用
 	boolean onCompletNow = false;			//曲間処理中
 	@SuppressLint("Range")
-	public void onCompletion(MediaPlayer player) {			/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
+	/**再生中にデータファイルのENDが現れた場合にコールされる*/
+	public void onCompletion(MediaPlayer player) {
 	//☆曲の終了でも発生する
 		final String TAG = "onCompletion";
-		String dbMsg = "[MusicPlayerService]ENDマーク検出から";/////////////////////////////////////
+		String dbMsg = "ENDマーク検出から";/////////////////////////////////////
 		try{
 			tunagiJikan = System.currentTimeMillis();		// 開始時刻の取得
 
@@ -1321,78 +1346,77 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg += "/" + listEnd;
 			dbMsg += ":" + pref_data_url;
 			dbMsg += ">>" + NextDataFN;
-
-//			Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
-//			if(playingItem.moveToFirst()){
-//				creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
-//				dbMsg +=" ,クレジット⁼ " + creditArtistName;
-//				albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
-//				dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-//				titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
-//				dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-//				int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
-//				dbMsg +=" ,audioId= " + audioId;
-////				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//playingItem.album_artist;	//アルバムアーティスト名
-////				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
-//				Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
-//				String pref_data_url = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-//				//String.valueOf(dataUri);
-//				dbMsg +=",読込確認=" + pref_data_url;/////////////////////////////////////
-//				int duration = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)));
-////						(int)playingItem.duration;
-//				dbMsg += ",duration = " + duration + "[ms]";
-
-//				if(g_timer != null){
-//					g_timer.cancel();
-//				}
-//				g_timer =null;			//☆毎回破棄しないとChoreographer: Skipped ○○」 frames!  The application may be doing too much work on its main thread.
-//				dbMsg += "、mIndex=" + mIndex;/////////////////////////////////////
-//				mIndex ++;
-//				if( listEnd < mIndex){
-//					mIndex= 1;
-//				}
-//				dbMsg += "、次は" + mIndex;
-//				ruikeikyoku++;			//累積曲数
-//				dbMsg += ",累積曲数" + ruikeikyoku +"曲";
-//				int mcPosition = 0;
-//				if(rp_pp){						//2点間リピート中で//リピート区間終了点
-//					mcPosition = pp_start;		//リピート区間開始点
-//					mIndex--;
-//				}
-//				dbMsg += ">>[" + mIndex +"]";
-//				setPrefInt("pref_mIndex" , mIndex, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
-//				playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
-//				if(playingItem.moveToFirst()) {
-//					creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));        //playingItem.artist;	//クレジットされているアーティスト名
-//					dbMsg += " ,クレジット⁼ " + creditArtistName;
-//					albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));        //playingItem.album;			//アルバム名
-//					dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-//					titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
-//					dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-//					audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
-//					dbMsg += " ,audioId= " + audioId;
-//					dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
-//					pref_data_url = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-//					dbMsg +=",読込確認=" + pref_data_url;/////////////////////////////////////
-//					duration = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)));
-//					dbMsg += ",duration = " + duration + "[ms]";
-//					setPrefStr("pref_data_url" , pref_data_url, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
-//					setPrefInt("pref_duration" , duration, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
-//					setPrefInt("pref_position" , mcPosition, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
-//
-			mIndex++;
-			if(listEnd < mIndex ){
-				mIndex = 0;
+			nextIndex = mIndex + 1;
+			if(listEnd < nextIndex){
+				nextIndex = 0;
 			}
-			playNextSong(mIndex,true);					// If we're stopped, just go ahead to the next song and start playing
-//					if( tunagiJikan > 0 ){
-//						tunagiJikan = System.currentTimeMillis()-tunagiJikan;		// 開始時刻の取得
-//						dbMsg +=",前曲から" +tunagiJikan +"mS経過、," ;/////////////////////////////////////
-//						dbMsg +=mPlayer.toString()  ;/////////////////////////////////////
-//					}
-//				}
-//			}
-//			playingItem.close();
+			playNextSong(nextIndex,true);
+////			Cursor playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
+////			if(playingItem.moveToFirst()){
+////				creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
+////				dbMsg +=" ,クレジット⁼ " + creditArtistName;
+////				albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
+////				dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+////				titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
+////				dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+////				int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+////				dbMsg +=" ,audioId= " + audioId;
+//////				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//playingItem.album_artist;	//アルバムアーティスト名
+//////				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
+////				Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
+////				String pref_data_url = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+////				//String.valueOf(dataUri);
+////				dbMsg +=",読込確認=" + pref_data_url;/////////////////////////////////////
+////				int duration = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)));
+//////						(int)playingItem.duration;
+////				dbMsg += ",duration = " + duration + "[ms]";
+//
+////				if(g_timer != null){
+////					g_timer.cancel();
+////				}
+////				g_timer =null;			//☆毎回破棄しないとChoreographer: Skipped ○○」 frames!  The application may be doing too much work on its main thread.
+////				dbMsg += "、mIndex=" + mIndex;/////////////////////////////////////
+////				mIndex ++;
+////				if( listEnd < mIndex){
+////					mIndex= 1;
+////				}
+////				dbMsg += "、次は" + mIndex;
+////				ruikeikyoku++;			//累積曲数
+////				dbMsg += ",累積曲数" + ruikeikyoku +"曲";
+////				int mcPosition = 0;
+////				if(rp_pp){						//2点間リピート中で//リピート区間終了点
+////					mcPosition = pp_start;		//リピート区間開始点
+////					mIndex--;
+////				}
+////				dbMsg += ">>[" + mIndex +"]";
+////				setPrefInt("pref_mIndex" , mIndex, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+////				playingItem = musicPlaylist.getPlaylistItems(nowList_id,mIndex);
+////				if(playingItem.moveToFirst()) {
+////					creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));        //playingItem.artist;	//クレジットされているアーティスト名
+////					dbMsg += " ,クレジット⁼ " + creditArtistName;
+////					albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));        //playingItem.album;			//アルバム名
+////					dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+////					titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
+////					dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+////					audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+////					dbMsg += " ,audioId= " + audioId;
+////					dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
+////					pref_data_url = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+////					dbMsg +=",読込確認=" + pref_data_url;/////////////////////////////////////
+////					duration = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)));
+////					dbMsg += ",duration = " + duration + "[ms]";
+////					setPrefStr("pref_data_url" , pref_data_url, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+////					setPrefInt("pref_duration" , duration, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+////					setPrefInt("pref_position" , mcPosition, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+////
+////					if( tunagiJikan > 0 ){
+////						tunagiJikan = System.currentTimeMillis()-tunagiJikan;		// 開始時刻の取得
+////						dbMsg +=",前曲から" +tunagiJikan +"mS経過、," ;/////////////////////////////////////
+////						dbMsg +=mPlayer.toString()  ;/////////////////////////////////////
+////					}
+////				}
+////			}
+////			playingItem.close();
 			dbMsg += ">自動送り>" + pref_data_url;
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {

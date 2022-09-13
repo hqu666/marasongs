@@ -1477,7 +1477,7 @@ public class MaraSonActivity extends AppCompatActivity
 
 							dbMsg += "(mIndex=" + mIndex+")" ;
 							songIDPTF.setText(String.valueOf((mIndex+1)));			//リスト中の何曲目か
-							songIDTotal = musicPlaylist.getUserListMaxPlayOrder(nowList_id);
+							songIDTotal = listEnd;						//musicPlaylist.getUserListMaxPlayOrder(nowList_id);
 							dbMsg +="/" + songIDTotal +"曲";
 							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
 							String[] items = urlStr.split(File.separator);
@@ -1730,7 +1730,7 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg +="artistList=" + artistList;
 			if(artistList == null){
-//				artistIDTotal = artistList_yomikomi();									//アーティストリストを読み込む(db未作成時は-)
+				artistIDTotal = artistList_yomikomi();									//アーティストリストを読み込む(db未作成時は-)
 			}else{
 				artistIDTotal = artistList.size();
 			}
@@ -1753,82 +1753,81 @@ public class MaraSonActivity extends AppCompatActivity
 		return artistID;
 	}
 
-//	public int artistList_yomikomi() throws IOException{									//アーティストリストを読み込む(db未作成時は-)
-//		int retInt = -1;
-//		final String TAG = "artistList_yomikomi[MaraSonActivity]";
-//		String dbMsg="開始";/////////////////////////////////////
-//		try{
-//			artistTName = getString(R.string.artist_table);			//artist_table
-//			dbMsg += "；アーティストリストテーブル=" + artistTName;
-//			if( artist_db != null){
-//				if( artist_db.isOpen()){
-//					artist_db.close();
-//				}
-//			}
-//			String fn = getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
-//			dbMsg = "db=" + fn;
-//			artistHelper = new ArtistHelper(this , fn);		//アーティスト名のリストの定義ファイル		.
-//			artist_db = artistHelper.getReadableDatabase();			// データベースをオープン
-//			boolean distinct = true;					//trueを指定すると検索結果から重複する行を削除します。
-//			String table =artistTName;			//テーブル名を指定します。
-//			String[] columns = null;			//{  "ALBUM_ARTIST" };				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-//			String selections =null;				//検索条件を指定します。
-//			String[] selectionArgs =null;			//検索条件のパラメータ（？で指定）に置き換わる値を指定します。
-//			String groupBy = "ALBUM_ARTIST";						//groupBy句を指定します。
-//			String having =null;					//having句を指定します。
-//			String limit = null;					//検索結果の上限レコードを数を指定します。
-//			cursor = artist_db.query( distinct, table ,columns, selections,  selectionArgs,  groupBy,  having,  null,  limit) ;
-//			retInt = cursor.getCount();
-//			dbMsg += artistTName + "人";
-//			if(cursor.moveToFirst()){
-//				artistList = new ArrayList<String>();
-//				artistList.clear();
-//				ArrayList<String> compList = new ArrayList<String>();
-//				compList.clear();
-//				String comp = getResources().getString(R.string.comon_compilation);			//コンピレーション
-//				dbMsg += ",comp=" + comp;
-//				do{
-//					dbMsg = cursor.getPosition() + "/" + retInt + "件";
-//					@SuppressLint("Range") String rStr1 = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
-//					dbMsg += rStr1;
-//					if( rStr1 != null ){
-//						if( rStr1.equals(comp) ){
-//							compList.add(rStr1);
-//						} else {
-//							artistList.add(rStr1);
-//						}
-//					}
-//				}while(cursor.moveToNext());
-//				dbMsg += compList;
-//				if( compList != null ){
-//					for( String cName : compList){
-//						dbMsg += "::" +cName;
-//						artistList.add(cName);
-//						dbMsg += ">>"+ artistList.size() + ")" + artistList.get(artistList.size()-1);
-//			//			myLog(TAG,dbMsg);
-//					}
-//					retInt = artistList.size();
-//					ruikei_artist = String.valueOf(artistList.size());
-//				}
-//				dbMsg += "://全アーティスト数"+ ruikei_artist +"人";
-//			}else{
-//				dbMsg ="dbは有るが読み出すデータが無い";/////////////////////////////////////
-//				preRead(syoki_Yomikomi , null);				//dataURIを読み込みながら欠けデータ確認		//		mediaSTkousinn();						//メディアストアの更新呼出し
-//			}
-//	//		myLog(TAG,dbMsg);
-//			cursor.close();
-//			artist_db.close();
-//			myLog(TAG, dbMsg);
+	/**アーティストリストを読み込む(db未作成時は-)*/
+	public int artistList_yomikomi() throws IOException{
+		int retInt = -1;
+		final String TAG = "artistList_yomikomi";
+		String dbMsg="";/////////////////////////////////////
+		try{
+			artistTName = getString(R.string.artist_table);			//artist_table
+			dbMsg += "；アーティストリストテーブル=" + artistTName;
+			if( artist_db != null){
+				if( artist_db.isOpen()){
+					artist_db.close();
+				}
+			}
+			String fn = getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
+			dbMsg = "db=" + fn;
+			artistHelper = new ArtistHelper(this , fn);		//アーティスト名のリストの定義ファイル		.
+			artist_db = artistHelper.getReadableDatabase();			// データベースをオープン
+			boolean distinct = true;					//trueを指定すると検索結果から重複する行を削除します。
+			String table =artistTName;			//テーブル名を指定します。
+			String[] columns = null;			//{  "ALBUM_ARTIST" };				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String selections =null;				//検索条件を指定します。
+			String[] selectionArgs =null;			//検索条件のパラメータ（？で指定）に置き換わる値を指定します。
+			String groupBy = "ALBUM_ARTIST";						//groupBy句を指定します。
+			String having =null;					//having句を指定します。
+			String limit = null;					//検索結果の上限レコードを数を指定します。
+			cursor = artist_db.query( distinct, table ,columns, selections,  selectionArgs,  groupBy,  having,  null,  limit) ;
+			retInt = cursor.getCount();
+			dbMsg += artistTName + "人";
+			if(cursor.moveToFirst()){
+				artistList = new ArrayList<String>();
+				artistList.clear();
+				ArrayList<String> compList = new ArrayList<String>();
+				compList.clear();
+				String comp = getResources().getString(R.string.comon_compilation);			//コンピレーション
+				dbMsg += ",comp=" + comp;
+				do{
+					dbMsg = cursor.getPosition() + "/" + retInt + "件";
+					@SuppressLint("Range") String rStr1 = cursor.getString(cursor.getColumnIndex("ALBUM_ARTIST"));
+					dbMsg += rStr1;
+					if( rStr1 != null ){
+						if( rStr1.equals(comp) ){
+							compList.add(rStr1);
+						} else {
+							artistList.add(rStr1);
+						}
+					}
+				}while(cursor.moveToNext());
+				dbMsg += compList;
+				if( compList != null ){
+					for( String cName : compList){
+						dbMsg += "::" +cName;
+						artistList.add(cName);
+						dbMsg += ">>"+ artistList.size() + ")" + artistList.get(artistList.size()-1);
+					}
+					retInt = artistList.size();
+					ruikei_artist = String.valueOf(artistList.size());
+				}
+				dbMsg += "://全アーティスト数"+ ruikei_artist +"人";
+			}else{
+				dbMsg ="dbは有るが読み出すデータが無い";/////////////////////////////////////
+			}
+			cursor.close();
+			artist_db.close();
+			myLog(TAG, dbMsg);
 //		}catch (IOException e) {						//データベースの定義が古ければ
 //			myErrorLog(TAG ,  dbMsg + "で" + e);
 //			preRead(syoki_Yomikomi , null);				//dataURIを読み込みながら欠けデータ確認		//		mediaSTkousinn();						//メディアストアの更新呼出し
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		return retInt;
-//	}
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retInt;
+	}
 
-	public int albumIndex(String albumArtist , String albumMei){					//アルバムアーティスト名のアルバムリストの中でアルバムが何番目にあるか
+	/**アルバムアーティスト名のアルバムリストの中でアルバムが何番目にあるか*/
+	public int albumIndex(String albumArtist , String albumMei){
 		int albumID = -1;
 		final String TAG = "albumIndex[MaraSonActivity]";
 		String dbMsg="開始";/////////////////////////////////////
@@ -1864,7 +1863,8 @@ public class MaraSonActivity extends AppCompatActivity
 	public String albumMei;
 	public int retInt = -1;
 
-	public int albumList_yomikomi(String artistMei  , String albumMei){					//アルバムトリストを読み込む(db未作成時は-)
+	/**アルバムトリストを読み込む(db未作成時は-)*/
+	public int albumList_yomikomi(String artistMei  , String albumMei){
 		this.retInt = -1;
 		this.artistMei = artistMei;
 		this.albumMei = albumMei;
