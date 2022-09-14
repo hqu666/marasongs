@@ -51,6 +51,7 @@ import java.util.List;
 */
 public class TagBrows  extends Activity implements plogTaskCallback{
 	public Context rContext ;
+	public int backCode ;								//戻りコード
 	public boolean lyricAri = false;				//歌詞が取得できた
 	public String motoEncrod ="ISO-8859-1";					////元の文字コード
 	public String saiEncrod = motoEncrod;					////再エンコードする文字コード
@@ -434,7 +435,7 @@ private byte majorVersion = (byte) 0;
 			try{
 //				startPart = System.currentTimeMillis();		// 開始時刻の取得
 //				ORGUT = new OrgUtil();				//自作関数集
-				dbMsg +="rContext=" + this.rContext;/////////////////////////////////////
+				dbMsg +="rContext=" + this.rContext;
 				if(this.rContext == null){
 					this.rContext = TagBrows.this;
 					dbMsg +=">>" + this.rContext;/////////////////////////////////////
@@ -442,7 +443,9 @@ private byte majorVersion = (byte) 0;
 				getWindow().setFormat(PixelFormat.TRANSLUCENT);	//利かず
 				setContentView(R.layout.trance);					//透明設定したActivty
 				Bundle extras = getIntent().getExtras();
-				int reqCode = extras.getInt("reqCode");					//何のリストか
+				int reqCode = extras.getInt("reqCode");
+				backCode = extras.getInt("backCode");
+				dbMsg +="、reqCode=" + reqCode + "、backCode=" + backCode;
 				switch (reqCode) {
 				case read_USLT:					//歌詞を読み込み
 					filePath = extras.getString("filePath");					//渡されたファイル
@@ -821,7 +824,7 @@ private byte majorVersion = (byte) 0;
 	public String file2Str(String filename) throws IOException {			//渡された名称のファイルからStringを読み取る
 		String result =null;
 		final String TAG = "file2Str";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			String mojiCord  = "ISO-8859-1";
 			dbMsg +=",filename=" + filename + ",mojiCord=" + mojiCord;				//this.fileObj.getPath()
@@ -876,7 +879,7 @@ private byte majorVersion = (byte) 0;
 	public String raf2Str(final File file, final boolean writeable) throws  IOException {		//RandomAccessFileをString変換
 		String result =null;
 		final String TAG = "raf2Str";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			RandomAccessFile newFile = null;			//任意の位置からデータの読み込み処理、書き込み処理を行うことができます。これは余計な読み込み処理、書き込み処理を行う必要がないため、効率的な処理
 			if( 18< Integer.valueOf(String.valueOf(Build.VERSION.SDK))){	//Android4.4からはファイルの書き込み制限で
@@ -1073,7 +1076,7 @@ private byte majorVersion = (byte) 0;
 	public void headReadLyric3(final File file, final boolean writeable) throws  IOException {		//Lylic3の処理開始
 		String result =null;
 		final String TAG = "headReadLylic3";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			back2Activty(  );			//呼び出しの戻り処理
 			myLog(TAG,dbMsg);
@@ -1110,7 +1113,7 @@ private byte majorVersion = (byte) 0;
 	public void headReadAac(final File file) throws  IOException {		//AACの処理開始			final RandomAccessFile newFile
 		result =null;
 		final String TAG = "headReadAac";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= filePath;					//newFile.length=11897286
 			RandomAccessFile newFile = null;			//任意の位置からデータの読み込み処理、書き込み処理を行うことができます。これは余計な読み込み処理、書き込み処理を行う必要がないため、効率的な処理
@@ -1179,7 +1182,7 @@ private byte majorVersion = (byte) 0;
 	public void initAccResult() {								//ACC戻り値の初期化
 		String result =null;
 		final String TAG = "initAccResult";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			//
 			qpPre= new ArrayList<String>();							//最小限読み込み
@@ -1472,7 +1475,7 @@ private byte majorVersion = (byte) 0;
 	public void makAACList(int reqCode) {	//AACフィールド名リストをList<String> syougouに作成
 		String result =null;
 		final String TAG = "makAACList";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		//									https://developer.apple.com/library/mac/documentation/QuickTime/QTFF/QTFFChap1/qtff1.html
 		try{
 			if(syougou == null){
@@ -1546,11 +1549,11 @@ private byte majorVersion = (byte) 0;
 	}
 }
 
-
-	public void lyricReadAac(){		//@lirからの優先読込み
+	/**@lirからの優先読込み*/
+	public void lyricReadAac(){
 		result =null;
 		final String TAG = "lyricReadAac";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		//https://developer.apple.com/library/mac/documentation/QuickTime/QTFF/QTFFChap1/qtff1.html
 			//	http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/QuickTime.html	////////////////////////////
 		try{
@@ -1581,7 +1584,7 @@ private byte majorVersion = (byte) 0;
 	public void headReadAac2(String result){		//上位階層から順次読み込み		final RandomAccessFile newFile
 		result =resultStock;
 		final String TAG = "headReadAac2";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 			//	http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/QuickTime.html	////////////////////////////
 		try{
 			result = resultStock;
@@ -1617,7 +1620,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void headReadAacBody(String readStr , String target){		//AACのQuickTime Tags読取り
 		final String TAG = "headReadAacBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "target=" + target + ",";		//"M4A mp42isom".length()
 			if ( readStr != null){
@@ -1868,7 +1871,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void movieReadAac(  ){		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 		final String TAG = "movieReadAac";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if (stock_acc_moov != null || result != null){
 				stock_acc_moov = stock_acc_moov + result;
@@ -1898,7 +1901,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void movieReadAacBody( String readStr , String target ){		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 		final String TAG = "movieReadAacBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "target =" + target + ",";		//"M4A mp42isom".length()
 			if ( readStr != null){
@@ -1946,7 +1949,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void metaReadAac(  ){		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 		final String TAG = "metaReadAac";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if (stock_acc_movie_meta != null || result != null){
 				stock_acc_movie_meta = stock_acc_movie_meta + result;
@@ -1976,7 +1979,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void metaReadAacBody( String readStr , String target ){		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 		final String TAG = "metaReadAacBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if ( readStr != null){
 				int readInt = readStr.length();
@@ -2035,7 +2038,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void itemReadAac(  ){		//QuickTime ItemList Tagsの読取り準備
 		final String TAG = "itemReadAac";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if (stock_acc_meta_ilst != null || result != null ){
 				stock_acc_meta_ilst = stock_acc_meta_ilst + result;
@@ -2065,7 +2068,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void itemReadAacBody(String readStr , String target){		//AACのQQuickTime ItemList Tags読取り
 		final String TAG = "itemReadAacBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "target=" + target +",";		//"M4A mp42isom".length()
 			if ( readStr != null){
@@ -2303,7 +2306,7 @@ private byte majorVersion = (byte) 0;
 	public String retAacEncord( int Code ){
 		String retStr =null;
 		final String TAG = "retAacEncord";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			switch(Code) {
 			case 1:
@@ -2410,13 +2413,13 @@ private byte majorVersion = (byte) 0;
 	public void readEndAac(  ){
 		result =null;
 		final String TAG = "readEndAac";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if(result != null){
 				int resultLen = result.length();
 				dbMsg= "残り=" + resultLen + "文字";					//newFile.length=11897286
 			}
-			back2Activty(  );			//呼び出しの戻り処理
+			back2Activty();			//呼び出しの戻り処理
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -2492,7 +2495,7 @@ private byte majorVersion = (byte) 0;
 	public void headReadWma(final File file) throws  IOException {		//WMAの処理開始
 		String result =null;
 		final String TAG = "headReadWma";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= filePath;					//newFile.length=11897286
 			RandomAccessFile newFile = null;			//任意の位置からデータの読み込み処理、書き込み処理を行うことができます。これは余計な読み込み処理、書き込み処理を行う必要がないため、効率的な処理
@@ -2646,7 +2649,7 @@ private byte majorVersion = (byte) 0;
 	public void initWmaResult(int reqCode) {								//Wma戻り値の初期化
 		String result =null;
 		final String TAG = "initWmaResult";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			switch(reqCode) {
 			case read_WMA_ITEM:				//WMAのオブジェクト読取り
@@ -3139,7 +3142,7 @@ private byte majorVersion = (byte) 0;
 	public void makeWmaList(int reqCode) {	//WMAフィールド名リストをList<String> syougouに作成
 		String result =null;
 		final String TAG = "makeWmaList";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if(syougou == null){
 				syougou = new ArrayList<String>();
@@ -3198,7 +3201,7 @@ private byte majorVersion = (byte) 0;
 
 	public void itemReadWmaBody(String readStr , String target){		//WMAのオブジェクト読取り
 		final String TAG = "itemReadWmaBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "target = " + target ;
 			int readInt = readStr.length();
@@ -3279,7 +3282,7 @@ private byte majorVersion = (byte) 0;
 
 	public void itemReadWmaEnd(){		//WMAのオブジェクト読取り終了処理
 		final String TAG = "itemReadWmaEnd";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 
 			back2Activty(  );			//呼び出しの戻り処理
@@ -3297,7 +3300,7 @@ private byte majorVersion = (byte) 0;
 	public void freamReadID3v1(final File file) throws  IOException {		//ID3v1の処理
 		String result =null;
 		final String TAG = "freamReadID3v1";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			back2Activty(  );			//呼び出しの戻り処理
 			myLog(TAG,dbMsg);
@@ -3312,7 +3315,7 @@ private byte majorVersion = (byte) 0;
 
 	public void freamReadID3v2(final RandomAccessFile file) throws IOException, InvalidTagException {		//RandomAccessFileを'0'で区切ってフレームを読み込む
 		final String TAG = "freamReadID3v2";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			makeSyougouList();	//フィールド名リストをList<String> syougouに作成
 			final byte[] bufferbIdentifier = new byte[3];
@@ -3375,7 +3378,7 @@ private byte majorVersion = (byte) 0;
 
 	public String file2Tag2(String result){			//文字列からフィールドを抽出
 		final String TAG = " file2Tag2";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if( result != null){
 				dbMsg +=",result=" + result.length() +"文字";
@@ -3414,7 +3417,7 @@ private byte majorVersion = (byte) 0;
 	 * **/
 	public String getTargetFream(String result , String target , int reqCode ){			//渡された文字列から指定されたフレームを切り出す
 		final String TAG = "getTargetFream";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			int uketori = String.valueOf(result).length();
 			if(60 < uketori){
@@ -3620,7 +3623,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public String getEncordStr( int encFlag , String motoEncrod ,String retStr){			//フレームに設定されたエンコードフラグを読み、変換した文字を返す
 		final String TAG = "getEncordStr";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "Encrod=" + motoEncrod  ;		//フラグ？ここから文字？
 			int mojisuu = retStr.length();
@@ -3676,7 +3679,7 @@ private byte majorVersion = (byte) 0;
 	@SuppressLint("ByteOrderMark")
 	public void setTargetFream(String bodyData , String target){			//指定されたフレームのデータをこのクラスのグローバル変数にセットする
 		final String TAG = "setTargetFream";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		String tuikaMoji = null;
 		try{
 			dbMsg=  filePath + "," +target +  "=";
@@ -4151,7 +4154,7 @@ private byte majorVersion = (byte) 0;
 	public String kiremeKensaku(String result ,int startInt){			//渡された文字列から'\0'が検出されたポイントまでの文字を返す
 		String retStr = null;
 		final String TAG = "kiremeKensaku";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= startInt + "/" ;
 			char[] str = result.toCharArray();
@@ -4185,7 +4188,7 @@ private byte majorVersion = (byte) 0;
 	public String fremeMeiSyougouBody(String result, String taget){	//渡された文字列を先頭からindexOfで照合し、該当すればその文字を返し、無ければnullを返す
 		String retStr = null;
 		final String TAG = "fremeMeiSyougouBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg=  result + "(";
 	//		dbMsg +=result.length() + "文字)から";
@@ -4209,7 +4212,7 @@ private byte majorVersion = (byte) 0;
 		int startP = 0;
 		String chStr ="";
 		final String TAG = "fremeMeiSyougou[]";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			int hikakuMojisuu =  result.length();
 			dbMsg=  result.length() + "文字から";
@@ -4277,7 +4280,7 @@ private byte majorVersion = (byte) 0;
 		String stock = null;
 		String retStr= null;
 		final String TAG = "freameNamePosition";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "identifier=" + identifier.length() + "文字";
 			char character;
@@ -4360,7 +4363,7 @@ private byte majorVersion = (byte) 0;
 	public int retFeldType(String frameIdentifier){			//渡されたフィールドのタイプを返す
 		int retType = -1;
 		final String TAG = "retFeldType";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if (frameIdentifier.equals("TALB") ||				//	アルバム/映画/ショーのタイトル
 				frameIdentifier.equals("TAL")  ||		//アルバム/映画/ショーのタイトル								Album/Movie/Show title									ID3ｖ3；TALB
@@ -4582,7 +4585,7 @@ private byte majorVersion = (byte) 0;
 	public int retEndNullPoint(String readStr , int offset ) throws CharacterCodingException {					//渡された文字列の先頭のnullが無くなるポイントを返す
 		int retInt = offset;
 		final String TAG = "retEndNullPoint";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if(readStr != null){
 				int readInt = readStr.length();
@@ -4620,7 +4623,7 @@ private byte majorVersion = (byte) 0;
 	public int retNextNullPoint(String readStr , int offset ) throws CharacterCodingException {					//渡された文字列にnullが発生するポイントを返す
 		int retInt = offset;
 		final String TAG = "retNextNullPoint";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if(readStr != null){
 				int readInt = readStr.length();
@@ -4658,7 +4661,7 @@ private byte majorVersion = (byte) 0;
 	public boolean isMultiByte(String readStr) throws CharacterCodingException {					//マルチバイト文字が入っていたらtrueを返す
 		boolean retBool = false;
 		final String TAG = "isMultiByte";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		//文字コードの基礎と処理方法	http://www7a.biglobe.ne.jp/~tsuneoka/cgitech/4.html
 		//ASCIIコード	0x21～0x7e /２バイト文字	１バイト目	0x81～0x9f 0xe0～0xef,２バイト目	0x40～0x7e 0x80～0xfc
 		//////////
@@ -4695,7 +4698,7 @@ private byte majorVersion = (byte) 0;
 		byte[] retByte = null;
 		ByteBuffer out = null;
 		final String TAG = "str2byteEncord";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "encordingSetName=" + encordingSetName;
 			dbMsg += ",uketori=" + uketori.length() + "文字";
@@ -4729,7 +4732,7 @@ private byte majorVersion = (byte) 0;
 	public static String bytes2StrDecode(String encordingSetName, byte... bytes) throws IOException{					//char[]
 		String retStr = null;
 		final String TAG = "bytes2StrDecode";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "encordingSetName=" + encordingSetName +  ",chars=" + bytes.length + "文字";
 			Charset charset = Charset.forName(encordingSetName);
@@ -4760,7 +4763,7 @@ private byte majorVersion = (byte) 0;
 	public String saiEncordBody(String songLyric , String motoEncrod , String saiEncrod) {										//再エンコードした文字を返す
 		String retStr = null;
 		final String TAG = "saiEncordBody";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			int uketori = String.valueOf(songLyric).length();
 			if(20 < uketori){
@@ -4812,7 +4815,7 @@ private byte majorVersion = (byte) 0;
 	public void saiEncord(String songLyric , String motoEncrod , String saiEncrod) {										//再エンコードして呼出し元のActivtyに返す
 		String retStr = null;
 		final String TAG = "saiEncord";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "受取り" + motoEncrod;
 			int uketori = String.valueOf(songLyric).length();
@@ -4861,7 +4864,7 @@ private byte majorVersion = (byte) 0;
     public String getSongLyric() {			//タグから読み取った歌詞を返す
 		String retStr= null;
 		final String TAG = "getSongLyric";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			if( this.result_USLT != null){
 				retStr = this.result_USLT;
@@ -4878,7 +4881,7 @@ private byte majorVersion = (byte) 0;
 	public String makeSammry() {			//戻り値を作る
 		String retStr= null;
 		final String TAG = "makeSammry";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "result_Tag=" + result_Tag;
 			if( result_Tag != null){
@@ -5274,7 +5277,7 @@ private byte majorVersion = (byte) 0;
 	 * */
 	public void back2Activty( ){			//呼び出しの戻り処理
 		final String TAG = "back2Player";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			String lylicHTM = null;				//html変換した歌詞のフルパス名
 			Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
@@ -5314,6 +5317,8 @@ private byte majorVersion = (byte) 0;
 			if(10000 < retStr.length()){
 				retStr.substring(0, 1000);
 			}
+			dbMsg += ",backCode=" + backCode;
+			bundle.putInt("reqCode", backCode);	//192
 			bundle.putString("songLyric", retStr);
 			bundle.putBoolean("lyricAri", lyricAri);			//歌詞を取得できた
 			bundle.putString("lyricEncord", saiEncrod);
@@ -5335,7 +5340,7 @@ private byte majorVersion = (byte) 0;
 		String fName = null;
 		//http://www.nilab.info/z3/20120806_02.html
 		final String TAG = "lyric2webSouce";
-		String dbMsg= "[TagBrows]";
+		String dbMsg= "";
 		try{
 			dbMsg= "songLyric=";
 			int uketori = String.valueOf(songLyric).length();
@@ -5734,12 +5739,12 @@ private byte majorVersion = (byte) 0;
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		Util.myLog(TAG , "[TagBrows]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG , "[TagBrows]" + dbMsg);
 	}
 }
 /**汎用資料

@@ -1259,6 +1259,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 										onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 										return;
 									}
+								} else {							// if( nokori <= crossFeadTime-100  )
+									imanoJyoutai =  MuList.sonomama ;
+									onCompletNow = false;			//曲間処理中
+									if((kankaku * 3 > nokori)  &&  (1 < kankaku)){						//
+										dbMsg +=  ",間隔= " +kankaku  ;/////////////////////////////////////
+										kankaku = kankaku/2;
+										dbMsg +=">>" +kankaku  ;/////////////////////////////////////
+									}
 								}
 //								if( action.equals(MusicPlayerService.ACTION_SKIP) || action.equals(MusicPlayerService.ACTION_REWIND)){
 //									long sTime = System.currentTimeMillis() - stTime ;
@@ -1287,30 +1295,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 											dbMsg +="stateBaseStr=" +stateBaseStr;
 											intent.putExtra("stateBaseStr", stateBaseStr);
 											b_stateStr = stateBaseStr;
-										}
-									}
-									if( ( nokori <= crossFeadTime
-//											|| (rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
-											)){			//	&&  (Build.VERSION.SDK_INT <16)
-//										dbMsg +="[ " + mIndex +",再生時間="+ saiseiJikan;/////////////////////////////////////
-//										myLog(TAG,dbMsg);
-//										onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
-//												dbMsg +=">残り時間> " + nokori + "( crossFead=" + crossFeadTime +")"  ;/////////////////////////////////////
-									} else {							// if( nokori <= crossFeadTime-100  )
-										imanoJyoutai =  MuList.sonomama ;
-										onCompletNow = false;			//曲間処理中
-//										if(saiseiJikan-mcPosition > 75){
-//											dbMsg +=";Broadcast送信";
-//											sendBroadcast(intent);					//APIL1
-//										}
-										if(nokori > kankaku){
-											if((kankaku * 3 > nokori)  &&  (1 < kankaku)){						//
-												dbMsg +=  ",間隔= " +kankaku  ;/////////////////////////////////////
-												kankaku = kankaku/2;
-												dbMsg +=">>" +kankaku  ;/////////////////////////////////////
-											}
-//										}else{
-//											onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 										}
 									}
 //								}
