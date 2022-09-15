@@ -5486,19 +5486,19 @@ public class MaraSonActivity extends AppCompatActivity
 //							MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
 //							dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 //							break;
-								case LyricCheck:							//歌詞の有無確認
+								case LyricCheck:						//192 歌詞の有無確認
 								case LyricEnc:							//歌詞の再エンコード
-									String wrStr =bundle.getString("songLyric");
+									String wrStr =intent.getStringExtra("songLyric");
 									if( wrStr != null){
 										songLyric = wrStr;
 									}
 									lyric_tv.setText(songLyric);
-									lyricAri = bundle.getBoolean("lyricAri");			//歌詞を取得できた
-									wrStr =bundle.getString("lyricEncord");
+									lyricAri = intent.getBooleanExtra("lyricAri",false);			//歌詞を取得できた
+									wrStr =intent.getStringExtra("lyricEncord");
 									if( wrStr != null){
 										lyricEncord = wrStr;						//歌詞の再エンコード
 									}
-									wrStr =bundle.getString("lylicHTM");			//html変換した歌詞のフルパス名
+									wrStr =intent.getStringExtra("lylicHTM");			//html変換した歌詞のフルパス名
 									if( wrStr != null){
 										lylicHTM = wrStr;
 									}
