@@ -433,8 +433,6 @@ private byte majorVersion = (byte) 0;
 			final String TAG = "onCreate";
 			String dbMsg="[TagBrows]";
 			try{
-//				startPart = System.currentTimeMillis();		// 開始時刻の取得
-//				ORGUT = new OrgUtil();				//自作関数集
 				dbMsg +="rContext=" + this.rContext;
 				if(this.rContext == null){
 					this.rContext = TagBrows.this;
@@ -450,7 +448,6 @@ private byte majorVersion = (byte) 0;
 				case read_USLT:					//歌詞を読み込み
 					filePath = extras.getString("filePath");					//渡されたファイル
 					dbMsg +=",filePath=" + filePath;/////////////////////////////////////
-			//		fileExt = filePath.substring(filePath.length() - 4, filePath.length());					//渡されたファイルの拡張子
 					File file = new File(filePath);
 					if ( filePath.endsWith("m4a") ||
 							filePath.endsWith("3gp") ) {
@@ -474,7 +471,7 @@ private byte majorVersion = (byte) 0;
 					saiEncord(songLyric , motoEncrod , saiEncrod);										//再エンコードして呼出し元のActivtyに返す
 					break;
 				}
-		//		myLog(TAG,dbMsg);
+				myLog(TAG,dbMsg);
 			}catch (Exception e) {
 				myErrorLog(TAG,dbMsg +"で"+e.toString());
 			}
@@ -1574,7 +1571,18 @@ private byte majorVersion = (byte) 0;
 			dbMsg +=",pdTitol="+pdTitol;
 			String pdMessage = "AAC ; @lyr" ;																			//    <string name="common_yomitori">読み込み</string>
 			dbMsg +=",pdMessage="+pdMessage;
-			pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
+//			pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
+			String result ="";
+			TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+			if( result_USLT == null ){
+				TagBrows.this.result = resultStock;
+				//			headReadAac2(result);		//上位階層から順次読み込み		final RandomAccessFile newFile
+				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+			}else{
+				readEndAac(  );
+			}
+			resultStock = null;
+			/////pTask
 			myLog(TAG,dbMsg);
 			}catch (Exception e) {
 				myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -1605,8 +1613,11 @@ private byte majorVersion = (byte) 0;
 				dbMsg += ",pdTitol="+pdTitol;
 				String pdMessage = "AAC ; QuickTime Tags" ;																			//    <string name="common_yomitori">読み込み</string>
 				dbMsg += ",pdMessage="+pdMessage;
+		//		pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
+				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				dbMsg += ",result="+TagBrows.this.result;
+				movieReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 				myLog(TAG,dbMsg);
-				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
 			}
@@ -1886,8 +1897,11 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage ="AAC ; QuickTime Movie Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
+//				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_moov , kensaku );		//,jikkouStep,totalStep,calumnInfo
+				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				dbMsg += ",result="+TagBrows.this.result;
+				metaReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 				myLog(TAG,dbMsg);
-				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_moov , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
 			}
@@ -1964,7 +1978,11 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage ="AAC ; QuickTime Movie >> Meta Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
-				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_movie_meta , kensaku );		//,jikkouStep,totalStep,calumnInfo
+//				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_movie_meta , kensaku );		//,jikkouStep,totalStep,calumnInfo
+				String result =null;
+				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				dbMsg += ",result="+TagBrows.this.result;
+				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
 			}
@@ -2053,7 +2071,37 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage ="AAC ; QuickTime QuickTime Movie >> Meta Tags >> ItemList Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
-				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_meta_ilst , kensaku );		//,jikkouStep,totalStep,calumnInfo
+//				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_meta_ilst , kensaku );		//,jikkouStep,totalStep,calumnInfo
+				String result =null;
+				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				////				List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
+//				pdMaxVal = kensaku.size();
+//				dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
+//				myLog(TAG,dbMsg);
+//				for(int i = 0; i < pdMaxVal ; i++){
+//					dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
+//					String freamName = kensaku.get(i);
+//					dbMsg +=freamName + ";";
+//					int sInt = TagBrows.this.result.length();
+//					dbMsg +="残り" + sInt + "文字";
+//					if(freamName.equals("USLT") || freamName.equals("USLT")){
+//						pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+//					} else {
+//						pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+//					}
+//					TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+////					pdCoundtVal = i + 1 ;
+////					//		pdCoundtVal = result2.length();
+//					if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+//						dbMsg +="result=null";
+//						i = pdMaxVal;
+//					}
+//					int eInt = TagBrows.this.result.length();
+//					dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+//					myLog(TAG,dbMsg);
+//				}
+				readEndAac(  );
+				/////pTask
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
 			}
@@ -2631,8 +2679,12 @@ private byte majorVersion = (byte) 0;
 				String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 				dbMsg +=",pdTitol="+pdTitol;
 				dbMsg +=",pdMessage="+pdMessage;
+//				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
+//				String result =null;
+				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				dbMsg += ",result="+TagBrows.this.result;
+				itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
 				myLog(TAG,dbMsg);
-				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
 			} else {
 				itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
 			}
@@ -3394,7 +3446,11 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",pdTitol="+pdTitol;
 				String pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; USLT" ;																			//歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
-				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
+//				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
+				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				dbMsg += ",result="+TagBrows.this.result;
+				back2Activty(  );			//呼び出しの戻り処理
+				myLog(TAG,dbMsg);
 			}else{
 				dbMsg +=",result==null；ファイルから情報が取れなかかった";
 				result_Samary = result_Samary + "\n" + this.getApplicationContext().getResources().getString(R.string.yomikomi_hunou);				//	<string name="">この曲はタグ情報を読み込めませんでした。</string>
@@ -4193,12 +4249,15 @@ private byte majorVersion = (byte) 0;
 			dbMsg=  result + "(";
 	//		dbMsg +=result.length() + "文字)から";
 			dbMsg +=taget + "を検索";
-			int startP = result.indexOf(taget);
-			if( -1 < startP ){
-				dbMsg +="(" + startP + ")";			// + result.length() + ")";
-				this.fleamStart= startP ;
-				retStr = taget;
-				dbMsg +=retStr;
+			if(result != null){
+				int startP = result.indexOf(taget);
+				dbMsg += "," + startP + "文字目";
+				if( -1 < startP ){
+					dbMsg +="(" + startP + ")";			// + result.length() + ")";
+					this.fleamStart= startP ;
+					retStr = taget;
+					dbMsg +=retStr;
+				}
 			}
 		//	myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -5246,7 +5305,8 @@ private byte majorVersion = (byte) 0;
 					}
 
 					if(result_APIC != null){				//付属する画像																			//10cc(5')APIC��(������JPG������ÿØÿà��
-						retStr = retStr + "\n" + this.getApplicationContext().getResources().getString(R.string.tag_fn_apic) + ")" + result_APIC;			//付属する画像
+						retStr = retStr + "\n" + this.getApplicationContext().getResources().getString(R.string.tag_fn_apic) + ")" + result_APIC;			//
+						dbMsg +=",付属する画像=" + result_APIC;
 					}
 					if(result_COMM != null){				//コメント																				//10cc(7')
 						retStr = retStr + "\n" + this.getApplicationContext().getResources().getString(R.string.tag_fn_comm) + ")"
@@ -5265,7 +5325,7 @@ private byte majorVersion = (byte) 0;
 				retStr = this.getApplicationContext().getResources().getString(R.string.lyric_nasi);				//me="">この曲は歌詞が設定されていないか、読み込めませんでした。</string>
 			}
 			dbMsg +=",retStr=" + retStr;
-	//		myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
@@ -5426,6 +5486,84 @@ private byte majorVersion = (byte) 0;
 	public String pdTitol = null;
 	public String pdMessage = null;
 	public String result = null;
+
+	/**plogTask.doInBackground相当*/
+	public String Readloop(int reqCode,List<String> kensaku,String result) {
+		final String TAG = "Readloop";
+		String dbMsg="";
+	//	String result = null;
+		try {
+			dbMsg = ":reqCode="+reqCode;///////////////////////////
+			int pdMaxVal = kensaku.size();
+			dbMsg += ",pdMaxVal="+pdMaxVal;///////////////////////////
+			dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
+			for(int i = 0; i < pdMaxVal ; i++){
+				dbMsg= reqCode + "\n" + i + "/ " + pdMaxVal +")" ;
+				String freamName = kensaku.get(i);
+				dbMsg +=freamName + ";";
+				int sInt = 0;
+				if(result != null){
+					sInt = result.length();
+					dbMsg +="残り" + sInt + "文字";
+				}
+				dbMsg +="残り" + sInt + "文字";
+				if(freamName.equals("USLT") || freamName.equals("USLT")){
+					pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+				} else {
+					pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+				}
+				result = getTargetFream( result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+//					pdCoundtVal = i + 1 ;
+//					//		pdCoundtVal = result2.length();
+				if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+					dbMsg +="result=null";
+					i = pdMaxVal;
+				}
+				if(result != null){
+					int eInt = result.length();
+					dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+				}
+			}
+
+
+
+
+
+//			for(int i = 0; i < pdMaxVal ; i++){
+//				dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
+//				String freamName = kensaku.get(i);
+//				dbMsg +=freamName + ";";
+//				int sInt = 0;
+//				if(result != null){
+//					sInt = result.length();
+//					dbMsg +="残り" + sInt + "文字";
+//				}
+////				if(freamName.equals("USLT") || freamName.equals("USLT")){
+////					pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+////				} else {
+////					pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+////				}
+//				result = getTargetFream( result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+////					pdCoundtVal = i + 1 ;
+////					//		pdCoundtVal = result2.length();
+//				if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+//					dbMsg +="result=null";
+//					i = pdMaxVal;
+//				}
+//				if(result != null){
+//					int eInt = result.length();
+//					dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+//				}
+//				myLog(TAG,dbMsg);
+//			}
+			myLog(TAG,dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG,"でエラー発生；"+e.toString());
+		}
+		return result;
+	}
+
+
 	/**
 	 * 第一引数;タスク開始時:doInBackground()に渡す引数の型,
 	 * 第二引数;進捗率を表示させるとき:onProgressUpdate()に使う型,
