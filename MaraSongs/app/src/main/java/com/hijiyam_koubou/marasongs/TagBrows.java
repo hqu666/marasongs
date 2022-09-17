@@ -2,14 +2,13 @@ package com.hijiyam_koubou.marasongs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -35,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 音楽ファイルのタグから歌詞を抽出します。
@@ -49,7 +50,10 @@ import java.util.List;
 * special thanks ;Takaaki.Mizyno
 * {@link <a href="http://www.takaaki.info/wp-content/uploads/2013/01/ID3v2.3.0J.html">...</a>}
 */
-public class TagBrows  extends Activity implements plogTaskCallback{
+public class TagBrows  extends Activity{
+	// implements plogTaskCallback
+	public OrgUtil ORGUT;						//自作関数集
+	private ploglessTask plTask;
 	public Context rContext ;
 	public int backCode ;								//戻りコード
 	public boolean lyricAri = false;				//歌詞が取得できた
@@ -433,6 +437,8 @@ private byte majorVersion = (byte) 0;
 			final String TAG = "onCreate";
 			String dbMsg="[TagBrows]";
 			try{
+				ORGUT = new OrgUtil();		//自作関数集
+				plTask  = new TagBrows.ploglessTask(this);
 				dbMsg +="rContext=" + this.rContext;
 				if(this.rContext == null){
 					this.rContext = TagBrows.this;
@@ -1561,7 +1567,7 @@ private byte majorVersion = (byte) 0;
 			}else{
 				dbMsg +=result;
 			}
-			dbMsg += "(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
+			dbMsg += "(" + readInt + ">>" + result.length() +"文字)";		//"M4A mp42isom".length()
 			makAACList( read_AAC_LYRIC);										//@Lyrだけを読めるか試みる
 			String pdTitol = getApplicationContext().getString(R.string.tag_prog_titol1) +"" + getResources().getString(R.string.common_yomitori);				//
 			pdMaxVal= kensaku.size();										//result.length();								//プログレス終端値
@@ -1571,16 +1577,18 @@ private byte majorVersion = (byte) 0;
 			dbMsg +=",pdTitol="+pdTitol;
 			String pdMessage = "AAC ; @lyr" ;																			//    <string name="common_yomitori">読み込み</string>
 			dbMsg +=",pdMessage="+pdMessage;
-//			pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
-			String result ="";
-			TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
-			if( result_USLT == null ){
-				TagBrows.this.result = resultStock;
-				//			headReadAac2(result);		//上位階層から順次読み込み		final RandomAccessFile newFile
-				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
-			}else{
-				readEndAac(  );
-			}
+			plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
+
+//			String result ="";
+//			TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+//			if( result_USLT == null ){
+//				TagBrows.this.result = resultStock;
+//				//			headReadAac2(result);		//上位階層から順次読み込み		final RandomAccessFile newFile
+//				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+//			}else{
+//				readEndAac(  );
+//			}
+			dbMsg +=",result="+result;
 			resultStock = null;
 			/////pTask
 			myLog(TAG,dbMsg);
@@ -1614,9 +1622,10 @@ private byte majorVersion = (byte) 0;
 				String pdMessage = "AAC ; QuickTime Tags" ;																			//    <string name="common_yomitori">読み込み</string>
 				dbMsg += ",pdMessage="+pdMessage;
 		//		pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
-				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
+	//			TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
 				dbMsg += ",result="+TagBrows.this.result;
-				movieReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
+		//		movieReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 				myLog(TAG,dbMsg);
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
@@ -1898,9 +1907,10 @@ private byte majorVersion = (byte) 0;
 				String pdMessage ="AAC ; QuickTime Movie Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_moov , kensaku );		//,jikkouStep,totalStep,calumnInfo
-				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
+//				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
 				dbMsg += ",result="+TagBrows.this.result;
-				metaReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
+//				metaReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
 				myLog(TAG,dbMsg);
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
@@ -1979,10 +1989,11 @@ private byte majorVersion = (byte) 0;
 				String pdMessage ="AAC ; QuickTime Movie >> Meta Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_movie_meta , kensaku );		//,jikkouStep,totalStep,calumnInfo
-				String result =null;
-				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
+//				String result =null;
+//				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
 				dbMsg += ",result="+TagBrows.this.result;
-				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+//				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
 			}
@@ -2072,35 +2083,36 @@ private byte majorVersion = (byte) 0;
 				String pdMessage ="AAC ; QuickTime QuickTime Movie >> Meta Tags >> ItemList Tags" ; //歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , stock_acc_meta_ilst , kensaku );		//,jikkouStep,totalStep,calumnInfo
-				String result =null;
-				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
-				////				List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
-//				pdMaxVal = kensaku.size();
-//				dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
-//				myLog(TAG,dbMsg);
-//				for(int i = 0; i < pdMaxVal ; i++){
-//					dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
-//					String freamName = kensaku.get(i);
-//					dbMsg +=freamName + ";";
-//					int sInt = TagBrows.this.result.length();
-//					dbMsg +="残り" + sInt + "文字";
-//					if(freamName.equals("USLT") || freamName.equals("USLT")){
-//						pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
-//					} else {
-//						pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
-//					}
-//					TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
-////					pdCoundtVal = i + 1 ;
-////					//		pdCoundtVal = result2.length();
-//					if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
-//						dbMsg +="result=null";
-//						i = pdMaxVal;
-//					}
-//					int eInt = TagBrows.this.result.length();
-//					dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
-//					myLog(TAG,dbMsg);
-//				}
-				readEndAac(  );
+				plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
+//				String result =null;
+//				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+//				////				List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
+////				pdMaxVal = kensaku.size();
+////				dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
+////				myLog(TAG,dbMsg);
+////				for(int i = 0; i < pdMaxVal ; i++){
+////					dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
+////					String freamName = kensaku.get(i);
+////					dbMsg +=freamName + ";";
+////					int sInt = TagBrows.this.result.length();
+////					dbMsg +="残り" + sInt + "文字";
+////					if(freamName.equals("USLT") || freamName.equals("USLT")){
+////						pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+////					} else {
+////						pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+////					}
+////					TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+//////					pdCoundtVal = i + 1 ;
+//////					//		pdCoundtVal = result2.length();
+////					if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+////						dbMsg +="result=null";
+////						i = pdMaxVal;
+////					}
+////					int eInt = TagBrows.this.result.length();
+////					dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+////					myLog(TAG,dbMsg);
+////				}
+//				readEndAac(  );
 				/////pTask
 			}else{
 				readEndAac(  );			//呼出し元への戻り処理
@@ -2680,10 +2692,10 @@ private byte majorVersion = (byte) 0;
 				dbMsg +=",pdTitol="+pdTitol;
 				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
-//				String result =null;
+				plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
 				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
 				dbMsg += ",result="+TagBrows.this.result;
-				itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
+		//		itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
 				myLog(TAG,dbMsg);
 			} else {
 				itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
@@ -3447,9 +3459,10 @@ private byte majorVersion = (byte) 0;
 				String pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; USLT" ;																			//歌詞を探しています。</string>
 				dbMsg +=",pdMessage="+pdMessage;
 //				pTask = (plogTask) new plogTask(this ,  this , reqCode , pdTitol ,pdMessage , pdMaxVal ).execute(reqCode,  pdMessage , result , kensaku );		//,jikkouStep,totalStep,calumnInfo
-				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
+				plTask.execute(reqCode,kensaku,TagBrows.this.result,null);
+//				TagBrows.this.result = Readloop( reqCode,kensaku,TagBrows.this.result);
 				dbMsg += ",result="+TagBrows.this.result;
-				back2Activty(  );			//呼び出しの戻り処理
+//				back2Activty(  );			//呼び出しの戻り処理
 				myLog(TAG,dbMsg);
 			}else{
 				dbMsg +=",result==null；ファイルから情報が取れなかかった";
@@ -5479,7 +5492,7 @@ private byte majorVersion = (byte) 0;
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public plogTask pTask;
+//	public plogTask pTask;
 	public int reqCode=0;								//何の処理か
 	public int plogInt=0;								//プログレス値
 	public int pdMaxVal=0;								//プログレス終端値
@@ -5564,316 +5577,470 @@ private byte majorVersion = (byte) 0;
 	}
 
 
+	long startPart;		// 開始時刻の取得
+	/**
+	 * public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>>の置き換え
+	 * Android 11でAsyncTaskがdeprecated
+	 * サンプルは　 MyTask　https://akira-watson.com/android/asynctask.html
+	 * */
+	public class ploglessTask {
+		ExecutorService executorService;
+		private Context cContext = null;
+		//		public DialogProgress progressDialog;	// 処理中ダイアログ	ProgressDialog	AlertDialog
+		Intent intentDP;
+
+		public int reqCode = 0;						//処理番号
+		public List<String> kensaku;
+		public String result;
+		public File file;
+
+
+//		public String pdTitol;			//ProgressDialog のタイトルを設定
+//		public String pdMessage;			//ProgressDialog のメッセージを設定
+
+		public String pdMessage_stok;			//ProgressDialog のメッセージを設定
+		public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
+		public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
+		public int pdCoundtVal=0;					//ProgressDialog表示値
+
+		public String _numberFormat = "%d/%d";
+		public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
+		double num;
+
+		/**
+		 * プログレス表示クラスのコンテキスト
+		 * */
+		public ploglessTask(Context context) {
+			super();
+			final String TAG = "ploglessTask[ploglessTask]";
+			String dbMsg="";
+			try {
+				executorService  = Executors.newSingleThreadExecutor();
+				this.cContext = context;
+				//		this.cCallback = callback;
+				myLog(TAG,dbMsg );
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
+			}
+		}
+
+		public class TaskRun implements Runnable {
+
+			@Override
+			public void run() {
+				final String TAG = "run[ploglessTask]";
+				String dbMsg="";
+				try {
+					dbMsg +="["+ reqCode + "]";
+					long id = 0;
+					switch(reqCode) {
+						case read_FILE:				//ファイル読込
+////							File file=(File) params[2] ;																	//2.file , null );
+//							do{
+//								result2 = raf2Str(file, true);			//RandomAccessFileをString変換
+//							}while( result2 == null );
+//							TagBrows.this.result = result2;
+//							dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+//							break;
+						default:
+							dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+					//		List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
+							pdMaxVal = kensaku.size();
+							dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
+							for(int i = 0; i < pdMaxVal ; i++){
+								dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
+								String freamName = kensaku.get(i);
+								dbMsg +=freamName + ";";
+								int sInt = TagBrows.this.result.length();
+								dbMsg +="残り" + sInt + "文字";
+								if(freamName.equals("USLT") || freamName.equals("USLT")){
+									pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+								} else {
+									pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+								}
+								TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+								pdCoundtVal = i + 1 ;
+								if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+									pdCoundtVal = pdMaxVal ;																//ループ中断
+									i = pdMaxVal;
+								}
+								int eInt = TagBrows.this.result.length();
+								dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+								myLog(TAG,dbMsg);
+//								publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
+							}
+							break;
+					}
+					new Handler(Looper.getMainLooper())
+							.post(() -> onPostExecute());
+					myLog(TAG,dbMsg );
+				} catch (Exception e) {
+					myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
+				}
+			}
+		}
+
+		/**
+		 * ploglessTaskの入口
+		 * */
+		void execute(int reqCode,List<String> kensaku,String result,File file) {
+			final String TAG = "execute[ploglessTask]";
+			String dbMsg="";
+			try {
+				onPreExecute(reqCode , kensaku,result,file);
+				executorService.submit(new TagBrows.ploglessTask.TaskRun());
+				myLog(TAG,dbMsg );
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
+			}
+		}
+
+		/**
+		 * ploglessTaskの前処理
+		 * Backgroundメソッドの実行前にメインスレッドで実行
+		 * */
+		void onPreExecute(int req_code ,List<String> kensaku,String result,File file) {           //,SQLiteDatabase write_db
+			final String TAG = "onPreExecute";
+			String dbMsg="[ploglessTask]";
+			try {
+				this.reqCode = req_code;
+				dbMsg += "[" + this.reqCode + "]";
+				this.kensaku = kensaku;
+				if(this.kensaku != null){
+					dbMsg += " , " + this.kensaku.size() + "件";
+					pdMaxVal = this.kensaku.size();
+				}
+				dbMsg +=",getMax=" + pdMaxVal;
+				this.result = result;
+				dbMsg +=",result=" + result;
+				this.file = file;
+				myLog(TAG,dbMsg );
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+" でエラー発生；"+e.toString());
+			}
+		}
+
+		/**
+		 * ploglessTaskの終端処理
+		 * Backgroundメソッドの実行前にメインスレッドで実行
+		 * */
+		void onPostExecute() {
+			final String TAG = "onPostExecute";
+			String dbMsg = "";
+			try{
+				dbMsg +=  "reqCode=" + reqCode;/////////////////////////////////////
+				switch(reqCode) {
+					case read_FILE:				//ファイル読込
+						dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+						file2Tag2(TagBrows.this.result);			//文字列からフィールドを抽出				break;
+					case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
+						back2Activty(  );			//呼び出しの戻り処理
+						break;
+					case read_AAC_PRE:				//最小限の設定読取り
+						lyricReadAac();		//@lirからの優先読込み
+						break;
+					case read_AAC_LYRIC:				//@Lyrだけを読めるか試みる
+						if( result_USLT == null ){
+							result = resultStock;
+							//			headReadAac2(result);		//上位階層から順次読み込み		final RandomAccessFile newFile
+							itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+						}else{
+							readEndAac(  );
+						}
+						resultStock = null;
+						break;
+					case read_AAC_HEAD:				//QuickTime Tagsの読取り
+						movieReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
+						break;
+					case read_AAC_HEAD_Movie:		//QuickTime Tags.QuickTime Movie Tagsの読取り
+						metaReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
+						break;
+					case read_AAC_Movie_Meta:		//QuickTime Tags.QuickTime Meta Tagsの読取り
+						itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+						break;
+					case read_AAC_ITEM:				//QuickTime Tagsの読取り
+						readEndAac(  );
+						break;
+					case read_WMA_ITEM:									//WMAのオブジェクト読取り
+					case read_WMA_ID32:									//WMAに埋め込まれたID3v2タグの読取り
+					case read_WMA_ID33:									//WMAに埋め込まれたID3v3タグの読取り
+					case read_WMA_AAC:									//WMAに埋め込まれたAAC Atomの読取り
+						itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
+						break;
+					default:
+						break;
+				}
+				myLog(TAG, dbMsg);
+			}catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		}
+	}
+
 	/**
 	 * 第一引数;タスク開始時:doInBackground()に渡す引数の型,
 	 * 第二引数;進捗率を表示させるとき:onProgressUpdate()に使う型,
 	 * 第三引数;タスク終了時のdoInBackground()の返り値の型			AsyncTaskResult<Object>
 	 * 		http://d.hatena.ne.jp/tomorrowkey/20100824/1282655538
 	 * 		http://pentan.info/android/app/multi_thread.html**/
-	public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>> {		//myResult	元は<Object, Integer, Boolean>
-		private plogTaskCallback callback;
-//		private ZenkyokuList ZKL;
-	//http://uguisu.skr.jp/Windows/android_asynctask.html
-	//	OrgUtil ORGUT;					//自作関数集
-		public long start = 0;				// 開始時刻の取得
-		public Boolean isShowProgress;
-		public ProgressDialog progressDialog = null;	// 処理中ダイアログ	ProgressDialog	AlertDialog
-		public int reqCode = 0;						//処理番号
-		public CharSequence pdTitol;			//ProgressDialog のタイトルを設定
-		public CharSequence pdMessage;			//ProgressDialog のメッセージを設定
-		public CharSequence pdMessage_stok;			//ProgressDialog のメッセージを設定
-		public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
-		public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
-		public int pdCoundtVal=0;					//ProgressDialog表示値
-		public int pd2MaxVal;					//ProgressDialog の最大値を設定 (水平の時)
-		public int pd2CoundtVal;					//ProgressDialog表示値
-		public String _numberFormat = "%d/%d";
-		public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
-
-		public Boolean preExecuteFiniSh=false;	//ProgressDialog生成終了
-		public Bundle extras;
-
-		long stepKaisi = System.currentTimeMillis();		//この処理の開始時刻の取得
-		long stepSyuuryou;		//この処理の終了時刻の取得
-
-		public plogTask(Context cContext , plogTaskCallback callback ,int reqCode, CharSequence pdTitol ,CharSequence pdMessage ,int pdMaxVal){
-			super();
-			//,int reqCode , String pdTitol , String pdMessage ,int pdMaxVal ,int pd2CoundtVal,int pd2MaxVal){
-		final String TAG = "plogTask[plogTask.TagBrows]";
-		try{
-	//		ORGUT = new OrgUtil();				//自作関数集
-//03-05 18:53:49.819: E/plogTask[plogTask.TagBrows](17839): でエラー発生；java.lang.RuntimeException: Can't create handler inside thread that has not called Looper.prepare()
-			String dbMsg = "cContext="+cContext;///////////////////////////
-			if( cContext != null ){
-				this.callback = callback;
-				dbMsg += ",callback="+callback;///////////////////////////
-				dbMsg += ",reqCode=" + reqCode;
-				dbMsg += ",Titol=" + pdTitol;
-				dbMsg += ",Message=" + pdMessage;
-				if(progressDialog != null ){
-					if(progressDialog.isShowing()){
-						progressDialog.dismiss();
-					}
-				}
-				progressDialog = new ProgressDialog(cContext);			//.getApplicationContext()
-				progressDialog.setTitle(pdTitol);
-				progressDialog.setMessage(pdMessage);
-				switch(reqCode) {
-				case read_FILE:				//ファイル読込
-					progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);			// プログレスダイアログのスタイルを円形に設定します
-					break;
-				default:
-//				case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
-//				case read_AAC_PRE:				//最小限の設定読取り
-//				case read_AAC_LYRIC:				//@Lyrだけを読めるか試みる
-//				case read_AAC_HEAD:				//QuickTime Tagsの読取り
-//				case read_AAC_HEAD_Movie:		//QuickTime Tags.QuickTime Movie Tagsの読取り
-//				case read_AAC_Movie_Meta:		//QuickTime Tags.QuickTime Meta Tagsの読取り
-//				case read_AAC_ITEM:				//QuickTime Tagsの読取り
-					progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);			// プログレスダイアログのスタイルを水平スタイルに設定します
-					dbMsg += ",Max=" + pdMaxVal;
-					progressDialog.setMax(pdMaxVal);			// プログレスダイアログの最大値を設定します
-					break;
-				}
-				progressDialog.setCancelable(true);			// プログレスダイアログのキャンセルが可能かどうかを設定します
-				progressDialog.show();
-				dbMsg += ">isShowing>" + progressDialog.isShowing();
-			}
-	//		myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG,"でエラー発生；"+e.toString());
-		}
-	}
-	//		http://greety.sakura.ne.jp/redo/2011/02/asynctask.html
-		@Override
-	/*最初にUIスレッドで呼び出されます。 , UIに関わる処理をします。
-	 * doInBackgroundメソッドの実行前にメインスレッドで実行されます。
-	 * 非同期処理前に何か処理を行いたい時などに使うことができます。 */
-		protected void onPreExecute() {			// onPreExecuteダイアログ表示
-			super.onPreExecute();
-			final String TAG = "onPreExecute";
-			String dbMsg="[plogTask.TagBrows]";
-			try {
-				dbMsg = ":reqCode="+reqCode;///////////////////////////
-				dbMsg +=  ",pdTitol="+pdTitol;///////////////////////////
-				dbMsg +=  ",Message="+pdMessage;///////////////////////////
-				dbMsg += ",pdMaxVal="+pdMaxVal;///////////////////////////
-		//		myLog(TAG, dbMsg);
-				//☆こここで初期設定が出来ないのでonCreate相当のコンストラクタ；plogTaskで行う
-			} catch (Exception e) {
-				myErrorLog(TAG,"でエラー発生；"+e.toString());
-			}
-		}
-
-//		public  Uri cUri = null  ;							//4]
-//		public  String where = null;
-//		public  SQLiteStatement stmt = null ;			//6；SQLiteStatement
-//		public SQLiteDatabase tdb;
-//		public  ContentValues cv = null ;						//7；SQLiteStatement
-		@SuppressWarnings("resource")
-		@Override
-	/**
-	 * doInBackground
-	 * ワーカースレッド上で実行されます。 このメソッドに渡されるパラメータの型はAsyncTaskの一つ目のパラメータです。
-	 * このメソッドの戻り値は AsyncTaskの三つ目のパラメータです。
-	 * メインスレッドとは別のスレッドで実行されます。
-	 * 非同期で処理したい内容を記述します。 このメソッドだけは必ず実装する必要があります。
-	 *0 ;reqCode, 1; pdMessage , 2;pdMaxVal ,3:cursor , 4;cUri , 5;where , 6;stmt , 7;cv ,  8;omitlist , 9;tList );
-	 * */
-		public AsyncTaskResult<Integer> doInBackground(Object... params) {//InParams続けて呼ばれる処理；第一引数が反映されるのはここなのでここからダイアログ更新 バックスレッドで実行する処理;getProgress=0で呼ばれている
-			final String TAG = "doInBackground";
-			String dbMsg="[plogTask.TagBrows]";
-			try {
-				pdCoundtVal = 0;
-				this.reqCode = (Integer) params[0] ;			//0.処理;reqCode
-				dbMsg="reqCode = " + reqCode;
-
-//				pdTitol=(CharSequence) params[2] ;
-//				dbMsg +=", pdTitol = " + pdTitol ;
-
-				CharSequence setStr=(CharSequence) params[1];	//1.次の処理に渡すメッセージ;pdMessage
-				if(setStr !=null ){
-					if(! setStr.equals(pdMessage)){
-						pdMessage = setStr;
-						this.pdMessage = setStr;
-						dbMsg +=",Message = " + pdMessage;
-		//				change2ndText () ;			//ProgBar2の表示値設定
-					}
-				}
-
-//				String freamName = null;
-//				long vtWidth = 500;		// 更新間隔
-//				if(pdMaxVal<500){
-//					vtWidth = 100;
-//					if(pdMaxVal<100){
-//						vtWidth = 20;
+//	public class plogTask extends AsyncTask<Object, Integer , AsyncTaskResult<Integer>> {		//myResult	元は<Object, Integer, Boolean>
+//		private plogTaskCallback callback;
+//		public long start = 0;				// 開始時刻の取得
+//		public Boolean isShowProgress;
+//		public ProgressDialog progressDialog = null;	// 処理中ダイアログ	ProgressDialog	AlertDialog
+//		public int reqCode = 0;						//処理番号
+//		public CharSequence pdTitol;			//ProgressDialog のタイトルを設定
+//		public CharSequence pdMessage;			//ProgressDialog のメッセージを設定
+//		public CharSequence pdMessage_stok;			//ProgressDialog のメッセージを設定
+//		public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
+//		public int pdStartVal=0;					//ProgressDialog の初期値を設定 (水平の時)
+//		public int pdCoundtVal=0;					//ProgressDialog表示値
+//		public int pd2MaxVal;					//ProgressDialog の最大値を設定 (水平の時)
+//		public int pd2CoundtVal;					//ProgressDialog表示値
+//		public String _numberFormat = "%d/%d";
+//		public  NumberFormat _percentFormat = NumberFormat.getPercentInstance();
+//
+//		public Boolean preExecuteFiniSh=false;	//ProgressDialog生成終了
+//		public Bundle extras;
+//
+//		long stepKaisi = System.currentTimeMillis();		//この処理の開始時刻の取得
+//		long stepSyuuryou;		//この処理の終了時刻の取得
+//
+//		public plogTask(Context cContext , plogTaskCallback callback ,int reqCode, CharSequence pdTitol ,CharSequence pdMessage ,int pdMaxVal){
+//			super();
+//		final String TAG = "plogTask[plogTask.TagBrows]";
+//		try{
+//			String dbMsg = "cContext="+cContext;///////////////////////////
+//			if( cContext != null ){
+//				this.callback = callback;
+//				dbMsg += ",callback="+callback;///////////////////////////
+//				dbMsg += ",reqCode=" + reqCode;
+//				dbMsg += ",Titol=" + pdTitol;
+//				dbMsg += ",Message=" + pdMessage;
+//				if(progressDialog != null ){
+//					if(progressDialog.isShowing()){
+//						progressDialog.dismiss();
 //					}
 //				}
-//				dbMsg +=", 更新間隔 = " + vtWidth  ;
-//				System.currentTimeMillis();
-				String result2 = null;
-				switch(reqCode) {
-				case read_FILE:				//ファイル読込
-					File file=(File) params[2] ;																	//2.file , null );
-					do{
-						result2 = raf2Str(file, true);			//RandomAccessFileをString変換
-					}while( result2 == null );
-					TagBrows.this.result = result2;
-					dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
-					break;
-				default:
+//				progressDialog = new ProgressDialog(cContext);			//.getApplicationContext()
+//				progressDialog.setTitle(pdTitol);
+//				progressDialog.setMessage(pdMessage);
+//				switch(reqCode) {
+//				case read_FILE:				//ファイル読込
+//					progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);			// プログレスダイアログのスタイルを円形に設定します
 //					break;
-//				case read_USLT:																					//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー
-//				case read_AAC_LYRIC:				//@Lyrだけを読めるか試みる
-//				case read_AAC_HEAD:				//QuickTime Tagsの読取り
-//				case read_AAC_HEAD_Movie:		//QuickTime Tags.QuickTime Movie Tagsの読取り
-//				case read_AAC_Movie_Meta:		//QuickTime Tags.QuickTime Meta Tagsの読取り
-//				case read_AAC_ITEM:				//QuickTime Tagsの読取り
-					TagBrows.this.result=(String) params[2] ;																//2.result
-					dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
-				//	result2 = result;
-					List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
-					pdMaxVal = kensaku.size();
-					dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
-					for(int i = 0; i < pdMaxVal ; i++){
-						dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
-						String freamName = kensaku.get(i);
-						dbMsg +=freamName + ";";
-						int sInt = TagBrows.this.result.length();
-						dbMsg +="残り" + sInt + "文字";
-						if(freamName.equals("USLT") || freamName.equals("USLT")){
-							pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
-						} else {
-							pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
-						}
-						TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
-						pdCoundtVal = i + 1 ;
-				//		pdCoundtVal = result2.length();
-						if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
-							pdCoundtVal = pdMaxVal ;																//ループ中断
-							i = pdMaxVal;
-						}
-						int eInt = TagBrows.this.result.length();
-						dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
-						myLog(TAG,dbMsg);
-						publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
-					}
-			//		publishProgress( pdMaxVal );		//progressDialog.progBar1.setProgress(step1);
-					break;
-				}
-			//	Thrd.sleep(200);			//書ききる為の時間（100msでは不足）
-				stepSyuuryou = System.currentTimeMillis();		//この処理の終了時刻の取得
-				dbMsg = this.reqCode +";経過時間"+(int)((stepSyuuryou - stepKaisi)) + "[mS]";				//各処理の所要時間
-				return AsyncTaskResult.createNormalResult( reqCode );
-			} catch (Exception e) {
-				myErrorLog(TAG,dbMsg+"；"+e.toString());
-				return AsyncTaskResult.createNormalResult(reqCode) ;				//onPostExecuteへ
-			}
-		}
-
-		@Override
-	/**
-	 * onProgressUpdate
-	 * プログレスバー更新処理： UIスレッドで実行される doInBackground内でpublishProgressメソッドが呼ばれると、
-	 * UIスレッド上でこのメソッドが呼ばれます。   このメソッドの引数の型はAsyncTaskの二つ目のパラメータです。
-	 * メインスレッドで実行されます。非同期処理の進行状況をプログレスバーで 表示したい時などに使うことができます。*/
-		public void onProgressUpdate(Integer... values) {			//
-			final String TAG = "onProgressUpdate";
-			String dbMsg="[plogTask.TagBrows]";
-			int progress = values[0];
-			try{
-				dbMsg= this.reqCode +")progress= " + progress;
-				progressDialog.setProgress(progress);
-				dbMsg +=">> " + progressDialog.getProgress();
-				dbMsg +="/" + progressDialog.getMax();///////////////////////////////////
-		//		myLog(TAG,dbMsg);
-			} catch (Exception e) {
-				myErrorLog(TAG,dbMsg+"；"+e.toString());
-			}
-		}
-
-		@Override
-	/**
-	 * onPostExecute
-	 * doInBackground が終わるとそのメソッドの戻り値をパラメータとして渡して onPostExecute が呼ばれます。
-	 * このパラメータの型は AsyncTask を extends するときの三つめのパラメータです。
-	 *  バックグラウンド処理が終了し、メインスレッドに反映させる処理をここに書きます。
-	 *  doInBackgroundメソッドの実行後にメインスレッドで実行されます。
-	 *  doInBackgroundメソッドの戻り値をこのメソッドの引数として受け取り、その結果を画面に反映させることができます。*/
-		public void onPostExecute(AsyncTaskResult<Integer> ret){	// タスク終了後処理：UIスレッドで実行される AsyncTaskResult<Object>
-			super.onPostExecute(ret);
-				final String TAG = "onPostExecute";
-				String dbMsg="[plogTask.TagBrows]";
-				try{
-					Thread.sleep(100);			//書ききる為の時間（100msでは不足）
-					reqCode = ret.getReqCode();
-					dbMsg +="終了；reqCode=" + reqCode +"(終端"+ pdCoundtVal +")";
-					dbMsg +=",callback = " + callback;	/////http://techbooster.org/android/ui/1282/
-					dbMsg +="[ " + pdCoundtVal +  "/ " + pdMaxVal +"]";	/////http://techbooster.org/android/ui/1282/
-	//				myLog(TAG, dbMsg);
-			//		if( pdCoundtVal  >= pdMaxVal){
-						callback.onSuccessplogTask(reqCode );		//1.次の処理;2.次の処理に渡すメッセージ
-						progressDialog.dismiss();
-	//					cursor.close();
-			//		}
-				} catch (Exception e) {
-					myErrorLog(TAG,dbMsg + "でエラー発生；"+e.toString());
-				}
-			}
-	}  //public class plogTask
-
-	@Override
-	public void onSuccessplogTask(int reqCode) {															//①ⅵ3；
-		final String TAG = "onSuccessplogTask";
-		String dbMsg="[plogTask.TagBrows]";
-		try{
-			dbMsg= "reqCode=" + reqCode;/////////////////////////////////////
-			switch(reqCode) {
-			case read_FILE:				//ファイル読込
-				dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
-				file2Tag2(TagBrows.this.result);			//文字列からフィールドを抽出				break;
-			case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
-				back2Activty(  );			//呼び出しの戻り処理
-				break;
-			case read_AAC_PRE:				//最小限の設定読取り
-				lyricReadAac();		//@lirからの優先読込み
-				break;
-			case read_AAC_LYRIC:				//@Lyrだけを読めるか試みる
-				if( result_USLT == null ){
-					result = resultStock;
-		//			headReadAac2(result);		//上位階層から順次読み込み		final RandomAccessFile newFile
-					itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
-				}else{
-					readEndAac(  );
-				}
-				resultStock = null;
-				break;
-			case read_AAC_HEAD:				//QuickTime Tagsの読取り
-				movieReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
-				break;
-			case read_AAC_HEAD_Movie:		//QuickTime Tags.QuickTime Movie Tagsの読取り
-				metaReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
-				break;
-			case read_AAC_Movie_Meta:		//QuickTime Tags.QuickTime Meta Tagsの読取り
-				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
-				break;
-			case read_AAC_ITEM:				//QuickTime Tagsの読取り
-				readEndAac(  );
-				break;
-			case read_WMA_ITEM:									//WMAのオブジェクト読取り
-			case read_WMA_ID32:									//WMAに埋め込まれたID3v2タグの読取り
-			case read_WMA_ID33:									//WMAに埋め込まれたID3v3タグの読取り
-			case read_WMA_AAC:									//WMAに埋め込まれたAAC Atomの読取り
-				itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
-				break;
-			default:
-				break;
-			}
-	//		myLog(TAG,dbMsg);
-		} catch (Exception e) {		//汎用
-			myErrorLog(TAG,dbMsg+"で"+e.toString());
-		}
-	}
+//				default:
+//					progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);			// プログレスダイアログのスタイルを水平スタイルに設定します
+//					dbMsg += ",Max=" + pdMaxVal;
+//					progressDialog.setMax(pdMaxVal);			// プログレスダイアログの最大値を設定します
+//					break;
+//				}
+//				progressDialog.setCancelable(true);			// プログレスダイアログのキャンセルが可能かどうかを設定します
+//				progressDialog.show();
+//				dbMsg += ">isShowing>" + progressDialog.isShowing();
+//			}
+//	//		myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG,"でエラー発生；"+e.toString());
+//		}
+//	}
+//		@Override
+//	/*最初にUIスレッドで呼び出されます。 , UIに関わる処理をします。
+//	 * doInBackgroundメソッドの実行前にメインスレッドで実行されます。
+//	 * 非同期処理前に何か処理を行いたい時などに使うことができます。 */
+//		protected void onPreExecute() {			// onPreExecuteダイアログ表示
+//			super.onPreExecute();
+//			final String TAG = "onPreExecute";
+//			String dbMsg="[plogTask.TagBrows]";
+//			try {
+//				dbMsg = ":reqCode="+reqCode;///////////////////////////
+//				dbMsg +=  ",pdTitol="+pdTitol;///////////////////////////
+//				dbMsg +=  ",Message="+pdMessage;///////////////////////////
+//				dbMsg += ",pdMaxVal="+pdMaxVal;///////////////////////////
+//		//		myLog(TAG, dbMsg);
+//				//☆こここで初期設定が出来ないのでonCreate相当のコンストラクタ；plogTaskで行う
+//			} catch (Exception e) {
+//				myErrorLog(TAG,"でエラー発生；"+e.toString());
+//			}
+//		}
+//
+//		@SuppressWarnings("resource")
+//		@Override
+//	/**
+//	 * doInBackground
+//	 * ワーカースレッド上で実行されます。 このメソッドに渡されるパラメータの型はAsyncTaskの一つ目のパラメータです。
+//	 * このメソッドの戻り値は AsyncTaskの三つ目のパラメータです。
+//	 * メインスレッドとは別のスレッドで実行されます。
+//	 * 非同期で処理したい内容を記述します。 このメソッドだけは必ず実装する必要があります。
+//	 *0 ;reqCode, 1; pdMessage , 2;pdMaxVal ,3:cursor , 4;cUri , 5;where , 6;stmt , 7;cv ,  8;omitlist , 9;tList );
+//	 * */
+//		public AsyncTaskResult<Integer> doInBackground(Object... params) {//InParams続けて呼ばれる処理；第一引数が反映されるのはここなのでここからダイアログ更新 バックスレッドで実行する処理;getProgress=0で呼ばれている
+//			final String TAG = "doInBackground";
+//			String dbMsg="[plogTask.TagBrows]";
+//			try {
+//				pdCoundtVal = 0;
+//				this.reqCode = (Integer) params[0] ;			//0.処理;reqCode
+//				dbMsg="reqCode = " + reqCode;
+//				CharSequence setStr=(CharSequence) params[1];	//1.次の処理に渡すメッセージ;pdMessage
+//				if(setStr !=null ){
+//					if(! setStr.equals(pdMessage)){
+//						pdMessage = setStr;
+//						this.pdMessage = setStr;
+//						dbMsg +=",Message = " + pdMessage;
+//					}
+//				}
+//				String result2 = null;
+//				switch(reqCode) {
+//				case read_FILE:				//ファイル読込
+//					File file=(File) params[2] ;																	//2.file , null );
+//					do{
+//						result2 = raf2Str(file, true);			//RandomAccessFileをString変換
+//					}while( result2 == null );
+//					TagBrows.this.result = result2;
+//					dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+//					break;
+//				default:
+//					TagBrows.this.result=(String) params[2] ;																//2.result
+//					dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+//					List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
+//					pdMaxVal = kensaku.size();
+//					dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
+//					for(int i = 0; i < pdMaxVal ; i++){
+//						dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
+//						String freamName = kensaku.get(i);
+//						dbMsg +=freamName + ";";
+//						int sInt = TagBrows.this.result.length();
+//						dbMsg +="残り" + sInt + "文字";
+//						if(freamName.equals("USLT") || freamName.equals("USLT")){
+//							pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+//						} else {
+//							pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+//						}
+//						TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+//						pdCoundtVal = i + 1 ;
+//						if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+//							pdCoundtVal = pdMaxVal ;																//ループ中断
+//							i = pdMaxVal;
+//						}
+//						int eInt = TagBrows.this.result.length();
+//						dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
+//						myLog(TAG,dbMsg);
+//						publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
+//					}
+//					break;
+//				}
+//				stepSyuuryou = System.currentTimeMillis();		//この処理の終了時刻の取得
+//				dbMsg = this.reqCode +";経過時間"+(int)((stepSyuuryou - stepKaisi)) + "[mS]";				//各処理の所要時間
+//				return AsyncTaskResult.createNormalResult( reqCode );
+//			} catch (Exception e) {
+//				myErrorLog(TAG,dbMsg+"；"+e.toString());
+//				return AsyncTaskResult.createNormalResult(reqCode) ;				//onPostExecuteへ
+//			}
+//		}
+//
+//		@Override
+//	/**
+//	 * onProgressUpdate
+//	 * プログレスバー更新処理： UIスレッドで実行される doInBackground内でpublishProgressメソッドが呼ばれると、
+//	 * UIスレッド上でこのメソッドが呼ばれます。   このメソッドの引数の型はAsyncTaskの二つ目のパラメータです。
+//	 * メインスレッドで実行されます。非同期処理の進行状況をプログレスバーで 表示したい時などに使うことができます。*/
+//		public void onProgressUpdate(Integer... values) {			//
+//			final String TAG = "onProgressUpdate";
+//			String dbMsg="[plogTask.TagBrows]";
+//			int progress = values[0];
+//			try{
+//				dbMsg= this.reqCode +")progress= " + progress;
+//				progressDialog.setProgress(progress);
+//				dbMsg +=">> " + progressDialog.getProgress();
+//				dbMsg +="/" + progressDialog.getMax();///////////////////////////////////
+//		//		myLog(TAG,dbMsg);
+//			} catch (Exception e) {
+//				myErrorLog(TAG,dbMsg+"；"+e.toString());
+//			}
+//		}
+//
+//		@Override
+//	/**
+//	 * onPostExecute
+//	 * doInBackground が終わるとそのメソッドの戻り値をパラメータとして渡して onPostExecute が呼ばれます。
+//	 * このパラメータの型は AsyncTask を extends するときの三つめのパラメータです。
+//	 *  バックグラウンド処理が終了し、メインスレッドに反映させる処理をここに書きます。
+//	 *  doInBackgroundメソッドの実行後にメインスレッドで実行されます。
+//	 *  doInBackgroundメソッドの戻り値をこのメソッドの引数として受け取り、その結果を画面に反映させることができます。*/
+//		public void onPostExecute(AsyncTaskResult<Integer> ret){	// タスク終了後処理：UIスレッドで実行される AsyncTaskResult<Object>
+//			super.onPostExecute(ret);
+//				final String TAG = "onPostExecute";
+//				String dbMsg="[plogTask.TagBrows]";
+//				try{
+//					Thread.sleep(100);			//書ききる為の時間（100msでは不足）
+//					reqCode = ret.getReqCode();
+//					dbMsg +="終了；reqCode=" + reqCode +"(終端"+ pdCoundtVal +")";
+//					dbMsg +=",callback = " + callback;	/////http://techbooster.org/android/ui/1282/
+//					dbMsg +="[ " + pdCoundtVal +  "/ " + pdMaxVal +"]";	/////http://techbooster.org/android/ui/1282/
+//	//				myLog(TAG, dbMsg);
+//			//		if( pdCoundtVal  >= pdMaxVal){
+//						callback.onSuccessplogTask(reqCode );		//1.次の処理;2.次の処理に渡すメッセージ
+//						progressDialog.dismiss();
+//	//					cursor.close();
+//			//		}
+//				} catch (Exception e) {
+//					myErrorLog(TAG,dbMsg + "でエラー発生；"+e.toString());
+//				}
+//			}
+//	}  //public class plogTask
+//
+//	@Override
+//	public void onSuccessplogTask(int reqCode) {															//①ⅵ3；
+//		final String TAG = "onSuccessplogTask";
+//		String dbMsg="[plogTask.TagBrows]";
+//		try{
+//			dbMsg= "reqCode=" + reqCode;/////////////////////////////////////
+//			switch(reqCode) {
+//			case read_FILE:				//ファイル読込
+//				dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+//				file2Tag2(TagBrows.this.result);			//文字列からフィールドを抽出				break;
+//			case read_USLT:				//	<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー									//10cc(3)
+//				back2Activty(  );			//呼び出しの戻り処理
+//				break;
+//			case read_AAC_PRE:				//最小限の設定読取り
+//				lyricReadAac();		//@lirからの優先読込み
+//				break;
+//			case read_AAC_LYRIC:				//@Lyrだけを読めるか試みる
+//				if( result_USLT == null ){
+//					result = resultStock;
+//		//			headReadAac2(result);		//上位階層から順次読み込み		final RandomAccessFile newFile
+//					itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+//				}else{
+//					readEndAac(  );
+//				}
+//				resultStock = null;
+//				break;
+//			case read_AAC_HEAD:				//QuickTime Tagsの読取り
+//				movieReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
+//				break;
+//			case read_AAC_HEAD_Movie:		//QuickTime Tags.QuickTime Movie Tagsの読取り
+//				metaReadAac(  );		//QuickTime Tags.QuickTime Movie Tagsの読取りの読取り準備
+//				break;
+//			case read_AAC_Movie_Meta:		//QuickTime Tags.QuickTime Meta Tagsの読取り
+//				itemReadAac(  );		//QuickTime ItemList Tagsの読取り準備
+//				break;
+//			case read_AAC_ITEM:				//QuickTime Tagsの読取り
+//				readEndAac(  );
+//				break;
+//			case read_WMA_ITEM:									//WMAのオブジェクト読取り
+//			case read_WMA_ID32:									//WMAに埋め込まれたID3v2タグの読取り
+//			case read_WMA_ID33:									//WMAに埋め込まれたID3v3タグの読取り
+//			case read_WMA_AAC:									//WMAに埋め込まれたAAC Atomの読取り
+//				itemReadWmaEnd();		//WMAのオブジェクト読取り終了処理
+//				break;
+//			default:
+//				break;
+//			}
+//	//		myLog(TAG,dbMsg);
+//		} catch (Exception e) {		//汎用
+//			myErrorLog(TAG,dbMsg+"で"+e.toString());
+//		}
+//	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();

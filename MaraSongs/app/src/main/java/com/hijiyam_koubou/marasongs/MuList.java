@@ -1180,7 +1180,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				int retInt = cursor.getCount();
 				dbMsg +=  "," + retInt + "件";
 				plTask.execute(reqCode,cursor,pdTitol,pdMessage,cursor.getCount());
-//				pTask = (plogTask) new plogTask(this ,  this ,pdTitol ,pdMessage,retInt ).execute(reqCode,  pdMessage , cursor ,pdTitol );		//,jikkouStep,totalStep,calumnInfo
 			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
