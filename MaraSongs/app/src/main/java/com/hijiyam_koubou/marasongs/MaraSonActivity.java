@@ -4095,9 +4095,12 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=",hozonnsaki=" + hozonnsaki ;/////////////////////////////////////
 			Intent intentWV = new Intent(MaraSonActivity.this,wKit.class);			//webでヘルプ表示
 			File wFile = new File(hozonnsaki);
-			dbMsg +=",exists=" + wFile.exists() ;/////////////////////////////////////
+			dbMsg +=",exists=" + wFile.exists();
 
-			intentWV.putExtra("dataURI","file:/"+hozonnsaki);		//"file://"+ hozonnsaki
+//			String[] URIs = hozonnsaki.split("Android");
+//			String dataURI = "/Android"+URIs[1];
+//			dbMsg +=",dataURI=" + dataURI;
+			intentWV.putExtra("dataURI",hozonnsaki);		//"file://"+ hozonnsaki
 			intentWV.putExtra("baseUrl", hozonnsaki);		//"file:///android_asset/index.html"
 	//		intentWV.putExtra("loadStr",lyricStr);
 			intentWV.putExtra("motoFName",hozonnsaki);

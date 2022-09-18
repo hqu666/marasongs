@@ -90,10 +90,12 @@ public class wKit extends Activity {
 	public ComponentName MPSName;
 	public MusicPlayerService MPS;
 
+	public int reqCode;
+	public int backCode;
 
 	public void readPref () {        //プリファレンスの読込み
 		final String TAG = "readPref";
-		String dbMsg = "[MuList]";
+		String dbMsg = "";
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
@@ -106,29 +108,30 @@ public class wKit extends Activity {
 		}
 	}																	//設定読込・旧バージョン設定の消去
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		//org;publicvoid
 		super.onCreate(savedInstanceState);
-		final String TAG = "onCreate[wKit]";
+		final String TAG = "onCreate";
 		String dbMsg ="開始";
 		try{
 			Bundle extras = getIntent().getExtras();
+			reqCode = extras.getInt("reqCode");
+			backCode = extras.getInt("backCode");
+			dbMsg +="、reqCode=" + reqCode + "、backCode=" + backCode;
 			dataURI = extras.getString("dataURI");						//最初に表示するページのパス
-			dbMsg = "dataURI="+dataURI;////////////////////////////////////////////////////////////////////////
+			dbMsg = "dataURI= "+dataURI;////////////////////////////////////////////////////////////////////////
 			fType = extras.getString("fType");							//データタイプ
-			dbMsg +=",fType="+fType;////////////////////////////////////////////////////////////////////////
-			if(! dataURI.startsWith("http")){				//web指定で無ければ
-				String loadStr = extras.getString("loadStr");						//最初に表示するページのパス
-				dbMsg +=",loadStr="+loadStr;////////////////////////////////////////////////////////////////////////
-				baseUrl = "file://"+extras.getString("baseUrl");				//最初に表示するページを受け取る
-				dbMsg += ",baseUrl="+baseUrl;////////////////////////////////////////////////////////////////////////
-				motoFName = extras.getString("motoFName");				//htmlのファイル名
-				String[] testSrA=dataURI.split(File.separator);
-				fName=testSrA[testSrA.length-1];
-				dbMsg +=",fName="+ fName;////////////////////////////////////////////////////////////////////////
-			}
+			dbMsg +=" ,fType="+fType;////////////////////////////////////////////////////////////////////////
+//			if(! dataURI.startsWith("http")){				//web指定で無ければ
+//				String loadStr = extras.getString("loadStr");						//最初に表示するページのパス
+//				dbMsg +=",loadStr="+loadStr;////////////////////////////////////////////////////////////////////////
+//				baseUrl = "file://"+extras.getString("baseUrl");				//最初に表示するページを受け取る
+//				dbMsg += ",baseUrl="+baseUrl;////////////////////////////////////////////////////////////////////////
+//				motoFName = extras.getString("motoFName");				//htmlのファイル名
+//				String[] testSrA=dataURI.split(File.separator);
+//				fName=testSrA[testSrA.length-1];
+//				dbMsg +=" ,fName="+ fName;////////////////////////////////////////////////////////////////////////
+//			}
 			requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); 		//ローディングをタイトルバーのアイコンとして表示☆リソースを読み込む前にセットする
 			wm = (WindowManager)getSystemService(WINDOW_SERVICE);			// ウィンドウマネージャのインスタンス取得
 			Display disp = wm.getDefaultDisplay();										// ディスプレイのインスタンス生成
@@ -165,10 +168,13 @@ public class wKit extends Activity {
 			settings.setSupportZoom(true);								//ピンチ操作を有効化
 		//	settings.setLightTouchEnabled(true);
 			settings.setJavaScriptEnabled(true);						//JavaScriptを有効化
-
+			settings.setAllowFileAccess(true);
+			settings.setAllowContentAccess(true);
+			settings.setAllowFileAccessFromFileURLs(true);
+			settings.setAllowUniversalAccessFromFileURLs(true);
 			MLStr=dataURI;
-			dbMsg += "," + fType+"をMLStr="+MLStr;////////////////////////////////////////////////////////////////////////
-			dbMsg += ",StandardFontFamil="+settings.getStandardFontFamily();	//ShinGo-Medium
+			dbMsg += "," + fType+",loadUrl= "+MLStr;////////////////////////////////////////////////////////////////////////
+			dbMsg += " ,StandardFontFamil="+settings.getStandardFontFamily();	//ShinGo-Medium
 			dbMsg += ",Encoding="+settings.getDefaultTextEncodingName();		//Shift_JIS
 			webView.loadUrl(String.valueOf(MLStr));
 
@@ -223,7 +229,7 @@ public class wKit extends Activity {
 				dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				wk_rew_bt.setOnClickListener(new View.OnClickListener() {			//戻しボタン
 					public void onClick(View v) {
-						final String TAG = "wk_rew_bt[wKit]";
+						final String TAG = "wk_rew_bt";
 						String dbMsg= "開始;";/////////////////////////////////////
 						try{
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
@@ -238,7 +244,7 @@ public class wKit extends Activity {
 				});
 				wk_pp_bt.setOnClickListener(new View.OnClickListener() {			//再生/ポーズボタン
 					public void onClick(View v) {
-						final String TAG = "wk_pp_bt[wKit]";
+						final String TAG = "wk_pp_bt";
 						String dbMsg= "開始;";/////////////////////////////////////
 						try{
 							btStre = wk_pp_bt.getContentDescription();
@@ -265,7 +271,7 @@ public class wKit extends Activity {
 				});
 				wk_ff_bt.setOnClickListener(new View.OnClickListener() {			//送りボタン
 					public void onClick(View v) {
-						final String TAG = "wk_ff_bt[wKit]";
+						final String TAG = "wk_ff_bt";
 						String dbMsg= "開始;";/////////////////////////////////////
 						try{
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
@@ -289,9 +295,9 @@ public class wKit extends Activity {
 			layout_ad = findViewById(R.id.wk_ad_ll);
 			layout_ad.setVisibility(View.GONE);
 			adMobNow = false;				//AdView優先
-			nendAdView = findViewById(R.id.wk_nend);
+	//		nendAdView = findViewById(R.id.wk_nend);
 			nenvNow = false;
-	//		myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,e + "");
 		}
@@ -300,7 +306,7 @@ public class wKit extends Activity {
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {		//①ⅱヘッドのイメージは実際にローディンされた時点で設定表示と同時にウィジェットの高さや幅を取得したいときは大抵ここで取る。
 		if (hasFocus) {
-			final String TAG = "onWindowFocusChanged[wKit]";
+			final String TAG = "onWindowFocusChanged";
 			String dbMsg= "開始;";/////////////////////////////////////
 			try{
 				dbMsg= "fType=" + fType;/////////////////////////////////////
@@ -331,27 +337,27 @@ public class wKit extends Activity {
 				int motoTakasa = wk_koukoku_ll.getHeight();
 				dbMsg +="motoHaba["+ motoHaba +" × "+ motoTakasa + "]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 				int[] location = new int[2];
-				wk_koukoku_ll.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
-				koukokuL = location[0];			//広告表示枠幅
-				koukokuT = location[1];			//広告表示枠高さ
-				dbMsg +=",広告表示枠("+ koukokuL +","+ koukokuT +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-				koukokuW= dWidth - location[0] - wk_ff_bt.getWidth();			//広告表示枠
-				koukokuh = wk_koukoku_ll.getHeight();			//広告表示枠高さ
-				dbMsg +="["+ koukokuW +" × "+ koukokuh + "]";/////////////////////////////////////////////////////////////////////////////////////////////////////////
-				if( ! nenvNow){
-					layout_ad.setVisibility(View.GONE);
-					nendAdView.setVisibility(View.VISIBLE);
-					nendLoad();		//nendの広告設定
-				}
-				dbMsg +="nenvNow=" + nenvNow;/////////////////////////////////////
-				dbMsg +=",adMobNow=" + adMobNow;/////////////////////////////////////
-//				if(! adMobNow){
-//					nendAdView.setVisibility(View.GONE);
-//					layout_ad.setVisibility(View.VISIBLE);
-//					dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" +  layout_ad.getHeight();
-//					dbMsg += "(" + layout_ad.getX() + "," + layout_ad.getY() + ")]";
-//					adMobLoad();													//Google AdMobの広告設定
+//				wk_koukoku_ll.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
+//				koukokuL = location[0];			//広告表示枠幅
+//				koukokuT = location[1];			//広告表示枠高さ
+//				dbMsg +=",広告表示枠("+ koukokuL +","+ koukokuT +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+//				koukokuW= dWidth - location[0] - wk_ff_bt.getWidth();			//広告表示枠
+//				koukokuh = wk_koukoku_ll.getHeight();			//広告表示枠高さ
+//				dbMsg +="["+ koukokuW +" × "+ koukokuh + "]";/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//				if( ! nenvNow){
+//					layout_ad.setVisibility(View.GONE);
+//					nendAdView.setVisibility(View.VISIBLE);
+//					nendLoad();		//nendの広告設定
 //				}
+//				dbMsg +="nenvNow=" + nenvNow;/////////////////////////////////////
+//				dbMsg +=",adMobNow=" + adMobNow;/////////////////////////////////////
+////				if(! adMobNow){
+////					nendAdView.setVisibility(View.GONE);
+////					layout_ad.setVisibility(View.VISIBLE);
+////					dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" +  layout_ad.getHeight();
+////					dbMsg += "(" + layout_ad.getX() + "," + layout_ad.getY() + ")]";
+////					adMobLoad();													//Google AdMobの広告設定
+////				}
 	//			myLog(TAG,dbMsg);
 			}catch (Exception e) {
 				myErrorLog(TAG,dbMsg + "で"+e + "");
@@ -375,7 +381,7 @@ public class wKit extends Activity {
 	 * 参考	https://github.com/fan-ADN/nendSDK-Android/wiki/%E3%83%90%E3%83%8A%E3%83%BC%E5%9E%8B%E5%BA%83%E5%91%8A_%E5%AE%9F%E8%A3%85%E6%89%8B%E9%A0%86
 	 * */
 	public void nendLoad(){		//nendの広告設定
-		final String TAG = "nendLoad[wKit]";
+		final String TAG = "nendLoad";
 		String dbMsg = "";//////////////////
 		try{
 			int[] location = new int[2];
@@ -544,7 +550,7 @@ public class wKit extends Activity {
 	 * */
 	@SuppressLint("NewApi")
 	public void adMobLoad(){		//Google AdMobの広告設定
-		final String TAG = "adMobLoad[wKit]";
+		final String TAG = "adMobLoad";
 		String dbMsg = "";//////////////////
 		try{
 			layout_ad.setVisibility(View.VISIBLE);
@@ -735,7 +741,7 @@ public class wKit extends Activity {
 	}
 
 	public void quitMe(){			//このActivtyの終了
-		final String TAG = "onCreate[wKit]";
+		final String TAG = "onCreate";
 		String dbMsg ="";
 		try{
 			if(fType.equals("lyric")){
@@ -802,9 +808,9 @@ public class wKit extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		try{
 			dbMsg="keyCode="+keyCode;//+",getDisplayLabel="+String.valueOf(event.getDisplayLabel())+",getAction="+event.getAction();////////////////////////////////
-	//		myLog("onKeyDown","[wKit]"+dbMsg);
+	//		myLog("onKeyDown",""+dbMsg);
 //		dbMsg="ppBtnID="+sharedPref.getBoolean("prefKouseiD_PadUMU", false);///////////////////////////////////////////////////////////////////
-//			myLog("onKeyDown","[wKit]"+dbMsg);
+//			myLog("onKeyDown",""+dbMsg);
 		    dbMsg="サイドボリュームとディスプレイ下のキー；canGoBack="+webView.canGoBack();///////////////////////////////////////////////////////////////////
 			switch (keyCode) {	//キーにデフォルト以外の動作を与えるもののみを記述★KEYCODE_MENUをここに書くとメニュー表示されない
 			case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
@@ -901,7 +907,7 @@ public class wKit extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		final String TAG = "onOptionsItemSelected[wKit]";
+		final String TAG = "onOptionsItemSelected";
 		String dbMsg ="";
 		try{
 				dbMsg ="MenuItem"+item.getItemId()+"を操作";////////////////////////////////////////////////////////////////////////////
@@ -962,7 +968,7 @@ public class wKit extends Activity {
 			quitMe();				//このActivtyの終了
 			setVisible(false);		//エラー対策		wKit has leaked window android.widget.ZoomButtonsController$Container{444ff948 V.E..... ......I. 0,0-1080,146} that was originally added here
 		}catch (Exception e) {
-			myErrorLog("onDestroy","[wKit]"+"で"+e + "");
+			myErrorLog("onDestroy",""+"で"+e + "");
 		}
 	}
 
@@ -977,7 +983,7 @@ public class wKit extends Activity {
 	public String b_filePath = null;					//読み込み済みのファイル
 	private void readLyric( String filepath ) {					//歌詞の読出し
 		//http://www.nilab.info/z3/20120806_02.html
-		final String TAG = "readLyric[wKit]";
+		final String TAG = "readLyric";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
 			if(filepath != null){
@@ -1009,7 +1015,7 @@ public class wKit extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		final String TAG = "onActivityResult[wKit]";
+		final String TAG = "onActivityResult";
 		String dbMsg="開始";
 		try{
 			Bundle bundle = null ;
@@ -1065,7 +1071,7 @@ public class wKit extends Activity {
 			public void onReceive(final Context context, final Intent intent) {
 				mHandler.post(new Runnable() {
 					public void run() {
-						final String TAG = "MusicReceiver[wKit]";
+						final String TAG = "MusicReceiver";
 						String dbMsg="起動";
 						try{
 //							dbMsg= "context=" + context;
@@ -1128,11 +1134,11 @@ public class wKit extends Activity {
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		Util.myLog(TAG , "[wKit]" +dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG , "[wKit]" +dbMsg);
 	}
 }

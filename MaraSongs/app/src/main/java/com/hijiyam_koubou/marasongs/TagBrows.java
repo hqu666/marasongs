@@ -5480,32 +5480,9 @@ private byte majorVersion = (byte) 0;
 			}catch (IOException e) {
 				myErrorLog(TAG,dbMsg + "で"+e.toString());
 			}
-//			try (FileWriter writer = new FileWriter(hozonnsaki)) {
-//				writer.write(lyricStr);
-//			}catch (IOException e) {
-//				myErrorLog(TAG,dbMsg + "で"+e.toString());
-//			}
-//			FileOutputStream out = openFileOutput( fName, MODE_PRIVATE );
-//			out.write( lyricStr.getBytes() );
-//			File fObj = new File(hozonnsaki);
-//			fName = fObj.getPath();
-//			dbMsg +=",fName=" + fName ;/////////////////////////////////////
 			fName=hozonnsaki;
 			File wFile = new File(hozonnsaki);
 			dbMsg +=",exists=" + wFile.exists() ;/////////////////////////////////////
-//読込
-//			File wFile = new File(fName);
-//			dbMsg +=",wFile=" + wFile.getPath() ;/////////////////////////////////////
-
-//			FileInputStream in = openFileInput( fName );
-//			BufferedReader reader = new BufferedReader( new InputStreamReader( in , "UTF-8") );
-//			String str = "";
-//			String tmp;
-//			while( (tmp = reader.readLine()) != null ){
-//				str = str + tmp + "\n";
-//			}
-//			reader.close();
-//			dbMsg +=",str=" + str ;/////////////////////////////////////
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
