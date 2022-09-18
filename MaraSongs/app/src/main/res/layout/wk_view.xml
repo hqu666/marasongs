@@ -68,17 +68,17 @@
 
                     </LinearLayout>
 
-                <net.nend.android.NendAdView
-                    android:id="@+id/wk_nend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="0dp"
-                    NendAdjustSize="true"
-                    NendApiKey="@string/nend_ly_apiKey"
-                    NendSpotId="@string/nend_ly_spotID" >
+<!--                <net.nend.android.NendAdView-->
+<!--                    android:id="@+id/wk_nend"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_margin="0dp"-->
+<!--                    NendAdjustSize="true"-->
+<!--                    NendApiKey="@string/nend_ly_apiKey"-->
+<!--                    NendSpotId="@string/nend_ly_spotID" >-->
 
-                </net.nend.android.NendAdView>
+<!--                </net.nend.android.NendAdView>-->
             </LinearLayout>
         </LinearLayout>
 

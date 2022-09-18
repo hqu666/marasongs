@@ -2320,7 +2320,8 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +="終話後に自動再生=" +pref_cyakusinn_fukki;/////////////////////////////////////
 			dbMsg +=",このアプリのバージョンコード="+pref_sonota_vercord;/////////////////////////////////////
 			intentPRF.putExtra("pref_sonota_vercord",pref_sonota_vercord);
-			startActivityForResult(intentPRF , reqCode);
+			intentPRF.putExtra("backCode",reqCode);								// 歌詞読み込み
+			resultLauncher.launch(intentPRF);
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4060,11 +4061,10 @@ public class MaraSonActivity extends AppCompatActivity
 					dbMsg= "filepath=" + filepath;
 					Intent intentTB = new Intent(MaraSonActivity.this,TagBrows.class);
 					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
-					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
 					intentTB.putExtra("filePath",filepath);
 					lyricAri = false;			//歌詞を取得できた
+					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
 					resultLauncher.launch(intentTB);
-		//			startActivityForResult(intentTB , LyricCheck );								//歌詞の有無確認
 					/*		クラスとしての読出し
 					//					File sdFile = new File(Environment.getExternalStorageDirectory(), dataFN);
 										TagBrows mp3file = new TagBrows(dataFN ,this);
@@ -4097,11 +4097,12 @@ public class MaraSonActivity extends AppCompatActivity
 			File wFile = new File(hozonnsaki);
 			dbMsg +=",exists=" + wFile.exists() ;/////////////////////////////////////
 
-			intentWV.putExtra("dataURI","file://"+ hozonnsaki);		//"file:///android_asset/index.html"
+			intentWV.putExtra("dataURI","file:/"+hozonnsaki);		//"file://"+ hozonnsaki
+			intentWV.putExtra("baseUrl", hozonnsaki);		//"file:///android_asset/index.html"
 	//		intentWV.putExtra("loadStr",lyricStr);
 			intentWV.putExtra("motoFName",hozonnsaki);
 			intentWV.putExtra("fType","lyric");
-			startActivityForResult(intentWV , LyricWeb );								//192;歌詞のweb表示
+			startActivity(intentWV );								//192;歌詞のweb表示
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

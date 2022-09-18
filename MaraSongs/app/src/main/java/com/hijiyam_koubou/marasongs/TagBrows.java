@@ -16,6 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInput;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -853,7 +855,7 @@ private byte majorVersion = (byte) 0;
 			b_reader.close();
 			fis.close();
 			iS_reader.close();
-			dbMsg= dbMsg+ result.length() + "文字;;" + result;
+			dbMsg += result.length() + "文字;;" + result;
 	//		myLog(TAG,dbMsg);
 		}catch(FileNotFoundException e){
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -4203,11 +4205,11 @@ private byte majorVersion = (byte) 0;
 				if( tuikaMoji != null ){
 					int mojisuu = tuikaMoji.length();
 					if(40 < mojisuu){
-						dbMsg= dbMsg+ ",書込み="+ tuikaMoji.substring(0, 20) + "～"+ tuikaMoji.substring(mojisuu-20, mojisuu);
+						dbMsg += ",書込み="+ tuikaMoji.substring(0, 20) + "～"+ tuikaMoji.substring(mojisuu-20, mojisuu);
 					}else{
-						dbMsg= dbMsg+ ",書込み="+ tuikaMoji;
+						dbMsg += ",書込み="+ tuikaMoji;
 					}
-					dbMsg= dbMsg+ ";" + mojisuu + "文字";
+					dbMsg += ";" + mojisuu + "文字";
 //					tagData.add(target + ";" + tuikaMoji);
 //					dbMsg +=",tagData"+ tagData.size() + "件";
 				}
@@ -5418,40 +5420,44 @@ private byte majorVersion = (byte) 0;
 			dbMsg= "songLyric=";
 			int uketori = String.valueOf(songLyric).length();
 			if(30 < uketori){
-				dbMsg= dbMsg+ songLyric.substring(0, 30) +"～" + songLyric.substring(songLyric.length()-30);
+				dbMsg += songLyric.substring(0, 30) +"～" + songLyric.substring(songLyric.length()-30);
 			}else{
 				dbMsg += songLyric +  "～";
 			}
 			dbMsg += uketori +  "文字)";
 			String eucjpStr;
 			fName = "lyric.htm";
-			String hozonnsaki = "/data/data/" + this.getPackageName() + "/files/" + fName;
+			Util UTIL = new Util();
+			String pref_file_in = Util.getPrefStr("pref_file_in", "/android/data/" + this.getPackageName(), this);
+			dbMsg += ",pref_file_in=" + pref_file_in;
+			String hozonnsaki = "//storage/emulated/0/Android/data/com.hijiyam_koubou.marasongs/files/" + fName;	 					//pref_file_in + fName;			///data/data/
+			dbMsg += ",hozonnsaki=" + hozonnsaki;
 			String lyricStr = null;
 			eucjpStr = songLyric.replace("\n", "<br>");			//☆<PRE>では拡大すると横スクロールが発生するので改行を置換え
-			dbMsg= dbMsg+",eucjpStr=" + eucjpStr.substring(0, 30) +"～" + eucjpStr.substring(eucjpStr.length()-30);
-//			dbMsg= dbMsg+",EUC_JP=" + checkCharacterCode(songLyric, "EUC_JP") ;					//true
-//			dbMsg= dbMsg+",Shift_JIS=" + checkCharacterCode(songLyric, "Shift_JIS") ;			//true
-//			dbMsg= dbMsg+",UTF-8=" + checkCharacterCode(songLyric, "UTF-8") ;					//true
-//			dbMsg= dbMsg+",UTF-16=" + checkCharacterCode(songLyric, "UTF-16") ;					//true
-//			dbMsg= dbMsg+",8859_1=" + checkCharacterCode(songLyric, "iso-8859-1") ;					//false
-			dbMsg= dbMsg+",filePath=" + filePath ;
+			dbMsg +=",eucjpStr=" + eucjpStr.substring(0, 30) +"～" + eucjpStr.substring(eucjpStr.length()-30);
+//			dbMsg +=",EUC_JP=" + checkCharacterCode(songLyric, "EUC_JP") ;					//true
+//			dbMsg +=",Shift_JIS=" + checkCharacterCode(songLyric, "Shift_JIS") ;			//true
+//			dbMsg +=",UTF-8=" + checkCharacterCode(songLyric, "UTF-8") ;					//true
+//			dbMsg +=",UTF-16=" + checkCharacterCode(songLyric, "UTF-16") ;					//true
+//			dbMsg +=",8859_1=" + checkCharacterCode(songLyric, "iso-8859-1") ;					//false
+			dbMsg +=",filePath=" + filePath ;
 			String[] titolStrs = filePath.split(String.valueOf(File.separatorChar));
-			dbMsg= dbMsg+">>" + titolStrs.length + "分割" ;
+			dbMsg +=">>" + titolStrs.length + "分割" ;
 			String artittStr = titolStrs[(titolStrs.length - 3)] ;
-			dbMsg= dbMsg+",artit=" + artittStr ;
+			dbMsg +=",artit=" + artittStr ;
 			String albumStr = titolStrs[(titolStrs.length - 2)] ;
-			dbMsg= dbMsg+",album=" + albumStr ;
+			dbMsg +=",album=" + albumStr ;
 			String titolStr = titolStrs[(titolStrs.length - 1)];
-			dbMsg= dbMsg+",titolStr=" + titolStr ;
+			dbMsg +=",titolStr=" + titolStr ;
 			titolStrs = titolStr.split(".");
 			int bunkatu = titolStrs.length;
-			dbMsg= dbMsg+">>" + bunkatu + "分割" ;
+			dbMsg +=">>" + bunkatu + "分割" ;
 			if(bunkatu == 0){												//拡張子を分割できなければ
 				titolStr = titolStr.substring(0, titolStr.length()-4);		//末尾４文字カット
 			}else{
 				titolStr = titolStrs[0];
 			}
-			dbMsg= dbMsg+",titolStr=" + titolStr ;
+			dbMsg +=",titolStr=" + titolStr ;
 			eucjpStr = titolStr + "<br><br>" +eucjpStr;
 			if(albumStr != null){
 				titolStr = albumStr + "/" + titolStr;
@@ -5462,16 +5468,34 @@ private byte majorVersion = (byte) 0;
 				eucjpStr = artittStr + "<br>" +eucjpStr;
 			}
 
-
 			lyricStr = "<HTML><HEAD><meta http-equiv=\"content-type\" content=\"text/html;charset=UTF-8\"><TITLE>" + titolStr + "</TITLE></HEAD><BODY>" + eucjpStr + "</BODY></HTML>";			// " + metaStr + "
-			FileOutputStream out = openFileOutput( fName, MODE_PRIVATE );
-			out.write( lyricStr.getBytes() );
-			File fObj = new File(hozonnsaki);
-			fName = fObj.getPath();
-			dbMsg= dbMsg+",fName=" + fName ;/////////////////////////////////////
+			try {
+				FileOutputStream fos = new FileOutputStream(new File(hozonnsaki));
+				//openFileOutputパス指定できず だと　/data/data/com.hijiyam_koubou.marasongs/files　にしか書き込めない
+				OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+				BufferedWriter writer = new BufferedWriter(osw);
+				writer.write(lyricStr);
+				writer.close();
+				dbMsg +=">書き出し完了>";/////////////////////////////////////
+			}catch (IOException e) {
+				myErrorLog(TAG,dbMsg + "で"+e.toString());
+			}
+//			try (FileWriter writer = new FileWriter(hozonnsaki)) {
+//				writer.write(lyricStr);
+//			}catch (IOException e) {
+//				myErrorLog(TAG,dbMsg + "で"+e.toString());
+//			}
+//			FileOutputStream out = openFileOutput( fName, MODE_PRIVATE );
+//			out.write( lyricStr.getBytes() );
+//			File fObj = new File(hozonnsaki);
+//			fName = fObj.getPath();
+//			dbMsg +=",fName=" + fName ;/////////////////////////////////////
+			fName=hozonnsaki;
+			File wFile = new File(hozonnsaki);
+			dbMsg +=",exists=" + wFile.exists() ;/////////////////////////////////////
 //読込
 //			File wFile = new File(fName);
-//			dbMsg= dbMsg+",wFile=" + wFile.getPath() ;/////////////////////////////////////
+//			dbMsg +=",wFile=" + wFile.getPath() ;/////////////////////////////////////
 
 //			FileInputStream in = openFileInput( fName );
 //			BufferedReader reader = new BufferedReader( new InputStreamReader( in , "UTF-8") );
@@ -5481,10 +5505,8 @@ private byte majorVersion = (byte) 0;
 //				str = str + tmp + "\n";
 //			}
 //			reader.close();
-//			dbMsg= dbMsg+",str=" + str ;/////////////////////////////////////
+//			dbMsg +=",str=" + str ;/////////////////////////////////////
 			myLog(TAG,dbMsg);
-		}catch( IOException e ){
-			e.printStackTrace();
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
