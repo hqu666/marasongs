@@ -1090,14 +1090,10 @@ public class MaraSonActivity extends AppCompatActivity
 //								creditArtistName =intent.getStringExtra("creditArtistName");
 //								dbMsg +=" ,クレジット⁼ " + creditArtistName;
 								url2FSet(dataFN);		//urlからプレイヤーの書き込みを行う		albumArtist
-
+								readLyric( dataFN );					//歌詞の読出し
 								if( mVisualizer != null ){
 									mVisualizer.release();
 									mVisualizer = null;
-								}
-								dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
-								if(lyric_tv.isShown()){
-									readLyric( dataFN );					//歌詞の読出し
 								}
 //								saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 								dbMsg += ",IsPlaying=" + IsPlaying;
@@ -4659,9 +4655,13 @@ public class MaraSonActivity extends AppCompatActivity
 					}
 					break;
 				case 2:		//"歌詞表示=" + lyric_tv.getId();							//2131624055
-					dbMsg +=",歌詞表示=" + lyric_tv.getId();													//2131624055
+					dbMsg +=",歌詞表示=" + lyric_tv.getId();
 					dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
-					readLyric( dataFN );					//歌詞の読出し
+					CharSequence lyricStr = lyric_tv.getText();
+					dbMsg +=",lyricStr=" + lyricStr;		//常に0
+					if(lyricStr== null || lyricStr.equals("")){
+						readLyric( dataFN );					//歌詞の読出し
+					}
 					break;
 				default:								//最初はここから
 					break;
@@ -5492,6 +5492,7 @@ public class MaraSonActivity extends AppCompatActivity
 									if( wrStr != null){
 										songLyric = wrStr;
 									}
+									dbMsg += ",songLyric=" + songLyric;
 									lyric_tv.setText(songLyric);
 									lyricAri = intent.getBooleanExtra("lyricAri",false);			//歌詞を取得できた
 									wrStr =intent.getStringExtra("lyricEncord");
@@ -5502,6 +5503,7 @@ public class MaraSonActivity extends AppCompatActivity
 									if( wrStr != null){
 										lylicHTM = wrStr;
 									}
+									dbMsg += "\nlylicHTM=" + lylicHTM;
 									break;
 			//					default:
 			//						break;
