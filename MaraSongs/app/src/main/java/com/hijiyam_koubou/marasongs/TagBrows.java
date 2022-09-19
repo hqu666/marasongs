@@ -5359,12 +5359,13 @@ private byte majorVersion = (byte) 0;
 			Bundle bundle = new Bundle();
 			String retStr;
 			result_Samary = makeSammry();			//戻り値を作る
+			dbMsg +=",result_Samary="+ result_Samary;
 			if( this.result_USLT != null){
 				int readInt = this.result_USLT.length();
 				if(60 < readInt){
 					dbMsg +=this.result_USLT.substring(0, 40) +  "～" + this.result_USLT.substring(readInt-20, readInt);
 				}else{
-					dbMsg +=this.result_USLT;
+					dbMsg +="\nresult_USLT= "+ this.result_USLT;
 				}
 				dbMsg += "(" + readInt + "/" + this.result_USLT.length() +"文字)";
 				dbMsg += ",unix;n" +  this.result_USLT.indexOf("\n") +"文字目)";
@@ -5398,6 +5399,8 @@ private byte majorVersion = (byte) 0;
 			bundle.putBoolean("lyricAri", lyricAri);			//歌詞を取得できた
 			bundle.putString("lyricEncord", saiEncrod);
 			bundle.putString("lylicHTM", lylicHTM);			//html変換した歌詞のフルパス名
+			dbMsg += ",result_APIC=" + result_APIC;
+			bundle.putString("result_APIC", result_APIC);
 			myLog(TAG,dbMsg);
 			data.putExtras(bundle);
 			setResult(RESULT_OK, data);		// setResult() で bundle を載せた送るIntent dataをセットする		// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など

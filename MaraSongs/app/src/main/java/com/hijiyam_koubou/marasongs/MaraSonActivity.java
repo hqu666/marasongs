@@ -2091,8 +2091,9 @@ public class MaraSonActivity extends AppCompatActivity
 //	}
 
 	String sucssesPass;
+	/**ⅸジャケット写真を表示*/
 	public String jakeSya(String albumArt  ,ImageView mpJakeImg)  throws IOException {		//①ⅸジャケット写真を表示	<zenFealdKaikomi
-		final String TAG = "jakeSya[MaraSonActivity]";
+		final String TAG = "jakeSya";
 		String dbMsg=ORGUT.nowTime(true,true,true);/////////////////////////////////////
 		try{
 			dbMsg= "albumArt=" + albumArt ;/////////////////////////////////////
@@ -2109,31 +2110,29 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ">>" +jW;
 			}
 			if(albumArt != null){
-//				http://android-note.open-memo.net/sub/image__resize_drawable.html
+					Uri albumUri = Uri.parse(albumArt);
+//				ContentResolver cr = getContentResolver();
+//				try{
+////					MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+////					builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, MusicUtils.getArtwork(this, getAlbumID(), true));
+//					InputStream is = cr.openInputStream(albumUri);
+//					Bitmap album_art = BitmapFactory.decodeStream(is);
+//					dbMsg += ">>" + album_art.getByteCount() + "バイト";
+//					//URIからストリームを取得してそれを画像に変換
+//					Drawable drawable = new BitmapDrawable(getResources(), album_art);
+//					mpJakeImg.setImageDrawable(drawable);
+//				}catch(FileNotFoundException e) {
+//					myErrorLog(TAG ,  dbMsg + "で" + e);
+//				}
+////				http://android-note.open-memo.net/sub/image__resize_drawable.html
 				Drawable drawable = new BitmapDrawable(getResources(), albumArt);
 				Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
 				dbMsg += ",orgBitmap="+orgBitmap;
+			//	Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, jW, jH, false);										//100x100の大きさにリサイズ
 				Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, jW, jH, false);										//100x100の大きさにリサイズ
 				dbMsg += ",resizedBitmap="+resizedBitmap;
 				drawable = new BitmapDrawable(getResources(), resizedBitmap);
 				mpJakeImg.setImageDrawable(drawable);
-				////				defoltIcon = getResources().getDrawable( R.drawable.no_image );		//	defoltIcon = Drawable.createFromPath("/data/data/com.hijiyam_koubou.marasongs/res/drawable/no_image.png");	//画像のあるパスからdrawableを生成
-////				dbMsg += ",defoltIcon="+defoltIcon;
-//				Bitmap orgBitmap = ((BitmapDrawable)defoltIcon).getBitmap();														//DrawableからBitmapインスタンスを取得
-//				dbMsg += ",orgBitmap="+orgBitmap;
-//				Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
-//				dbMsg += ",resizedBitmap="+resizedBitmap;
-//				defoltIcon = new BitmapDrawable(getResources(), resizedBitmap);
-//				dbMsg += ">defoltIcon>"+defoltIcon;
-//	        final ImageView imageView = (ImageView)findViewById(R.id.imageView);
-//	        imageView.setImageDrawable(drawable);
-//				File AAF = new File(albumArt);
-//				dbMsg += ",exists=" + AAF.exists();
-//				if( AAF.exists() ){									//読み込めるものまでfalseになる
-//				}else{
-//					dbMsg += "ファイル無し";
-//		//			albumArt = null;
-//				}
 			}else{
 				mpJakeImg.setImageResource(R.drawable.no_image);
 				dbMsg += "Uri無し";
@@ -4084,22 +4083,17 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	private void lyric2web( String hozonnsaki ) {					//歌詞をwebKitに送る
+	/**歌詞をwebKitに送る*/
+	private void lyric2web( String hozonnsaki ) {
 		//http://www.nilab.info/z3/20120806_02.html
 		final String TAG = "lyric2web[MaraSonActivity]";
 		String dbMsg= "";
 		try{
-//			String fName = "lyric.htm";
-//			String hozonnsaki = "/data/data/" + this.getPackageName() + "/files/" + fName;
-//	//		lyric2webSouce( songLyric );					//歌詞をhtmlに書き出す	//		String lyricStr = null;
 			dbMsg +=",hozonnsaki=" + hozonnsaki ;/////////////////////////////////////
 			Intent intentWV = new Intent(MaraSonActivity.this,wKit.class);			//webでヘルプ表示
 			File wFile = new File(hozonnsaki);
 			dbMsg +=",exists=" + wFile.exists();
 
-//			String[] URIs = hozonnsaki.split("Android");
-//			String dataURI = "/Android"+URIs[1];
-//			dbMsg +=",dataURI=" + dataURI;
 			intentWV.putExtra("dataURI",hozonnsaki);		//"file://"+ hozonnsaki
 			intentWV.putExtra("baseUrl", hozonnsaki);		//"file:///android_asset/index.html"
 	//		intentWV.putExtra("loadStr",lyricStr);
@@ -5214,14 +5208,13 @@ public class MaraSonActivity extends AppCompatActivity
 				final String TAG = "resultLauncher";
 				String dbMsg = "";
 				try {
-//					dbMsg += ",reqCode="+reqCode;
 					int resultCode = result.getResultCode();
 					dbMsg += ",resultCode=" + resultCode;
 					if (result.getResultCode() == Activity.RESULT_OK) {
 						Intent intent = result.getData();
 						if (intent != null) {
-							Bundle bundle = null;
-							boolean kakikomi  = false;
+//							Bundle bundle = null;
+//							boolean kakikomi  = false;
 							//		bundle = intent.getExtras();
 							int reqCode = intent.getIntExtra("reqCode" , 0);
 							dbMsg += ",reqCode="+reqCode;
@@ -5508,6 +5501,14 @@ public class MaraSonActivity extends AppCompatActivity
 										lylicHTM = wrStr;
 									}
 									dbMsg += "\nlylicHTM=" + lylicHTM;
+									dbMsg += "\nalbumArt=" + albumArt;
+									if(albumArt == null || albumArt.equals("")){
+										wrStr =intent.getStringExtra("result_APIC");			//html変換した歌詞のフルパス名
+										if( wrStr != null){
+											albumArt = wrStr;
+										}
+										dbMsg += ">>" + albumArt;
+									}
 									break;
 			//					default:
 			//						break;

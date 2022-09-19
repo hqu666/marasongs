@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -865,7 +866,7 @@ public class OrgUtil  extends Activity{				//
 	}
 
 	public String toCaps( String tStr){			//単語の先頭だけを大文字にする
-		final String TAG = "toCaps[OrgUtil]";
+		final String TAG = "toCaps";
 		String dbBlock= "単語の先頭だけを大文字にする";/////////////////////////////////////
 		String  retStr = "";			//nullで初期化すると先頭にnullが残る
 		try{
@@ -938,7 +939,7 @@ public class OrgUtil  extends Activity{				//
 	}
 
 	public List<String> fealdNameRead(Class target , List<String> names , List<String> jyogai ,boolean nomi) {		//URIの無いクラスは指定したオブジェクトのフィールド名をStringArrayオブジェクトで返す
-		final String TAG = "fealdNameRead[OrgUtil]";
+		final String TAG = "fealdNameRead";
 		String dbBlock="開始";
 		try{
 			String fName=null;
@@ -1127,7 +1128,7 @@ public class OrgUtil  extends Activity{				//
 	 * */
 	public int retArreyIndex(List<Map<String, Object>> fList , String key , String fStr){		//mapを使ったリストからインデックスを返す
 		int retInt =-1;
-		final String TAG = "retArreyIndex[OrgUtil]";
+		final String TAG = "retArreyIndex";
 		String dbMsg="開始;";/////////////////////////////////////
 		try{
 			dbMsg="fList=" + fList.size() + "件";
@@ -1152,7 +1153,7 @@ public class OrgUtil  extends Activity{				//
 	 * */
 	public String ArtistPreFix(String aName ){
 		final String TAG = "ArtistPreFix";
-		String dbMsg="[OrgUtil];";/////////////////////////////////////
+		String dbMsg="";
 		try{
 			dbMsg += nowTime(true,true,true) + aName;/////////////////////////////////////
 			aName = String.valueOf(aName);
@@ -1245,7 +1246,7 @@ public class OrgUtil  extends Activity{				//
 	}
 
 	public Map<String, String> data2msick(String data ,Context context ){					//音楽ファイルのUrlからアーティスト名、アルバム名、曲順、曲名、拡張子を返す
-		final String TAG = "data2msick[OrgUtil]";
+		final String TAG = "data2msick";
 		String dbMsg="開始;";/////////////////////////////////////
 		Map<String, String> map = new HashMap<String, String>();
 		try{
@@ -1422,7 +1423,7 @@ public class OrgUtil  extends Activity{				//
 	public String retAlbumArtUri(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
 		String retStr = null;
 		final String TAG = "retAlbumArtUri";
-		String dbMsg= "[OrgUtil]" ;/////////////////////////////////////
+		String dbMsg= "" ;/////////////////////////////////////
 		try{
 			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
 			Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
@@ -1431,31 +1432,51 @@ public class OrgUtil  extends Activity{				//
 			String[] c_selectionArgs= { "%" + artistMei + "%" , albumMei };   			//⑥引数groupByには、groupBy句を指定します。
 			String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			Cursor cursor = context.getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);			//getApplicationContext()
+			dbMsg += "," +cursor.getCount() + "件";
 			if( cursor.moveToFirst() ){
-				dbMsg += "," +cursor.getCount() + "件";
+				int colCount = cursor.getColumnCount();
 				do{
-					retStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+					int targetIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
+					dbMsg += "[" +targetIndex + "/" + colCount + "]";
+					retStr = cursor.getString(targetIndex);
 					if(retStr != null){
 						break;
-					}else{
-//						resolver = new ContentResolver(this) {
-//							@NonNull
-//							@Override
-//							public Bitmap loadThumbnail(@NonNull Uri uri, @NonNull Size size, @Nullable CancellationSignal signal) throws IOException {
-//								return super.loadThumbnail(uri, size, signal);
-//							}
-//						};
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//							try {
-//								Bitmap albumArt = resolver.loadThumbnail(uriOfItem, size, null);
-//							} catch (IOException e) {
-//								e.printStackTrace();
-//							}
-						}
 					}
+					targetIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID);
+					dbMsg += "[" +targetIndex + "/" + colCount + "]";
+					Uri albumUri = getAlbumArtUri(targetIndex);
+					dbMsg += ",albumUri=" +albumUri;
+					retStr = albumUri.toString();
+//					for(int i = 0; i < colCount; ++i){
+//						dbMsg += "[" +i + "/" + colCount + "]";
+//						dbMsg += cursor.getColumnName(i);
+//						int colType = cursor.getType(i);
+//						switch (colType){
+//							case Cursor.FIELD_TYPE_NULL:          //0
+//								dbMsg += "null" ;
+//								break;
+//							case Cursor.FIELD_TYPE_INTEGER:         //1
+//								dbMsg += "=" + cursor.getInt(i);
+//								break;
+//							case Cursor.FIELD_TYPE_FLOAT:         //2
+//								dbMsg += "=" + cursor.getFloat(i);
+//								break;
+//							case Cursor.FIELD_TYPE_STRING:          //3
+//								dbMsg += "=" + cursor.getString(i);
+//								break;
+//							case Cursor.FIELD_TYPE_BLOB:         //4
+//								//@SuppressLint("Range") String cBlob = String.valueOf(cursor.getBlob(cPosition));
+//								dbMsg +=  "【Blob】";
+//								break;
+//							default:
+//								break;
+//						}
+//
+//					}
+
 				}while(cursor.moveToNext());
 			}
-			dbMsg += ",album_art=" +retStr ;/////////////////////////////////////
+			dbMsg += ",album_art=" +retStr;/////////////////////////////////////
 			cursor.close();
 			myLog(TAG,dbMsg);
 		}catch(IllegalArgumentException e){
@@ -1464,6 +1485,19 @@ public class OrgUtil  extends Activity{				//
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
 		return retStr;
+	}
+
+	private Uri getAlbumArtUri(long albumId) {
+		final String TAG = "getAlbumArtUri";
+		String dbMsg= "" ;
+		Uri retUri = null;
+		try{
+			Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
+			retUri=ContentUris.withAppendedId(albumArtUri, albumId);
+		}catch (Exception e) {
+			myErrorLog(TAG,dbMsg +"で"+e.toString());
+		}
+		return retUri;
 	}
 
 
@@ -1683,11 +1717,11 @@ public class OrgUtil  extends Activity{				//
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		Util.myLog(TAG , "[OrgUtil]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG , "[OrgUtil]" + dbMsg);
 	}
 }
