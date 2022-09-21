@@ -1423,7 +1423,7 @@ public class OrgUtil  extends Activity{				//
 	public String retAlbumArtUri(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
 		String retStr = null;
 		final String TAG = "retAlbumArtUri";
-		String dbMsg= "" ;/////////////////////////////////////
+		String dbMsg= "" ;
 		try{
 			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
 			Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
@@ -1444,7 +1444,8 @@ public class OrgUtil  extends Activity{				//
 					}
 					targetIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID);
 					dbMsg += "[" +targetIndex + "/" + colCount + "]";
-					Uri albumUri = getAlbumArtUri(targetIndex);
+					int alibumId = cursor.getInt(targetIndex);
+					Uri albumUri = getAlbumArtUri(alibumId);
 					dbMsg += ",albumUri=" +albumUri;
 					retStr = albumUri.toString();
 //					for(int i = 0; i < colCount; ++i){
@@ -1492,8 +1493,11 @@ public class OrgUtil  extends Activity{				//
 		String dbMsg= "" ;
 		Uri retUri = null;
 		try{
+			dbMsg += ",albumId=" + albumId ;
 			Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
 			retUri=ContentUris.withAppendedId(albumArtUri, albumId);
+			dbMsg += ",retUri=" + retUri ;
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
 		}
@@ -1519,7 +1523,7 @@ public class OrgUtil  extends Activity{				//
 	}
 
 	public String setAlbumArt(String album_art , ImageView imageView , int dHighet , int dWith ,Context context , String sucssesPass){		//指定したイメージビューに指定したURiのファイルを表示させる
-		final String TAG = "setAlbumArt[OrgUtil]";		//<<"jakeSya[MaraSonActivity]
+		final String TAG = "setAlbumArt";		//<<"jakeSya[MaraSonActivity]
 		String dbMsg = "開始" ;//////////////////////////////////////////
 		try{
 			dbMsg= "album_art=" + album_art  ;//////////////////////////////////////////

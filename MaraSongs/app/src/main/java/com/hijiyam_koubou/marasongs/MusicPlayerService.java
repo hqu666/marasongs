@@ -50,6 +50,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.v4.media.MediaMetadataCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.RemoteViews;
@@ -90,9 +91,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String albumName =null;		//アルバム名
 	public String titolName =null;		//曲名
 	public int audioId;
+	public int albumId;
 	public String album_art ;
+	public Uri albumArtUri ;
 	public String NextDataFN;
-	MusicPlaylist musicPlaylist ;
+	public MusicPlaylist musicPlaylist ;
+	public MediaMetadataCompat MMC;
 
 	public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
 	public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
@@ -3192,6 +3196,79 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	private String songLyric;
 	private boolean lyricAri;			//歌詞を取得できた
 
+
+//	private List<MediaMetadataCompat> fetchMedia() {
+//		final String TAG = "fetchMedia";
+//		String dbMsg= "";
+//		try{
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		List<MediaMetadataCompat> mediaList = new ArrayList<>();
+//		Cursor mediaCursor = getContentResolver().query(
+//				MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+//				new String[]{
+//						MediaStore.Audio.Media._ID,
+//						MediaStore.Audio.Media.DATA,
+//						MediaStore.Audio.Media.TITLE,
+//						MediaStore.Audio.Media.ARTIST,
+//						MediaStore.Audio.Media.ALBUM,
+//						MediaStore.Audio.Media.ALBUM_ID},
+//				MediaStore.Audio.Media.IS_MUSIC + " != 0", null, null);
+//		if (mediaCursor != null && mediaCursor.moveToFirst()) {
+//			do {
+//				mediaList.add(buildMediaMetadataCompat(mediaCursor));
+//			} while (mediaCursor.moveToNext());
+//			mediaCursor.close();
+//		}
+//		return mediaList;
+//	}
+
+	private MediaMetadataCompat buildMediaMetadataCompat(String mediaID,String mediaURI,String keyARTIST,String keyALBUM,String keyTITLE,String keyAlbumArtURI,Long KeyDURATION) {
+		final String TAG = "buildMediaMetadataCompat";
+		String dbMsg= "";
+		MediaMetadataCompat mmc=null;
+		try{
+			dbMsg += "[" + mediaID ;
+			dbMsg += "]" + mediaURI ;
+			dbMsg += " , " + keyARTIST ;
+			dbMsg += " , " + keyALBUM ;
+			dbMsg += " , " + keyTITLE ;
+			dbMsg += " , " + keyAlbumArtURI ;
+			myLog(TAG, dbMsg);
+			mmc= new MediaMetadataCompat.Builder()
+					.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaID)
+					.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, mediaURI)
+					.putString(MediaMetadataCompat.METADATA_KEY_TITLE, keyTITLE)
+					.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, keyARTIST)
+					.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, keyALBUM)
+					.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,keyAlbumArtURI)
+					.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,KeyDURATION)
+					.build();
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return mmc;
+	}
+
+	/**アルバムIDからアルバムアートのUriを返す*/
+	private Uri getAlbumArtUri(long albumId) {
+		final String TAG = "getAlbumArtUri";
+		String dbMsg= "";
+		Uri retUri = null;
+		try{
+			dbMsg += ",albumId=" + albumId;
+			Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
+			retUri = ContentUris.withAppendedId(albumArtUri, albumId);
+			dbMsg += ",retUri=" + retUri.toString();
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retUri;
+	}
+
 	/**
 	 * urlからタイトルなどの情報読み出し
 	 * globalにセット
@@ -3212,6 +3289,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg +=cursor.getCount() +"曲";/////////////////////////////////////
 			//		myLog(TAG,dbMsg);
 			if(cursor.moveToFirst()){
+				@SuppressLint("Range") int tInt = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+				dbMsg += "," + tInt;
+				audioId=tInt;
 				@SuppressLint("Range") String tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 				dbMsg += "," + tStr;
 				creditArtistName=tStr;
@@ -3221,17 +3301,20 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
 				dbMsg += "," + tStr;
 				titolName=tStr;
-				@SuppressLint("Range") int tInt = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-				dbMsg += "," + tInt;
-				audioId=tInt;
 				tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
 				dbMsg += "," + tStr;
 				saiseiJikan= Integer.parseInt(tStr);
+				tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+				dbMsg += "," + tStr;
+				albumArtUri = getAlbumArtUri(Long.getLong(tStr));
+				albumId= Integer.parseInt(tStr);
+				dbMsg += "[" + albumId + "]" + albumArtUri;
 			}
 			cursor.close();
 			String[] items = urlStr.split(File.separator);
 			albumArtistName = items[items.length-3];
 			dbMsg += ",albumArtistName=" + albumArtistName;
+			MMC = buildMediaMetadataCompat(String.valueOf(audioId), urlStr, creditArtistName, albumName, titolName, albumArtUri.toString() , Long.valueOf(saiseiJikan));
 //			c_columns = null;                //③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 //			c_selection = MediaStore.Audio.Albums.ARTIST + " LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM + " = ?";
 //			String[] c_selectionArgs2 = {"%" + creditArtistName + "%", albumName};            //⑥引数groupByには、groupBy句を指定します。

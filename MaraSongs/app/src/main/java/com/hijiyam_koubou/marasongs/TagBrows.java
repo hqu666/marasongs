@@ -5588,17 +5588,11 @@ private byte majorVersion = (byte) 0;
 	public class ploglessTask {
 		ExecutorService executorService;
 		private Context cContext = null;
-		//		public DialogProgress progressDialog;	// 処理中ダイアログ	ProgressDialog	AlertDialog
-		Intent intentDP;
 
 		public int reqCode = 0;						//処理番号
 		public List<String> kensaku;
 		public String result;
 		public File file;
-
-
-//		public String pdTitol;			//ProgressDialog のタイトルを設定
-//		public String pdMessage;			//ProgressDialog のメッセージを設定
 
 		public String pdMessage_stok;			//ProgressDialog のメッセージを設定
 		public int pdMaxVal = 0;					//ProgressDialog の最大値を設定 (水平の時)
@@ -5614,7 +5608,7 @@ private byte majorVersion = (byte) 0;
 		 * */
 		public ploglessTask(Context context) {
 			super();
-			final String TAG = "ploglessTask[ploglessTask]";
+			final String TAG = "ploglessTask";
 			String dbMsg="";
 			try {
 				executorService  = Executors.newSingleThreadExecutor();
@@ -5645,8 +5639,9 @@ private byte majorVersion = (byte) 0;
 //							dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
 //							break;
 						default:
-							dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
-					//		List<String> kensaku=(List<String>) params[3] ;													//3.検索するフレーム名, kensaku
+							if(TagBrows.this.result != null){
+								dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+							}
 							pdMaxVal = kensaku.size();
 							dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
 							for(int i = 0; i < pdMaxVal ; i++){

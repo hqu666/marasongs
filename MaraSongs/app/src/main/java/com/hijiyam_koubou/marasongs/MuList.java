@@ -3675,6 +3675,53 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+	/**サービスとレシーバに再生ファイルを指定*/
+	public boolean send2Service(String dataFN , String listName ,boolean IsPlaying) {																		//操作対応②ⅰ
+		final String TAG = "send2Service";
+		String dbMsg = "";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
+			dbMsg +=" 、dataFN="+ dataFN;
+			dbMsg +=" 、listName="+ listName;
+			dbMsg +=" 、IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+			//		dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+			if(mFilter == null){
+				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
+				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
+				mFilter = new IntentFilter();
+				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+				registerReceiver(mReceiver, mFilter);
+			}
+			if( MPSIntent == null){
+				MPSIntent = new Intent(MuList.this,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+				dbMsg +=  ",MPSIntent=null";
+			}else{
+				stopService(MPSIntent);
+			}
+			dbMsg +=" 、[ " + nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+			MPSIntent.putExtra("nowList_id",nowList_id);
+			MPSIntent.putExtra("nowList",listName);
+			MPSIntent.putExtra("pref_data_url",dataFN);
+			MPSIntent.putExtra("continu_status","toPlay");
+			if(! IsPlaying){
+				//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+				IsPlaying = false;
+			}else{
+				//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+				IsPlaying = true;
+			}
+			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
+			dbMsg += ">action>" + MPSIntent.getAction();
+			dbMsg += " , IsPlaying=" + IsPlaying;
+			MPSIntent.putExtra("IsPlaying",IsPlaying);
+			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+			dbMsg += " ,MPSName=" + MPSName + "でstartService";
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return IsPlaying;
+	}
 
 	/**
 	 *  プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台
@@ -3699,8 +3746,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "]pref_data_url=" + pref_data_url;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
-//			toPlaying = send2Service( pref_data_url,listName,toPlaying);
-//			dbMsg += ",toPlaying=" + toPlaying;
+			toPlaying = send2Service( pref_data_url,listName,toPlaying);
+			dbMsg += ",toPlaying=" + toPlaying;
 
 			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
 
@@ -3708,7 +3755,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			intent.putExtra("nowList_id",nowList_id);
 			intent.putExtra("nowList",nowList);
 			intent.putExtra("pref_data_url",pref_data_url);
-//		intent.putExtra("mIndex" , mIndex);
 			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
 			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
 //			if(toPlaying) {

@@ -2110,7 +2110,15 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ">>" +jW;
 			}
 			if(albumArt != null){
-					Uri albumUri = Uri.parse(albumArt);
+				Uri albumUri = Uri.parse(albumArt);
+//				Size thumbSize = new Size(jW, jH);
+//				Bitmap resizedBitmap;
+//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//					resizedBitmap = this.getContentResolver().loadThumbnail(albumUri, thumbSize, null);
+//				} else {
+//					resizedBitmap = MediaStore.Images.Thumbnails.getThumbnail(this.getContentResolver(),
+//							imgId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+//				}//
 //				ContentResolver cr = getContentResolver();
 //				try{
 ////					MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
