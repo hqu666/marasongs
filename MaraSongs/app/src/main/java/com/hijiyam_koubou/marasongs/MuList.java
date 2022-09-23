@@ -4178,7 +4178,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",シンプルなリスト表示="+pref_list_simple+ ":position="+position+",[id="+id+"]";////////"リスト；parent="+parent+",view="+view+
 			dbMsg += ",artist="+sousa_artist+ ":album="+sousa_alubm + ",titol=" + sousa_titol;
 			dbMsg += ",プレイリスト:sousalistName="+sousalistName + ",nowList:"+nowList;
-			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) && reqCode <=MyConstants.v_titol) {        // 全曲リストのアーティスト選択
+			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku))) {        // 全曲リストのアーティスト選択　 && reqCode <=MyConstants.v_titol
 				dbMsg += ",全曲リストでreqCode=" + reqCode;
 				switch (reqCode) {
 					case MyConstants.v_artist:                            //195 ;2131558436 アーティスト
@@ -10822,7 +10822,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				}
 //			}
 			switch(reqC) {
-				case MyConstants.v_play_list:
+				case MyConstants.v_play_list:			//
 					dbMsg +=",アーティストリストのヘッダータップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -10837,7 +10837,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					break;
 				case MyConstants.v_artist:							//195;	2131558436 :アーティスト
 					backCode = MyConstants.v_play_list;		//上のリスト
-					dbMsg +=",アーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					dbMsg +=",全曲のアーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 //					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 //					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
 //					mainHTF.setVisibility(View.GONE);
@@ -10863,7 +10863,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					break;
 				case MyConstants.v_alubum:			//197 ; 2131558442	アルバム
 					backCode = MyConstants.v_artist;		//上のリスト
-					dbMsg +=",アルバムをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+					dbMsg +=",アルバムリストをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -10921,16 +10921,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					Bitmap mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
 					albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,MuList.this.creditArtistName , albumMei );			//アルバムアートUriだけを返す			MuList.this ,
 					dbMsg +=",albumArt= " + albumArt;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-					if( albumArt != null  ){
-						Drawable drawable = new BitmapDrawable(getResources(), albumArt);
-						Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
-						dbMsg +=",orgBitmap="+orgBitmap;
-						Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
-						dbMsg +=",resizedBitmap="+resizedBitmap;
-						drawable = new BitmapDrawable(getResources(), resizedBitmap);
-						headImgIV.setImageDrawable(drawable);
-					}
-					dbMsg +=",headImgIV[" + headImgIV.getX() +", " + headImgIV.getY() +"] " + headImgIV.getHeight();		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+//					if( albumArt != null  ){
+//						Drawable drawable = new BitmapDrawable(getResources(), albumArt);
+//						Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
+//						dbMsg +=",orgBitmap="+orgBitmap;
+//						Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
+//						dbMsg +=",resizedBitmap="+resizedBitmap;
+//						drawable = new BitmapDrawable(getResources(), resizedBitmap);
+//						headImgIV.setImageDrawable(drawable);
+//					}
+//					dbMsg +=",headImgIV[" + headImgIV.getX() +", " + headImgIV.getY() +"] " + headImgIV.getHeight();		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					mainHTF.setVisibility(View.VISIBLE);		//		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 					dbMsg +=",albumMei=" + albumMei;
 					mainHTF.setText(albumMei);					//ヘッダーのメインテキスト表示枠		//		getSupportActionBar().setTitle(albumMei);
@@ -11480,6 +11480,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			plTask  = new MuList.ploglessTask(this);
 			getPList();
+
+			if( nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){
+				reqCode = MyConstants.v_artist;
+			}
+
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg += ":"+ ORGUT.sdf_mss.format(end - start) +"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;
 			myLog(TAG, dbMsg);

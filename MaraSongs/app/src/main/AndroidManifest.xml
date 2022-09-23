@@ -112,6 +112,7 @@
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" />
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" />
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" />
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
