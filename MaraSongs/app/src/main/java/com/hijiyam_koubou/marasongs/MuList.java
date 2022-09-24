@@ -3747,46 +3747,23 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
 			toPlaying = send2Service( pref_data_url,listName,toPlaying);
-			dbMsg += ",toPlaying=" + toPlaying;
-
-			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
-
-			intent.putExtra("reqCode",imanoJyoutai);
-			intent.putExtra("nowList_id",nowList_id);
-			intent.putExtra("nowList",nowList);
-			intent.putExtra("pref_data_url",pref_data_url);
-			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
-			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
-//			if(toPlaying) {
-//				intent.putExtra("to_play",true);
-//			}else{
-//				intent.putExtra("to_play",false);
-//			}
-			intent.putExtra("toPlaying",toPlaying);
-//			intent.putExtra("nowList_data",nowList_data);
-//			dbMsg +="/"+saiseiJikan +"mS";
-//			intent.putExtra("saiseiJikan",saiseiJikan);
-//				dbMsg +=",imanoJyoutai="+imanoJyoutai;
-//				intent.putExtra("imanoJyoutai",imanoJyoutai);
-////				dbMsg +=",Bluetoothの接続に連携=" + pref_bt_renkei;/////////////////////////////////////
-//				intent.putExtra( "pref_bt_renkei",pref_bt_renkei);
-////				dbMsg +=",前回=" + pref_zenkai_saiseKyoku +"曲";/////////////////////////////////////
-//				intent.putExtra( "pref_zenkai_saiseKyoku",pref_zenkai_saiseKyoku);
-////				dbMsg += pref_zenkai_saiseijikann +"mS";/////////////////////////////////////
-//				intent.putExtra( "pref_zenkai_saiseijikann",pref_zenkai_saiseijikann);
-//				intent.putExtra("kidou_jyoukyou",MyConstants.kidou_std);
-////				dbMsg += ",pref_lockscreen=" + pref_lockscreen;/////////////////////////////////////
-//				intent.putExtra("pref_lockscreen",pref_lockscreen);
-////				dbMsg += ",pref_notifplayer=" + pref_notifplayer;/////////////////////////////////////
-//				intent.putExtra("pref_notifplayer",pref_notifplayer);
-////				dbMsg += ",点間リピート中="+rp_pp;/////////////////////////////////////
-//				intent.putExtra("rp_pp",rp_pp);
-////				dbMsg += ",リピート区間開始点="+pp_start;/////////////////////////////////////
-//				intent.putExtra("pp_start",pp_start);
-////				dbMsg += ",リピート区間終了点="+pp_end;/////////////////////////////////////
-//				intent.putExtra("pp_end",pp_end);
-//				intent.putExtra("set_pref",toPlaying);
-			resultLauncher.launch(intent);
+//			dbMsg += ",toPlaying=" + toPlaying;
+//
+//			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
+//
+//			intent.putExtra("reqCode",imanoJyoutai);
+//			intent.putExtra("nowList_id",nowList_id);
+//			intent.putExtra("nowList",nowList);
+//			intent.putExtra("pref_data_url",pref_data_url);
+//			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
+//			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
+////			if(toPlaying) {
+////				intent.putExtra("to_play",true);
+////			}else{
+////				intent.putExtra("to_play",false);
+////			}
+//			intent.putExtra("toPlaying",toPlaying);
+//			resultLauncher.launch(intent);
 
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
