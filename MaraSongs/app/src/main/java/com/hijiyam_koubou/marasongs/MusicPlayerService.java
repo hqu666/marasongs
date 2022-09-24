@@ -49,7 +49,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -1470,65 +1469,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public TransportControls lpNControls;
 	public  MediaSession mediaSession;		//final
 	public MediaMetadata.Builder metadataBuilder;
-
-	public MediaSession setMediaSessionActions(MediaSession mediaSession) {					//	Called when media player is done preparing
-		final String TAG = "setMediaSessionActions";
-		String dbMsg="これから再生、";/////////////////////////////////////
-		try{
-			dbMsg +=",状態=" + imanoJyoutai ;/////////////////////////////////////
-			mediaSession.setCallback(new MediaSession.Callback() {                                    // Attach a new Callback to receive MediaSession updates
-				@Override
-				public void onPlay() {
-					final String TAG = "onPlay";
-					String dbMsg = "[MediaSession.Callback]";
-					try {
-						processTogglePlaybackRequest();
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG, dbMsg + "で" + e);
-					}
-				}
-
-				@Override
-				public void onPlayFromMediaId(String mediaId, Bundle extras) {            // リスト選択時にコールされる
-					final String TAG = "onPlay";
-					String dbMsg = "[MediaSession.Callback]";
-					try {
-						// MediaIDを元に曲のインデックス番号を検索し、設定する。
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG, dbMsg + "で" + e);
-					}
-				}
-
-				@Override
-				public void onSkipToNext() {                // 再生キューの位置を次へ
-					final String TAG = "onSkipToNext";
-					String dbMsg = "[MediaSession.Callback]";
-					try {
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG, dbMsg + "で" + e);
-					}
-				}
-
-				@Override
-				public void onSkipToPrevious() {                // 再生キューの位置を前へ
-					final String TAG = "onSkipToPrevious";
-					String dbMsg = "[MediaSession.Callback]";
-					try {
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG, dbMsg + "で" + e);
-					}
-				}
-			});
-				myLog(TAG,dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG,dbMsg+"で"+e);
-		}
-		return mediaSession;
-	}
+	private PlaybackStateCompat.Builder stateBuilder;
 
 
 	/**
@@ -1555,6 +1496,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			String channelId = "default";
 			String title = context.getString(R.string.app_name);
 			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
+			// 通知からActivityを起動できるようにする
+			Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
+			// Set the Activity to start in a new, empty task
+			notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			PendingIntent pendingIntent = PendingIntent.getActivity(
+					this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+							| PendingIntent.FLAG_IMMUTABLE
+			);
 
 			if(31<= android.os.Build.VERSION.SDK_INT){
 				if(metadataBuilder == null){
@@ -1567,25 +1516,53 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					dbMsg += " , DURATION=" + metadataBuilder.build().getLong(MediaMetadata.METADATA_KEY_DURATION);
 					// Get the session's metadata
 					MediaController controller = mediaSession.getController();
-					//			MediaMetadataCompat mediaMetadata = MediaMetadataCompat.fromMediaMetadata(controller.getMetadata());
-					//		MediaDescriptionCompat description = mediaMetadata.getDescription();
-					MediaDescriptionCompat description = MMC.getDescription();
 
 					NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
-					mediaSession=setMediaSessionActions(mediaSession);
 					// タイトルなどの表示
 					mediaSession.setMetadata(metadataBuilder.build());
 
-					builder.setContentIntent(controller.getSessionActivity());
+					//	dbMsg += " Notification そのものをタップしたとき="+pendingIntent.getCreatorUid();
+					builder.setContentIntent(pendingIntent);
+//					builder.setContentIntent(controller.getSessionActivity());
 							// Stop the service when the notification is swiped away
-					builder.setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP));
+			//		builder.setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP));
 							// Make the transport controls visible on the lockscreen
 					builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-							// Add an app icon and set its accent color
+					// Add an app icon and set its accent color
 							// Be careful about the color    primaryDark
+//					Intent ppIntent = new Intent();
+//					ppIntent.setAction(ACTION_PLAYPAUSE);
+//					ppIntent.putExtra("EXTRA_NOTIFICATION_ID", channelId);
+//
+////					NotificationCompat.Action.Builder(android.R.drawable.ic_media_rew, "rew", disableVideoIntent).build();
+//					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
+//					String ppTitol = "pause";
+//					if (mPlayer != null) {
+//						dbMsg += ",isPlaying = " + mPlayer.isPlaying();
+//						if (!mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
+//							ppIcon = android.R.drawable.ic_media_play;
+//							ppTitol = "play";
+//						}
+//					}
+//					NotificationCompat.Action ppAction =
+//							new NotificationCompat.Action(
+//									ppIcon,
+//									ppTitol,
+//									PendingIntent.getBroadcast(
+//											context, (int) 1, ppIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//							);
+////					NotificationCompat.Action.Builder(ppIcon, ppTitol, pauseIntent).build();
+////					NotificationCompat.Action.Builder(android.R.drawable.ic_media_ff, "Next", disableVideoIntent).build();
+//
+//
+//					// 左から順に並びます
+//					builder.addAction(ppAction);
+//					builder.addAction(disableVideoAction);
+//					builder.addAction(stopAction);
 					builder.setSmallIcon(R.drawable.ic_launcher);
-							//	.setColor(ContextCompat.getColor(this, R.color.primaryDark))
+//								.setColor(ContextCompat.getColor(this, R.color.primaryDark))
 							// Add a pause button
+
 					builder.addAction(new NotificationCompat.Action(
 									R.drawable.pouse40, getString(R.string.pause),
 									MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)));
@@ -1598,6 +1575,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP)));
 
 					// Display the notification and place the service in the foreground
+					dbMsg += " Notification表示";
 					startForeground(NOTIFICATION_ID, builder.build());
 				}
 			}else {
@@ -1615,14 +1593,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //					dbMsg += ">>" + album_art;
 //				}
 
-				// 通知からActivityを起動できるようにする
-				Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
-				// Set the Activity to start in a new, empty task
-				notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				PendingIntent pendingIntent = PendingIntent.getActivity(
-						this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
-								| PendingIntent.FLAG_IMMUTABLE
-				);
+//				// 通知からActivityを起動できるようにする
+//				Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
+//				// Set the Activity to start in a new, empty task
+//				notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//				PendingIntent pendingIntent = PendingIntent.getActivity(
+//						this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+//								| PendingIntent.FLAG_IMMUTABLE
+//				);
 				mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 				// Notification　Channel 設定
 				mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
@@ -1648,54 +1626,53 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART, artwork);        //これが無いとロックスクリーンの背景にならない？ A small bitmap for the artwork is also recommended
 					mediaSession.setMetadata(metadataBuilder.build());        // Add any other fields you have for your data as well
 					mediaSession.setFlags(MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);                // このフラグが有るカードだけが表示される	Indicate you want to receive transport controls via your Callback
-					mediaSession=setMediaSessionActions(mediaSession);
-//					mediaSession.setCallback(new MediaSession.Callback() {                                    // Attach a new Callback to receive MediaSession updates
-//						@Override
-//						public void onPlay() {
-//							final String TAG = "onPlay";
-//							String dbMsg = "[MediaSession.Callback]";
-//							try {
-//								processTogglePlaybackRequest();
-//								myLog(TAG, dbMsg);
-//							} catch (Exception e) {
-//								myErrorLog(TAG, dbMsg + "で" + e);
-//							}
-//						}
-//
-//						@Override
-//						public void onPlayFromMediaId(String mediaId, Bundle extras) {            // リスト選択時にコールされる
-//							final String TAG = "onPlay";
-//							String dbMsg = "[MediaSession.Callback]";
-//							try {
-//								// MediaIDを元に曲のインデックス番号を検索し、設定する。
-//								myLog(TAG, dbMsg);
-//							} catch (Exception e) {
-//								myErrorLog(TAG, dbMsg + "で" + e);
-//							}
-//						}
-//
-//						@Override
-//						public void onSkipToNext() {                // 再生キューの位置を次へ
-//							final String TAG = "onSkipToNext";
-//							String dbMsg = "[MediaSession.Callback]";
-//							try {
-//								myLog(TAG, dbMsg);
-//							} catch (Exception e) {
-//								myErrorLog(TAG, dbMsg + "で" + e);
-//							}
-//						}
-//
-//						@Override
-//						public void onSkipToPrevious() {                // 再生キューの位置を前へ
-//							final String TAG = "onSkipToPrevious";
-//							String dbMsg = "[MediaSession.Callback]";
-//							try {
-//								myLog(TAG, dbMsg);
-//							} catch (Exception e) {
-//								myErrorLog(TAG, dbMsg + "で" + e);
-//							}
-//						}
-//					});
+					mediaSession.setCallback(new MediaSession.Callback() {                                    // Attach a new Callback to receive MediaSession updates
+						@Override
+						public void onPlay() {
+							final String TAG = "onPlay";
+							String dbMsg = "[MediaSession.Callback]";
+							try {
+								processTogglePlaybackRequest();
+								myLog(TAG, dbMsg);
+							} catch (Exception e) {
+								myErrorLog(TAG, dbMsg + "で" + e);
+							}
+						}
+
+						@Override
+						public void onPlayFromMediaId(String mediaId, Bundle extras) {            // リスト選択時にコールされる
+							final String TAG = "onPlay";
+							String dbMsg = "[MediaSession.Callback]";
+							try {
+								// MediaIDを元に曲のインデックス番号を検索し、設定する。
+								myLog(TAG, dbMsg);
+							} catch (Exception e) {
+								myErrorLog(TAG, dbMsg + "で" + e);
+							}
+						}
+
+						@Override
+						public void onSkipToNext() {                // 再生キューの位置を次へ
+							final String TAG = "onSkipToNext";
+							String dbMsg = "[MediaSession.Callback]";
+							try {
+								myLog(TAG, dbMsg);
+							} catch (Exception e) {
+								myErrorLog(TAG, dbMsg + "で" + e);
+							}
+						}
+
+						@Override
+						public void onSkipToPrevious() {                // 再生キューの位置を前へ
+							final String TAG = "onSkipToPrevious";
+							String dbMsg = "[MediaSession.Callback]";
+							try {
+								myLog(TAG, dbMsg);
+							} catch (Exception e) {
+								myErrorLog(TAG, dbMsg + "で" + e);
+							}
+						}
+					});
 
 					nBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);                                                        //2016050:通知にメディア再生コントロールを表示	http://developer.android.com/intl/ja/about/versions/android-5.0.html アプリで RemoteControlClient を使用する場合
 					nBuilder.setShowWhen(false);                                                                    // Hide the timestamp
@@ -3927,7 +3904,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	private static final String MY_MEDIA_ROOT_ID = "media_root_id";
 	private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
 
-	private PlaybackStateCompat.Builder stateBuilder;
 
 	/**
 	 * 設定を読み込み各サービスを起動
@@ -3976,25 +3952,25 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 							makeNotification();				//ノティフィケーション作成
 						}
 					}else if ( 31 <= android.os.Build.VERSION.SDK_INT) {													//
-						// Create a MediaSessionCompat
-						mediaSession = new MediaSession(getApplicationContext(),  getResources().getString(R.string.app_name));
-
-						// Enable callbacks from MediaButtons and TransportControls
-						mediaSession.setFlags(
-								MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
-						// Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-						stateBuilder = new PlaybackStateCompat.Builder()
-								.setActions(
-										PlaybackStateCompat.ACTION_PLAY |
-												PlaybackStateCompat.ACTION_PLAY_PAUSE);
-//						mediaSession.setPlaybackState(stateBuilder.build());
+//						// Create a MediaSessionCompat
+//						mediaSession = new MediaSession(getApplicationContext(),  getResources().getString(R.string.app_name));
 //
-//						// MySessionCallback() has methods that handle callbacks from a media controller
-//						mediaSession.setCallback(new MySessionCallback());
+//						// Enable callbacks from MediaButtons and TransportControls
+//						mediaSession.setFlags(
+//								MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 //
-//						// Set the session's token so that client activities can communicate with it.
-//						setSessionToken(mediaSession.getSessionToken());
+//						// Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
+//						stateBuilder = new PlaybackStateCompat.Builder()
+//								.setActions(
+//										PlaybackStateCompat.ACTION_PLAY |
+//												PlaybackStateCompat.ACTION_PLAY_PAUSE);
+////						mediaSession.setPlaybackState(stateBuilder.build());
+////
+////						// MySessionCallback() has methods that handle callbacks from a media controller
+////						mediaSession.setCallback(new MySessionCallback());
+////
+////						// Set the session's token so that client activities can communicate with it.
+////						setSessionToken(mediaSession.getSessionToken());
 					}
 				}
 				String dataFN = getPrefStr( "pref_data_url" ,"" , MusicPlayerService.this);

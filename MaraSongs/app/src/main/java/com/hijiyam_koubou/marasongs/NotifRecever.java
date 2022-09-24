@@ -5,8 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.KeyEvent;
 
 public class NotifRecever extends Service {
 	///////////////////////////////////////////////
@@ -16,11 +14,17 @@ public class NotifRecever extends Service {
 	//@Override
 	public void onReceive(Context context, Intent intent) {
 		final String TAG = "onReceive";
-		String dbMsg="[NotifRecever]";
+		String dbMsg="";
 		try{
 			dbMsg +="intent=" + intent ;/////////////////////////////////////
 			String action = intent.getAction();
 			dbMsg +=",action= " + action;
+			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
+			if(31<= android.os.Build.VERSION.SDK_INT){
+
+			}else{
+
+			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -30,7 +34,7 @@ public class NotifRecever extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		final String TAG = "onStartCommand[NotifRecever]";
-		String dbMsg="[NotifRecever]";
+		String dbMsg="";
 		dbMsg +="Startで呼び出された";/////////////////////////////////////
 		try{
 			dbMsg += dbMsg +";intent=" + intent ;/////////////////////////////////////
@@ -62,7 +66,7 @@ public class NotifRecever extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		final String TAG = "onBind";
-		String dbMsg="[NotifRecever]";
+		String dbMsg="";
 		dbMsg +="Bindで呼び出された場合のみ発生";/////////////////////////////////////
 		try{
 			dbMsg += dbMsg +";intent=" + intent ;/////////////////////////////////////
@@ -75,11 +79,11 @@ public class NotifRecever extends Service {
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		Util.myLog(TAG , "[NotifRecever]"+dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
 		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		Util.myErrorLog(TAG , "[NotifRecever]"+dbMsg);
 	}
 }
