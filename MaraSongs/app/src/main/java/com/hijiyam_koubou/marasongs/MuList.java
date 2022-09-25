@@ -564,6 +564,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+	/**終了動作*/
 	public void quitBody() {                //このクラスを破棄
 		final String TAG = "quitBody";
 		String dbMsg = "";
@@ -591,29 +592,29 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		try {
 			dbMsg += "IsPlaying=" + IsPlaying;
-			if(IsPlaying){
-				new AlertDialog.Builder(MuList.this)
-						.setTitle( getResources().getString(R.string.quit_titol))
-						.setMessage( getResources().getString(R.string.quit_msg))
-						.setPositiveButton(getResources().getString(R.string.quit_posi_bt) , new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog , int which) {
-							//	Intent intent = new Intent( MuList.this, MusicPlayerService.class);
-								MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
-								startService(MPSIntent) ;
-								quitBody();
-							}
-						})
-						.setNegativeButton(getResources().getString(R.string.quit_nega_bt) , new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog , int which) {
-								quitBody();
-							}
-						})
-						.create().show();
-			} else{
+//			if(IsPlaying){
+//				new AlertDialog.Builder(MuList.this)
+//						.setTitle( getResources().getString(R.string.quit_titol))
+//						.setMessage( getResources().getString(R.string.quit_msg))
+//						.setPositiveButton(getResources().getString(R.string.quit_posi_bt) , new DialogInterface.OnClickListener() {
+//							@Override
+//							public void onClick(DialogInterface dialog , int which) {
+//							//	Intent intent = new Intent( MuList.this, MusicPlayerService.class);
+//								MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+//								startService(MPSIntent) ;
+//								quitBody();
+//							}
+//						})
+//						.setNegativeButton(getResources().getString(R.string.quit_nega_bt) , new DialogInterface.OnClickListener() {
+//							@Override
+//							public void onClick(DialogInterface dialog , int which) {
+//								quitBody();
+//							}
+//						})
+//						.create().show();
+//			} else{
 				quitBody();
-			}
+//			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3977,9 +3978,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 									}
 									playingItem.close();
-									myLog(TAG, dbMsg);
 								}
 							}
+							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG,"で"+e);
 						}
@@ -11510,8 +11511,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				musicPlaylist = new MusicPlaylist(MuList.this);
 			}
 			dbMsg +="shigot_bangou="+shigot_bangou;
-//			receiverSeisei();		//
-//			dbMsg +=":レシーバーを生成";
+			receiverSeisei();		//
+			dbMsg +=":レシーバーを生成";
 ////			dbMsg +="[" + nowList_id + "]" + nowList;
 ////			if(nowList.equals(getString(R.string.listmei_zemkyoku))){
 ////				artistList_yomikomi();

@@ -19,18 +19,22 @@ public class NotifRecever extends BroadcastReceiver {
 			String action = intent.getAction();
 			dbMsg +=",action= " + action;
 			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
-				if( action.equals( MusicPlayerService.ACTION_SYUURYOU ) ){
-		//			stopSelf();																	//これが最後だと他のActiviｙから操作が完了できない
-					MaraSonActivity MUP = new MaraSonActivity();								//音楽プレイヤー
-					MUP.quitMe();		//
-					//.faQuite();フォーカスが当たってからquitMeへfaQuite();	04-14 16:54:42.746: E/ActivityThread(4671): Service com.hijiyam_koubou.marasongs.MusicPlayerService has leaked IntentReceiver com.hijiyam_koubou.marasongs.BuletoohtReceiver@42fbcc40 that was originally registered here. Are you missing a call to unregisterReceiver()?
-				}else{
-					Intent MPSIntent = new Intent(context,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-					MPSIntent.setAction(action);				//	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
-					dbMsg +=" ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
-					ComponentName MPSName = context.startService(MPSIntent);
-					dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
-				}
+			if( action.equals( MusicPlayerService.ACTION_SYUURYOU ) ){
+				//			stopSelf();																	//これが最後だと他のActiviｙから操作が完了できない
+				MaraSonActivity MUP = new MaraSonActivity();								//音楽プレイヤー
+				MUP.quitMe();		//
+				MuList ML =new MuList();
+//				ML.quitBody();
+				ML.receiverHaki();
+					ML.finish();
+				//.faQuite();フォーカスが当たってからquitMeへfaQuite();	04-14 16:54:42.746: E/ActivityThread(4671): Service com.hijiyam_koubou.marasongs.MusicPlayerService has leaked IntentReceiver com.hijiyam_koubou.marasongs.BuletoohtReceiver@42fbcc40 that was originally registered here. Are you missing a call to unregisterReceiver()?
+			}
+
+			Intent MPSIntent = new Intent(context,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+			MPSIntent.setAction(action);				//	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
+			dbMsg +=" ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
+			ComponentName MPSName = context.startService(MPSIntent);
+			dbMsg +=" ,ComponentName=" + MPSName;
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);

@@ -619,23 +619,15 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "processStopRequest";
 		String dbMsg="";
 		try{
-			if(mPlayer !=null){
+			dbMsg +="mState=" + mState;
+			if(mPlayer != null){
 				setPref();		//プリファレンス記載
-			}
-		//		myLog(TAG,dbMsg);
-			dbMsg="mState=" + mState;/////////////////////////////////////
-			if ( mPlayer.isPlaying()) {				//	mState == State.Playing || mState == State.Paused
-				mPlayer.stop();
-				mState = State.Stopped;
-				stopCount();		//タイマーオブジェクトを破棄
-	//			dbMsg += " , mPlayer=" + mPlayer;/////////////////////////////////////
-	//			relaxResources(true);										//mPlayerの破棄// let go of all resources...
-	//			dbMsg += " , mAudioFocus=" + mAudioFocus;/////////////////////////////////////
-	//			giveUpAudioFocus();											//AudioFocus.NoFocusNoDuckへ設定
-	//			dbMsg += " , mRemoteControlClient=" + mRemoteControlClient;/////////////////////////////////////
-	//			if (mRemoteControlClient != null) {
-	//				mRemoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);			// Tell any remote controls that our playback state is 'paused'.
-	//			}
+				dbMsg +=",isPlaying=" + mPlayer.isPlaying();
+				if ( mPlayer.isPlaying()) {				//	mState == State.Playing || mState == State.Paused
+					mPlayer.stop();
+					mState = State.Stopped;
+					stopCount();		//タイマーオブジェクトを破棄
+				}
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -1561,8 +1553,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					intentNR.setAction(ACTION_PLAYPAUSE);
 					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
 					PendingIntent ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-
 					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
 					String ppTitol = "pause";
 					if (mPlayer != null) {
@@ -3638,6 +3628,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg += ",nowSartId=" + nowSartId;////////////////////////
 			stopSelf();
 			dbMsg += ",mBinder=" + mBinder;////////////////////////
+
 			MusicPlayerService.this.stopSelf();
 			myLog(TAG,dbMsg);
 				/*startIdを指定せずにサービスを終了しようとして、同じタイミングでstartService()を呼び出してしまったら、
