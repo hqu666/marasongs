@@ -102,7 +102,8 @@
 
         <service
             android:name=".MusicPlayerService"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" />
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" />
@@ -115,7 +116,12 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-
+        <receiver android:name=".NotifRecever" android:exported="true">
+            <intent-filter>
+                <action android:name="jp.test.tryforegroundservicesample.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".BuletoohtReceiver"
             android:exported="true">
@@ -146,8 +152,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
-        <service android:name=".NotifRecever" />
 
         <activity
             android:name="com.google.android.gms.ads.AdActivity"

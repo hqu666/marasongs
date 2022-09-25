@@ -121,9 +121,18 @@ public final class MyConstants {
     /**汎用プレイリストの曲リスト*/
     public static final int PUPRPOSE_SONG=PUPRPOSE_lIST+1;
     /**楽曲選択*/
-    public static final int SELECT_SONG=PUPRPOSE_SONG+1000;
+    public static final int SELECT_SONG=PUPRPOSE_SONG+100;
     /**多階層リスト操作中*/
     public static final int SELECT_TREE = SELECT_SONG+1;
+
+    /**ノティフィケーションの曲戻し*/
+    public static final int ACTION_CODE_REWINDE = SELECT_TREE + 101;
+    /**ノティフィケーションの再生停止*/
+    public static final int ACTION_CODE_PLAYPAUSE = ACTION_CODE_REWINDE + 1;
+    /**ノティフィケーションの曲送り*/
+    public static final int ACTION_CODE_SKIP = ACTION_CODE_PLAYPAUSE + 1;
+    /**ノティフィケーションから終了*/
+    public static final int ACTION_CODE_quit = ACTION_CODE_SKIP + 1;
 
     /**プレイリスト用簡易リスト*/
 //    public List<String> plSL;//MyConstants.plSLは参照できない

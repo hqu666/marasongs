@@ -58,7 +58,6 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
-import androidx.media.session.MediaButtonReceiver;
 
 import java.io.File;
 import java.io.IOException;
@@ -1470,6 +1469,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public  MediaSession mediaSession;		//final
 	public MediaMetadata.Builder metadataBuilder;
 	private PlaybackStateCompat.Builder stateBuilder;
+	private NotificationManager mNotificationManager;			//			NotificationManagerCompat		NotificationManager
+	private NotificationChannel mNotificationChannel;
+	private Notification.Builder nBuilder;
+	private Notification mNotification = null;
+	final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
+	private RemoteViews ntfViews;						//ノティフィケーションのレイアウト
 
 //	private PendingIntent ppIntent() {
 //		final String TAG = "ppIntent";
@@ -1504,7 +1509,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			Context context = getApplicationContext();
 			String channelId = "default";
 			String title = context.getString(R.string.app_name);
-			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
 			// 通知からActivityを起動できるようにする
 			Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
 			// Set the Activity to start in a new, empty task
@@ -1513,7 +1517,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
 							| PendingIntent.FLAG_IMMUTABLE
 			);
-
+			mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+			// Notification　Channel 設定
+			mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
+			if (mNotificationManager != null) {
+				mNotificationManager.createNotificationChannel(mNotificationChannel);
+			}
+			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
 			if(31<= android.os.Build.VERSION.SDK_INT){
 				if(metadataBuilder == null){
 					dbMsg += " , metadataBuilder == null";
@@ -1539,32 +1549,19 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 					// Add an app icon and set its accent color
 							// Be careful about the color    primaryDark
-
-					builder.setSmallIcon(R.drawable.ic_launcher);
-//								.setColor(ContextCompat.getColor(this, R.color.primaryDark))
-							// Add a pause button
-
-//					builder.addAction(new NotificationCompat.Action(
-//									R.drawable.pouse40, getString(R.string.pause),
-//									MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)));
-//							// Take advantage of MediaStyle features
-					dbMsg += ",setStyle";
-					builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-									.setMediaSession(MediaSessionCompat.Token.fromToken(mediaSession.getSessionToken()))
-									.setShowActionsInCompactView(0)
-									// Add a cancel button
-									.setShowCancelButton(true)
-									.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP)));
-
-					dbMsg += ",PendingIntent";
-					Intent intentNR = new Intent(MusicPlayerService.this, NotifRecever.class);
-					PendingIntent rewIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intentNR, PendingIntent.FLAG_IMMUTABLE);
-					PendingIntent ppIntent = PendingIntent.getBroadcast(getApplicationContext(), 2, intentNR, PendingIntent.FLAG_IMMUTABLE);
-					PendingIntent ffIntent = PendingIntent.getBroadcast(getApplicationContext(), 3, intentNR, PendingIntent.FLAG_IMMUTABLE);
 //					ppIntent.putExtra("EXTRA_NOTIFICATION_ID", channelId);
-//
-					NotificationCompat.Action rewAction = new NotificationCompat.Action(android.R.drawable.ic_media_rew,ACTION_REWIND,rewIntent);
+					dbMsg += ",PendingIntent";
+					Intent intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
+
 					intentNR.setAction(ACTION_REWIND);
+					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_REWINDE);
+					PendingIntent rewIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_REWINDE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_IMMUTABLE);
+					NotificationCompat.Action rewAction = new NotificationCompat.Action(android.R.drawable.ic_media_rew,ACTION_REWIND,rewIntent);
+
+					intentNR.setAction(ACTION_PLAYPAUSE);
+					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
+					PendingIntent ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
 
 					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
 					String ppTitol = "pause";
@@ -1583,20 +1580,33 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					}
 					dbMsg += ",ppTitol = " + ppTitol;
 					NotificationCompat.Action ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
-					intentNR.setAction(ACTION_PLAYPAUSE);
-					//intentNR = new Intent(ACTION_PLAY);
-					NotificationCompat.Action ffAction = new NotificationCompat.Action(android.R.drawable.ic_media_ff,ACTION_SKIP,ffIntent);
-					intentNR.setAction(ACTION_SKIP);
-////					NotificationCompat.Action.Builder(ppIcon, ppTitol, pauseIntent).build();
 
-					NotificationCompat.Action quitAction = new NotificationCompat.Action(android.R.drawable.ic_lock_power_off,ACTION_SYUURYOU_NOTIF,ffIntent);
+					intentNR.setAction(ACTION_SKIP);
+					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_SKIP);
+					PendingIntent ffIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_SKIP, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+					NotificationCompat.Action ffAction = new NotificationCompat.Action(android.R.drawable.ic_media_ff,ACTION_SKIP,ffIntent);
+
 					intentNR.setAction(ACTION_SYUURYOU_NOTIF);				//intentNR = new Intent(ACTION_STOP);
-//
+					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_quit);
+					PendingIntent quitIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_quit, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+					NotificationCompat.Action quitAction = new NotificationCompat.Action(android.R.drawable.ic_lock_power_off,ACTION_SYUURYOU_NOTIF,quitIntent);
+
 //					// 左から順に並びます
 					builder.addAction(rewAction);
 					builder.addAction(ppAction);
 					builder.addAction(ffAction);
 					builder.addAction(quitAction);
+
+					builder.setSmallIcon(R.drawable.ic_launcher);
+					dbMsg += ",setStyle";
+					builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+									.setMediaSession(MediaSessionCompat.Token.fromToken(mediaSession.getSessionToken()))
+									.setShowActionsInCompactView(0)
+							// Add a cancel button
+//									.setShowCancelButton(true)
+//									.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP))
+					);
+
 					dbMsg += " Notification表示";
 					startForeground(NOTIFICATION_ID, builder.build());
 				}
@@ -1615,19 +1625,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //					dbMsg += ">>" + album_art;
 //				}
 
-//				// 通知からActivityを起動できるようにする
-//				Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
-//				// Set the Activity to start in a new, empty task
-//				notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//				PendingIntent pendingIntent = PendingIntent.getActivity(
-//						this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
-//								| PendingIntent.FLAG_IMMUTABLE
-//				);
-				mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				// Notification　Channel 設定
-				mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
-				if (mNotificationManager != null) {
-					mNotificationManager.createNotificationChannel(mNotificationChannel);
+//				mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//				// Notification　Channel 設定
+//				mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
+//				if (mNotificationManager != null) {
+//					mNotificationManager.createNotificationChannel(mNotificationChannel);
 					nBuilder = new Notification.Builder(context, channelId);
 					PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_MUTABLE);        //http://y-anz-m.blogspot.jp/2011/07/androidappwidget-pendingintent-putextra.html
 					//	FLAG_IMMUTABLE を指定すると、パラメータを追加をしたとしても、元々のIntentは変更はされず、起動された側でも取得できずにnull
@@ -1758,7 +1760,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					mNotificationManager.notify(NOTIFICATION_ID, lpNotification);
 
 					startForeground(1, lpNotification);
-				}
+//				}
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -1837,12 +1839,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			☆
 	ここは表示の作成と更新
 	*/
-	private NotificationManager mNotificationManager;			//			NotificationManagerCompat		NotificationManager
-	private NotificationChannel mNotificationChannel;
-	private Notification.Builder nBuilder;
-	private Notification mNotification = null;
-	final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
-	private RemoteViews ntfViews;						//ノティフィケーションのレイアウト
 
 	/**ノティフィケーション作成*/
 	public void makeNotification() {					//			<createBody , updateNotification
