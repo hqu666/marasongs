@@ -1471,6 +1471,15 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public MediaMetadata.Builder metadataBuilder;
 	private PlaybackStateCompat.Builder stateBuilder;
 
+//	private PendingIntent ppIntent() {
+//		final String TAG = "ppIntent";
+//		String dbMsg="";
+//		try{
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG, dbMsg + "で" + e);
+//		}
+//	}
 
 	/**
 	 * sendPlayerStateから呼出しボタンをアップする度に呼び出される
@@ -1530,43 +1539,16 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 					// Add an app icon and set its accent color
 							// Be careful about the color    primaryDark
-//					Intent ppIntent = new Intent();
-//					ppIntent.setAction(ACTION_PLAYPAUSE);
-//					ppIntent.putExtra("EXTRA_NOTIFICATION_ID", channelId);
-//
-////					NotificationCompat.Action.Builder(android.R.drawable.ic_media_rew, "rew", disableVideoIntent).build();
-//					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
-//					String ppTitol = "pause";
-//					if (mPlayer != null) {
-//						dbMsg += ",isPlaying = " + mPlayer.isPlaying();
-//						if (!mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
-//							ppIcon = android.R.drawable.ic_media_play;
-//							ppTitol = "play";
-//						}
-//					}
-//					NotificationCompat.Action ppAction =
-//							new NotificationCompat.Action(
-//									ppIcon,
-//									ppTitol,
-//									PendingIntent.getBroadcast(
-//											context, (int) 1, ppIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-//							);
-////					NotificationCompat.Action.Builder(ppIcon, ppTitol, pauseIntent).build();
-////					NotificationCompat.Action.Builder(android.R.drawable.ic_media_ff, "Next", disableVideoIntent).build();
-//
-//
-//					// 左から順に並びます
-//					builder.addAction(ppAction);
-//					builder.addAction(disableVideoAction);
-//					builder.addAction(stopAction);
+
 					builder.setSmallIcon(R.drawable.ic_launcher);
 //								.setColor(ContextCompat.getColor(this, R.color.primaryDark))
 							// Add a pause button
 
-					builder.addAction(new NotificationCompat.Action(
-									R.drawable.pouse40, getString(R.string.pause),
-									MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)));
-							// Take advantage of MediaStyle features
+//					builder.addAction(new NotificationCompat.Action(
+//									R.drawable.pouse40, getString(R.string.pause),
+//									MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY_PAUSE)));
+//							// Take advantage of MediaStyle features
+					dbMsg += ",setStyle";
 					builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
 									.setMediaSession(MediaSessionCompat.Token.fromToken(mediaSession.getSessionToken()))
 									.setShowActionsInCompactView(0)
@@ -1574,7 +1556,47 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									.setShowCancelButton(true)
 									.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP)));
 
-					// Display the notification and place the service in the foreground
+					dbMsg += ",PendingIntent";
+					Intent intentNR = new Intent(MusicPlayerService.this, NotifRecever.class);
+					PendingIntent rewIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intentNR, PendingIntent.FLAG_IMMUTABLE);
+					PendingIntent ppIntent = PendingIntent.getBroadcast(getApplicationContext(), 2, intentNR, PendingIntent.FLAG_IMMUTABLE);
+					PendingIntent ffIntent = PendingIntent.getBroadcast(getApplicationContext(), 3, intentNR, PendingIntent.FLAG_IMMUTABLE);
+//					ppIntent.putExtra("EXTRA_NOTIFICATION_ID", channelId);
+//
+					NotificationCompat.Action rewAction = new NotificationCompat.Action(android.R.drawable.ic_media_rew,ACTION_REWIND,rewIntent);
+					intentNR.setAction(ACTION_REWIND);
+
+					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
+					String ppTitol = "pause";
+					if (mPlayer != null) {
+						dbMsg += ",isPlaying = " + mPlayer.isPlaying();
+						if (!mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
+							ppIcon = android.R.drawable.ic_media_pause;
+							ppTitol = "pause";
+						}else{
+							ppIcon = android.R.drawable.ic_media_play;
+							ppTitol = "play";
+						}
+					}else{
+						ppIcon = android.R.drawable.ic_media_play;
+						ppTitol = "play";
+					}
+					dbMsg += ",ppTitol = " + ppTitol;
+					NotificationCompat.Action ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
+					intentNR.setAction(ACTION_PLAYPAUSE);
+					//intentNR = new Intent(ACTION_PLAY);
+					NotificationCompat.Action ffAction = new NotificationCompat.Action(android.R.drawable.ic_media_ff,ACTION_SKIP,ffIntent);
+					intentNR.setAction(ACTION_SKIP);
+////					NotificationCompat.Action.Builder(ppIcon, ppTitol, pauseIntent).build();
+
+					NotificationCompat.Action quitAction = new NotificationCompat.Action(android.R.drawable.ic_lock_power_off,ACTION_SYUURYOU_NOTIF,ffIntent);
+					intentNR.setAction(ACTION_SYUURYOU_NOTIF);				//intentNR = new Intent(ACTION_STOP);
+//
+//					// 左から順に並びます
+					builder.addAction(rewAction);
+					builder.addAction(ppAction);
+					builder.addAction(ffAction);
+					builder.addAction(quitAction);
 					dbMsg += " Notification表示";
 					startForeground(NOTIFICATION_ID, builder.build());
 				}
