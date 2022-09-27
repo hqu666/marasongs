@@ -49,15 +49,14 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,7 +98,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public Uri albumArtUri ;
 	public String NextDataFN;
 	public MusicPlaylist musicPlaylist ;
-	public MediaMetadataCompat MMC;
 
 	public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
 	public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
@@ -1249,8 +1247,32 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 									IsPlaying  = mPlayer.isPlaying() ;			//再生中か
 									IsSeisei  = true ;				//生成中
 								}
-								dbMsg += "[" + mcPosition + "/"+saiseiJikan + "]";/////////////////////////////////////
+								dbMsg += "[" + mcPosition + "/"+saiseiJikan + "]";
+
+								dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
+								if(31<= android.os.Build.VERSION.SDK_INT) {
+									if(mNotificationManager != null){
+										int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
+										String ppTitol = "pause";
+										if (mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
+											ppIcon = android.R.drawable.ic_media_pause;
+											ppTitol = "pause";
+										}else{
+											ppIcon = android.R.drawable.ic_media_play;
+											ppTitol = "play";
+										}
+										dbMsg += ",ppTitol = " + ppTitol;
+
+//										ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
+//										builder.addAction(ppAction);
+//										notificationManager.notify(NOTIFICATION_ID, builder.build());
+									}
+								}
+
 								int nokori = saiseiJikan - mcPosition-kankaku;
+
+
+
 								if( ( nokori <= crossFeadTime
 //											|| (rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
 								)){			//	&&  (Build.VERSION.SDK_INT <16)
@@ -1456,27 +1478,124 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	//private static final String ACTION_TOGGLE_PLAYBACK = "com.your.package.name.TOGGLE_PLAYBACK";
 	//private static final String ACTION_PREV = "com.your.package.name.PREV";
 	//private static final String ACTION_NEXT = "com.your.package.name.NEXT";
+	/**SDK_INT31以降のノティフィケーションビルダ*/
+	private NotificationCompat.Builder builder;
+	/**play/pouseボタン*/
+	private PendingIntent ppIntent;
+	private NotificationCompat.Action ppAction;
+	NotificationManagerCompat notificationManager;
+	/**ノティフィケーションインスタンス*/
 	public  Notification lpNotification;
 	public TransportControls lpNControls;
 	public  MediaSession mediaSession;		//final
 	public MediaMetadata.Builder metadataBuilder;
-	private PlaybackStateCompat.Builder stateBuilder;
-	private NotificationManager mNotificationManager;			//			NotificationManagerCompat		NotificationManager
+//	private PlaybackStateCompat.Builder stateBuilder;
+	/**ノティフィケーションマネージャー*/
+	private NotificationManager mNotificationManager;			//
 	private NotificationChannel mNotificationChannel;
 	private Notification.Builder nBuilder;
+	/**ノティフィケーションインスタンス*/
 	private Notification mNotification = null;
 	final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
 	private RemoteViews ntfViews;						//ノティフィケーションのレイアウト
 
-//	private PendingIntent ppIntent() {
-//		final String TAG = "ppIntent";
-//		String dbMsg="";
-//		try{
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG, dbMsg + "で" + e);
-//		}
-//	}
+	//MediaSessionCompat
+	MediaSession.Callback nfCallback = new MediaSession.Callback() {
+				@Override
+				public void onPlay() {
+					final String TAG = "onPlay";
+					String dbMsg = "[nfCallback]";
+					try {
+						if(mPlayer != null){
+							dbMsg += ",isPlaying=" + mPlayer.isPlaying();
+							if(! mPlayer.isPlaying()){
+//					AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+//					// Request audio focus for playback, this registers the afChangeListener
+//					AudioAttributes attrs = new AudioAttributes.Builder()
+//							.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//							.build();
+//					audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+//							.setOnAudioFocusChangeListener(afChangeListener)
+//							.setAudioAttributes(attrs)
+//							.build();
+//					int result = am.requestAudioFocus(audioFocusRequest);
+//
+//					if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+//						// Start the service
+//						startService(new Intent(context, MediaBrowserService.class));
+//						// Set the session active  (and update metadata and state)
+//						mediaSession.setActive(true);
+//						// start the player (custom call)
+								mPlayer.start();
+								dbMsg += ">>" + mPlayer.isPlaying();
+//						// Register BECOME_NOISY BroadcastReceiver
+//						registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
+//						// Put the service in the foreground, post notification
+//						service.startForeground(id, myPlayerNotification);
+							}
+						}
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG, dbMsg + "で" + e);
+					}
+//						player.start();
+//					}
+				}
+
+				@Override
+				public void onStop() {
+					final String TAG = "onStop";
+					String dbMsg = "[nfCallback]";
+					try {
+						if(mPlayer != null){
+							dbMsg += ",isPlaying=" + mPlayer.isPlaying();
+							if( mPlayer.isPlaying()){
+								//					AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+//					// Abandon audio focus
+//					am.abandonAudioFocusRequest(audioFocusRequest);
+//					unregisterReceiver(myNoisyAudioStreamReceiver);
+//					// Stop the service
+//					service.stopSelf();
+//					// Set the session inactive  (and update metadata and state)
+//					mediaSession.setActive(false);
+//					// stop the player (custom call)
+								mPlayer.stop();
+								dbMsg += ">>" + mPlayer.isPlaying();
+								//					// Take the service out of the foreground
+//					service.stopForeground(false);
+							}
+						}
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG, dbMsg + "で" + e);
+					}
+				}
+
+				@Override
+				public void onPause() {
+					final String TAG = "onPause";
+					String dbMsg = "[nfCallback]";
+					try {
+						if(mPlayer != null){
+							dbMsg += ",isPlaying=" + mPlayer.isPlaying();
+							if( mPlayer.isPlaying()){
+								//					AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+//					// Update metadata and state
+//					// pause the player (custom call)
+								mPlayer.pause();
+//					// unregister BECOME_NOISY BroadcastReceiver
+//					unregisterReceiver(myNoisyAudioStreamReceiver);
+//					// Take the service out of the foreground, retain the notification
+//					service.stopForeground(false);
+								dbMsg += ">>" + mPlayer.isPlaying();
+							}
+						}
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG, dbMsg + "で" + e);
+					}
+				}
+			};
 
 	/**
 	 * sendPlayerStateから呼出しボタンをアップする度に呼び出される
@@ -1509,11 +1628,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
 							| PendingIntent.FLAG_IMMUTABLE
 			);
-			mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager = NotificationManagerCompat.from(this);
 			// Notification　Channel 設定
 			mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
-			if (mNotificationManager != null) {
-				mNotificationManager.createNotificationChannel(mNotificationChannel);
+			if (notificationManager != null) {
+				notificationManager.createNotificationChannel(mNotificationChannel);
 			}
 			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
 			if(31<= android.os.Build.VERSION.SDK_INT){
@@ -1524,6 +1643,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						dbMsg += " , mediaSession == null";
 						mediaSession = new MediaSession(getApplicationContext(),  getResources().getString(R.string.app_name));
 					}
+
 					dbMsg += " , DURATION=" + metadataBuilder.build().getLong(MediaMetadata.METADATA_KEY_DURATION);
 					// Get the session's metadata
 					MediaController controller = mediaSession.getController();
@@ -1531,7 +1651,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
 					// タイトルなどの表示
 					mediaSession.setMetadata(metadataBuilder.build());
-
+					mediaSession.setCallback(nfCallback);
 					//	dbMsg += " Notification そのものをタップしたとき="+pendingIntent.getCreatorUid();
 					builder.setContentIntent(pendingIntent);
 //					builder.setContentIntent(controller.getSessionActivity());
@@ -1539,9 +1659,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			//		builder.setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP));
 							// Make the transport controls visible on the lockscreen
 					builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-					// Add an app icon and set its accent color
-							// Be careful about the color    primaryDark
-//					ppIntent.putExtra("EXTRA_NOTIFICATION_ID", channelId);
 					dbMsg += ",PendingIntent";
 					Intent intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
 
@@ -1552,15 +1669,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 					intentNR.setAction(ACTION_PLAYPAUSE);
 					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
-					PendingIntent ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+					ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
 					String ppTitol = "pause";
 					if (mPlayer != null) {
 						dbMsg += ",isPlaying = " + mPlayer.isPlaying();
-						if (!mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
-							ppIcon = android.R.drawable.ic_media_pause;
-							ppTitol = "pause";
-						}else{
+						if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
 							ppIcon = android.R.drawable.ic_media_play;
 							ppTitol = "play";
 						}
@@ -1569,7 +1683,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 						ppTitol = "play";
 					}
 					dbMsg += ",ppTitol = " + ppTitol;
-					NotificationCompat.Action ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
+					ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
 
 					intentNR.setAction(ACTION_SKIP);
 					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_SKIP);
@@ -1597,8 +1711,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //									.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP))
 					);
 
-					dbMsg += " Notification表示";
-					startForeground(NOTIFICATION_ID, builder.build());
+					dbMsg += " Notification型のインスタンス生成";
+					lpNotification = builder.build();
+					startForeground(NOTIFICATION_ID, lpNotification);
 				}
 			}else {
 				Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.no_image);
@@ -3250,7 +3365,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			String[] items = urlStr.split(File.separator);
 			albumArtistName = items[items.length-3];
 			dbMsg += ",albumArtistName=" + albumArtistName;
-//			MMC = buildMediaMetadataCompat(String.valueOf(audioId), urlStr, creditArtistName, albumName, titolName, albumArtUri.toString() , Long.valueOf(saiseiJikan));
 			metadataBuilder = new MediaMetadata.Builder();
 			// To provide most control over how an item is displayed set the
 			// display fields in the metadata

@@ -7,7 +7,7 @@ import android.content.Intent;
 
 public class NotifRecever extends BroadcastReceiver {
 	/////////////////////////////////////////////// Service
-//	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
+	public static final String ACTION_PLAYPAUSE = "com.example.android.remotecontrol.ACTION_PLAYPAUSE";
 //	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 
 	//@Override
@@ -29,12 +29,15 @@ public class NotifRecever extends BroadcastReceiver {
 					ML.finish();
 				//.faQuite();フォーカスが当たってからquitMeへfaQuite();	04-14 16:54:42.746: E/ActivityThread(4671): Service com.hijiyam_koubou.marasongs.MusicPlayerService has leaked IntentReceiver com.hijiyam_koubou.marasongs.BuletoohtReceiver@42fbcc40 that was originally registered here. Are you missing a call to unregisterReceiver()?
 			}
+			if(action == ACTION_PLAYPAUSE){
 
-			Intent MPSIntent = new Intent(context,MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-			MPSIntent.setAction(action);				//	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
-			dbMsg +=" ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
-			ComponentName MPSName = context.startService(MPSIntent);
-			dbMsg +=" ,ComponentName=" + MPSName;
+			}else {
+				Intent MPSIntent = new Intent(context, MusicPlayerService.class);    //parsonalPBook.thisではメモリーリークが起こる
+				MPSIntent.setAction(action);                //	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
+				dbMsg += " ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
+				ComponentName MPSName = context.startService(MPSIntent);
+				dbMsg += " ,ComponentName=" + MPSName;
+			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
