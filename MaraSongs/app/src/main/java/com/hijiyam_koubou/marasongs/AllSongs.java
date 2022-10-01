@@ -2762,25 +2762,31 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         String dbMsg= "開始;";/////////////////////////////////////
         try{
             Thread thread = this.thread;
-            dbMsg= "thread = ; "+ thread;/////////////////////////////////////
+            dbMsg+= "thread = ; "+ thread;/////////////////////////////////////
             thread = null;
-            dbMsg= ">>" + thread;/////////////////////////////////////
-            dbMsg +=",Zenkyoku_db.isOpen()=" + Zenkyoku_db.isOpen();/////////////////////////////////////
-            if( Zenkyoku_db.isOpen() ){
-                Zenkyoku_db.close();
-                dbMsg +=">>" + Zenkyoku_db.isOpen();/////////////////////////////////////
+            dbMsg+= ">>" + thread;/////////////////////////////////////
+            if( Zenkyoku_db !=null) {
+                dbMsg +=",Zenkyoku_db.isOpen()=" + Zenkyoku_db.isOpen();/////////////////////////////////////
+                if( Zenkyoku_db.isOpen() ){
+                    Zenkyoku_db.close();
+                    dbMsg +=">>" + Zenkyoku_db.isOpen();/////////////////////////////////////
+                }
             }
-            dbMsg +=",artist_db.isOpen()=" + artist_db.isOpen();/////////////////////////////////////
-            if( artist_db.isOpen() ){
-                artist_db.close();
-                dbMsg +=">>" + artist_db.isOpen();/////////////////////////////////////
+            if( artist_db !=null) {
+                dbMsg +=",artist_db.isOpen()=" + artist_db.isOpen();/////////////////////////////////////
+                if( artist_db.isOpen() ){
+                    artist_db.close();
+                    dbMsg +=">>" + artist_db.isOpen();/////////////////////////////////////
+                }
             }
-            dbMsg +=",Kari_db.isOpen()=" + Kari_db.isOpen();/////////////////////////////////////
-            if( Kari_db.isOpen() ){
-                Kari_db.close();
-                dbMsg +=">>" + Kari_db.isOpen();/////////////////////////////////////
+            if( artist_db !=null) {
+                dbMsg +=",Kari_db.isOpen()=" + Kari_db.isOpen();/////////////////////////////////////
+                if( Kari_db.isOpen() ){
+                    Kari_db.close();
+                    dbMsg +=">>" + Kari_db.isOpen();/////////////////////////////////////
+                }
             }
-            //		myLog(TAG,dbMsg);
+            		myLog(TAG,dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg + "で"+e.toString());
         }

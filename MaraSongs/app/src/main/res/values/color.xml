@@ -26,4 +26,9 @@
   <color name="selected_list_item_color">#ffd33f</color>
   <color name="default_color">#000000</color>
   <color name="clear">#00000000</color>
+	<!--プリファレンス用-->
+	<color name="colorPrimary">#3F51B5</color>
+	<color name="colorPrimaryDark">#32ACD5</color>
+	<color name="colorAccent">#FF4081</color>
+
 </resources>
