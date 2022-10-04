@@ -5,25 +5,10 @@ package com.hijiyam_koubou.marasongs;
  * 202002;m3u書き出し
  * **/
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Arrays;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -41,7 +26,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -49,14 +33,17 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ZenkyokuList extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
 	OrgUtil ORGUT;				//自作関数集
@@ -459,7 +446,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	}
 
 	/**
-	 * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで端末内の音楽データ読み込み
+	 * 端末内の音楽データ読み込み
      *  MediaStore.Audio.Media.IS_MUSIC  <> "0"
 	 * c_orderBy = MediaStore.Audio.Media.DATA でアーティスフォルダの降順
 	 * @ 無し
@@ -521,7 +508,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			ProgBar2.setMax(pd2MaxVal);	 //セカンドプログレスバー
 			dbMsg=dbMsg +",最新="+ saisinnbi ;
 			ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? "  ;
 			String[] c_selectionArgs= {"0"  };   			//, null , null , null
 			String c_orderBy=MediaStore.Audio.Media.DATE_MODIFIED  + " DESC"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -623,7 +615,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	/**
 	 * MediaStore.Audio.Mediaの欠けデータ確認
-	 * @ Cursor cursor MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで読み込んだ端末内の音楽データ
+	 * @ Cursor cursor 読み込んだ端末内の音楽データ
 	 * @ Uri cUri
 	 * @ String where
 	 * 欠落したデータはファイル名から補完
@@ -865,7 +857,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			trackNoList = new ArrayList<String>();		//曲順
 			String where = MediaStore.Audio.Media._ID + "= ?";
 			ContentResolver resolver = context.getContentResolver();	//this.getApplication().
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs= {"0"};   			//⑥引数groupByには、groupBy句を指定します。
@@ -1036,7 +1033,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	/**
 	 * 仮アーティストリスト作成
 	 * @ 無し
-	 * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIをMediaStore.Audio.Media.ARTISTでソート
+	 * MediaStore.Audio.Media.ARTISTでソート
 	 * kaliAartistListBodyへ
 	 * reqCode = pt_KaliArtistList
 	 * */
@@ -1049,7 +1046,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			System.currentTimeMillis();
 
 			cContext.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";	//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
@@ -1090,7 +1092,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	/**
 	 * 仮アーティストリスト作成
-	 * @ Cursor cursor MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで読み込んだ端末内の音楽データ
+	 * @ Cursor cursor 読み込んだ端末内の音楽データ
 	 * アーティスト名がcomon_compilation=コンピレーション,comon_compilation0=さまざまなアーティスト,comon_compilation2=Various Artistsはcomon_compilation=コンピレーションに統一
 	 * アーティスト名を最短化して大文字化しソートキーになる文字列作成
 	 * ArrayList<String> artistListに格納
@@ -1182,7 +1184,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 				int rInt = 0;
 				String rStr = null;			// = cursor.getString(cursor.getColumnIndex("ALBUM"));
 				cContext.getContentResolver();
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 				String c_selection =  MediaStore.Audio.Media.ARTIST + " LIKE ?";
 				String[] c_selectionArgs= {"%" + artistN + "%" };   			//音楽と分類されるファイルだけを抽出する
@@ -1557,7 +1564,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 	/**
 	 * 仮リスト作成
 	 * @ 無し
-	 * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIをMediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソート
+	 * MediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソート
 	 * kaliListBodyへ
 	 * reqCode = pt_CreateKaliList
 	 * */
@@ -1576,7 +1583,12 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
 			String fn = cContext.getString(R.string.kari_file);			//kari.db
 			ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
@@ -1613,7 +1625,7 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 
 	/**
 	 * 仮リスト作成
-	 * @ Cursor cursor  MediaStore.Audio.Media.EXTERNAL_CONTENT_URIをMediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソートして読み込んだ端末内の音楽データ
+	 * @ Cursor cursor  MediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソートして読み込んだ端末内の音楽データ
 	 * @ SQLiteStatement stmt
 	 * stmtはplogTask.endTSでKari_dbに書き込まれる
 	 * CreateKaliListEndへ
@@ -2284,7 +2296,13 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			}
 			dbMsg= dbMsg +"," + selection_al;/////////////////////////////////////
 			String sortOrdre = MediaStore.Audio.Media.TRACK;	//MediaStore.Audio.Media.ALBUM +" , " + MediaStore.Audio.Media.YEAR +" , " +
-			Cursor cur = cContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null , selection_al , null, sortOrdre);		// 外部ストレージから音楽を検索
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
+			Cursor cur = cContext.getContentResolver().query(cUri, null , selection_al , null, sortOrdre);		// 外部ストレージから音楽を検索
 			dbMsg +=" , " + cur.getCount() + "件";/////////////////////////////////////
 		//		myLog(TAG,dbMsg );
 			ArrayList<String> albumList = new ArrayList<String>();
@@ -2349,7 +2367,11 @@ public class ZenkyokuList extends Activity implements plogTaskCallback{		// exte
 			int readint = cur.getInt(cur.getColumnIndex(MediaStore.Audio.Media._ID));
 			dbMsg= "_ID=" + readint;/////////////////////////////////////
 			ContentResolver resolver = cContext.getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String where = MediaStore.Audio.Media._ID + "= ?";
 			String[] selectionArgs = {String.valueOf(readint)};
 			String rData =cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));

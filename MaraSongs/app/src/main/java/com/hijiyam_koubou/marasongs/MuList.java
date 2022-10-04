@@ -143,6 +143,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String ruikei_artist;					//アーティスト累計
 	public String pref_compBunki = "40";			//コンピレーション分岐点 曲数
 	public int pref_sonota_vercord ;				//////////////このアプリのバージョンコード/ 2015年08月//9341081 //////////////////////
+	public int nowList_id = -1;				//再生中のプレイリストID	(受取り時/戻し時)
+	public String nowList = null;				//再生中のプレイリスト名
+	public String saisei_fname =null;				//再生中のファイル名
+
 	public boolean pref_cyakusinn_fukki=true;		//終話後に自動再生
 	public boolean pref_bt_renkei =true;				//Bluetoothの接続に連携して一時停止/再開
 	public boolean pref_list_simple =false;				//シンプルなリスト表示（サムネールなど省略）
@@ -256,8 +260,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public List<String> imgList = null;		//アルバムアート
 	public List<String> subList = null;		//アルバム付加情報
 	public List<String> titoSubList = null;		//曲名付加情報
-	public int nowList_id = -1;				//再生中のプレイリストID	(受取り時/戻し時)
-	public String nowList = null;				//再生中のプレイリスト名
 	public String nowListSub;				//再生中のプレイリストの詳細
 	public String nowList_data;		//再生中のプレイリストの保存場所
 	public int reqestList_id = 0;			//アクティビテイ方戻されたのプレイリストID
@@ -480,7 +482,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += "許諾確認";
 				List<String> permissionArray = new ArrayList<String>();
 				permissionArray.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-				permissionArray.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 				//Android 10(Q)でMediaStoreを介してデータを読み取るときは、 READ_EXTERNAL_STORAGE権限を要求し、書くとき何の権限を必要としません。
 				permissionArray.add(Manifest.permission.INTERNET);
 				permissionArray.add(Manifest.permission.ACCESS_NETWORK_STATE);
@@ -492,10 +493,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ) {                //(初回起動で)全パーミッションの許諾を取る
 //					permissionArray.add(Manifest.permission.MEDIA_CONTENT_CONTROL);   //フラグが変わらない；再生中メディアへのアクセス許可
 //				}
-				if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) {                //(初回起動で)全パーミッションの許諾を取る
+				if ( Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
 					permissionArray.add(Manifest.permission.READ_CONTACTS);
 					permissionArray.add(Manifest.permission.WRITE_CONTACTS);
-				}else{
+				}
+				if ( 33<= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
+					permissionArray.add(Manifest.permission.READ_MEDIA_AUDIO);
+				}
+				if ( 29<= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
+					permissionArray.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+				}
+				if ( 32<= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
+					permissionArray.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
 				}
 				dbMsg += "," + permissionArray.size() + "件";
 				final String[] PERMISSIONS = permissionArray.toArray(new String[permissionArray.size()]);
@@ -532,11 +541,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								}
 							})
 							.create().show();
-				}else{
-					dbMsg += "::許諾済み";
-					dbMsg += "::readPrefへ";
-					readPref();
 				}
+//				else{
+					dbMsg += "::許諾済み";
+//				}
 			}
 			myLog(TAG , dbMsg);
 		} catch (Exception er) {
@@ -640,6 +648,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
 			pref_pb_bgc = myPreferences.pref_pb_bgc;				//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
 
+			nowList_id = Integer.parseInt(myPreferences.nowList_id);
+			dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
+			nowList= myPreferences.nowList;
+			dbMsg += "]" + nowList;
+			saisei_fname = myPreferences.saisei_fname;					//	playlistNAME
+			dbMsg += "、再生中のファイル名=" + saisei_fname;
+			pl_file_name = myPreferences.pref_commmn_music +File.separator;//汎用プレイリストのファイル名のパスまで
+			dbMsg += "、汎用プレイリストのファイル名=" + pl_file_name;
 			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
@@ -672,12 +688,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String mod = sdffiles.format(new Date(Long.valueOf(pref_file_saisinn) * 1000));
 				dbMsg += ">>" + mod;
 			}
-			dbMsg += "、再生中のプレイリストID=" + myPreferences.nowList_id;
-			dbMsg += "、再生中のプレイリスト名=" + myPreferences.nowList;
-			nowList = myPreferences.nowList;					//	playlistNAME
-			dbMsg += "、再生中のファイル名=" + pref_data_url;
-			pl_file_name = myPreferences.pref_commmn_music +File.separator;//汎用プレイリストのファイル名のパスまで
-			dbMsg += "、汎用プレイリストのファイル名=" + pl_file_name;
 			pref_zenkyoku_list_id = myPreferences.pref_zenkyoku_list_id;			// 全曲リスト
 			saikintuika_list_id = myPreferences.saikintuika_list_id;			//最近追加
 			saikinsisei_list_id = myPreferences.saikinsisei_list_id;			//最近再生
@@ -2587,7 +2597,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String modified = sdf.format(new Date(Long.valueOf(saisinn)*1000));
 			dbMsg += "=" + modified;//////////////////
 			ContentResolver resolver = getApplicationContext().getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? "  ;
 			String[] c_selectionArgs= {"0"  };   			//, null , null , null
@@ -6564,9 +6579,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		dbMsg += itemName + "のUrを返す" ;/////////////////////////////////////
 		try{
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				dbMsg += ",アルバム=" + MuList.this.sousa_alubm ;/////////////////////////////////////
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 				String c_selection =MediaStore.Audio.Media.ALBUM + " = ? AND " +MediaStore.Audio.Media.TITLE + " = ?";			//☆20151228	何故かコンピレーションが追記されないので後で追加
 				String[] c_selectionArgs = new String[]{ MuList.this.sousa_alubm,itemName };
 				String c_orderBy=MediaStore.Audio.Media._ID ;			// + " DESC"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -6578,7 +6598,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			} else {
 				dbMsg += ",albumName=" + albumName;
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
 				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 				String c_selection =  MediaStore.Audio.Media.ALBUM +" = ? AND " + MediaStore.Audio.Media.TITLE +" = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 				String[] c_selectionArgs= {String.valueOf(albumName) , itemName};   			//⑥引数groupByには、groupBy句を指定します。
@@ -6609,7 +6628,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		dbMsg +=  "データURL=" + itemeFn;/////////////////////////////////////
 		try{
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 				String c_selection =MediaStore.Audio.Media.DATA + " = ?";			//☆20151228	何故かコンピレーションが追記されないので後で追加
 				String[] c_selectionArgs = new String[]{ itemeFn };
 				String c_orderBy=MediaStore.Audio.Media._ID ;			// + " DESC"; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -7529,7 +7553,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			File rFile = new File(rURL);
 			if(rFile.exists()) {
 				ContentResolver resolver = MuList.this.getContentResolver();	//c.getContentResolver();
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 				String c_selection =  MediaStore.Audio.Media.DATA +" = ? "  ;
 				String[] c_selectionArgs= {rURL};   			//, null , null , null
 				String c_orderBy = null; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -7757,7 +7786,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	/**
-	 *  最近追加された楽曲の抽出 MediaStore.Audio.Media.EXTERNAL_CONTENT_URIからDATE_ADDEDが指定日以降の楽曲を抽出 */
+	 *  最近追加された楽曲の抽出 DATE_ADDEDが指定日以降の楽曲を抽出 */
 	@SuppressLint("Range")
 	public void saikin_tuika_mod(){				//最近追加された楽曲の抽出(指定IF)
 		final String TAG = "saikin_tuika_mod";
@@ -7784,7 +7813,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "、作成list[ID=" + tuikaSakiListID + "]"+ MuList.this.sousalistName;
 			modifiedList = new ArrayList<String>();		//更新日→アルバム
 			int listUpCount =0;
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection = MediaStore.Audio.Media.DATE_ADDED +">=?" ;			//ファイル更新日
 			String[] c_selectionArgs= {String.valueOf(saikinTuikaLimt)};   			//⑥引数groupByには、groupBy句を指定します。
@@ -7929,11 +7963,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			int pOrder = MuList.this.plAL.size() + 1;
 			String alabumName = MuList.this.modifiedList.get(rIndex);
 			dbMsg += alabumName ;
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Media.ALBUM +" = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 			String[] c_selectionArgs= {String.valueOf( alabumName ) };
-//			String c_orderBy= MediaStore.Audio.Media._ID;			//MediaStore.Audio.Media.ALBUM + " , " + MediaStore.Audio.Media.TRACK ;		//降順はDESC
 			String c_orderBy= MediaStore.Audio.Media.TRACK;	//では1,10,11,12...2,3　となる。リッピングの順番が収録順と一致する事に期待する 、
 			Cursor cursor = getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
 			int rCount = cursor.getCount();
@@ -8424,7 +8462,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=  "最近再生";	//+MuList.this.plSL;
 			saiseiZumiSuu =MuList.this.plSL.size();
 			dbMsg +=  "="+saiseiZumiSuu + "件";
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ?" ;
 			String[] c_selectionArgs= {"0" };   			//, null , null , null
 			String c_orderBy=MediaStore.Audio.Media._ID; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -8469,7 +8512,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=">>>"+ retFl ;//////////////////
 			int gyou = (int) (retFl+0.5);
 			dbMsg += ",行=" + gyou ;///////////////////////////////////
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ?" ;
 			String[] c_selectionArgs= {"0" };   			//, null , null , null
 			String c_orderBy=MediaStore.Audio.Media._ID; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -8637,7 +8685,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}else{
 				zenkyokuAri = false;			//全曲リスト有り
 				dbMsg += " , " + albumArtist+ "は";
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 				c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 				c_selection = MediaStore.Audio.Media.ARTIST + " LIKE ?";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 				String[] c_selectionArgs2= {"%" + albumArtist + "%" };   			//音楽と分類されるファイルだけを抽出する
@@ -8736,7 +8789,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=  ",操作対象レコードのUrl=" + sousaRecordUrl;
 			b_reqCode=reqCode;							//処理コードの保留
 			if( MuList.this.sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){				// 全曲リスト
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 				String c_selection = MediaStore.Audio.Media.ARTIST + " LIKE ? AND " + MediaStore.Audio.Media.ALBUM + " = ? AND " + MediaStore.Audio.Media.TITLE + " = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 				String[] c_selectionArgs= {"%" + sousa_artist + "%", sousa_alubm , itemStr };   			//音楽と分類されるファイルだけを抽出する
@@ -11300,6 +11358,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			musicPlaylist = new MusicPlaylist(MuList.this);
 			//Permission確認
 			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
+			dbMsg += "::readPrefへ";
+			readPref();
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
 			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
 			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点

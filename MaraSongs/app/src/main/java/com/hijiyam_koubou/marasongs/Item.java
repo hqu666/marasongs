@@ -78,7 +78,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		dbMsg += ">>" + retUri;
 	//	myLog(TAG,dbMsg );
 		return retUri;
-	//	return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 	}
 
 	/**
@@ -116,7 +115,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		dbMsg += ">>" + retUri;
 	//	myLog(TAG,dbMsg );
 		return retUri;
-	//	return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 	}
 
 	/**

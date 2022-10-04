@@ -482,7 +482,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     }
 
     /**
-     * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIで端末内の音楽データ読み込み、既存の全曲リスト消去、欠けデータ確認
+     *端末内の音楽データ読み込み、既存の全曲リスト消去、欠けデータ確認
      *  MediaStore.Audio.Media.IS_MUSIC  <> "0"
      * c_orderBy = MediaStore.Audio.Media.DATA でアーティスフォルダの降順
      * @ 無し
@@ -554,7 +554,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     /**
      * 仮リスト作成；全音楽ファイル抽出
      * @ 無し
-     * MediaStore.Audio.Media.EXTERNAL_CONTENT_URIをMediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソート
+     * MediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソート
      * kaliListBodyへ
      * reqCode = pt_CreateKaliList
      * */
@@ -570,7 +570,12 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             String fn = cContext.getString(R.string.kari_file);			//kari.db
             dbMsg += ",db=" + fn;
        //     ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
-//            Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+//            Uri cUri;
+//            if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+//                cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+//            } else {
+//                cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+//            }
 //            String[] projection = null;
 //            String selection = null;
 //            String[] selectionArgs = null;
@@ -591,7 +596,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 //            laseAlbaumArtistID=cursor.getCount();               //ゲスト参加があるのでALBUM_ARTIST数より多い
 //            dbMsg += ",Artist(laseAlbaumArtistID)=" + laseAlbaumArtistID;
             ContentResolver resolver = getApplicationContext().getContentResolver();
-            Uri cUri;   // = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+            Uri cUri;
             if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
                 cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
                 //content://media/external/audio/media
@@ -674,7 +679,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
     /**
      * 仮リスト作成
-     * @ Cursor cursor  MediaStore.Audio.Media.EXTERNAL_CONTENT_URIをMediaStore.Audio.Media.ARTIST,ALBUM,TRACKでソートして読み込んだ端末内の音楽データ
+     * @ .Audio.Media.ARTIST,ALBUM,TRACKでソートして読み込んだ端末内の音楽データ
      * @ SQLiteStatement stmt
      * stmtはplogTask.endTSでKari_dbに書き込まれる
      * CreateKaliListEndへ
@@ -1408,7 +1413,13 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             }
             dbMsg= dbMsg +"," + selection_al;/////////////////////////////////////
             String sortOrdre = MediaStore.Audio.Media.TRACK;	//MediaStore.Audio.Media.ALBUM +" , " + MediaStore.Audio.Media.YEAR +" , " +
-            Cursor cur = cContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null , selection_al , null, sortOrdre);		// 外部ストレージから音楽を検索
+            Uri cUri;
+            if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+                cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+            } else {
+                cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            }
+            Cursor cur = cContext.getContentResolver().query(cUri, null , selection_al , null, sortOrdre);		// 外部ストレージから音楽を検索
             dbMsg +=" , " + cur.getCount() + "件";/////////////////////////////////////
             //		myLog(TAG,dbMsg );
             ArrayList<String> albumList = new ArrayList<String>();
@@ -1473,7 +1484,11 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             @SuppressLint("Range") int readint = cur.getInt(cur.getColumnIndex(MediaStore.Audio.Media._ID));
             dbMsg= "_ID=" + readint;/////////////////////////////////////
             ContentResolver resolver = cContext.getContentResolver();	//c.getContentResolver();
-            Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+            if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+                cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+            } else {
+                cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            }
             String where = MediaStore.Audio.Media._ID + "= ?";
             String[] selectionArgs = {String.valueOf(readint)};
             @SuppressLint("Range") String rData =cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));

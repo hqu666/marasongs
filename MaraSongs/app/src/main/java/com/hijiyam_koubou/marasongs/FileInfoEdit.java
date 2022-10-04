@@ -1,22 +1,13 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -24,20 +15,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.InputType;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedChangeListener {
 //http://d.hatena.ne.jp/abachibi/20100508/1273355363
@@ -238,7 +228,12 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 
 				if(findF.exists()){					//そのファイルが実在すれば
 					ContentResolver resolver = ｒContext.getContentResolver();	//c.getContentResolver();
-					Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+					Uri cUri;
+					if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+						cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+					} else {
+						cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+					}
 					String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 					String c_selection =  MediaStore.Audio.Media.DATA +" = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 					String[] c_selectionArgs= {urlStr};   			//⑥引数groupByには、groupBy句を指定します。

@@ -1426,7 +1426,12 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg += "検索対象；" + urlStr;
 			ContentResolver resolver = getApplicationContext().getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 			String c_selection =  MediaStore.Audio.Media.DATA +" = ?";			//MediaStore.Audio.Albums.ARTIST +" LIKE ?"
 			String c_orderBy=MediaStore.Audio.Media.ARTIST; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
@@ -2247,7 +2252,12 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg=albumMei +"は" ;/////////////////////////////////////
 			ContentResolver resolver = getApplicationContext().getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 			String c_selection =  MediaStore.Audio.Media.ALBUM +" = ?";			//MediaStore.Audio.Albums.ARTIST +" LIKE ?"
 			String c_orderBy=MediaStore.Audio.Media.ARTIST; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC

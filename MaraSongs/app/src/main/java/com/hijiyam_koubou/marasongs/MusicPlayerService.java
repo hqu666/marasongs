@@ -2605,7 +2605,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				cursor.close();
 
 				dbMsg +=  ",追加する曲=" + data;
-				Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 				String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 				c_selection =  MediaStore.Audio.Media.DATA +" = ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
 				String[] c_selectionArgs3= {String.valueOf(data)};   			//音楽と分類されるファイルだけを抽出する
@@ -3247,62 +3252,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	private String songLyric;
 	private boolean lyricAri;			//歌詞を取得できた
 
-
-//	private List<MediaMetadataCompat> fetchMedia() {
-//		final String TAG = "fetchMedia";
-//		String dbMsg= "";
-//		try{
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		List<MediaMetadataCompat> mediaList = new ArrayList<>();
-//		Cursor mediaCursor = getContentResolver().query(
-//				MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-//				new String[]{
-//						MediaStore.Audio.Media._ID,
-//						MediaStore.Audio.Media.DATA,
-//						MediaStore.Audio.Media.TITLE,
-//						MediaStore.Audio.Media.ARTIST,
-//						MediaStore.Audio.Media.ALBUM,
-//						MediaStore.Audio.Media.ALBUM_ID},
-//				MediaStore.Audio.Media.IS_MUSIC + " != 0", null, null);
-//		if (mediaCursor != null && mediaCursor.moveToFirst()) {
-//			do {
-//				mediaList.add(buildMediaMetadataCompat(mediaCursor));
-//			} while (mediaCursor.moveToNext());
-//			mediaCursor.close();
-//		}
-//		return mediaList;
-//	}
-
-//	private MediaMetadataCompat buildMediaMetadataCompat(String mediaID,String mediaURI,String keyARTIST,String keyALBUM,String keyTITLE,String keyAlbumArtURI,Long KeyDURATION) {
-//		final String TAG = "buildMediaMetadataCompat";
-//		String dbMsg= "";
-//		MediaMetadataCompat mmc=null;
-//		try{
-//			dbMsg += "[" + mediaID ;
-//			dbMsg += "]" + mediaURI ;
-//			dbMsg += " , " + keyARTIST ;
-//			dbMsg += " , " + keyALBUM ;
-//			dbMsg += " , " + keyTITLE ;
-//			dbMsg += " , " + keyAlbumArtURI ;
-//			myLog(TAG, dbMsg);
-//			mmc= new MediaMetadataCompat.Builder()
-//					.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaID)
-//					.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, mediaURI)
-//					.putString(MediaMetadataCompat.METADATA_KEY_TITLE, keyTITLE)
-//					.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, keyARTIST)
-//					.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, keyALBUM)
-//					.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,keyAlbumArtURI)
-//					.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,KeyDURATION)
-//					.build();
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		return mmc;
-//	}
-
 	/**アルバムIDからアルバムアートのUriを返す*/
 	private Uri getAlbumArtUri(long albumId) {
 		final String TAG = "getAlbumArtUri";
@@ -3331,7 +3280,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		try{
 			dbMsg += "検索対象；" + urlStr;
 			ContentResolver resolver = getApplicationContext().getContentResolver();	//c.getContentResolver();
-			Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns =null;					//②引数tableには、テーブル名を指定します。
 			String c_selection =  MediaStore.Audio.Media.DATA +" = ?";			//MediaStore.Audio.Albums.ARTIST +" LIKE ?"
 			String c_orderBy=MediaStore.Audio.Media.ARTIST; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
