@@ -85,8 +85,8 @@ public class MyPreferences extends AppCompatActivity {
 	public String pref_file_ex="";		//メモリーカード
 	public String pref_file_wr="";		//設定保存フォルダ
 	public String pref_commmn_music="";		//共通音楽フォルダ
-	public String pref_file_kyoku="";		//総曲数
-	public String pref_file_album="";		//総アルバム数
+	public String pref_file_kyoku="0";		//総曲数
+	public String pref_file_album="0";		//総アルバム数
 	public String pref_file_saisinn="";	//最新更新日
 
 	public String pref_data_url = "";
@@ -399,14 +399,14 @@ public class MyPreferences extends AppCompatActivity {
 //			pTF_prefsaikin_sisei.setOnPreferenceChangeListener(numberPickerListener);					//最近再生リストのデフォルト曲数
 //			pTF_rundam_list_size.setOnPreferenceChangeListener(numberPickerListener);				//ランダム再生の設定曲数
 
-//			pcb_list_simple.setOnPreferenceChangeListener(switchListener);
-//			pTF_pref_pb_bgc.setOnPreferenceChangeListener(switchListener);
-//			pcb_pref_notifplayer.setOnPreferenceChangeListener(switchListener);
-//			pcb_pref_lockscreen.setOnPreferenceChangeListener(switchListener);
-//			pCB_pref_cyakusinn_fukki.setOnPreferenceChangeListener(switchListener);
-//			pcb_bt_renkei.setOnPreferenceChangeListener(switchListener);
-//			pCB_pref_reset.setOnPreferenceChangeListener(switchListener);
-//			pCB_pref_listup_reset.setOnPreferenceChangeListener(switchListener);
+			pcb_list_simple.setOnPreferenceChangeListener(switchListener);
+			pTF_pref_pb_bgc.setOnPreferenceChangeListener(switchListener);
+			pcb_pref_notifplayer.setOnPreferenceChangeListener(switchListener);
+			pcb_pref_lockscreen.setOnPreferenceChangeListener(switchListener);
+			pCB_pref_cyakusinn_fukki.setOnPreferenceChangeListener(switchListener);
+			pcb_bt_renkei.setOnPreferenceChangeListener(switchListener);
+			pCB_pref_reset.setOnPreferenceChangeListener(switchListener);
+			pCB_pref_listup_reset.setOnPreferenceChangeListener(switchListener);
 
 			Bundle extras = getIntent().getExtras();
 			reqCode=extras.getInt("reqCode");				//何のリストか

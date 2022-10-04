@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -70,7 +71,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public Editor myEditor ;
     public String dataFN;						//再生中のファイル名
     public String ruikei_artist;				//アーティスト累計
-    public String pref_compBunki = "40";		//コンピレーション設定[%]
+ //   public String pref_compBunki = "40";		//コンピレーション設定[%]
     public boolean pref_cyakusinn_fukki=true;		//終話後に自動再生
     public boolean pref_bt_renkei =true;				//Bluetoothの接続に連携して一時停止/再開
     public boolean pref_list_simple =true;				//シンプルなリスト表示（サムネールなど省略）
@@ -208,10 +209,9 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public String allSonglist = "";
     public String compSonglist = "";
 
-
     public void readPref() {        //プリファレンスの読込み
         final String TAG = "readPref";
-        String dbMsg = "[AllSongs]";
+        String dbMsg = "";
         try {
             myPreferences = new MyPreferences();
             dbMsg += "MyPreferencesy読込み";
@@ -220,7 +220,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             sharedPref = MyPreferences.sharedPref;
             myEditor =myPreferences.myEditor;
 
-            pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
+        //    pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
             pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
             pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
             pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
@@ -228,7 +228,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
             pref_commmn_music = myPreferences.pref_commmn_music;
             all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u";  //m3u8だとYutbMusicで読み込めない？
-            dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
+            dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;
+            album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
             pref_data_url = myPreferences.pref_data_url;
 
             album_artist_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
@@ -245,7 +246,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * **/
     public String getUrl2Artist(Cursor cursor) {
         final String TAG = "getUrl2Artist";
-        String dbMsg = "[AllSongs]";
+        String dbMsg = "";
         String retStr = "";
         try {
             @SuppressLint("Range") String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
@@ -277,7 +278,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public String setAlbumArtist(Cursor cursor) {
         final String TAG = "setAlbumArtist";
-        String dbMsg = "[AllSongs]";
+        String dbMsg = "";
         String retStr = "";
         try {
             @SuppressLint("Range") String artistN = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
@@ -353,7 +354,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public void onCreate(Bundle savedInstanceState) {	//WindowManagerの設定とアクティビティの読み込み
         super.onCreate(savedInstanceState);
         final String TAG = "onCreate";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             startPart = System.currentTimeMillis();		// 開始時刻の取得
             ORGUT = new OrgUtil();				//自作関数集
@@ -405,7 +406,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             compList = new String[]{ comp1 , comp2 , comp3 , comp4};
             comCount = compList.length;
             compSelection = "SORT_NAME <> ? AND SORT_NAME <> ? AND SORT_NAME <> ? AND SORT_NAME <> ?";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-            //	myLog(TAG,dbMsg);
+            myLog(TAG,dbMsg);
             switch(reqCode  ) {			//
                 case MaraSonActivity.syoki_Yomikomi:				//128
                     pdTitol = this.cContext.getString(R.string.listmei_zemkyoku) +  this.cContext.getString(R.string.comon_sakuseicyuu);			//全曲リスト作成中
@@ -491,7 +492,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void preRead( ) {			//dataURIを読み込みながら欠けデータ確認	, int reqCode
         final String TAG = "preRead";			//, AlertDialog pDialog
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             startPart = System.currentTimeMillis();		// 開始時刻の取得
             start = startPart;
@@ -517,24 +518,24 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             inDrive = rDir[0] + File.separator+ rDir[1] + File.separator+ rDir[2];
             dbMsg +="、(do前)内蔵メモリ="+ inDrive + ",メモリカード="+ exDrive;
 //			sharedPref = this.cContext.getSharedPreferences( this.cContext.getResources().getString(R.string.pref_main_file) , this.cContext.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
-            pNFVeditor = sharedPref.edit();
-            Map<String, ?> keys = sharedPref.getAll();
-            dbMsg +=",keys="+ keys.size() +"件" ;
-            saisinnbi = "0";
-            if(keys.size() > 0 ){
-                saisinnbi = String.valueOf(keys.get("pref_file_saisinn"));
-                dbMsg= dbMsg +",最新=" + saisinnbi ;/////////////////////////////////////
-                pref_compBunki = String.valueOf(keys.get("pref_compBunki"));			//コンピレーション分岐点 曲数
-                dbMsg= dbMsg +",pref_compBunki=" + pref_compBunki ;/////////////////////////////////////
-            }
-            if(pref_compBunki == null ){
-                pref_compBunki = "40";
-            }else if(pref_compBunki.equals("null")){
-                pref_compBunki = "40";
-                pNFVeditor.putString( "pref_compBunki", pref_compBunki);
-                //			myLog(TAG,dbMsg);
-                pNFVeditor.commit();	// データの保存
-            }
+//            pNFVeditor = sharedPref.edit();
+//            Map<String, ?> keys = sharedPref.getAll();
+//            dbMsg +=",keys="+ keys.size() +"件" ;
+//            saisinnbi = "0";
+//            if(keys.size() > 0 ){
+//                saisinnbi = String.valueOf(keys.get("pref_file_saisinn"));
+//                dbMsg += ",最新=" + saisinnbi ;/////////////////////////////////////
+////                pref_compBunki = String.valueOf(keys.get("pref_compBunki"));			//コンピレーション分岐点 曲数
+//            }
+//            dbMsg += ",pref_compBunki=" + pref_compBunki ;/////////////////////////////////////
+//            if(pref_compBunki == null ){
+//                pref_compBunki = "40";
+//            }else if(pref_compBunki.equals("null")){
+//                pref_compBunki = "40";
+//                pNFVeditor.putString( "pref_compBunki", pref_compBunki);
+//                //			myLog(TAG,dbMsg);
+//                pNFVeditor.commit();	// データの保存
+//            }
             //プログレスの終端カウント設定
             pd2MaxVal = 4;         //pt_end - pt_start;									//このクラスのステップ数
             ProgBar2.setMax(pd2MaxVal);	 //セカンドプログレスバー
@@ -543,8 +544,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             dbMsg +="[" +pd2CoundtVal +"/"+ pd2MaxVal +"]";
             long partEnd=System.currentTimeMillis();		// 終了時刻の取得
             dbMsg +=";"+ (int)((partEnd - startPart)) + "m秒で終了";
-            CreateKaliList();
             myLog(TAG,dbMsg);
+            CreateKaliList();
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg +"で"+e.toString());
         }
@@ -559,34 +560,60 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void CreateKaliList(){
         final String TAG = "CreateKaliList";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             startPart = System.currentTimeMillis();		// 開始時刻の取得
             dbMsg=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
             System.currentTimeMillis();
-            cContext.getContentResolver();
+      //      cContext.getContentResolver();
             del_DB(cContext.getString(R.string.kari_file));             //pref_commmn_music + File.separator +
             String fn = cContext.getString(R.string.kari_file);			//kari.db
             dbMsg += ",db=" + fn;
-            ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
-            Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
-
-            String c_groupBy=  "ARTIST";	// ALBUM_ARTISTはほとんどnull
-
-            cursor = resolver.query(cUri, null , null , null , c_groupBy,  null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
-            laseAlbaumArtistID=cursor.getCount();               //ゲスト参加があるのでALBUM_ARTIST数より多い
-            dbMsg += ",Artist(laseAlbaumArtistID)=" + laseAlbaumArtistID;
-
-            String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-            String c_selection =  MediaStore.Audio.Media.IS_MUSIC +" <> ? ";			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+       //     ContentResolver resolver = this.cContext.getContentResolver();	//c.getContentResolver();
+//            Uri cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+//            String[] projection = null;
+//            String selection = null;
+//            String[] selectionArgs = null;
+//            String c_groupBy=  MediaStore.Audio.Media.ALBUM;	// ALBUM_ARTISTはほとんどnull
+//            String c_orderBy=MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+//
+//            cursor = getContentResolver().query(
+//                    cUri,             // Uri of the table
+//                    projection,      // The columns to return for each row
+//                    selection,       // Selection criteria
+//                    selectionArgs,   // Selection criteria
+//                    c_groupBy,
+//                    c_orderBy
+//            );
+//
+//
+//            //resolver.query(cUri, null , null , null , c_groupBy,  null);	//( table, columns, selection, selectionArgs, groupBy, having, orderBy)
+//            laseAlbaumArtistID=cursor.getCount();               //ゲスト参加があるのでALBUM_ARTIST数より多い
+//            dbMsg += ",Artist(laseAlbaumArtistID)=" + laseAlbaumArtistID;
+            ContentResolver resolver = getApplicationContext().getContentResolver();
+            Uri cUri;   // = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+            if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+                cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+                //content://media/external/audio/media
+            } else {
+                cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                //     cUri =MediaStore.Audio.Media.INTERNAL_CONTENT_URI はビルドできない
+            }
+            dbMsg += ",cUri=" + cUri.toString();
+            String[] c_columns = null;
+            String c_selection = MediaStore.Audio.Media.IS_MUSIC + " <> ? ";			//2.projection   " = ?";
             String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
-            String c_orderBy=MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+            String c_orderBy= MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
             //全音楽ファイル抽出
-            cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs  , c_orderBy);
+            cursor = resolver.query(
+                    cUri,             // Uri of the table
+                    c_columns,      // The columns to return for each row
+                    c_selection,       // Selection criteria
+                    c_selectionArgs,   // Selection criteria
+                    c_orderBy);
             laseAlbaumArtistID=cursor.getCount();
             dbMsg += ",laseAlbaumArtistID=" + laseAlbaumArtistID;
-            dbMsg +=";"+ kyoku + "件×"+ cursor.getColumnCount() + "項目";
-            //		myLog(TAG,dbMsg);
+            dbMsg +=";"+ laseAlbaumArtistID + "件×"+ cursor.getColumnCount() + "項目";
             if(cursor.moveToFirst()){
                 aArtist = "";
                 b_AlbumMei = "";
@@ -610,6 +637,33 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 myLog(TAG,dbMsg);
                 checkCarsol(cursor);
                 plTask.execute(reqCode,cursor,pdTitol,pdMessage);
+            }else{
+//                final Map<String, String> AUDIO_COLUMN_MAP = new HashMap<>();
+//                Collection<String> columns =  AUDIO_COLUMN_MAP.keySet();
+//                String[] projection = columns.toArray(new String[columns.size()]);
+//                try {
+//                    cursor = resolver.query(
+//                            Uri,
+//                            projection,
+//                            BaseColumns._ID + "=?",
+//                            new String[]{Long.toString(ident.id)},
+//                            null);
+//
+//                    if (!cursor.moveToFirst()) {
+//                        throw new FileNotFoundException("Can't find document id: " + docId);
+//                    }
+//
+//                    final Bundle metadata = extractMetadataFromCursor(cursor, columnMap);
+//                    result = new Bundle();
+//                    result.putBundle(tagType, metadata);
+//                    result.putStringArray(
+//                            DocumentsContract.METADATA_TYPES,
+//                            new String[]{tagType});
+//                } finally {
+//                    FileUtils.closeQuietly(cursor);
+//                    Binder.restoreCallingIdentity(token);
+//                }
+                myLog(TAG,dbMsg);
             }
         }catch(IllegalArgumentException e){
             myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -628,7 +682,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     @SuppressLint({"DefaultLocale", "Range"})
     public  Cursor kaliListBody(Cursor cursor, SQLiteStatement stmt) throws IOException {			//仮リスト作成		 , SQLiteStatement stmt			5041曲 [01:17 349mS]		//2016：03；Cursor finalized without prior close()７回発生?
         final String TAG = "kaliListBody";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             String val = null;
             Map<String, String> map = null;
@@ -785,16 +839,16 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 myLog(TAG, dbMsg);
             }
 
-            if( AllSongs.this.saisinnbi == null){					//最新更新日付が拾えていなければ
-                AllSongs.this.saisinnbi = kousinnbi;
-//				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
-            }else if( AllSongs.this.saisinnbi.equals("null")){
-                AllSongs.this.saisinnbi = kousinnbi;
-//				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
-            }else if(Integer.valueOf(AllSongs.this.saisinnbi) < Integer.valueOf(kousinnbi)){
-                AllSongs.this.saisinnbi = kousinnbi;
-//				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
-            }
+//            if( AllSongs.this.saisinnbi == null){					//最新更新日付が拾えていなければ
+//                AllSongs.this.saisinnbi = kousinnbi;
+////				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
+//            }else if( AllSongs.this.saisinnbi.equals("null")){
+//                AllSongs.this.saisinnbi = kousinnbi;
+////				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
+//            }else if(Integer.valueOf(AllSongs.this.saisinnbi) < Integer.valueOf(kousinnbi)){
+//                AllSongs.this.saisinnbi = kousinnbi;
+////				dbMsg += ">>"+ AllSongs.this.saisinnbi;/////////////////////////////////////////////////////////////////////////////////////////////
+//            }
             if( dataFPN != null && artistN != null ){
                 if( dataFPN.contains(artistN) ){
                     String dirName = dataFPN.substring(0, dataFPN.indexOf(artistN));
@@ -835,7 +889,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void CreateKaliListEnd(){
         final String TAG = "CreateKaliListEnd";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             cursor.moveToLast();
             cursor.moveToPrevious();
@@ -889,7 +943,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     @SuppressLint("Range")
     public void CreateAllSongs(){				//全曲リスト作成
         final String TAG = "CreateAllSongs";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             startPart = System.currentTimeMillis();		// 開始時刻の取得
             dbMsg +=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
@@ -944,7 +998,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public Cursor CreateZenkyokuBody(  Cursor ｃursor  ,SQLiteStatement stmt) throws IOException {		//全曲リスト作成		 ,SQLiteStatement stmt		このパートが長い
         final String TAG = "CreateZenkyokuBody";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
 //            pdCoundtVal = ｃursor.getPosition();
             dbMsg += reqCode + "：仮リスト: "+  pdCoundtVal + "/" + pdMaxVal + "曲目";
@@ -1006,7 +1060,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void CreateAllSongsEnd() {		//全曲リストにコンピレーション追加
         final String TAG = "CreateAllSongsEnd";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             cursor.close();
             Kari_db.close();
@@ -1052,7 +1106,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public int CreateArtistList(){									//アーティストリストを読み込む(db未作成時は-)
         int retInt = -1;
         final String TAG = "CreateArtistList";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             reqCode = pt_artistList;
             String fn = this.cContext.getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
@@ -1110,7 +1164,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public Cursor CreateArtistListBody(Cursor cursor , SQLiteStatement stmt) throws IOException{		//ALBUM_ARTISTで付随するアルバム情報を取得
         int retInt = -1;					//	 ,SQLiteStatement stmt
         final String TAG = "CreateArtistListBody";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             this.pdCoundtVal = cursor.getPosition()+1;
             dbMsg += "[" + cursor.getPosition() +"/"+ cursor.getCount() + "]";				//progBar1.getMax()
@@ -1187,7 +1241,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void CreateArtistListEnd() {		//アーティストリスト作成終了
         final String TAG = "CreateArtistListEnd";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg += "；アーティストリストテーブル=" + artistTName;
             artist_db = artistHelper.getReadableDatabase();			// データベースをオープン
@@ -1222,7 +1276,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public SQLiteStatement stmtWrite(Cursor cursor  , SQLiteStatement stmt , String fName , int rfNo) throws IOException{
         int retInt = -1;					//	 ,SQLiteStatement stmt
         final String TAG = "stmtWrite";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg += cursor.getPosition()+ "/" +cursor.getCount() +";" ;
             int tClo = cursor.getColumnIndex(fName);
@@ -1253,7 +1307,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public SQLiteStatement stmtWrite2(String rStr  , SQLiteStatement stmt , int rfNo) throws IOException{
         int retInt = -1;					//	 ,SQLiteStatement stmt
         final String TAG = "stmtWrite2";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg += rStr+ "を" +rfNo +"番目に" ;
             if(rStr != null ){
@@ -1279,7 +1333,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void addCompArtistList(String comp , Cursor cursor) {		//アーティストリストコンピレーション追加
         final String TAG = "addCompArtistList";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             artistTName = cContext.getString(R.string.artist_table);			//artist_table
             dbMsg += "；アーティストリストテーブル=" + artistTName;
@@ -1313,7 +1367,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
     public SQLiteStatement dataAlbumWright( String artist_ID , String artistMei , String albumMei , List<String> tList , SQLiteStatement stmt) throws IOException {		//アルバム１枚分の抽出
         final String TAG = "dataAlbumWright";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg += "[" + artist_ID + "]" + artistMei +" ; " + albumMei;/////////////////////////////////////
             String comp_sezu = cContext.getString(R.string.comon_comp_sezu);			//などなど
@@ -1413,7 +1467,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     @SuppressLint("Range")
     public SQLiteStatement dataRecordWright(SQLiteStatement stmt , Cursor cur , String artist_r) {					//データリストのレコード書き込み
         final String TAG = "dataRecordWright";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg = "[" +cur.getPosition()  +"/" + cur.getCount() +"枚目]" ;/////////////////////////////////////////////////////////////////////////////////////////////
             @SuppressLint("Range") int readint = cur.getInt(cur.getColumnIndex(MediaStore.Audio.Media._ID));
@@ -1521,7 +1575,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public SQLiteStatement compNameAdd(Uri cUri , SQLiteStatement stmt ,
                                        int titolCount , List<String> albumOfArtist) {	// コンピレーションなどを指定されたdbの末尾に追記する
         final String TAG = "compNameAdd";							//long seleID  ,, int hennkou, String seleItem
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             long end=System.currentTimeMillis();		// 終了時刻の取得
             long start = System.currentTimeMillis();
@@ -1591,7 +1645,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     @SuppressLint("Range")
     public SQLiteStatement albumRecordWright(SQLiteStatement stmt , Cursor cursor , String aName , int titolCount) {
         final String TAG = "albumRecordWright[AllSongs]";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg += "[" +cursor.getPosition()  +"/" + cursor.getCount() +"枚目]" ;/////////////////////////////////////////////////////////////////////////////////////////////
             @SuppressLint("Range") String  cArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
@@ -1657,7 +1711,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      **/
     public void totalEnd( CharSequence pdMessage_stok ) {		//データベースを閉じて終了処理
         final String TAG = "totalEnd";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             long end=System.currentTimeMillis();		// 終了時刻の取得
             try {
@@ -1735,7 +1789,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     //@Override
     public void onSuccessplogTask(int reqCode) {			//プログレスが終わった時に発生	(AsyncTaskResult<Object>) Object... myResult
         final String TAG = "onSuccessplogTask";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try{
             dbMsg= "reqCode=" + reqCode;			/////////////////////////////////////
             switch(reqCode) {
@@ -1790,7 +1844,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * */
     public void setProgressValue(Integer progress) {
         final String TAG = "setProgressValue";							//long seleID  ,, int hennkou, String seleItem
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         dbMsg+=reqCode + ")progress;" + progress;
         try{
             if(progress> bCount ){
@@ -1830,7 +1884,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
     public void redrowProg ( int maxXal1 ,  int progress2) {			//progBar1の最大値と初期化
         final String TAG = "set1stProg";
-        String dbMsg= "[AllSongs]";
+        String dbMsg= "";
         try {
             bCount = 0;
             dbMsg +="maxXal= " + maxXal1;
@@ -1922,8 +1976,8 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
      * 渡されたCursorの中身をlogに書き出す
      * */
     public void checkCarsol(Cursor cursor) {
-        final String TAG = "checkCarsol";
-        String dbMsg= "[AllSongs]";
+        final String TAG = "checkCarsolcheckCarsol";
+        String dbMsg= "";
         try{
             dbMsg += "[" + cursor.getPosition() +"/"+ cursor.getCount() + "]";				//progBar1.getMax()
             int cCount = 1;
@@ -2004,7 +2058,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
          * */
         public SQLiteDatabase MakeOrOpenDataBase(String fn , SQLiteDatabase db){
             final String TAG = "MakeOrOpenDataBase";
-            String dbMsg= "[AllSongs]";
+            String dbMsg= "";
             try{
                 startPart = System.currentTimeMillis();		// 開始時刻の取得
                 dbMsg=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
@@ -2794,12 +2848,12 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     ///////////////////////////////////////////////////////////////////////////////////
     public static void myLog(String TAG , String dbMsg) {
         Util UTIL = new Util();
-        Util.myLog(TAG , dbMsg);
+        Util.myLog(TAG , "[AllSongs]"+ dbMsg);
     }
 
     public static void myErrorLog(String TAG , String dbMsg) {
         Util UTIL = new Util();
-        Util.myErrorLog(TAG , dbMsg);
+        Util.myErrorLog(TAG , "[AllSongs]"+dbMsg);
     }
 
     public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
