@@ -93,10 +93,6 @@
             android:name=".AllSongs"
             android:multiprocess="true"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name=".ZenkyokuList"
-            android:multiprocess="true"
-            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".CreditNameHensyuu" />
         <activity
             android:name=".MyPreferences"

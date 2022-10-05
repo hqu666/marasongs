@@ -643,31 +643,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 checkCarsol(cursor);
                 plTask.execute(reqCode,cursor,pdTitol,pdMessage);
             }else{
-//                final Map<String, String> AUDIO_COLUMN_MAP = new HashMap<>();
-//                Collection<String> columns =  AUDIO_COLUMN_MAP.keySet();
-//                String[] projection = columns.toArray(new String[columns.size()]);
-//                try {
-//                    cursor = resolver.query(
-//                            Uri,
-//                            projection,
-//                            BaseColumns._ID + "=?",
-//                            new String[]{Long.toString(ident.id)},
-//                            null);
-//
-//                    if (!cursor.moveToFirst()) {
-//                        throw new FileNotFoundException("Can't find document id: " + docId);
-//                    }
-//
-//                    final Bundle metadata = extractMetadataFromCursor(cursor, columnMap);
-//                    result = new Bundle();
-//                    result.putBundle(tagType, metadata);
-//                    result.putStringArray(
-//                            DocumentsContract.METADATA_TYPES,
-//                            new String[]{tagType});
-//                } finally {
-//                    FileUtils.closeQuietly(cursor);
-//                    Binder.restoreCallingIdentity(token);
-//                }
                 myLog(TAG,dbMsg);
             }
         }catch(IllegalArgumentException e){
@@ -1278,98 +1253,98 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         }
     }
 
-    public SQLiteStatement stmtWrite(Cursor cursor  , SQLiteStatement stmt , String fName , int rfNo) throws IOException{
-        int retInt = -1;					//	 ,SQLiteStatement stmt
-        final String TAG = "stmtWrite";
-        String dbMsg= "";
-        try{
-            dbMsg += cursor.getPosition()+ "/" +cursor.getCount() +";" ;
-            int tClo = cursor.getColumnIndex(fName);
-            dbMsg +=tClo+ "項目目(" +rfNo+ ")" +fName ;
-            String rStr = "";
-            if( tClo > 0 ){				//getColumnIndexで該当する名称のフィールドが無ければ-1
-                rStr = cursor.getString(tClo);
-                dbMsg += ";" + rStr ;
-                if(rStr != null ){
-                    if(! rStr.equals("") ){
-                        stmt.bindString(rfNo , rStr);
-                    }else {
-                        stmt.bindString(rfNo ,  "");
-                    }
-                }else{
-                    stmt.bindString(rfNo ,  "");
-                }
-            }else{
-                stmt.bindString(rfNo ,  "");
-            }
-//			myLog(TAG,dbMsg);
-        }catch (Exception e) {
-            myErrorLog(TAG,dbMsg +"で"+e.toString());
-        }
-        return stmt;
-    }
-
-    public SQLiteStatement stmtWrite2(String rStr  , SQLiteStatement stmt , int rfNo) throws IOException{
-        int retInt = -1;					//	 ,SQLiteStatement stmt
-        final String TAG = "stmtWrite2";
-        String dbMsg= "";
-        try{
-            dbMsg += rStr+ "を" +rfNo +"番目に" ;
-            if(rStr != null ){
-                if(! rStr.equals("") ){
-                    stmt.bindString(rfNo , rStr);
-                    dbMsg += "書き込み" ;
-                }else {
-                    stmt.bindString(rfNo ,  "");
-                }
-            }else{
-                stmt.bindString(rfNo ,  "");
-            }
-//			myLog(TAG,dbMsg);
-        }catch (Exception e) {
-            myErrorLog(TAG,dbMsg +"で"+e.toString());
-        }
-        return stmt;
-    }
+//    public SQLiteStatement stmtWrite(Cursor cursor  , SQLiteStatement stmt , String fName , int rfNo) throws IOException{
+//        int retInt = -1;					//	 ,SQLiteStatement stmt
+//        final String TAG = "stmtWrite";
+//        String dbMsg= "";
+//        try{
+//            dbMsg += cursor.getPosition()+ "/" +cursor.getCount() +";" ;
+//            int tClo = cursor.getColumnIndex(fName);
+//            dbMsg +=tClo+ "項目目(" +rfNo+ ")" +fName ;
+//            String rStr = "";
+//            if( tClo > 0 ){				//getColumnIndexで該当する名称のフィールドが無ければ-1
+//                rStr = cursor.getString(tClo);
+//                dbMsg += ";" + rStr ;
+//                if(rStr != null ){
+//                    if(! rStr.equals("") ){
+//                        stmt.bindString(rfNo , rStr);
+//                    }else {
+//                        stmt.bindString(rfNo ,  "");
+//                    }
+//                }else{
+//                    stmt.bindString(rfNo ,  "");
+//                }
+//            }else{
+//                stmt.bindString(rfNo ,  "");
+//            }
+////			myLog(TAG,dbMsg);
+//        }catch (Exception e) {
+//            myErrorLog(TAG,dbMsg +"で"+e.toString());
+//        }
+//        return stmt;
+//    }
+//
+//    public SQLiteStatement stmtWrite2(String rStr  , SQLiteStatement stmt , int rfNo) throws IOException{
+//        int retInt = -1;					//	 ,SQLiteStatement stmt
+//        final String TAG = "stmtWrite2";
+//        String dbMsg= "";
+//        try{
+//            dbMsg += rStr+ "を" +rfNo +"番目に" ;
+//            if(rStr != null ){
+//                if(! rStr.equals("") ){
+//                    stmt.bindString(rfNo , rStr);
+//                    dbMsg += "書き込み" ;
+//                }else {
+//                    stmt.bindString(rfNo ,  "");
+//                }
+//            }else{
+//                stmt.bindString(rfNo ,  "");
+//            }
+////			myLog(TAG,dbMsg);
+//        }catch (Exception e) {
+//            myErrorLog(TAG,dbMsg +"で"+e.toString());
+//        }
+//        return stmt;
+//    }
 
     /**
      * アーティストリストコンピレーション追加
      * CreateArtistListEndから呼ばれる
      * */
-    public void addCompArtistList(String comp , Cursor cursor) {		//アーティストリストコンピレーション追加
-        final String TAG = "addCompArtistList";
-        String dbMsg= "";
-        try{
-            artistTName = cContext.getString(R.string.artist_table);			//artist_table
-            dbMsg += "；アーティストリストテーブル=" + artistTName;
-            String fn = cContext.getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
-            dbMsg += "db=" + fn;
-            artistHelper = new ArtistHelper(cContext , fn);		//アーティスト名のリストの定義ファイル		.
-            artist_db = artistHelper.getWritableDatabase();			// データベースをオープン
-            artist_db.beginTransaction();
-            SQLiteStatement stmt = null;
-            stmt = artist_db.compileStatement("insert into " + artistTName +
-                    "(ARTIST,ALBUM_ARTIST,ALBUM,ALBUM_ART,SUB_TEXT) values (?, ?, ?, ?, ?);");
-            if( cursor.moveToFirst() ){
-                cursor = CreateArtistListBody(cursor , stmt ) ;				//ALBUM_ARTISTで付随するアルバム情報を取得
-                long id = 0;
-                id = stmt.executeInsert();
-                dbMsg += "文字[" + id +"]に追加";///////////////////		AllSongs.this.
-                try{
-                    dbMsg= "sql_db = " + artist_db;//////
-                    artist_db.setTransactionSuccessful();
-                } finally {
-                    artist_db.endTransaction();
-                }
-            }
-            //	cursor.close();
-            artist_db.close();
-            myLog(TAG,dbMsg );
-        }catch (Exception e) {
-            myErrorLog(TAG,dbMsg +"で"+e.toString());
-        }
-    }
-
+//    public void addCompArtistList(String comp , Cursor cursor) {		//アーティストリストコンピレーション追加
+//        final String TAG = "addCompArtistList";
+//        String dbMsg= "";
+//        try{
+//            artistTName = cContext.getString(R.string.artist_table);			//artist_table
+//            dbMsg += "；アーティストリストテーブル=" + artistTName;
+//            String fn = cContext.getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
+//            dbMsg += "db=" + fn;
+//            artistHelper = new ArtistHelper(cContext , fn);		//アーティスト名のリストの定義ファイル		.
+//            artist_db = artistHelper.getWritableDatabase();			// データベースをオープン
+//            artist_db.beginTransaction();
+//            SQLiteStatement stmt = null;
+//            stmt = artist_db.compileStatement("insert into " + artistTName +
+//                    "(ARTIST,ALBUM_ARTIST,ALBUM,ALBUM_ART,SUB_TEXT) values (?, ?, ?, ?, ?);");
+//            if( cursor.moveToFirst() ){
+//                cursor = CreateArtistListBody(cursor , stmt ) ;				//ALBUM_ARTISTで付随するアルバム情報を取得
+//                long id = 0;
+//                id = stmt.executeInsert();
+//                dbMsg += "文字[" + id +"]に追加";///////////////////		AllSongs.this.
+//                try{
+//                    dbMsg= "sql_db = " + artist_db;//////
+//                    artist_db.setTransactionSuccessful();
+//                } finally {
+//                    artist_db.endTransaction();
+//                }
+//            }
+//            //	cursor.close();
+//            artist_db.close();
+//            myLog(TAG,dbMsg );
+//        }catch (Exception e) {
+//            myErrorLog(TAG,dbMsg +"で"+e.toString());
+//        }
+//    }
+//
     public SQLiteStatement dataAlbumWright( String artist_ID , String artistMei , String albumMei , List<String> tList , SQLiteStatement stmt) throws IOException {		//アルバム１枚分の抽出
         final String TAG = "dataAlbumWright";
         String dbMsg= "";
@@ -1770,13 +1745,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pdMessage_stok = this.cContext.getString(R.string.zenkyoku_end_msg) ;			//お待たせしました。</string>
             pdMessage_stok = pdMessage_stok + "\n\n"  + kyoku +  this.cContext.getString(R.string.pp_kyoku);		//ame="">曲</string>
             pdMessage_stok = pdMessage_stok +"\n["+this.cContext.getString(R.string.comon_syoyoujikan)+";"+dousaJikann + "mS]";		//	<string name="">所要時間</string>
-            Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
-            Bundle bundle = new Bundle();
-//			bundle.putString("key.retStr", String.valueOf(pdMessage_stok));				//最終メッセージ
-            bundle.putString("dMessege",String.valueOf(pdMessage_stok));
-            data.putExtras(bundle);
-            setResult(RESULT_CANCELED, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
-            AllSongs.this.finish();
 
        //     dbMsg= String.valueOf(pdMessage_stok);/////////////////////////////////////
             dbMsg +=","+ pgd_msg_tv.getText();/////////////////////////////////////
@@ -1796,6 +1764,14 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             pd2CoundtVal++;
             change2ndText(pd2CoundtVal);
             dbMsg +="[" +pd2CoundtVal +"/"+ pd2MaxVal +"]";
+
+            Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
+            Bundle bundle = new Bundle();
+//			bundle.putString("key.retStr", String.valueOf(pdMessage_stok));				//最終メッセージ
+            bundle.putString("dMessege",String.valueOf(pdMessage_stok));
+            data.putExtras(bundle);
+            setResult(RESULT_CANCELED, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
+            AllSongs.this.finish();
             myLog(TAG,dbMsg );
         }catch (Exception e) {
             myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -2356,7 +2332,6 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         }
 
     }
-
 
 
     /**

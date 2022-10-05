@@ -275,7 +275,7 @@ public class HPDAsyncTask extends AsyncTask<Object, Integer, Long> {
 		}
 		handler.post(new Runnable() {
 			public void run() {
-				final String TAG = "change2ndText[ZenkyokuList]";
+				final String TAG = "change2ndText";
 				String dbMsg="";
 				try {
 					int progress = progressDialog.ProgBar2.getProgress();

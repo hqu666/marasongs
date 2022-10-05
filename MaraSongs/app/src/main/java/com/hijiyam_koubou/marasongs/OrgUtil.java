@@ -1426,7 +1426,12 @@ public class OrgUtil  extends Activity{				//
 		String dbMsg= "" ;
 		try{
 			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
-			Uri cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;//1.uri  The URI, using the content:// scheme, for the content to retrieve
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Albums.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+			}
 			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
 			String c_selection =  MediaStore.Audio.Albums.ARTIST +" LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM +" = ?";
 			String[] c_selectionArgs= { "%" + artistMei + "%" , albumMei };   			//⑥引数groupByには、groupBy句を指定します。

@@ -111,8 +111,8 @@ public class MaraSonActivity extends AppCompatActivity
 	MusicPlaylist musicPlaylist ;
 
 	MyPreferences myPreferences;
-	ZenkyokuList ZKL;
-	MuList MLIST;
+//	ZenkyokuList ZKL;
+//	MuList MLIST;
 	public SimpleDateFormat convertFormat;						//時差抜き時分秒表示フォーマット
 	public WindowManager wm;			// ウィンドウマネージャのインスタンス取得
 	public int dWidth;								//ディスプレイ幅
@@ -2076,24 +2076,6 @@ public class MaraSonActivity extends AppCompatActivity
 	public HPDialog dialogFragment;
 	public boolean dlogShow;
 	public Thread thread;
-	public ZenkyokuList ZLPD;
-
-//	public void preRead(int reqCode , String msg) throws IOException {							//dataURIを読み込みながら欠けデータ確認
-//		final String TAG = "preRead[MaraSonActivity]";
-//		String dbMsg="開始";/////////////////////////////////////
-//		try{
-//			dbMsg= "[" + reqCode +"]";/////////////////////////////////////
-//			long start = System.currentTimeMillis();		// 開始時刻の取得
-//			Intent intentZL = new Intent(getApplication(),ZenkyokuList.class);						//parsonalPBook.thisではメモリーリークが起こる
-//			intentZL.putExtra("reqCode",reqCode);														//処理コード
-//			startActivityForResult(intentZL , reqCode);
-//			long end=System.currentTimeMillis();		// 終了時刻の取得
-//			dbMsg=dbMsg +";"+ (int)((end - start)) + "m秒で終了";
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
 
 	String sucssesPass;
 	/**ⅸジャケット写真を表示*/
