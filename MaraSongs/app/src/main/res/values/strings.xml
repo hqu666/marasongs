@@ -21,7 +21,7 @@
     <!-- 	<string name="nend_apiKey">c5cb8bc474345961c6e7a9778c947957ed8e1e4f</string> -->
     <!-- 	<string name="nend_spotID">3174</string> -->
     <string name="permission_titol">利用を許可して下さい</string>
-    <string name="permission_msg">このアプリは以下の機能を使います。\n(1)音楽ファイルを再生するためのファイルアクセス権限\n(2)ビジュアライザーを表示する為の録音機能の一部\n\n許可頂けない場合はアプリを終了します。</string>
+    <string name="permission_msg">このアプリは以下の機能を使います。\n(1)音楽ファイルやサムネイルを表示する為のファイルアクセス権限\n(2)bluetoothなどの接続\n\n許可頂けない場合はアプリを終了します。</string>
     <string name="permission_file_titol">ファイルアクセスを許可して下さい</string>
     <string name="permission_file_msg">音楽ファイルを再生するためのファイルアクセス権限を与えて下さい。</string>
 

@@ -77,6 +77,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
 
@@ -478,6 +479,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {                //(初回起動で)全パーミッションの許諾を取る
 				dbMsg += "許諾確認";
 				List<String> permissionArray = new ArrayList<String>();
+				List<String> unPermissionArray = new ArrayList<String>();
 				permissionArray.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 				//Android 10(Q)でMediaStoreを介してデータを読み取るときは、 READ_EXTERNAL_STORAGE権限を要求し、書くとき何の権限を必要としません。
 				permissionArray.add(Manifest.permission.INTERNET);
@@ -507,47 +509,81 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				final String[] PERMISSIONS = permissionArray.toArray(new String[permissionArray.size()]);
 				dbMsg += ">>" + PERMISSIONS.length + "件";
 
-				boolean isNeedParmissionReqest = false;
+			//	boolean isNeedParmissionReqest = false;
 				for ( String permissionName : PERMISSIONS ) {
-					dbMsg += "," + permissionName;
-					int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
-					dbMsg += "=" + checkResalt;
+					int checkResalt = ActivityCompat.checkSelfPermission(this,permissionName);	//許可されていなければ -1 いれば 0
 					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
-						isNeedParmissionReqest = true;
+						dbMsg += "," + permissionName;
+						dbMsg += "=" + checkResalt;
+						requestPermissionsLauncher.launch(PERMISSIONS);
+						unPermissionArray.add(permissionName);
+						boolean showRequest = shouldShowRequestPermissionRationale(permissionName);
+						dbMsg += ",showRequest=" + showRequest;
+//						if (showRequest) {
+							ActivityCompat.requestPermissions(MuList.this,  new String[]{permissionName}, REQUEST_PREF);
+//						}
+
 					}
 				}
-				dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
-				if ( isNeedParmissionReqest ) {
+		//		dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
+				dbMsg += "、unPermissionArray=" + unPermissionArray.size() + "件";
+				if ( 0 < unPermissionArray.size() ) {
 					dbMsg += "::許諾処理へ";
-					myPreferences = new MyPreferences();
-					myPreferences.setdPrif(MuList.this);
-					new AlertDialog.Builder(MuList.this)
-							.setTitle( getResources().getString(R.string.permission_titol) )
-							.setMessage( getResources().getString(R.string.permission_msg))
-							.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog , int which) {
-									requestPermissions(PERMISSIONS , REQUEST_PREF);
-//									return;
-								}
-							})
-							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog , int which) {
-									quitMe();
-								}
-							})
-							.create().show();
-				}
-//				else{
+					final String[] unPERMISSIONS = unPermissionArray.toArray(new String[unPermissionArray.size()]);
+			//		Toast.makeText(this, getResources().getString(R.string.permission_msg), Toast.LENGTH_LONG).show();  // "ACCESS_FINE_LOCATION PERMISSION_GRANTED"と表示.
+
+////					myPreferences = new MyPreferences();
+////					myPreferences.setdPrif(MuList.this);
+//					new AlertDialog.Builder(MuList.this)
+//							.setTitle( getResources().getString(R.string.permission_titol) )
+//							.setMessage( getResources().getString(R.string.permission_msg))
+//							.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
+//								final String TAG = "checkMyPermission2";
+//								String dbMsg = "";
+//								@Override
+//								public void onClick(DialogInterface dialog , int which) {
+									dbMsg += "、unPERMISSIONS=" + unPERMISSIONS.length + "件";
+									// ユーザーにパーミッションを要求すると、次のようなポップアップ
+//									requestPermissions(unPERMISSIONS , REQUEST_PREF);
+				//	if (shouldShowRequestPermissionRationale(unPERMISSIONS[0])) {
+						ActivityCompat.requestPermissions(MuList.this, unPERMISSIONS, REQUEST_PREF);
+				//	}
+//									for ( String permissionName : unPERMISSIONS ) {
+//										int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
+//										if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
+//											dbMsg += "," + permissionName;
+//											dbMsg += "=" + checkResalt;
+//										}
+//									}
+//									myLog(TAG , dbMsg);
+//								}
+//							})
+//							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//								@Override
+//								public void onClick(DialogInterface dialog , int which) {
+//									quitMe();
+//								}
+//							})
+//							.create().show();
+				}else{
 					dbMsg += "::許諾済み";
-//				}
+				}
 			}
 			myLog(TAG , dbMsg);
 		} catch (Exception er) {
 			myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
 		}
 	}
+
+	private final ActivityResultLauncher<String[]>
+			requestPermissionsLauncher = registerForActivityResult(
+			new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+				if (isGranted.containsValue(false)) {
+				//	Toast.makeText(this, R.string.message2, Toast.LENGTH_SHORT).show();
+				} else {
+				//	fusedLocation();
+				}
+			});
 
 	/**
 	  * パーミッションが通った時点でstartLocalStream 	 */
@@ -557,13 +593,21 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "onRequestPermissionsResult";
 		String dbMsg = "";
 		try {
-			dbMsg = "requestCode=" + requestCode;
+			dbMsg += "、permissions=" + permissions.length + "件";
+			for ( String permissionName : permissions ) {
+				int checkResalt = ActivityCompat.checkSelfPermission(this,permissionName);	//許可されていなければ -1 いれば 0
+				if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
+					dbMsg += "," + permissionName;
+					dbMsg += "=" + checkResalt;
+				}
+			}
+			dbMsg += ".requestCode=" + requestCode;
+			myLog(TAG , dbMsg);
 			switch ( requestCode ) {
 				case REQUEST_PREF:
 					readPref();
 					break;
 			}
-			myLog(TAG , dbMsg);
 		} catch (Exception er) {
 			myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
 		}
