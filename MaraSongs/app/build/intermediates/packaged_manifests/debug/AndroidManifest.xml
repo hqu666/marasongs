@@ -6,17 +6,17 @@
 
     <uses-sdk
         android:minSdkVersion="29"
-        android:targetSdkVersion="31" />
+        android:targetSdkVersion="33" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -28,7 +28,18 @@
     <!-- 未使用 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
-
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <!-- ALIL33 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- Android package visibility setting -->
     <queries>
 
@@ -48,9 +59,12 @@
         <!-- End of CustomTabsService -->
     </queries>
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- <provider -->
+    <!-- android:name=".NyContentProvider" -->
+    <!-- android:authorities="com.example.contentprovidersample.provider" -->
+    <!-- android:exported="true" -->
+    <!-- android:permission="com.example.contentprovidersample.provider.READ_WRITE" -->
+    <!-- tools:ignore="WrongManifestParent" /> -->
     <application
         android:name="com.hijiyam_koubou.marasongs.MyApp"
         android:allowTaskReparenting="true"
@@ -82,8 +96,10 @@
 
         <activity
             android:name="com.hijiyam_koubou.marasongs.MuList"
+            android:excludeFromRecents="true"
             android:exported="true"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
+            android:taskAffinity=""
             android:theme="@style/AppTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -93,8 +109,10 @@
         </activity>
         <activity
             android:name="com.hijiyam_koubou.marasongs.MaraSonActivity"
+            android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:taskAffinity=""
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -104,24 +122,16 @@
             android:name="com.hijiyam_koubou.marasongs.AllSongs"
             android:multiprocess="true"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name="com.hijiyam_koubou.marasongs.DialogProgress"
-            android:multiprocess="true"
-            android:parentActivityName="com.hijiyam_koubou.marasongs.MuList"
-            android:theme="@android:style/Theme.Dialog" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MuList" />
-        </activity>
-        <activity
-            android:name="com.hijiyam_koubou.marasongs.ZenkyokuList"
-            android:multiprocess="true"
-            android:theme="@android:style/Theme.Dialog" />
         <activity android:name="com.hijiyam_koubou.marasongs.CreditNameHensyuu" />
         <activity
             android:name="com.hijiyam_koubou.marasongs.MyPreferences"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity android:name="com.hijiyam_koubou.marasongs.wKit" />
+        <activity
+            android:name="com.hijiyam_koubou.marasongs.preferences"
+            android:exported="false"
+            android:label="@string/title_activity_preferences" />
 
         <receiver
             android:name="com.hijiyam_koubou.marasongs.MusicPlayerReceiver"
@@ -145,9 +155,19 @@
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" />
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" />
                 <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" />
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
+        <receiver
+            android:name="com.hijiyam_koubou.marasongs.NotifRecever"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="jp.test.tryforegroundservicesample.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="com.hijiyam_koubou.marasongs.BuletoohtReceiver"
             android:exported="true" >
@@ -178,8 +198,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
-        <service android:name="com.hijiyam_koubou.marasongs.NotifRecever" />
 
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
