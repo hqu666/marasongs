@@ -684,7 +684,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
 			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
-			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
+//			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 //			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
 			pref_pb_bgc = myPreferences.pref_pb_bgc;				//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
@@ -697,7 +697,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "、再生中のファイル名=" + saisei_fname;
 			pl_file_name = myPreferences.pref_commmn_music +File.separator;//汎用プレイリストのファイル名のパスまで
 			dbMsg += "、汎用プレイリストのファイル名=" + pl_file_name;
-			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
+//			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			pref_rundam_list_size =myPreferences.pref_rundam_list_size;	//ランダム再生リストアップ曲数

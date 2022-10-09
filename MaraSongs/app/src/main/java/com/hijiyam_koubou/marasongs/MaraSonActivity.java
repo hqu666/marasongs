@@ -459,9 +459,9 @@ public class MaraSonActivity extends AppCompatActivity
 			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
 //			dbMsg += "、このアプリのバージョンコード=" + pref_sonota_vercord;
-			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
+//			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
-			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
+//			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
