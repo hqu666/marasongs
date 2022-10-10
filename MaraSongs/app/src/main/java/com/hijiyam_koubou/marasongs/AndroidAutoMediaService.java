@@ -1,17 +1,6 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -23,11 +12,12 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.browse.MediaBrowser;
 import android.media.browse.MediaBrowser.MediaItem;
 import android.media.session.MediaSession;
-import android.os.BaseBundle;
 import android.os.Bundle;
 import android.service.media.MediaBrowserService;
-import android.util.Log;
-import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressLint("NewApi")
 public class AndroidAutoMediaService extends MediaBrowserService implements OnPreparedListener, OnCompletionListener, OnErrorListener{
@@ -112,17 +102,16 @@ public class AndroidAutoMediaService extends MediaBrowserService implements OnPr
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(this);
+			myPreferences.readPref(this);
 			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 
-			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
-			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
-
-			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
+
+			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
+
 			rp_pp = myPreferences.rp_pp;							//2点間リピート中
 			pp_start = Integer.parseInt(myPreferences.pp_start);							//リピート区間開始点
 			pp_end = Integer.parseInt(myPreferences.pp_end);								//リピート区間終了点

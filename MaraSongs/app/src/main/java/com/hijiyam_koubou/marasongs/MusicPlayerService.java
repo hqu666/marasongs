@@ -236,7 +236,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(MusicPlayerService.this);
+			myPreferences.readPref(MusicPlayerService.this);
 			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
@@ -249,9 +249,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				crossFeadTime = Integer.parseInt(retString);	//クロスフェード時間
 			}
 			dbMsg += ",crossFeadTime="+ crossFeadTime;				///////////////
-			pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
-			pref_artist_bunnri = myPreferences.pref_artist_bunnri;		//アーティストリストを分離する曲数
 			pref_saikin_tuika = myPreferences.pref_saikin_tuika;			//最近追加リストのデフォルト枚数
 			pref_saikin_sisei = myPreferences.pref_saikin_sisei;		//最近再生加リストのデフォルト枚数
 			repeatType = myPreferences.repeatType;							//リピート再生の種類

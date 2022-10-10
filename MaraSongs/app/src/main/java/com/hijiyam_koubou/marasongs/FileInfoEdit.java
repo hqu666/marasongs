@@ -104,7 +104,7 @@ public class FileInfoEdit extends Dialog implements DialogInterface, OnCheckedCh
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(ｒContext);
+			myPreferences.readPref(ｒContext);
 			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			myLog(TAG, dbMsg);

@@ -17,20 +17,19 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.audiofx.PresetReverb;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -157,7 +156,7 @@ public class MyPreferences extends AppCompatActivity{
 //	public EditTextPreference pref_eff_memo;								//サウンドエフェクトの設定確認
 
 //	public PreferenceCategory pPS_pref_kisyubetu;		//機種別調整
-public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプレイヤー</string>
+	public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプレイヤー</string>
 	public SwitchCompat pcb_pref_lockscreen;			//ロックスクリーンプレイヤー</string>
 	public SwitchCompat pcb_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 //	public SwitchPreferenceCompat pCB_pref_cyakusinn_fukki;	//終話後に自動再生
@@ -169,18 +168,16 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 	public EditTextPreference pTF_plist_rquest;	//リクエストリスト
 	public EditTextPreference pTF_plist_a_new;		//新規プレイリスト
 //	public PreferenceCategory pPS_taisyou_type;		//再生する音楽ファイルの種類（拡張子指定）のプリファレンススクリーン
-	public SwitchCompat pCB_pref_reset;				//設定消去
-	public SwitchCompat pCB_pref_listup_reset;		//調整リストのリセット
-	public Preference pPS_sonota;		//その他　のプリファレンススクリーン
+	public Button pCB_pref_reset;				//設定消去
+	public Button pCB_pref_listup_reset;		//調整リストのリセット
 	public TextView pref_memo;							//その他の項目列記
-	public EditTextPreference pref_filse;
 
 	public Map<String, ?> keys;
 //	public EditTextPreference pEdit;
-	public CheckBoxPreference pCB;			//汎用
 
 ///外部から呼ばれる時の動作//////////////////////////////
-	int reqCode = 0;		//何のリストか
+	public int reqCode = 0;
+	public int backCode = 0;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -191,7 +188,7 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 	//		myLog(TAG,dbMsg);
 				switch (keyCode) {
 				case KeyEvent.KEYCODE_BACK:	//バック；4
-					modori();	// 呼出し元への戻し処理
+					quitMe();
 					break;
 				case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
 				case KeyEvent.KEYCODE_DPAD_DOWN:	//マルチガイド下；20
@@ -223,7 +220,13 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			ORGUT = new OrgUtil();		//自作関数集
-			//	getPrefs(this);
+			Bundle extras = getIntent().getExtras();
+			reqCode = extras.getInt("reqCode");
+			backCode = extras.getInt("backCode");
+			dbMsg +="、reqCode=" + reqCode + "、backCode=" + backCode;
+//			Intent intent = getIntent();
+//			reqCode = intent.getIntExtra("reqCode", 0);
+//			dbMsg += ",reqCode=" + reqCode;// 	getPrefs(this);
 			setContentView(R.layout.settings_activity);
 //			settingsFragment =  new SettingsFragment();
 //			if (savedInstanceState == null) {
@@ -363,81 +366,47 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 //			pCB_pref_cyakusinn_fukki = (SwitchPreferenceCompat) settingsFragment.findPreference("pref_cyakusinn_fukki");		//終話後に自動再生
 ////			pPS_sonota = settingsFragment.findPreference("pref_sonota");				//その他　のプリファレンススクリーン
 			pref_memo= (TextView)findViewById(R.id.pref_memo);	//(EditTextPreference) settingsFragment.findPreference("(EditText)findViewById(R.id.pref_gyapless);	//");							//その他の項目列記
-			pCB_pref_reset = (SwitchCompat)findViewById(R.id.pref_reset);	//(SwitchPreferenceCompat) settingsFragment.findPreference("pref_reset");		//設定消去
-			pCB_pref_reset.setOnCheckedChangeListener((buttonView, isChecked) -> {
-				pref_reset= isChecked;
-				if(pref_reset){
-					new AlertDialog.Builder(MyPreferences.this)
-							.setTitle(getResources().getString(R.string.pref_reset))
-							.setMessage(getResources().getString(R.string.pref_reset_msg))
-							.setPositiveButton(getResources().getString(R.string.modosu_msg) , new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog , int which) {
-									prefItialize();
+			pCB_pref_reset = (Button) findViewById(R.id.pref_reset);	//(SwitchPreferenceCompat) settingsFragment.findPreference("pref_reset");		//設定消去
+			pCB_pref_reset.setOnClickListener( v -> {
+				new AlertDialog.Builder(MyPreferences.this)
+						.setTitle(getResources().getString(R.string.pref_reset))
+						.setMessage(getResources().getString(R.string.pref_reset_msg))
+						.setPositiveButton(getResources().getString(R.string.comon_suru) , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+								prefItialize();
+								prefHyouji();
 //									myEditor.clear();		//プリファレンスの内容削除
 //									myEditor.commit();
-								}
-							})
-							.setNegativeButton(getResources().getString(R.string.comon_sinai) , new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog , int which) {
-								}
-							})
-							.create().show();
-				}
-				pref_reset = false;
+							}
+						})
+						.setNegativeButton(getResources().getString(R.string.comon_sinai) , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+							}
+						})
+						.create().show();
 			});
-			pCB_pref_listup_reset = (SwitchCompat)findViewById(R.id.pref_listup_reset);	//(SwitchPreferenceCompat) settingsFragment.findPreference("pref_listup_reset");		//調整リストのリセット
-			pCB_pref_listup_reset.setOnCheckedChangeListener((buttonView, isChecked) -> {
-				pref_listup_reset= isChecked;
-				if(pref_listup_reset){
-					new AlertDialog.Builder(MyPreferences.this)
-							.setTitle(getResources().getString(R.string.pref_listup_reset))
-							.setMessage(getResources().getString(R.string.pref_reset_msg))
-							.setPositiveButton(getResources().getString(R.string.modosu_msg) , new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog , int which) {
-
-								}
-							})
-							.setNegativeButton(getResources().getString(R.string.comon_sinai) , new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog , int which) {
-								}
-							})
-							.create().show();
-				}
-				pref_listup_reset = false;
+			pCB_pref_listup_reset = (Button)findViewById(R.id.pref_listup_reset);	//(SwitchPreferenceCompat) settingsFragment.findPreference("pref_listup_reset");		//調整リストのリセット
+			pCB_pref_listup_reset.setOnClickListener( v -> {
+				new AlertDialog.Builder(MyPreferences.this)
+						.setTitle(getResources().getString(R.string.pref_reset))
+						.setMessage(getResources().getString(R.string.pref_reset_msg))
+						.setPositiveButton(getResources().getString(R.string.comon_suru) , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+							}
+						})
+						.setNegativeButton(getResources().getString(R.string.comon_sinai) , new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog , int which) {
+							}
+						})
+						.create().show();
 			});
 
-//			reqCode=extras.getInt("reqCode");				//何のリストか
-//			dbMsg +="reqCode="+ reqCode;/////////////////////////////////////
-//			pref_apiLv =extras.getString("pref_apiLv");		//APIL
-//			dbMsg +="pref_apiLv="+ pref_apiLv;/////////////////////////////////////
-//
-//			pref_sonota_vercord = extras.getInt("pref_sonota_vercord") ;
-//			dbMsg +=",このアプリのバージョンコード="+ pref_sonota_vercord;/////////////////////////////////////
-//			prTT_dpad = extras.getBoolean("prTT_dpad");		//ダイアルキー有り
-//			pref_gyapless =extras.getString("pref_gyapless");			//クロスフェード時間
-//			pref_compBunki =extras.getString("pref_compBunki");		//コンピレーション分岐点
-//			pref_pb_bgc = extras.getBoolean("pref_pb_bgc");		//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
-//
-//			pref_list_simple = extras.getBoolean("pref_list_simple");		//シンプルなリスト表示（サムネールなど省略）
-//			saisei_fname =extras.getString("pref_data_url");
-////			pref_artist_name =extras.getString("pref_artist_name");			//リスト表示するアーティスト名
+			prefHyouji();				//プリファレンス画面表示
 
-			dbMsg = "reqCode=" + reqCode;//////////////////
-			switch(reqCode) {
-			case R.id.menu_item_sonota_settei:			//);						//設定;
-				prefHyouji();				//プリファレンス画面表示
-				break;
-//			case R.id.menu_sonota_settei_syoukyo:			//設定消去";
-//				delPrif();		//プリファレンスの内容削除
-//				break;
-			default:
-				prefHyouji();				//プリファレンス画面表示
-				break;
-			}
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg=dbMsg+(int)((end - start)) + "m秒で表示終了";
 			myLog(TAG,dbMsg);
@@ -446,13 +415,161 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 		}
 	}
 
+	/**
+	 * 設定内容の書込み
+	 * **/
 	public void prefHyouji() {				//プリファレンス画面表示
 		final String TAG = "prefHyouji";
 		String dbMsg="";
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
-			readPrif(this);		//プリファレンスの読込み
-			viewSakusei();				//プリファレンスの表示処理
+			readPref(this);		//プリファレンスの読込み
+			String wrStr= null;
+			String playerMsg ="";	//プレイヤー設定//////////////////////////////////////////////////////////
+			if(pref_gyapless != null){
+				dbMsg = "クロスフェード時間" + pref_gyapless;//////////////////pTF_pref_gyapless
+				pTF_pref_gyapless.setText(pref_gyapless);
+				playerMsg =  getResources().getString(R.string.pref_gyapless) + pref_gyapless ;
+			}else{
+				pTF_pref_gyapless.setText("100");
+				playerMsg = "100" ;
+			}
+			playerMsg += getResources().getString(R.string.pp_msec)  + "\n" ;
+//			if(pref_compBunki != null){
+//				dbMsg += "コンピレーション分岐点" + pref_compBunki;//////////////////pTF_pref_compBunki
+//				playerMsg += getResources().getString(R.string.pref_compBunki);
+//			}else{
+//				playerMsg = playerMsg + "0" ;
+//			}
+//			playerMsg += pref_compBunki + "[%}"  + "\n" ;
+			dbMsg += ",プレイヤーの背景は白=" + pref_pb_bgc;/////////////////
+			pTF_pref_pb_bgc.setChecked(pref_pb_bgc);	//プレイヤーの背景は白
+			if(pref_pb_bgc){
+				pTF_pref_pb_bgc.setText(getString(R.string.pref_pb_bgc_titol) + "\n" + getString(R.string.pref_pb_bgc_bk));
+				playerMsg +=getString(R.string.pref_pb_bgc_titol) + "=" + getString(R.string.pref_pb_bgc_bk)  +"\n";
+			}else{
+				pTF_pref_pb_bgc.setText(getString(R.string.pref_pb_bgc_titol) + "\n" + getString(R.string.pref_pb_bgc_wh));
+				playerMsg +=getString(R.string.pref_pb_bgc_titol) + "=" + getString(R.string.pref_pb_bgc_wh)  +"\n";
+			}
+			dbMsg += ",シンプルなリスト表示=" + pref_list_simple;
+			pcb_list_simple.setChecked(pref_list_simple);			//シンプルなリスト表示（サムネールなど省略）
+			if(pref_list_simple){
+				pcb_list_simple.setText(getString(R.string.pref_list_simple_title) + "\n" + getString(R.string.pref_list_simple_summaryOn));
+				playerMsg +=getString(R.string.pref_list_simple_title) + "=" + getString(R.string.pref_list_simple_summaryOn) +"\n";
+			}else{
+				pcb_list_simple.setText(getString(R.string.pref_list_simple_title) + "\n" + getString(R.string.pref_list_simple_summaryOff));
+				playerMsg +=getString(R.string.pref_list_simple_title) + "=" + getString(R.string.pref_list_simple_summaryOff) +"\n";
+			}
+			dbMsg +="\n"+playerMsg;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			if(playerMsg != null){
+//				pPS_pref_player.setSummary("");					//☆一旦消して書き直す
+//				pPS_pref_player.setSummary(playerMsg);		//プレイヤー設定	☆xmlでandroid:enabled=trueにしないと書き換わらない
+//			}
+
+//			pPS_pref_effect.setSummary(effectMsg);															//サウンドエフェクト
+
+			String kisyubetu =null;	//機種別調整//////////////////////////////////////////////////////////
+			dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
+//			pcb_pref_notifplayer.setChecked(pref_notifplayer);
+			kisyubetu=getString(R.string.pref_notifplayer) + "=" + pref_notifplayer +"\n";		//pcb_pref_notifplayer.getSummary() +"\n";
+			dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;//////////////
+//			pcb_pref_lockscreen.setChecked(pref_lockscreen);
+			kisyubetu +=getString(R.string.pref_lockscreen) + "="  + pref_lockscreen +"\n";		//+ pcb_pref_lockscreen.getSummary() +"\n";
+			dbMsg += ",Bluetoothの接続に連携して一時停止/再開＝" + pref_bt_renkei;//////////////////pcb_bt_renkei
+//			pcb_bt_renkei.setChecked(pref_bt_renkei);
+			kisyubetu +=getString(R.string.pref_bt_renkei_titol) + "=" + pref_bt_renkei +"\n";		//+ pcb_bt_renkei.getSummary() +"\n";
+//			dbMsg +="終話後に自動再生＝" + pref_cyakusinn_fukki;//////////////////
+//			dbMsg += " , pCB_pref_cyakusinn_fukki＝" + pCB_pref_cyakusinn_fukki;//////////////////
+			kisyubetu +=getString(R.string.pref_cyakusinn_fukki)+"=" + pref_cyakusinn_fukki +"\n";		//	pCB_pref_cyakusinn_fukki.getSummary() +"\n";
+			dbMsg += "\n" + kisyubetu;				//機種別調整////////////////////
+			if(kisyubetu != null){
+//				pPS_pref_kisyubetu.setSummary("");
+//				pPS_pref_kisyubetu.setSummary(kisyubetu);
+			}
+
+			String saisei ="";	//レジューム再生//////////////////////////////////////////////////////////
+			saisei = getString(R.string.pref_data_url)+ "\n[";
+			dbMsg +="再生中のリスト" + saisei_fname;//////////////////
+			if(nowList_id != null){
+				saisei += nowList_id ;
+			}
+			saisei += "]" ;
+			if(nowList != null){
+				saisei += nowList ;
+			}
+			saisei += "\n" ;
+			if(0<pref_mIndex){
+				saisei += "[" + pref_mIndex + "]" ;
+			}
+			if(pref_data_url != null){
+				saisei += pref_data_url +"\n" ;
+			}
+
+			if(saisei_fname != null){
+				dbMsg +="再生中のファイル名" + saisei_fname;//////////////////
+				saisei = saisei_fname +"\n" ;
+			}
+			if(pref_saisei_jikan != null ){
+				wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_jikan));
+				dbMsg +="再生ポジション；" + pref_saisei_jikan +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
+				saisei += "\n" +getResources().getString(R.string.pref_saisei_come1) +" [" + wrStr;
+			}
+			if(pref_saisei_nagasa != null ){
+				wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_nagasa));
+				dbMsg +="再生時間；" +pref_saisei_nagasa +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
+				saisei +=  "/"+wrStr +"]" + "\n";
+				dbMsg += saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+			}
+			if( pref_zenkai_saiseKyoku != null ){		//前回の連続再生曲数		pTF_pref_zenkai_saiseKyoku
+				dbMsg +="前回の連続再生曲数；" +pref_zenkai_saiseKyoku;				//+";"+pTF_saisei_jikan.getText();//////////////////
+				saisei += "\n" + saisei+getResources().getString(R.string.comon_zennkai) +pref_zenkai_saiseKyoku + getResources().getString(R.string.pp_kyoku) ;
+				dbMsg += saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+			}
+			if(pref_zenkai_saiseijikann != null ){
+				dbMsg +="前回の連続再生時間；"+ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));			///////////////////
+				saisei += ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));
+				dbMsg +=saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+			}else{
+				pref_zenkai_saiseijikann = "0";
+			}
+			dbMsg +=saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+			Siseiothers = Siseiothers + saisei;
+			String summelyStr = saisei;				//その他//////////////////////////////////////////////////
+			if(! pref_file_in.equals("")){
+				summelyStr += "\n" + getString(R.string.pref_file_in)+"="+ pref_file_in + "\n";
+			}
+			if(! pref_file_ex.equals("")){
+				summelyStr += getString(R.string.pref_file_ex)+"="+pref_file_ex + "\n";
+			}else{
+				summelyStr += getString(R.string.pref_file_ex)+getString(R.string.comon_nasi) + "\n";
+			}
+			if(! pref_file_wr.equals("")){
+				summelyStr += getString(R.string.pref_file_wr)+"="+pref_file_wr + "\n";
+			}
+			if(! pref_commmn_music.equals("")){
+				summelyStr +=  getString(R.string.pref_commmn_music)+"="+pref_commmn_music+ "\n";
+			}
+			//		pref_filse.setSummary(summelyStr);
+
+			if(! pref_file_kyoku.equals("")){
+				summelyStr = getString(R.string.pref_file_kyoku)+"="+pref_file_kyoku + "\n";
+			}
+			if(! pref_file_album.equals("")){
+				summelyStr += getString(R.string.pref_file_album)+"="+pref_file_album + "\n";
+			}
+			if(! pref_file_saisinn.equals("")){
+				summelyStr += getString(R.string.pref_file_saisinn)+"="+pref_file_saisinn + "\n";
+			}
+			//		pPS_sonota.setSummary(summelyStr);
+
+			dbMsg +="pref_apiLv＝" + pref_apiLv;//////////////////
+			summelyStr += getString(R.string.pref_sonota_apil)+"="+pref_apiLv + "\n";
+
+			dbMsg +="pref_sonota_vercord＝" + pref_sonota_vercord;//////////////////
+			summelyStr += getString(R.string.pref_sonota_vercord)+"="+pref_sonota_vercord + "\n";
+
+			dbMsg += ",prTT_dpad＝" + prTT_dpad;//////////////////
+			pref_memo.setText(summelyStr);
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg=dbMsg+(int)((end - start)) + "m秒で表示終了";
 			myLog(TAG,dbMsg);
@@ -537,358 +654,21 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 			//更新
 			myEditor.apply();
 			myLog(TAG,dbMsg);
-			viewSakusei();
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
 	}
-
-	public void viewSakusei( ) {				//プリファレンスの表示処理
-		final String TAG = "viewSakusei";
-		String dbMsg="";
-		try{
-			readPrif(this);
-			String wrStr= null;
-			String playerMsg ="";	//プレイヤー設定//////////////////////////////////////////////////////////
-			if(pref_gyapless != null){
-				dbMsg = "クロスフェード時間" + pref_gyapless;//////////////////pTF_pref_gyapless
-				pTF_pref_gyapless.setText(pref_gyapless);
-				playerMsg =  getResources().getString(R.string.pref_gyapless) + pref_gyapless ;
-			}else{
-				pTF_pref_gyapless.setText("100");
-				playerMsg = "100" ;
-			}
-			playerMsg += getResources().getString(R.string.pp_msec)  + "\n" ;
-//			if(pref_compBunki != null){
-//				dbMsg += "コンピレーション分岐点" + pref_compBunki;//////////////////pTF_pref_compBunki
-//				playerMsg += getResources().getString(R.string.pref_compBunki);
-//			}else{
-//				playerMsg = playerMsg + "0" ;
-//			}
-//			playerMsg += pref_compBunki + "[%}"  + "\n" ;
-			dbMsg += ",プレイヤーの背景は白=" + pref_pb_bgc;/////////////////
-			pTF_pref_pb_bgc.setChecked(pref_pb_bgc);	//プレイヤーの背景は白
-			if(pref_pb_bgc){
-				pTF_pref_pb_bgc.setText(getString(R.string.pref_pb_bgc_titol) + "\n" + getString(R.string.pref_pb_bgc_bk));
-				playerMsg +=getString(R.string.pref_pb_bgc_titol) + "=" + getString(R.string.pref_pb_bgc_bk)  +"\n";
-			}else{
-				pTF_pref_pb_bgc.setText(getString(R.string.pref_pb_bgc_titol) + "\n" + getString(R.string.pref_pb_bgc_wh));
-				playerMsg +=getString(R.string.pref_pb_bgc_titol) + "=" + getString(R.string.pref_pb_bgc_wh)  +"\n";
-			}
-			dbMsg += ",シンプルなリスト表示=" + pref_list_simple;
-			pcb_list_simple.setChecked(pref_list_simple);			//シンプルなリスト表示（サムネールなど省略）
-			if(pref_list_simple){
-				pcb_list_simple.setText(getString(R.string.pref_list_simple_title) + "\n" + getString(R.string.pref_list_simple_summaryOn));
-				playerMsg +=getString(R.string.pref_list_simple_title) + "=" + getString(R.string.pref_list_simple_summaryOn) +"\n";
-			}else{
-				pcb_list_simple.setText(getString(R.string.pref_list_simple_title) + "\n" + getString(R.string.pref_list_simple_summaryOff));
-				playerMsg +=getString(R.string.pref_list_simple_title) + "=" + getString(R.string.pref_list_simple_summaryOff) +"\n";
-			}
-			dbMsg +="\n"+playerMsg;				//+";"+pTF_saisei_jikan.getText();//////////////////
-//			if(playerMsg != null){
-//				pPS_pref_player.setSummary("");					//☆一旦消して書き直す
-//				pPS_pref_player.setSummary(playerMsg);		//プレイヤー設定	☆xmlでandroid:enabled=trueにしないと書き換わらない
-//			}
-
-	//		String effectMsg = viewSakusei_eff( );				//エフェクト部のプリファレンス表示処理
-//			pPS_pref_effect.setSummary(effectMsg);															//サウンドエフェクト
-
-			String kisyubetu =null;	//機種別調整//////////////////////////////////////////////////////////
-			dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
-//			pcb_pref_notifplayer.setChecked(pref_notifplayer);
-			kisyubetu=getString(R.string.pref_notifplayer) + "=" + pref_notifplayer +"\n";		//pcb_pref_notifplayer.getSummary() +"\n";
-			dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;//////////////
-//			pcb_pref_lockscreen.setChecked(pref_lockscreen);
-			kisyubetu +=getString(R.string.pref_lockscreen) + "="  + pref_lockscreen +"\n";		//+ pcb_pref_lockscreen.getSummary() +"\n";
-			dbMsg += ",Bluetoothの接続に連携して一時停止/再開＝" + pref_bt_renkei;//////////////////pcb_bt_renkei
-//			pcb_bt_renkei.setChecked(pref_bt_renkei);
-			kisyubetu +=getString(R.string.pref_bt_renkei_titol) + "=" + pref_bt_renkei +"\n";		//+ pcb_bt_renkei.getSummary() +"\n";
-//			dbMsg +="終話後に自動再生＝" + pref_cyakusinn_fukki;//////////////////
-//			dbMsg += " , pCB_pref_cyakusinn_fukki＝" + pCB_pref_cyakusinn_fukki;//////////////////
-			kisyubetu +=getString(R.string.pref_cyakusinn_fukki)+"=" + pref_cyakusinn_fukki +"\n";		//	pCB_pref_cyakusinn_fukki.getSummary() +"\n";
-			dbMsg += "\n" + kisyubetu;				//機種別調整////////////////////
-			if(kisyubetu != null){
-//				pPS_pref_kisyubetu.setSummary("");
-//				pPS_pref_kisyubetu.setSummary(kisyubetu);
-			}
-
-			String saisei ="";	//レジューム再生//////////////////////////////////////////////////////////
-			saisei = getString(R.string.pref_data_url)+ "\n[";
-			dbMsg +="再生中のリスト" + saisei_fname;//////////////////
-			if(nowList_id != null){
-				saisei += nowList_id ;
-			}
-			saisei += "]" ;
-			if(nowList != null){
-				saisei += nowList ;
-			}
-			saisei += "\n" ;
-			if(0<pref_mIndex){
-				saisei += "[" + pref_mIndex + "]" ;
-			}
-			if(pref_data_url != null){
-				saisei += pref_data_url +"\n" ;
-			}
-
-			if(saisei_fname != null){
-				dbMsg +="再生中のファイル名" + saisei_fname;//////////////////
-				saisei = saisei_fname +"\n" ;
-			}
-			if(pref_saisei_jikan != null ){
-				wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_jikan));
-				dbMsg +="再生ポジション；" + pref_saisei_jikan +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
-				saisei += "\n" +getResources().getString(R.string.pref_saisei_come1) +" [" + wrStr;
-			}
-			if(pref_saisei_nagasa != null ){
-				wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_nagasa));
-				dbMsg +="再生時間；" +pref_saisei_nagasa +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
-				saisei +=  "/"+wrStr +"]" + "\n";
-				dbMsg += saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
-			}
-			if( pref_zenkai_saiseKyoku != null ){		//前回の連続再生曲数		pTF_pref_zenkai_saiseKyoku
-				dbMsg +="前回の連続再生曲数；" +pref_zenkai_saiseKyoku;				//+";"+pTF_saisei_jikan.getText();//////////////////
-				saisei += "\n" + saisei+getResources().getString(R.string.comon_zennkai) +pref_zenkai_saiseKyoku + getResources().getString(R.string.pp_kyoku) ;
-				dbMsg += saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
-			}
-			if(pref_zenkai_saiseijikann != null ){
-				dbMsg +="前回の連続再生時間；"+ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));			///////////////////
-				saisei += ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));
-				dbMsg +=saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
-			}else{
-				pref_zenkai_saiseijikann = "0";
-			}
-			dbMsg +=saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
-			Siseiothers = Siseiothers + saisei;
-			String summelyStr = saisei;				//その他//////////////////////////////////////////////////
-			 if(! pref_file_in.equals("")){
-				 summelyStr += "\n" + getString(R.string.pref_file_in)+"="+ pref_file_in + "\n";
-			 }
-			if(! pref_file_ex.equals("")){
-				summelyStr += getString(R.string.pref_file_ex)+"="+pref_file_ex + "\n";
-			}else{
-				summelyStr += getString(R.string.pref_file_ex)+getString(R.string.comon_nasi) + "\n";
-			}
-			if(! pref_file_wr.equals("")){
-				summelyStr += getString(R.string.pref_file_wr)+"="+pref_file_wr + "\n";
-			}
-			if(! pref_commmn_music.equals("")){
-				summelyStr +=  getString(R.string.pref_commmn_music)+"="+pref_commmn_music+ "\n";
-			}
-	//		pref_filse.setSummary(summelyStr);
-
-			if(! pref_file_kyoku.equals("")){
-				summelyStr = getString(R.string.pref_file_kyoku)+"="+pref_file_kyoku + "\n";
-			}
-			if(! pref_file_album.equals("")){
-				summelyStr += getString(R.string.pref_file_album)+"="+pref_file_album + "\n";
-			}
-			if(! pref_file_saisinn.equals("")){
-				summelyStr += getString(R.string.pref_file_saisinn)+"="+pref_file_saisinn + "\n";
-			}
-	//		pPS_sonota.setSummary(summelyStr);
-
-			dbMsg +="pref_apiLv＝" + pref_apiLv;//////////////////
-			summelyStr += getString(R.string.pref_sonota_apil)+"="+pref_apiLv + "\n";
-
-			dbMsg +="pref_sonota_vercord＝" + pref_sonota_vercord;//////////////////
-			summelyStr += getString(R.string.pref_sonota_vercord)+"="+pref_sonota_vercord + "\n";
-
-			dbMsg += ",prTT_dpad＝" + prTT_dpad;//////////////////
-			pref_memo.setText(summelyStr);
-			myLog(TAG,dbMsg);
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg + "で"+e.toString());
-		}
-	}
-
-	public String viewSakusei_eff( ) {				//エフェクト部のプリファレンス表示処理
-		String effectMsg =null;	//サウンドエフェクト設定//////////////////////////////////////////////////////////
-		final String TAG = "viewSakusei_eff";
-		String dbMsg="";
-		try{
-			String effectMemo =null;
-			//		public List<String> pref_toneList;		//プリファレンス保存用トーンリスト
-		//	public String toneSeparata = "L";
-			dbMsg = "トーン名称=" + tone_name;/////////////////
-			if( tone_name == null ){
-				tone_name =  getString(R.string.tone_name_puri);				//="">現在の設定</string>
-			}
-			effectMsg= getString(R.string.comon_genzai)+ ";" +tone_name;					//"">現在の設定</string>
-			effectMemo= effectMsg;
-			dbMsg += ",pref_toneList=" + pref_toneList;/////////////////
-			if(pref_toneList != null){
-				for(String wS : pref_toneList){
-					dbMsg += ",wS=" + wS;/////////////////
-					String[] wSs = wS.split(toneSeparata);
-					String frq = wSs[0];
-					frq = String.format("%6dHz", Integer.valueOf(frq));	//☆型を確定しないとjava.util.IllegalFormatConversionException: %d can't format java.lang.String arguments
-					dbMsg += ",frq=" + frq;/////////////////
-					String band = wSs[1];
-					int wInt = Integer.valueOf(band);
-					if(0 != wInt){
-						wInt = wInt/100;
-					}
-					band = String.format("%6ddb", wInt);
-					dbMsg += ",band=" + band;/////////////////
-					effectMemo= effectMemo + "\n" + frq + band;
-				}
-			}
-			dbMsg += ",バスブート=" + bBoot;/////////////////
-			String wrStr = getString(R.string.comon_tukawanai);			//使わない
-			if( bBoot ){
-				wrStr = getString(R.string.comon_tukau);			//使う
-			}
-			effectMsg= effectMsg + "\n" + getString(R.string.effect_bassbost)+ ";" +bBoot;
-			effectMemo= effectMemo + "\n" + getString(R.string.effect_bassbost)+ ";" +bBoot;
-			dbMsg += ",リバーブ効果番号=" + reverbBangou;/////////////////
-			switch(reverbBangou) {
-			case PresetReverb.PRESET_NONE:
-				wrStr = getString(R.string.reverb_none);
-				break;
-			case PresetReverb.PRESET_SMALLROOM:
-				wrStr = getString(R.string.reverb_small_room);
-				break;
-			case PresetReverb.PRESET_MEDIUMROOM:
-				wrStr = getString(R.string.reverb_medium_room);
-				break;
-			case PresetReverb.PRESET_LARGEROOM:
-				wrStr = getString(R.string.reverb_large_room);
-				break;
-			case PresetReverb.PRESET_MEDIUMHALL:
-				wrStr = getString(R.string.reverb_medium_hall);
-			case PresetReverb.PRESET_LARGEHALL:
-				wrStr = getString(R.string.reverb_large_hall);
-				break;
-			case PresetReverb.PRESET_PLATE:
-				wrStr = getString(R.string.reverb_plate);
-				break;
-			default:
-				wrStr = getString(R.string.reverb_none);
-				break;
-			}
-//			effectMsg= effectMsg + "\n" + getString(R.string.effect_reverb)+ ";" +wrStr;					//me="">リバーブ</string>
-//			effectMemo= effectMemo + "\n" + getString(R.string.effect_reverb)+ ";" +wrStr;
-//			pref_eff_memo.setSummary(effectMemo);								//サウンドエフェクトの設定確認
-//			dbMsg += ",Visualizer=" + visualizerType;/////////////////
-//			wrStr = getString(R.string.comon_tukawanai);				//"">使わない</string>
-//			if(-1 < visualizerType){
-//				switch(visualizerType) {
-//				case MyConstants.Visualizer_type_wave:						//Visualizerはwave表示
-//					wrStr = getString(R.string.pref_effect_vi_wave);				//オシロスコープ風
-//					break;
-//				case MyConstants.Visualizer_type_FFT:
-//					wrStr = getString(R.string.pref_effect_vi_fft);				//スペクトラムアナライザ風
-//					break;
-//				case MyConstants.Visualizer_type_none:						//Visualizerを使わない
-//					wrStr = getString(R.string.comon_tukawanai);				//"">使わない</string>
-//					break;
-////				default:
-////					break;
-//				}
-//			}else{
-//				wrStr = getString(R.string.comon_tukawanai);				//"">使わない</string>
-//			}
-//			dbMsg += "=" + wrStr;/////////////////
-//			pLi_pref_effect_vi.setSummary(wrStr);//ビジュアライザー
-//			pLi_pref_effect_vi.setDefaultValue(wrStr);						//初期設定　xlmで	android:summary="%s"	Summaryを選択する	が利かなかった
-//
-//			effectMsg= effectMsg + "\n" + getString(R.string.pref_effect_vi)+ ";" +wrStr;					//"">ビジュアライザー</string>
-	//		myLog(TAG,dbMsg);
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg + "で"+e.toString());
-		}
-		return effectMsg;
-	}
-
-//	public String taisyouTypeSmally() {
-//		String retStr="";
-//		final String TAG = "taisyouTypeSmally";
-//		String dbMsg="";
-//		try{
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_mp3");
-//			if(pCB.isChecked()){
-//				retStr="mp3";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_m4a");		//m4a(AAC;MPEG-4)
-//			if(pCB.isChecked()){
-//				retStr=retStr+",m4a";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_wma");
-//			if(pCB.isChecked()){
-//				retStr=retStr+",wma";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_wav");
-//			if(pCB.isChecked()){
-//				retStr=retStr+",wav";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_ogg");		//ogg(Ogg vorbis )
-//			if(pCB.isChecked()){
-//				retStr=retStr+",ogg";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_amr");		//amr
-//			if(pCB.isChecked()){
-//				retStr=retStr+",amr";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_3gp");		//3gp(voice recorder,AMR-WB)"
-//			if(pCB.isChecked()){
-//				retStr=retStr+",3gp";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_mid");
-//			if(pCB.isChecked()){
-//				retStr=retStr+",mid";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_xmf");		//xmf(ringer?)
-//			if(pCB.isChecked()){
-//				retStr=retStr+",xmf";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_mxmf");		//mxmf(ringer?)
-//			if(pCB.isChecked()){
-//				retStr=retStr+",mid";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_rtttl");		//rtttl(ringer?)
-//			if(pCB.isChecked()){
-//				retStr=retStr+",rtttl";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_rlx");		//rlx(ringer?)
-//			if(pCB.isChecked()){
-//				retStr=retStr+",rlx";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_ota");		//ota(Over The Air (OTA) image used for sending pictures on Nokia and Siemens mobile phones)
-//			if(pCB.isChecked()){
-//				retStr=retStr+",ota";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_imy");		//imy(Monophonic ringtone format developed by the irDa (infrared communications))
-//			if(pCB.isChecked()){
-//				retStr=retStr+",imy";
-//			}
-//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_SMF");		//imy(Monophonic ringtone format developed by the irDa (infrared communications))
-//			if(pCB.isChecked()){
-//				retStr=retStr+",smf";
-//			}
-//			myLog(TAG,"retStr="+retStr);
-//		} catch (Exception e) {
-//			myErrorLog(TAG,dbMsg+"で"+e);
-//		}
-//		return retStr;
-//	}
 
 	@SuppressLint("SimpleDateFormat")
-	public void readPrif(Context context){		//プリファレンスの読込み
-		final String TAG = "readPrif";
+	public void readPref(Context context){		//プリファレンスの読込み
+		final String TAG = "readPref";
 		String dbMsg="";
 		try {
 			ORGUT = new OrgUtil();        //自作関数集
-			boolean pref_list_simpleIsIn = false;
-			boolean pref_pb_bgcIsIn = false;
-			boolean pref_lockscreenIsIn = false;
-			boolean pref_notifplayerInIn = false;
-			boolean pref_cyakusinn_fukkiIsIn = false;
-			boolean pref_bt_renkeiIsIn = false;
-
-			Visualizer_type_wave = MyConstants.Visualizer_type_wave;        //189;Visualizerはwave表示
-			Visualizer_type_FFT = MyConstants.Visualizer_type_wave;        //190;VisualizerはFFT
-			Visualizer_type_none = MyConstants.Visualizer_type_wave;
-			//191;Visualizerを使わない
+//			Visualizer_type_wave = MyConstants.Visualizer_type_wave;        //189;Visualizerはwave表示
+//			Visualizer_type_FFT = MyConstants.Visualizer_type_wave;        //190;VisualizerはFFT
+//			Visualizer_type_none = MyConstants.Visualizer_type_wave;
+//			//191;Visualizerを使わない
 
 			PREFS_NAME = context.getResources().getString(R.string.pref_main_file);
 			dbMsg += ",PREFS_NAME=" + PREFS_NAME;
@@ -907,6 +687,7 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 			others = "";                //その他の情報
 			Map< String, ? > keys = sharedPref.getAll();
 			dbMsg += ",読み込み開始" + keys.size() + "項目;mySharedPref=" + sharedPref;
+//				//まだ作成できていないパラメータの作成
 			pref_apiLv = String.valueOf(Build.VERSION.SDK);                                    //APIレベル
 			dbMsg += ",pref_apiLv=" + pref_apiLv;
 			int now_vercord = 1;
@@ -918,11 +699,190 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 			} catch (PackageManager.NameNotFoundException e) {
 				e.printStackTrace();
 			}
+			dbMsg += ",アプリのバージョンコード＝" + now_vercord;
 
-			dbMsg += ",アプリのバージョンコード＝" + now_vercord;//////////////////
+			dbMsg += ",選択中のリスト[" ;
+			if(keys.get("nowList_id") == null ){
+				nowList_id = "-1";
+				dbMsg += ">>" + nowList_id + "]" ;
+				myEditor.putString("nowList_id", nowList_id);
+				myEditor.commit();
+			}else{
+				nowList_id = String.valueOf(keys.get("nowList_id"));
+				dbMsg +=nowList_id + "]" ;
+			}
+
+			if(keys.get("nowList") == null ){
+				nowList = String.valueOf(context.getResources().getText(R.string.listmei_zemkyoku));
+				dbMsg += ">>" + nowList;
+				myEditor.putString("nowList", nowList);
+				myEditor.commit();
+			}else{
+				nowList = String.valueOf(keys.get("nowList"));
+				dbMsg +=  nowList;
+			}
+
+			if(keys.get("pref_mIndex") == null ){
+				pref_mIndex =0;
+				dbMsg += "[>>" + pref_mIndex + "]";
+				myEditor.putInt("pref_mIndex", pref_mIndex);
+				myEditor.commit();
+			}else{
+				pref_mIndex =  Integer.parseInt(keys.get("pref_mIndex").toString());
+				dbMsg += "[" + pref_mIndex + "]";
+			}
+
+			if(keys.get("pref_file_in") == null ){
+				pref_file_in = context.getFilesDir().getPath();    //内部データ領域
+				dbMsg += ">内蔵メモリ>" + pref_file_in;
+				myEditor.putString("pref_file_in", pref_file_in);
+				myEditor.commit();
+			}else{
+				pref_file_in =  String.valueOf(keys.get("pref_file_in"));
+				dbMsg += ",内蔵メモリ＝" + pref_file_in;
+			}
+
+			if(keys.get("pref_file_ex") == null ){
+				pref_file_ex =Environment.getExternalStorageDirectory().getPath();
+				dbMsg += ">メモリーカード>" + pref_file_ex;
+				myEditor.putString("pref_file_ex", pref_file_ex);
+				myEditor.commit();
+			}else{
+				pref_file_ex = String.valueOf(keys.get("pref_file_ex"));
+				dbMsg += ",メモリーカード＝" + pref_file_ex;
+			}
+
+			if(keys.get("pref_file_wr") == null ){
+				pref_file_wr = context.getFilesDir().getPath();
+				dbMsg += ">設定保存フォルダ>" + pref_file_wr;
+				myEditor.putString("pref_file_wr", pref_file_wr);
+				myEditor.commit();
+			}else{
+				pref_file_wr =  String.valueOf(keys.get("pref_file_wr"));
+				dbMsg += ",設定保存フォルダ＝" + pref_file_wr;
+			}
+
+			if(keys.get("pref_commmn_music") == null ){
+				pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
+				dbMsg += ">共通音楽フォルダ>" + pref_commmn_music;
+				myEditor.putString("pref_commmn_music", pref_commmn_music);
+				myEditor.commit();
+			}else{
+				pref_commmn_music =  String.valueOf(keys.get("pref_commmn_music"));
+				dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;
+			}
+
+			if(keys.get("pref_gyapless") == null ){
+				pref_gyapless = "1000";
+				dbMsg = ">クロスフェード時間>" + pref_gyapless;
+				myEditor.putString("pref_gyapless", pref_gyapless);
+				myEditor.commit();
+			}else{
+				pref_gyapless = String.valueOf(keys.get("pref_gyapless"));
+				dbMsg = ",クロスフェード時間" + pref_gyapless;
+			}
+
+			////				dbMsg += "コンピレーション分岐点" + pref_compBunki;
+////				if(pref_compBunki == null){
+////				}
+			if(keys.get("pref_list_simple") == null ){
+				pref_list_simple = false;
+				dbMsg = ">シンプルなリスト表示（サムネールなど省略）>" + pref_list_simple;
+				myEditor.putBoolean("pref_list_simple", pref_list_simple);
+				myEditor.commit();
+			}else{
+				pref_list_simple = Boolean.valueOf(keys.get("pref_list_simple")+"");
+				dbMsg += "シンプルなリスト表示（サムネールなど省略）=" + pref_list_simple;
+			}
+
+			if(keys.get("pref_pb_bgc") == null ){
+				pref_pb_bgc = false;
+				dbMsg += ">プレイヤーの背景は白>" + pref_pb_bgc;
+				myEditor.putBoolean("pref_pb_bgc", pref_pb_bgc);
+				myEditor.commit();
+			}else{
+				pref_list_simple = Boolean.valueOf(keys.get("pref_pb_bgc")+"");
+				dbMsg += ",プレイヤーの背景は白=" + pref_pb_bgc;
+			}
+
+////				dbMsg += ",アーティストリストを分離する曲数=" + pref_artist_bunnri;
+////				if(pref_artist_bunnri == null){
+////					pref_artist_bunnri = "100";
+////					dbMsg += ">>" + pref_artist_bunnri;
+////					myEditor.putString("pref_artist_bunnri", pref_artist_bunnri);
+////				}
+
+			if(keys.get("pref_saikin_tuika") == null ){
+				pref_saikin_tuika = "7";
+				dbMsg += ">最近追加リストのデフォルト日数>" + pref_saikin_tuika;
+				myEditor.putString("pref_saikin_tuika", pref_saikin_tuika);
+				myEditor.commit();
+			}else{
+				pref_saikin_tuika = String.valueOf(keys.get("pref_saikin_tuika"));
+				dbMsg += ",最近追加リストのデフォルト日数=" + pref_saikin_tuika;
+			}
+
+			if(keys.get("pref_saikin_sisei") == null ){
+				pref_saikin_sisei = "100";
+				dbMsg += ">最近再生加リストのデフォルト枚数>" + pref_saikin_sisei;
+				myEditor.putString("pref_saikin_sisei", pref_saikin_sisei);
+				myEditor.commit();
+			}else{
+				pref_saikin_sisei = String.valueOf(keys.get("pref_saikin_sisei"));
+				dbMsg += ",最近再生加リストのデフォルト枚数=" + pref_saikin_sisei;
+			}
+
+			if(keys.get("pref_rundam_list_size") == null ){
+				pref_rundam_list_size = "100";
+				dbMsg += ">ランダム再生リストアップ曲数>" + pref_rundam_list_size;
+				myEditor.putString("pref_rundam_list_size", pref_rundam_list_size);
+				myEditor.commit();
+			}else{
+				pref_rundam_list_size = String.valueOf(keys.get("pref_rundam_list_size"));
+				dbMsg += ",ランダム再生リストアップ曲数=" + pref_rundam_list_size;
+			}
+
+			if(keys.get("pref_lockscreen") == null ){
+				pref_lockscreen = true;
+				dbMsg += ">ロックスクリーンプレイヤー>" + pref_lockscreen;
+				myEditor.putBoolean("pref_lockscreen", pref_lockscreen);
+				myEditor.commit();
+			}else{
+				pref_list_simple = Boolean.valueOf(keys.get("pref_lockscreen")+"");
+				dbMsg += ",ロックスクリーンプレイヤー=" + pref_lockscreen;
+			}
+
+			if(keys.get("pref_notifplayer") == null ){
+				pref_notifplayer = true;
+				dbMsg += ">ノティフィケーションプレイヤー>" + pref_notifplayer;
+				myEditor.putBoolean("pref_notifplayer", pref_notifplayer);
+				myEditor.commit();
+			}else{
+				pref_list_simple = Boolean.valueOf(keys.get("pref_notifplayer")+"");
+				dbMsg += ",ノティフィケーションプレイヤー=" + pref_notifplayer;
+			}
+
+			if(keys.get("pref_bt_renkei") == null ){
+				pref_bt_renkei = true;
+				dbMsg += ">Bluetoothの接続に連携して一時停止>" + pref_bt_renkei;
+				myEditor.putBoolean("pref_bt_renkei", pref_bt_renkei);
+				myEditor.commit();
+			}else{
+				pref_list_simple = Boolean.valueOf(keys.get("pref_bt_renkei")+"");
+				dbMsg += ",Bluetoothの接続に連携して一時停止=" + pref_bt_renkei;
+			}
+
+//				dbMsg += ",終話後に自動再生=" + pref_cyakusinn_fukki;
+//				if(!pref_cyakusinn_fukkiIsIn){
+//					pref_cyakusinn_fukki = true;
+//					dbMsg += ">>" + pref_cyakusinn_fukki;
+//					myEditor.putBoolean("pref_cyakusinn_fukki", pref_cyakusinn_fukki);
+//				}
+
 			if ( keys.size() <= 0 ) {         //最初から6項目ある？
-				dbMsg += ",初期設定へ" ;//////////////////
-				setdPrif(context);
+				dbMsg += ",初期設定へ" ;
+				prefItialize();
+		//		setdPrif(context);
 			}else {
 				int i = 0;
 				for (String key : keys.keySet()) {
@@ -930,24 +890,8 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 					dbMsg += "\n" + i + "/" + keys.size() + ")" + key + " は " + keys.get(key);
 					try {
 						if (String.valueOf(keys.get(key)) != null) {
-/*			if(nowList_id != null){
-				saisei += nowList_id ;
-			}
-			saisei += "]" ;
-			if(nowList != null){
-				saisei += nowList ;
-			}
-*/
-							if (key.equals("nowList_id")) {
-								nowList_id = String.valueOf(keys.get(key));;
-								dbMsg += "、リスト[" + nowList_id + "]";
-							} else if (key.equals("nowList")) {
-								saisei_fname = String.valueOf(keys.get(key));
-								dbMsg += "　は再生中のリスト";
-							} else if (key.equals("pref_mIndex")) {
-								pref_mIndex =  Integer.parseInt(keys.get(key).toString());
-								dbMsg += "[" + pref_mIndex + "]";
-							} else if (key.equals("pref_data_url")) {
+
+							if (key.equals("pref_data_url")) {
 								saisei_fname = String.valueOf(keys.get(key));
 								dbMsg += "　は再生中のファイル";
 								pref_data_url = saisei_fname;
@@ -970,12 +914,6 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 							} else if (key.equals("saikinsisei_list_id")) {
 								saikinsisei_list_id = Integer.parseInt(keys.get(key).toString());
 								dbMsg += ",最近再生[" + saikinsisei_list_id + "]";
-							} else if (key.equals("nowList_id")) {
-								nowList_id = keys.get(key).toString();
-								dbMsg += "再生中のプレイリスト[" + nowList_id + "]";    //再生中のプレイリストID	playListID
-							} else if (key.equals("nowList")) {
-								nowList = keys.get(key).toString();
-								dbMsg += "プレイリスト名=" + nowList;////////////////////////////////////////////////////////////////////////////
 							} else if (key.equals("play_order")) {
 								play_order = keys.get(key).toString();
 								dbMsg += "(play_order=" + play_order + ")";
@@ -994,28 +932,12 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 							} else if (key.equals("dataFN")) {
 								saisei_fname = String.valueOf(keys.get(key));
 								dbMsg += "saisei_fname=" + saisei_fname;
-							} else if (key.equals("pref_gyapless")) {                    //クロスフェード時間
-								pref_gyapless = keys.get(key).toString();
-								dbMsg += "=クロスフェード時間";////////////////////////////////////////////////////////////////////////////
 //							} else if (key.equals("pref_compBunki")) {
 //								pref_compBunki = keys.get(key).toString();
 //								dbMsg += "コンピレーション分岐 = " + pref_compBunki;
-							} else if (key.equals("pref_list_simple")) {
-								pref_list_simple = Boolean.valueOf(keys.get(key) + "");
-								dbMsg += "シンプルなリスト表示（サムネールなど省略）=" + pref_list_simple;
-								pref_list_simpleIsIn = true;
 //							} else if (key.equals("pref_artist_bunnri")) {
 //								pref_artist_bunnri = keys.get(key).toString();
 //								dbMsg += "アーティストリストを分離する曲数=" + pref_artist_bunnri;
-							} else if (key.equals("pref_saikin_tuika")) {
-								pref_saikin_tuika = keys.get(key).toString();
-								dbMsg += "最近追加リストのデフォルト日数=" + pref_saikin_tuika + "日";
-							} else if (key.equals("pref_saikin_sisei")) {
-								pref_saikin_sisei = keys.get(key).toString();
-								dbMsg += ",最近再生リストのデフォルト曲数=" + pref_saikin_sisei;////////////////////////////////////////////////////////////////////////////
-							} else if (key.equals("pref_rundam_list_size")) {
-								pref_rundam_list_size = keys.get(key).toString();
-								dbMsg += "ランダム再生の設定曲数=" + pref_rundam_list_size;////////////////////////////////////////////////////////////////////////////
 							} else if (key.equals("repeatType")) {            //");;			//
 								repeatType = Integer.valueOf(keys.get(key).toString());    //
 								dbMsg += ">リピート再生の種類=" + repeatType;
@@ -1034,10 +956,6 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 									pp_end = "1";
 								}
 								dbMsg += ";二点間再生終了点=" + pp_end;/////pref_nitenkan_end////////////////////////////
-							} else if (key.equals("pref_notifplayer")) {
-								pref_notifplayer = Boolean.valueOf(keys.get(key).toString());
-								dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;
-								pref_notifplayerInIn = true;
 							} else if (key.equals("b_List")) {            //");
 								dbMsg += ",前に再生していたプレイリスト=";
 								b_List = keys.get(key).toString();
@@ -1054,24 +972,6 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 								dbMsg += ",リピート前に再生していたプレイリスト中のID=";
 								modori_List_id = Integer.valueOf(keys.get(key).toString());
 								dbMsg += String.valueOf(modori_List_id);
-							} else if (key.equals("pref_lockscreen")) {
-								pref_lockscreen = Boolean.valueOf(keys.get(key).toString());
-								dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;
-								pref_lockscreenIsIn = true;
-							} else if (key.equals("pref_bt_renkei")) {
-								pref_bt_renkei = Boolean.valueOf(keys.get(key).toString());
-								dbMsg += "Bluetoothの接続に連携=" + pref_bt_renkei;
-								pref_bt_renkeiIsIn =true;
-							} else if (key.equals("pref_cyakusinn_fukki")) {            //着信後の復帰
-								pref_cyakusinn_fukki = Boolean.valueOf(keys.get(key).toString());
-								dbMsg += "着信後の復帰=" + pref_cyakusinn_fukki;
-								pref_cyakusinn_fukkiIsIn =true;
-							} else if (key.equals("pref_pb_bgc")) {
-								pref_pb_bgc = Boolean.valueOf(keys.get(key).toString());
-								dbMsg += "プレイヤーの背景は白=" + pref_pb_bgc;
-								pref_pb_bgc = Boolean.valueOf(pref_pb_bgc);
-								dbMsg += ">>" + pref_pb_bgc;
-								pref_pb_bgcIsIn = true;
 							} else if (key.equals("tone_name")) {
 								tone_name = keys.get(key).toString();    //
 								dbMsg += "トーン名称=" + tone_name;
@@ -1108,18 +1008,6 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 								pref_zenkai_saiseijikann = String.valueOf(keys.get(key));
 								wrStr = ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));
 								dbMsg += "；前回の連続再生時間= " + pref_zenkai_saiseijikann + " =" + wrStr;                //+";"+pTF_saisei_jikan.getText();//////////////////
-							} else if (key.equals("pref_file_in")) {
-								pref_file_in = String.valueOf(keys.get(key));
-								dbMsg += "内蔵メモリ＝" + pref_file_in;////////////////
-							} else if (key.equals("pref_file_ex")) {
-								pref_file_ex = String.valueOf(keys.get(key));
-								dbMsg += "メモリーカード＝" + pref_file_ex;//////////////////
-							} else if (key.equals("pref_file_wr")) {
-								pref_file_wr = String.valueOf(keys.get(key));
-								dbMsg += "設定保存フォルダ＝" + pref_file_wr;//////////////////
-							} else if (key.equals("pref_commmn_music")) {
-								pref_commmn_music = String.valueOf(keys.get(key));
-								dbMsg += "共通音楽フォルダ＝" + pref_commmn_music;//////////////////
 							} else if (key.equals("pref_file_kyoku")) {
 								pref_file_kyoku = String.valueOf(keys.get(key));
 								dbMsg += "総曲数＝" + pref_file_kyoku;////////////////
@@ -1149,108 +1037,7 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 						myErrorLog(TAG, dbMsg + "；" + e);
 					}
 				}
-//				//まだ作成できていないパラメータの作成
-				myEditor.clear();
-				if (nowList_id == null || nowList_id.equals("0")) {
-					nowList_id = "-1";
-					myEditor.putString("nowList_id", nowList_id);
 
-				}
-				if (nowList == null || nowList.equals("")) {
-//					if (nowList_id.equals("-1")) {
-						nowList = String.valueOf(context.getResources().getText(R.string.listmei_zemkyoku));
-						myEditor.putString("nowList", nowList);
-						dbMsg += ">>プレイリスト[" + nowList_id + "]" + nowList;                //in16.pla=29236
-//					}
-				}
-
-				pref_file_in = context.getFilesDir().getPath();    //内部データ領域
-				dbMsg += ",内蔵メモリ＝" + pref_file_in;////////////////    //storage/emulated/0/Music
-				myEditor.putString("pref_file_in", pref_file_in);
-				pref_file_ex = "";
-				String status = Environment.getExternalStorageState();
-				myEditor.putString("pref_file_ex", pref_file_ex);
-				pref_file_wr = context.getFilesDir().getPath();
-				dbMsg += ",設定保存フォルダ＝" + pref_file_wr;//////////////////
-				myEditor.putString("pref_file_wr", pref_file_wr);
-				pref_commmn_music = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
-				dbMsg += ",共通音楽フォルダ＝" + pref_commmn_music;//////////////////
-				myEditor.putString("pref_commmn_music", pref_commmn_music);
-				dbMsg = "クロスフェード時間" + pref_gyapless;
-				if(pref_gyapless == null){
-					pref_gyapless = "100";
-					myEditor.putString("pref_gyapless", pref_gyapless);
-					dbMsg = ">>" + pref_gyapless;
-				}
-//				dbMsg += "コンピレーション分岐点" + pref_compBunki;
-//				if(pref_compBunki == null){
-//				}
-				dbMsg += ",シンプルなリスト表示=" + pref_list_simple;
-				if( !pref_list_simpleIsIn){
-					pref_list_simple = false;
-					dbMsg += ">>" + pref_list_simple;
-					myEditor.putBoolean("pref_list_simple", pref_list_simple);
-				}
-				dbMsg += ",プレイヤーの背景は黒=" + pref_pb_bgc;
-				if(!pref_pb_bgcIsIn){
-					pref_pb_bgc = true;
-					dbMsg += ">>" + pref_pb_bgc;
-					myEditor.putBoolean("pref_pb_bgc", pref_pb_bgc);
-				}
-//				dbMsg += ",アーティストリストを分離する曲数=" + pref_artist_bunnri;
-//				if(pref_artist_bunnri == null){
-//					pref_artist_bunnri = "100";
-//					dbMsg += ">>" + pref_artist_bunnri;
-//					myEditor.putString("pref_artist_bunnri", pref_artist_bunnri);
-//				}
-				dbMsg += ",最近追加リストのデフォルト日数=" + pref_saikin_tuika;
-				if(pref_saikin_tuika == null){
-					pref_saikin_tuika = "7";
-					dbMsg += ">>" + pref_saikin_tuika;
-					myEditor.putString("pref_saikin_tuika", pref_saikin_tuika);
-				}
-				dbMsg += ",最近再生加リストのデフォルト枚数=" + pref_saikin_sisei;
-				if(pref_saikin_sisei == null){
-					pref_saikin_sisei = "100";
-					dbMsg += ">>" + pref_saikin_sisei;
-					myEditor.putString("pref_saikin_sisei", pref_saikin_sisei);
-				}
-				dbMsg += ",ランダム再生リストアップ曲数=" + pref_rundam_list_size;
-				if(pref_rundam_list_size == null){
-					pref_rundam_list_size = "100";
-					dbMsg += ">>" + pref_rundam_list_size;
-					myEditor.putString("pref_rundam_list_size", pref_rundam_list_size);
-				}
-				dbMsg += ",ロックスクリーンプレイヤー=" + pref_lockscreen;
-				if(!pref_lockscreenIsIn){
-					pref_lockscreen = true;
-					dbMsg += ">>" + pref_lockscreen;
-					myEditor.putBoolean("pref_lockscreen", pref_lockscreen);
-				}
-				dbMsg += ",ノティフィケーションプレイヤー=" + pref_notifplayer;
-				if(!pref_notifplayerInIn){
-					pref_notifplayer = true;
-					dbMsg += ">>" + pref_notifplayer;
-					myEditor.putBoolean("pref_notifplayer", pref_notifplayer);
-				}
-				dbMsg += ",終話後に自動再生=" + pref_cyakusinn_fukki;
-				if(!pref_cyakusinn_fukkiIsIn){
-					pref_cyakusinn_fukki = true;
-					dbMsg += ">>" + pref_cyakusinn_fukki;
-					myEditor.putBoolean("pref_cyakusinn_fukki", pref_cyakusinn_fukki);
-				}
-				dbMsg += ",Bluetoothの接続に連携して一時停止=" + pref_bt_renkei;
-				if(!pref_bt_renkeiIsIn){
-					pref_bt_renkei = true;			//再開
-					dbMsg += ">>" + pref_bt_renkei;
-					myEditor.putBoolean("pref_bt_renkei", pref_bt_renkei);
-				}
-
-
-				if (myEditor != null) {
-					myEditor.commit();
-					dbMsg += "に設定";
-				}
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -1267,7 +1054,7 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 		String dbMsg="";
 		try{
 			ORGUT = new OrgUtil();		//自作関数集
-	//		MSA = new MaraSonActivity();
+			//		MSA = new MaraSonActivity();
 			Visualizer_type_wave = MyConstants.Visualizer_type_wave;		//189;Visualizerはwave表示
 			Visualizer_type_FFT = MyConstants.Visualizer_type_wave;		//190;VisualizerはFFT
 			Visualizer_type_none = MyConstants.Visualizer_type_wave;//191;Visualizerを使わない
@@ -1477,6 +1264,333 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 		}
 	}
 
+//	public void viewSakusei( ) {				//プリファレンスの表示処理
+//		final String TAG = "viewSakusei";
+//		String dbMsg="";
+//		try{
+//			readPrif(this);
+//			String wrStr= null;
+//			String playerMsg ="";	//プレイヤー設定//////////////////////////////////////////////////////////
+//			if(pref_gyapless != null){
+//				dbMsg = "クロスフェード時間" + pref_gyapless;//////////////////pTF_pref_gyapless
+//				pTF_pref_gyapless.setText(pref_gyapless);
+//				playerMsg =  getResources().getString(R.string.pref_gyapless) + pref_gyapless ;
+//			}else{
+//				pTF_pref_gyapless.setText("100");
+//				playerMsg = "100" ;
+//			}
+//			playerMsg += getResources().getString(R.string.pp_msec)  + "\n" ;
+////			if(pref_compBunki != null){
+////				dbMsg += "コンピレーション分岐点" + pref_compBunki;//////////////////pTF_pref_compBunki
+////				playerMsg += getResources().getString(R.string.pref_compBunki);
+////			}else{
+////				playerMsg = playerMsg + "0" ;
+////			}
+////			playerMsg += pref_compBunki + "[%}"  + "\n" ;
+//			dbMsg += ",プレイヤーの背景は白=" + pref_pb_bgc;/////////////////
+//			pTF_pref_pb_bgc.setChecked(pref_pb_bgc);	//プレイヤーの背景は白
+//			if(pref_pb_bgc){
+//				pTF_pref_pb_bgc.setText(getString(R.string.pref_pb_bgc_titol) + "\n" + getString(R.string.pref_pb_bgc_bk));
+//				playerMsg +=getString(R.string.pref_pb_bgc_titol) + "=" + getString(R.string.pref_pb_bgc_bk)  +"\n";
+//			}else{
+//				pTF_pref_pb_bgc.setText(getString(R.string.pref_pb_bgc_titol) + "\n" + getString(R.string.pref_pb_bgc_wh));
+//				playerMsg +=getString(R.string.pref_pb_bgc_titol) + "=" + getString(R.string.pref_pb_bgc_wh)  +"\n";
+//			}
+//			dbMsg += ",シンプルなリスト表示=" + pref_list_simple;
+//			pcb_list_simple.setChecked(pref_list_simple);			//シンプルなリスト表示（サムネールなど省略）
+//			if(pref_list_simple){
+//				pcb_list_simple.setText(getString(R.string.pref_list_simple_title) + "\n" + getString(R.string.pref_list_simple_summaryOn));
+//				playerMsg +=getString(R.string.pref_list_simple_title) + "=" + getString(R.string.pref_list_simple_summaryOn) +"\n";
+//			}else{
+//				pcb_list_simple.setText(getString(R.string.pref_list_simple_title) + "\n" + getString(R.string.pref_list_simple_summaryOff));
+//				playerMsg +=getString(R.string.pref_list_simple_title) + "=" + getString(R.string.pref_list_simple_summaryOff) +"\n";
+//			}
+//			dbMsg +="\n"+playerMsg;				//+";"+pTF_saisei_jikan.getText();//////////////////
+////			if(playerMsg != null){
+////				pPS_pref_player.setSummary("");					//☆一旦消して書き直す
+////				pPS_pref_player.setSummary(playerMsg);		//プレイヤー設定	☆xmlでandroid:enabled=trueにしないと書き換わらない
+////			}
+//
+////			pPS_pref_effect.setSummary(effectMsg);															//サウンドエフェクト
+//
+//			String kisyubetu =null;	//機種別調整//////////////////////////////////////////////////////////
+//			dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
+////			pcb_pref_notifplayer.setChecked(pref_notifplayer);
+//			kisyubetu=getString(R.string.pref_notifplayer) + "=" + pref_notifplayer +"\n";		//pcb_pref_notifplayer.getSummary() +"\n";
+//			dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;//////////////
+////			pcb_pref_lockscreen.setChecked(pref_lockscreen);
+//			kisyubetu +=getString(R.string.pref_lockscreen) + "="  + pref_lockscreen +"\n";		//+ pcb_pref_lockscreen.getSummary() +"\n";
+//			dbMsg += ",Bluetoothの接続に連携して一時停止/再開＝" + pref_bt_renkei;//////////////////pcb_bt_renkei
+////			pcb_bt_renkei.setChecked(pref_bt_renkei);
+//			kisyubetu +=getString(R.string.pref_bt_renkei_titol) + "=" + pref_bt_renkei +"\n";		//+ pcb_bt_renkei.getSummary() +"\n";
+////			dbMsg +="終話後に自動再生＝" + pref_cyakusinn_fukki;//////////////////
+////			dbMsg += " , pCB_pref_cyakusinn_fukki＝" + pCB_pref_cyakusinn_fukki;//////////////////
+//			kisyubetu +=getString(R.string.pref_cyakusinn_fukki)+"=" + pref_cyakusinn_fukki +"\n";		//	pCB_pref_cyakusinn_fukki.getSummary() +"\n";
+//			dbMsg += "\n" + kisyubetu;				//機種別調整////////////////////
+//			if(kisyubetu != null){
+////				pPS_pref_kisyubetu.setSummary("");
+////				pPS_pref_kisyubetu.setSummary(kisyubetu);
+//			}
+//
+//			String saisei ="";	//レジューム再生//////////////////////////////////////////////////////////
+//			saisei = getString(R.string.pref_data_url)+ "\n[";
+//			dbMsg +="再生中のリスト" + saisei_fname;//////////////////
+//			if(nowList_id != null){
+//				saisei += nowList_id ;
+//			}
+//			saisei += "]" ;
+//			if(nowList != null){
+//				saisei += nowList ;
+//			}
+//			saisei += "\n" ;
+//			if(0<pref_mIndex){
+//				saisei += "[" + pref_mIndex + "]" ;
+//			}
+//			if(pref_data_url != null){
+//				saisei += pref_data_url +"\n" ;
+//			}
+//
+//			if(saisei_fname != null){
+//				dbMsg +="再生中のファイル名" + saisei_fname;//////////////////
+//				saisei = saisei_fname +"\n" ;
+//			}
+//			if(pref_saisei_jikan != null ){
+//				wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_jikan));
+//				dbMsg +="再生ポジション；" + pref_saisei_jikan +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//				saisei += "\n" +getResources().getString(R.string.pref_saisei_come1) +" [" + wrStr;
+//			}
+//			if(pref_saisei_nagasa != null ){
+//				wrStr=ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_nagasa));
+//				dbMsg +="再生時間；" +pref_saisei_nagasa +">>" +wrStr;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//				saisei +=  "/"+wrStr +"]" + "\n";
+//				dbMsg += saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			}
+//			if( pref_zenkai_saiseKyoku != null ){		//前回の連続再生曲数		pTF_pref_zenkai_saiseKyoku
+//				dbMsg +="前回の連続再生曲数；" +pref_zenkai_saiseKyoku;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//				saisei += "\n" + saisei+getResources().getString(R.string.comon_zennkai) +pref_zenkai_saiseKyoku + getResources().getString(R.string.pp_kyoku) ;
+//				dbMsg += saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			}
+//			if(pref_zenkai_saiseijikann != null ){
+//				dbMsg +="前回の連続再生時間；"+ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));			///////////////////
+//				saisei += ORGUT.sdf_mss.format(Long.valueOf(pref_zenkai_saiseijikann));
+//				dbMsg +=saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			}else{
+//				pref_zenkai_saiseijikann = "0";
+//			}
+//			dbMsg +=saisei;				//+";"+pTF_saisei_jikan.getText();//////////////////
+//			Siseiothers = Siseiothers + saisei;
+//			String summelyStr = saisei;				//その他//////////////////////////////////////////////////
+//			 if(! pref_file_in.equals("")){
+//				 summelyStr += "\n" + getString(R.string.pref_file_in)+"="+ pref_file_in + "\n";
+//			 }
+//			if(! pref_file_ex.equals("")){
+//				summelyStr += getString(R.string.pref_file_ex)+"="+pref_file_ex + "\n";
+//			}else{
+//				summelyStr += getString(R.string.pref_file_ex)+getString(R.string.comon_nasi) + "\n";
+//			}
+//			if(! pref_file_wr.equals("")){
+//				summelyStr += getString(R.string.pref_file_wr)+"="+pref_file_wr + "\n";
+//			}
+//			if(! pref_commmn_music.equals("")){
+//				summelyStr +=  getString(R.string.pref_commmn_music)+"="+pref_commmn_music+ "\n";
+//			}
+//	//		pref_filse.setSummary(summelyStr);
+//
+//			if(! pref_file_kyoku.equals("")){
+//				summelyStr = getString(R.string.pref_file_kyoku)+"="+pref_file_kyoku + "\n";
+//			}
+//			if(! pref_file_album.equals("")){
+//				summelyStr += getString(R.string.pref_file_album)+"="+pref_file_album + "\n";
+//			}
+//			if(! pref_file_saisinn.equals("")){
+//				summelyStr += getString(R.string.pref_file_saisinn)+"="+pref_file_saisinn + "\n";
+//			}
+//	//		pPS_sonota.setSummary(summelyStr);
+//
+//			dbMsg +="pref_apiLv＝" + pref_apiLv;//////////////////
+//			summelyStr += getString(R.string.pref_sonota_apil)+"="+pref_apiLv + "\n";
+//
+//			dbMsg +="pref_sonota_vercord＝" + pref_sonota_vercord;//////////////////
+//			summelyStr += getString(R.string.pref_sonota_vercord)+"="+pref_sonota_vercord + "\n";
+//
+//			dbMsg += ",prTT_dpad＝" + prTT_dpad;//////////////////
+//			pref_memo.setText(summelyStr);
+//			myLog(TAG,dbMsg);
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg + "で"+e.toString());
+//		}
+//	}
+
+//	public String viewSakusei_eff( ) {				//エフェクト部のプリファレンス表示処理
+//		String effectMsg =null;	//サウンドエフェクト設定//////////////////////////////////////////////////////////
+//		final String TAG = "viewSakusei_eff";
+//		String dbMsg="";
+//		try{
+//			String effectMemo =null;
+//			//		public List<String> pref_toneList;		//プリファレンス保存用トーンリスト
+//		//	public String toneSeparata = "L";
+//			dbMsg = "トーン名称=" + tone_name;/////////////////
+//			if( tone_name == null ){
+//				tone_name =  getString(R.string.tone_name_puri);				//="">現在の設定</string>
+//			}
+//			effectMsg= getString(R.string.comon_genzai)+ ";" +tone_name;					//"">現在の設定</string>
+//			effectMemo= effectMsg;
+//			dbMsg += ",pref_toneList=" + pref_toneList;/////////////////
+//			if(pref_toneList != null){
+//				for(String wS : pref_toneList){
+//					dbMsg += ",wS=" + wS;/////////////////
+//					String[] wSs = wS.split(toneSeparata);
+//					String frq = wSs[0];
+//					frq = String.format("%6dHz", Integer.valueOf(frq));	//☆型を確定しないとjava.util.IllegalFormatConversionException: %d can't format java.lang.String arguments
+//					dbMsg += ",frq=" + frq;/////////////////
+//					String band = wSs[1];
+//					int wInt = Integer.valueOf(band);
+//					if(0 != wInt){
+//						wInt = wInt/100;
+//					}
+//					band = String.format("%6ddb", wInt);
+//					dbMsg += ",band=" + band;/////////////////
+//					effectMemo= effectMemo + "\n" + frq + band;
+//				}
+//			}
+//			dbMsg += ",バスブート=" + bBoot;/////////////////
+//			String wrStr = getString(R.string.comon_tukawanai);			//使わない
+//			if( bBoot ){
+//				wrStr = getString(R.string.comon_tukau);			//使う
+//			}
+//			effectMsg= effectMsg + "\n" + getString(R.string.effect_bassbost)+ ";" +bBoot;
+//			effectMemo= effectMemo + "\n" + getString(R.string.effect_bassbost)+ ";" +bBoot;
+//			dbMsg += ",リバーブ効果番号=" + reverbBangou;/////////////////
+//			switch(reverbBangou) {
+//			case PresetReverb.PRESET_NONE:
+//				wrStr = getString(R.string.reverb_none);
+//				break;
+//			case PresetReverb.PRESET_SMALLROOM:
+//				wrStr = getString(R.string.reverb_small_room);
+//				break;
+//			case PresetReverb.PRESET_MEDIUMROOM:
+//				wrStr = getString(R.string.reverb_medium_room);
+//				break;
+//			case PresetReverb.PRESET_LARGEROOM:
+//				wrStr = getString(R.string.reverb_large_room);
+//				break;
+//			case PresetReverb.PRESET_MEDIUMHALL:
+//				wrStr = getString(R.string.reverb_medium_hall);
+//			case PresetReverb.PRESET_LARGEHALL:
+//				wrStr = getString(R.string.reverb_large_hall);
+//				break;
+//			case PresetReverb.PRESET_PLATE:
+//				wrStr = getString(R.string.reverb_plate);
+//				break;
+//			default:
+//				wrStr = getString(R.string.reverb_none);
+//				break;
+//			}
+////			effectMsg= effectMsg + "\n" + getString(R.string.effect_reverb)+ ";" +wrStr;					//me="">リバーブ</string>
+////			effectMemo= effectMemo + "\n" + getString(R.string.effect_reverb)+ ";" +wrStr;
+////			pref_eff_memo.setSummary(effectMemo);								//サウンドエフェクトの設定確認
+////			dbMsg += ",Visualizer=" + visualizerType;/////////////////
+////			wrStr = getString(R.string.comon_tukawanai);				//"">使わない</string>
+////			if(-1 < visualizerType){
+////				switch(visualizerType) {
+////				case MyConstants.Visualizer_type_wave:						//Visualizerはwave表示
+////					wrStr = getString(R.string.pref_effect_vi_wave);				//オシロスコープ風
+////					break;
+////				case MyConstants.Visualizer_type_FFT:
+////					wrStr = getString(R.string.pref_effect_vi_fft);				//スペクトラムアナライザ風
+////					break;
+////				case MyConstants.Visualizer_type_none:						//Visualizerを使わない
+////					wrStr = getString(R.string.comon_tukawanai);				//"">使わない</string>
+////					break;
+//////				default:
+//////					break;
+////				}
+////			}else{
+////				wrStr = getString(R.string.comon_tukawanai);				//"">使わない</string>
+////			}
+////			dbMsg += "=" + wrStr;/////////////////
+////			pLi_pref_effect_vi.setSummary(wrStr);//ビジュアライザー
+////			pLi_pref_effect_vi.setDefaultValue(wrStr);						//初期設定　xlmで	android:summary="%s"	Summaryを選択する	が利かなかった
+////
+////			effectMsg= effectMsg + "\n" + getString(R.string.pref_effect_vi)+ ";" +wrStr;					//"">ビジュアライザー</string>
+//	//		myLog(TAG,dbMsg);
+//		}catch (Exception e) {
+//			myErrorLog(TAG,dbMsg + "で"+e.toString());
+//		}
+//		return effectMsg;
+//	}
+
+//	public String taisyouTypeSmally() {
+//		String retStr="";
+//		final String TAG = "taisyouTypeSmally";
+//		String dbMsg="";
+//		try{
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_mp3");
+//			if(pCB.isChecked()){
+//				retStr="mp3";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_m4a");		//m4a(AAC;MPEG-4)
+//			if(pCB.isChecked()){
+//				retStr=retStr+",m4a";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_wma");
+//			if(pCB.isChecked()){
+//				retStr=retStr+",wma";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_wav");
+//			if(pCB.isChecked()){
+//				retStr=retStr+",wav";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_ogg");		//ogg(Ogg vorbis )
+//			if(pCB.isChecked()){
+//				retStr=retStr+",ogg";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_amr");		//amr
+//			if(pCB.isChecked()){
+//				retStr=retStr+",amr";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_3gp");		//3gp(voice recorder,AMR-WB)"
+//			if(pCB.isChecked()){
+//				retStr=retStr+",3gp";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_mid");
+//			if(pCB.isChecked()){
+//				retStr=retStr+",mid";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_xmf");		//xmf(ringer?)
+//			if(pCB.isChecked()){
+//				retStr=retStr+",xmf";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_mxmf");		//mxmf(ringer?)
+//			if(pCB.isChecked()){
+//				retStr=retStr+",mid";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_rtttl");		//rtttl(ringer?)
+//			if(pCB.isChecked()){
+//				retStr=retStr+",rtttl";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_rlx");		//rlx(ringer?)
+//			if(pCB.isChecked()){
+//				retStr=retStr+",rlx";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_ota");		//ota(Over The Air (OTA) image used for sending pictures on Nokia and Siemens mobile phones)
+//			if(pCB.isChecked()){
+//				retStr=retStr+",ota";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_imy");		//imy(Monophonic ringtone format developed by the irDa (infrared communications))
+//			if(pCB.isChecked()){
+//				retStr=retStr+",imy";
+//			}
+//			pCB=(CheckBoxPreference) findPreference("pref_taisyou_type_SMF");		//imy(Monophonic ringtone format developed by the irDa (infrared communications))
+//			if(pCB.isChecked()){
+//				retStr=retStr+",smf";
+//			}
+//			myLog(TAG,"retStr="+retStr);
+//		} catch (Exception e) {
+//			myErrorLog(TAG,dbMsg+"で"+e);
+//		}
+//		return retStr;
+//	}
 	/**
 	 * リスナー未設定の場合はここで汎用的に書き込み
 	 * */
@@ -1646,10 +1760,11 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 		}
 	}		//http://ichitcltk.hustle.ne.jp/gudon/modules/pico_rd/index.php?content_id=98
 
-	public void modori() {	// 呼出し元への戻し処理
-		final String TAG = "modori";							//long seleID  ,, int hennkou, String seleItem
+	public void quitMe(){			///終了処理
+		final String TAG = "quitMe";
 		String dbMsg="";
 		try{
+			dbMsg="スタート";///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
 			Bundle bundle = new Bundle();
 			data.putExtras(bundle);
@@ -1659,37 +1774,24 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 //				data.putExtras(bundle);
 //				setResult(RESULT_CANCELED, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
 //			}else{
-				dbMsg= "シンプルなリスト表示="+ pref_list_simple;	////////////////
-				bundle.putString("key.pref_list_simple", String.valueOf(pref_list_simple));				//シンプルなリスト表示（サムネールなど省略）
-				dbMsg +=",プレイヤーの背景(w)="+ pref_pb_bgc;	////////////////
-				bundle.putString("key.pref_pb_bgc", String.valueOf(pref_pb_bgc));			//プレイヤーの背景
-				dbMsg= dbMsg +",クロスフェード="+ pref_gyapless;				///////////////
-				bundle.putString("key.pref_gyapless", pref_gyapless);		//クロスフェード時間
+			dbMsg= "シンプルなリスト表示="+ pref_list_simple;	////////////////
+			bundle.putString("key.pref_list_simple", String.valueOf(pref_list_simple));				//シンプルなリスト表示（サムネールなど省略）
+			dbMsg +=",プレイヤーの背景(w)="+ pref_pb_bgc;	////////////////
+			bundle.putString("key.pref_pb_bgc", String.valueOf(pref_pb_bgc));			//プレイヤーの背景
+			dbMsg= dbMsg +",クロスフェード="+ pref_gyapless;				///////////////
+			bundle.putString("key.pref_gyapless", pref_gyapless);		//クロスフェード時間
 //				dbMsg= dbMsg +",コンピレーション分岐点="+ pref_compBunki;				///////////////
 //				bundle.putString("key.pref_compBunki", String.valueOf(pref_compBunki));			//pref_compBunki;		//コンピレーション分岐点
-				dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;//////////////
-				bundle.putString("key.pref_lockscreen", String.valueOf(pref_lockscreen));
-				dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
-				bundle.putString("key.pref_notifplayer", String.valueOf(pref_notifplayer));
-				dbMsg= dbMsg +",Bluetoothの接続に連携="+ pref_bt_renkei;				///////////////
-				bundle.putString("key.pref_bt_renkei", String.valueOf(pref_bt_renkei));
-				dbMsg= dbMsg +",visualizerType="+ visualizerType;				///////////////
-				bundle.putString("visualizerType", String.valueOf(visualizerType) );
-				myLog(TAG,dbMsg);
-				data.putExtras(bundle);
-				setResult(RESULT_OK, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
-//			}
-			quitMe();			//
-		}catch (Exception e) {
-			myErrorLog(TAG,dbMsg + "で"+e.toString());
-		}
-	}
-
-	public void quitMe(){			///終了処理
-		final String TAG = "quitMe";
-		String dbMsg="";
-		try{
-			dbMsg="スタート";///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			dbMsg += ",ロックスクリーンプレイヤー＝" + pref_lockscreen;//////////////
+			bundle.putString("key.pref_lockscreen", String.valueOf(pref_lockscreen));
+			dbMsg += ",ノティフィケーションプレイヤー＝" + pref_notifplayer;//////////////
+			bundle.putString("key.pref_notifplayer", String.valueOf(pref_notifplayer));
+			dbMsg= dbMsg +",Bluetoothの接続に連携="+ pref_bt_renkei;				///////////////
+			bundle.putString("key.pref_bt_renkei", String.valueOf(pref_bt_renkei));
+			dbMsg= dbMsg +",visualizerType="+ visualizerType;				///////////////
+			bundle.putString("visualizerType", String.valueOf(visualizerType) );
+			data.putExtras(bundle);
+			setResult(RESULT_OK, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
 			myLog(TAG,"quitMeが発生");
 			MyPreferences.this.finish();
 		} catch (Exception e) {		//汎用
@@ -1883,6 +1985,7 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 					}
 					startActivity(intentWV);
 					return true;
+				case android.R.id.home:
 				case R.id.menu_item_sonota_end:					//終了	MENU_END
 					quitMe();		//このアプリを終了する
 					return true;
@@ -1976,10 +2079,8 @@ public SwitchCompat pcb_pref_notifplayer;		//ノティフィケーションプ�
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-//		modori();	// 呼出し元への戻し処理
-	//	//myLog("onDestroy","onDestroyが発生");
-	//	LAO.readPrif();		//プリファレンスの読込み
-	//	clPref();	//プリファレンス設定状況読み込み
+		quitMe();
+		myLog("onDestroy","onDestroyが発生");
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////

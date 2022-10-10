@@ -99,7 +99,7 @@ public class wKit extends Activity {
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(this);
+			myPreferences.readPref(this);
 			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			myLog(TAG, dbMsg);
@@ -741,7 +741,7 @@ public class wKit extends Activity {
 	}
 
 	public void quitMe(){			//このActivtyの終了
-		final String TAG = "onCreate";
+		final String TAG = "quitMe";
 		String dbMsg ="";
 		try{
 			if(fType.equals("lyric")){

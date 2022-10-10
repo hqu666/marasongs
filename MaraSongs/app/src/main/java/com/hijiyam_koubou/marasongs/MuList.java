@@ -678,7 +678,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try {
 			MyPreferences myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(this);
+			myPreferences.readPref(this);
 			sharedPref = MyPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 
@@ -688,9 +688,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			pref_gyapless = myPreferences.pref_gyapless;			//クロスフェード時間
 			pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
 			pref_pb_bgc = myPreferences.pref_pb_bgc;				//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
+			dbMsg += "、シンプルなリスト表示=" + pref_list_simple + "、プレイヤーの背景=" + pref_pb_bgc;
 
 			nowList_id = Integer.parseInt(myPreferences.nowList_id);
-			dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
+			dbMsg += "、再生中のプレイリスト[" + nowList_id;
 			nowList= myPreferences.nowList;
 			dbMsg += "]" + nowList;
 			saisei_fname = myPreferences.saisei_fname;					//	playlistNAME
@@ -973,7 +974,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				return true;
 				//http://d.hatena.ne.jp/ksk_kbys/20110822/1314028750
 			case R.id.menu_item_sonota_settei:		//設定
-				prefHyouji(settei_hyouji);			//設定表示
+				prefHyouji();			//設定表示
 				return true;
 			case R.id.menu_syuusei_lisuto_hyouji:			//修正リスト表示
 				shyuuseiuListHyouji();			//作成されている修正リストの表示
@@ -2359,33 +2360,35 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	/**プリファレンス表示*/
-	public void prefHyouji(int reqCode){
+	public void prefHyouji(){
 		final String TAG = "prefHyouji";
 		String dbMsg = "";
 		try{
 			Intent intent = new Intent(MuList.this,MyPreferences.class);			//プリファレンス
-			intent.putExtra("reqCode",reqCode);					//設定;
-			if (android.os.Build.VERSION.SDK_INT < 14 ) {										// registerRemoteControlClient
-				pref_lockscreen = false;
-			}else{
-				intent.putExtra("pref_lockscreen", pref_lockscreen);			//ロックスクリーンプレイヤー</string>
-			}
-			if (android.os.Build.VERSION.SDK_INT <11 ) {
-				pref_notifplayer = false;
-			}else{
-				intent.putExtra("pref_notifplayer", pref_notifplayer);			//ノティフィケーションプレイヤー</string>
-			}
-			intent.putExtra("pref_pb_bgc", pref_pb_bgc);					//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
-			intent.putExtra("pref_compBunki",pref_compBunki);		//コンピレーション分岐点
-			intent.putExtra("pref_cyakusinn_fukki",pref_cyakusinn_fukki);		// = true;		//終話後に自動再生
-			dbMsg += "終話後に自動再生=" +pref_cyakusinn_fukki;/////////////////////////////////////
+			dbMsg = ",reqCode=" + settei_hyouji;
+			intent.putExtra("reqCode",settei_hyouji);					//設定;
+			intent.putExtra("backCode",settei_hyouji);					//設定;
+//			if (android.os.Build.VERSION.SDK_INT < 14 ) {										// registerRemoteControlClient
+//				pref_lockscreen = false;
+//			}else{
+//				intent.putExtra("pref_lockscreen", pref_lockscreen);			//ロックスクリーンプレイヤー</string>
+//			}
+//			if (android.os.Build.VERSION.SDK_INT <11 ) {
+//				pref_notifplayer = false;
+//			}else{
+//				intent.putExtra("pref_notifplayer", pref_notifplayer);			//ノティフィケーションプレイヤー</string>
+//			}
+//			intent.putExtra("pref_pb_bgc", pref_pb_bgc);					//プレイヤーの背景	true＝Black"	http://techbooster.jpn.org/andriod/ui/10152/
+//			intent.putExtra("pref_compBunki",pref_compBunki);		//コンピレーション分岐点
+//			intent.putExtra("pref_cyakusinn_fukki",pref_cyakusinn_fukki);		// = true;		//終話後に自動再生
+//			dbMsg += "終話後に自動再生=" +pref_cyakusinn_fukki;
 			resultLauncher.launch(intent);
-//			startActivityForResult(intentPRF , reqCode);
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
-	}	//このアプリを終了する/////////////////////////////////////////////////////////////////////////////////
+	}
+
 
 ///////////////////////////////////////////////////////////////////////////////メニューボタンで表示するメニュー//
 	public void headKusei() {								//ヘッドエリアの構成物調整
@@ -4038,7 +4041,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	//設定値管理////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public void reWriteAllVal(){ //変数全設定	★wriAllPrifに続けてreadPrifを呼び出しても更新がされていない
+	public void reWriteAllVal(){ //変数全設定	★wriAllPrifに続けてreadPrefを呼び出しても更新がされていない
 		final String TAG = "reWriteAllVal";
 		String dbMsg = "";
 		try{
@@ -11082,25 +11085,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										break;
 									case settei_hyouji:
 										dbMsg += "設定表示";
-										retBool = Boolean.valueOf(bundle.getString("key.pref_list_simple"));						//プレイヤーの背景
-										dbMsg +="シンプルなリスト表示="+ retBool +"(今は"+ pref_list_simple +")";	////////////////
-										if( retBool != pref_list_simple){
-											pref_list_simple = retBool;
-											simpleSyousai( pref_list_simple );
-										}
-										pref_lockscreen = Boolean.valueOf(bundle.getBoolean("key.pref_lockscreen")) ;				//ロックスクリーンプレイヤー</string>
-										pref_notifplayer = Boolean.valueOf( bundle.getBoolean("key.pref_notifplayer")) ;					//ノティフィケーションプレイヤー</string>
-										retBool = false;
-										retBool = Boolean.valueOf(bundle.getString("key.pref_listup_reset"));						//調整リスト消去
-										if( retBool ){
-											dbMsg +=",調整リスト消去="+ retBool ;	////////////////
-											String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
-											File shyuFile = new File(fn);
-											dbMsg += ",exists=" + shyuFile.exists();
-											this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
-											dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
-											preRead( MyConstants.syoki_Yomikomi , null);
-										}
+										readPref();
+//										retBool = Boolean.valueOf(bundle.getString("key.pref_list_simple"));						//プレイヤーの背景
+//										dbMsg +="シンプルなリスト表示="+ retBool +"(今は"+ pref_list_simple +")";	////////////////
+//										if( retBool != pref_list_simple){
+//											pref_list_simple = retBool;
+//											simpleSyousai( pref_list_simple );
+//										}
+//										pref_lockscreen = Boolean.valueOf(bundle.getBoolean("key.pref_lockscreen")) ;				//ロックスクリーンプレイヤー</string>
+//										pref_notifplayer = Boolean.valueOf( bundle.getBoolean("key.pref_notifplayer")) ;					//ノティフィケーションプレイヤー</string>
+//										retBool = false;
+//										retBool = Boolean.valueOf(bundle.getString("key.pref_listup_reset"));						//調整リスト消去
+//										if( retBool ){
+//											dbMsg +=",調整リスト消去="+ retBool ;	////////////////
+//											String fn = getApplicationContext().getString(R.string.shyuusei_file);			//	shyuusei.db</string>
+//											File shyuFile = new File(fn);
+//											dbMsg += ",exists=" + shyuFile.exists();
+//											this.deleteDatabase(getApplicationContext().getString(R.string.shyuusei_file));		//デバッグ用		shyuusei_Helper.getDatabaseName()	getApplicationContext()
+//											dbMsg += ">作り直し>" + getApplicationContext().getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
+//											preRead( MyConstants.syoki_Yomikomi , null);
+//										}
 										break;
 									case quite_me:
 										dbMsg += "設定表示";

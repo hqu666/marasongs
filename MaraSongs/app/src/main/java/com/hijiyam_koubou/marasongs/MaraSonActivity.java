@@ -451,7 +451,7 @@ public class MaraSonActivity extends AppCompatActivity
 		try {
 			myPreferences = new MyPreferences();
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPrif(this);
+			myPreferences.readPref(this);
 			dbMsg += "完了";
 
 			sharedPref = MyPreferences.sharedPref;
