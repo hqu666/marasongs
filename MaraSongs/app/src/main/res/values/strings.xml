@@ -194,8 +194,8 @@
     <string name="pref_lockscreen">ロックスクリーンプレイヤー</string>
     <string name="pref_bt_renkei_titol"> Bluetooth連携</string>
     <string name="pref_cyakusinn_fukki">通話連携</string>
-    <string name="pref_bt_renkei_titol0"> Bluetoothの接続に連携して一時停止</string>
-    <string name="pref_bt_renkei_titol1"> Bluetoothの接続に連携して再開</string>
+<!--    <string name="pref_bt_renkei_titol0"> Bluetoothの接続に連携して一時停止</string>-->
+<!--    <string name="pref_bt_renkei_titol1"> Bluetoothの接続に連携して再開</string>-->
 
     <string name="pref_titol_plist_saikin_sisei">最近再生リストへの登録設定</string>
     <string name="pref_msg_plist_saikin_sisei">登録曲数</string>
@@ -556,24 +556,33 @@
     <string name="quit_msg">選択して下さい。</string>
     <string name="quit_nega_bt">再生を続ける</string>
     <string name="quit_posi_bt">全て終了</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
-    <string name="title_activity_preferences">preferences</string>
+<!--    <string name="appwidget_text">EXAMPLE</string>-->
+<!--    <string name="add_widget">Add widget</string>-->
+<!--    <string name="app_widget_description">This is an app widget description</string>-->
+<!--    <string name="title_activity_preferences">preferences</string>-->
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+<!--    &lt;!&ndash; Preference Titles &ndash;&gt;-->
+<!--    <string name="messages_header">Messages</string>-->
+<!--    <string name="sync_header">Sync</string>-->
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+<!--    &lt;!&ndash; Messages Preferences &ndash;&gt;-->
+<!--    <string name="signature_title">Your signature</string>-->
+<!--    <string name="reply_title">Default reply action</string>-->
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+<!--    &lt;!&ndash; Sync Preferences &ndash;&gt;-->
+<!--    <string name="sync_title">Sync email periodically</string>-->
+<!--    <string name="attachment_title">Download incoming attachments</string>-->
+<!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails-->
+<!--    </string>-->
+<!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
+<!--    <string name="title_activity_setting">SettingActivity</string>-->
+<!--    &lt;!&ndash; Strings used for fragments for navigation &ndash;&gt;-->
+<!--    <string name="first_fragment_label">First Fragment</string>-->
+<!--    <string name="second_fragment_label">Second Fragment</string>-->
+<!--    <string name="next">Next</string>-->
+<!--    <string name="previous">Previous</string>-->
+
+<!--    <string name="hello_first_fragment">Hello first fragment</string>-->
+<!--    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>-->
 
 </resources>

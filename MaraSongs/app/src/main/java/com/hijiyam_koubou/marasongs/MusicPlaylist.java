@@ -598,8 +598,11 @@ public class MusicPlaylist {
             dbMsg += ",[" + listId + "]" + data;
             Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", listId);
             String[] columns = null;			//{ idKey, nameKey };
-            String selection =  MediaStore.Audio.Playlists.Members.DATA  + " = ? ";
-            String[] selectionArgs = { data };
+            String selection = null;
+            String[] selectionArgs =  { data };
+            if(data != null){
+                selection =  MediaStore.Audio.Playlists.Members.DATA  + " = ? ";
+            }
             String c_orderBy = MediaStore.Audio.Playlists.Members.DATA;
             Cursor playList = cContext.getContentResolver().query(uri, columns, selection, selectionArgs, c_orderBy );
 //            dbMsg += ",該当"+playLists.getCount() +"件";

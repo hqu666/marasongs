@@ -2292,7 +2292,7 @@ public class MaraSonActivity extends AppCompatActivity
 			int mcPosition = saiseiSeekMP.getProgress();
 			int saiseiJikan = saiseiSeekMP.getMax();
 			dbMsg="再生中の状況保存[" + mcPosition +"/" + saiseiJikan +"]から" + albumArtist;	//dataFN +
-			Intent intentPRF = new Intent(MaraSonActivity.this,MyPreferences.class);			//プリファレンス
+			Intent intentPRF = new Intent(MaraSonActivity.this,SettingActivity.class);			//プリファレンス
 			intentPRF.putExtra("reqCode",reqCode);					//設定;
 			intentPRF.putExtra("pref_apiLv",pref_apiLv);				//APIL
 			intentPRF.putExtra("pref_bt_renkei",pref_bt_renkei);	//Bluetoothの接続に連携して一時停止/再開

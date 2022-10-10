@@ -2364,7 +2364,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "prefHyouji";
 		String dbMsg = "";
 		try{
-			Intent intent = new Intent(MuList.this,MyPreferences.class);			//プリファレンス
+			Intent intent = new Intent(MuList.this,SettingActivity.class);			//プリファレンス
 			dbMsg = ",reqCode=" + settei_hyouji;
 			intent.putExtra("reqCode",settei_hyouji);					//設定;
 			intent.putExtra("backCode",settei_hyouji);					//設定;
