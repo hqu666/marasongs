@@ -596,24 +596,25 @@ public class MusicPlaylist {
         String dbMsg = "[MusicPlaylist]";
         try{
             dbMsg += ",[" + listId + "]" + data;
-            Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", listId);
-            String[] columns = null;			//{ idKey, nameKey };
-            String selection = null;
-            String[] selectionArgs =  { data };
             if(data != null){
-                selection =  MediaStore.Audio.Playlists.Members.DATA  + " = ? ";
-            }
-            String c_orderBy = MediaStore.Audio.Playlists.Members.DATA;
-            Cursor playList = cContext.getContentResolver().query(uri, columns, selection, selectionArgs, c_orderBy );
+                Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", listId);
+                String[] columns = null;			//{ idKey, nameKey };
+                String selection =  MediaStore.Audio.Playlists.Members.DATA  + " = ? ";
+                String[] selectionArgs =  { data };
+                String c_orderBy = MediaStore.Audio.Playlists.Members.DATA;
+                Cursor playList = cContext.getContentResolver().query(uri, columns, selection, selectionArgs, c_orderBy );
 //            dbMsg += ",該当"+playLists.getCount() +"件";
-            if( playList.moveToFirst() ){
-                playOrder = Integer.parseInt(playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.PLAY_ORDER)));
-                dbMsg += ",playOrder=" + playOrder;
+                if( playList.moveToFirst() ){
+                    playOrder = Integer.parseInt(playList.getString(playList.getColumnIndex(MediaStore.Audio.Playlists.Members.PLAY_ORDER)));
+                    dbMsg += ",playOrder=" + playOrder;
+                }else{
+                    dbMsg += ",該当無し";
+                }
+                playList.close();
             }else{
-                dbMsg += ",該当無し";
+                playOrder = 0;
             }
             myLog(TAG, dbMsg);
-            playList.close();
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }

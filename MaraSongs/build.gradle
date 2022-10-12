@@ -2,17 +2,17 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath 'com.android.tools.build:gradle:7.3.0'
     }
 }
 
 allprojects {
     repositories {
         google()// ここもCould not resolve all dependencies for configuration ':app:androidApis'.対策
-        jcenter()
+        mavenCentral()
         maven { url 'https://maven.google.com' } // Could not resolve all dependencies for configuration ':app:androidApis'.で追加した行
         maven {
             url 'http://fan-adn.github.io/nendSDK-Android-lib/library'
