@@ -173,7 +173,7 @@
     <string name="shyuuseiuListStuusei_dm">リストアップ先</string>
 
     <!-- プリファレンス -->
-    <string name="pref_player">プレイヤーとリストの基本表示設定</string>
+    <string name="pref_player">プレイヤー設定</string>
     <string name="pref_pb_bgc_titol">プレイヤー色</string>
     <string name="pref_pb_bgc_bk">黒系</string>
     <string name="pref_pb_bgc_wh">白系</string>

@@ -449,12 +449,12 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "readPref";
 		String dbMsg = "[MaraSonActivity]";
 		try {
-			myPreferences = new MyPreferences();
+			myPreferences = new MyPreferences(this);
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPref(this);
+			myPreferences.readPref();
 			dbMsg += "完了";
 
-			sharedPref = MyPreferences.sharedPref;
+			sharedPref = myPreferences.sharedPref;
 			myEditor = myPreferences.myEditor;
 			pref_apiLv=myPreferences.pref_apiLv;							//APIレベル
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
@@ -467,7 +467,6 @@ public class MaraSonActivity extends AppCompatActivity
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
-			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 
 			file_in =myPreferences.pref_file_in;		//内蔵メモリ

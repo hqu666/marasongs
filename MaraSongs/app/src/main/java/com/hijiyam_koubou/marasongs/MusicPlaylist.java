@@ -39,7 +39,7 @@ public class MusicPlaylist {
         String dbMsg= "[MusicPlaylist]";
         try{
             cContext = context;
-            myPreferences = new MyPreferences();
+            myPreferences = new MyPreferences(context);
             pref_commmn_music= myPreferences.pref_commmn_music;		//共通音楽フォルダ
 
             myLog(TAG,dbMsg);

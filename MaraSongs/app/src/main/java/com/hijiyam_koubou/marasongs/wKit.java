@@ -97,10 +97,9 @@ public class wKit extends Activity {
 		final String TAG = "readPref";
 		String dbMsg = "";
 		try {
-			MyPreferences myPreferences = new MyPreferences();
+			MyPreferences myPreferences = new MyPreferences(this);
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPref(this);
-			sharedPref = MyPreferences.sharedPref;
+			sharedPref = myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {

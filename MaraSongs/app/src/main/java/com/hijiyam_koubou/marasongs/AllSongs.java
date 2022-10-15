@@ -213,18 +213,17 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         final String TAG = "readPref";
         String dbMsg = "";
         try {
-            myPreferences = new MyPreferences();
+            myPreferences = new MyPreferences(cContext);
             dbMsg += "MyPreferencesy読込み";
-            myPreferences.readPref(this);
+    //        myPreferences.readPref();
             dbMsg += "完了";
-            sharedPref = MyPreferences.sharedPref;
+            sharedPref = myPreferences.sharedPref;
             myEditor =myPreferences.myEditor;
 
         //    pref_compBunki = myPreferences.pref_compBunki;			//コンピレーション設定[%]
             pref_list_simple =myPreferences.pref_list_simple;				//シンプルなリスト表示（サムネールなど省略）
             pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
             pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
-            pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
             pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
             pref_commmn_music = myPreferences.pref_commmn_music;
             all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u";  //m3u8だとYutbMusicで読み込めない？

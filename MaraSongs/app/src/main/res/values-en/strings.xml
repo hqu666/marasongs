@@ -115,7 +115,7 @@
 
 
 	<!-- プリファレンス -->
-    <string name="pref_player">Basic  setting on a player and the list</string>
+    <string name="pref_player">Player setting</string>
 	<string name="pref_list_artist_simple">Simple indication of the list of artists</string>
 	<string name="pref_gyapless">Cut of the music space time [ms]</string>
 	<string name="pref_gyapless_msg">0 ... 1000[ms] </string>

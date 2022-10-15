@@ -676,10 +676,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "readPref";
 		String dbMsg = "";
 		try {
-			MyPreferences myPreferences = new MyPreferences();
+			MyPreferences myPreferences = new MyPreferences(this);
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPref(this);
-			sharedPref = MyPreferences.sharedPref;
+			sharedPref = myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 
 			pref_sonota_vercord =myPreferences.pref_sonota_vercord;				//このアプリのバージョンコード
@@ -706,7 +705,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			rp_pp = myPreferences.rp_pp;							//2点間リピート中
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
-			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 
 			String pref_data_url =myPreferences.saisei_fname;				//
@@ -11309,6 +11307,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			long start = System.currentTimeMillis();	// 開始時刻の取得
 			dbMsg +=  ",start="+ start ;/////////////////////////////////////
+			MyConstants.PREFS_NAME = this.getResources().getString(R.string.pref_main_file);
 			shigot_bangou = 0;
 			IsPlaying = false;
 		//	CONST = new MyConstants();

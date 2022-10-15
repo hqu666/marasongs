@@ -234,10 +234,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "readPref";
 		String dbMsg="";
 		try {
-			MyPreferences myPreferences = new MyPreferences();
+			MyPreferences myPreferences = new MyPreferences(rContext);
 			dbMsg += "MyPreferencesy読込み";
-			myPreferences.readPref(MusicPlayerService.this);
-			sharedPref = MyPreferences.sharedPref;
+//			myPreferences.readPref(MusicPlayerService.this);
+			sharedPref = myPreferences.sharedPref;
 			myEditor =myPreferences.myEditor;
 			nowList_id = Integer.parseInt(myPreferences.nowList_id);				//再生中のプレイリストID	playListID
 			nowList = myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
@@ -256,7 +256,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 			pref_lockscreen =myPreferences.pref_lockscreen;				//ロックスクリーンプレイヤー</string>
 			pref_notifplayer =myPreferences.pref_notifplayer;				//ノティフィケーションプレイヤー</string>
-			pref_cyakusinn_fukki=myPreferences.pref_cyakusinn_fukki;		//終話後に自動再生
 			pref_bt_renkei =myPreferences.pref_bt_renkei;				//Bluetoothの接続に連携して一時停止/再開
 			play_order =myPreferences.play_order;
 
