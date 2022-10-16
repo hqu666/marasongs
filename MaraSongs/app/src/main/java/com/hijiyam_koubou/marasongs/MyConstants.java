@@ -1,7 +1,7 @@
 package com.hijiyam_koubou.marasongs;
 
-public  class MyConstants {
-//final class?
+public final class MyConstants {
+// class?
     //MusicPlayerServiceから設定
 //    /**リスト中のインデックス*/
 //    public static int mIndex;						//play_order
@@ -11,48 +11,6 @@ public  class MyConstants {
     //プリファレンス
     public static String PREFS_NAME = "main";				//プリファレンスファイル名
 
-//    public String ruikei_artist;					//アーティスト累計
-//    public String pref_compBunki = "40";			//コンピレーション分岐点 曲数
-//    public int pref_sonota_vercord ;				//////////////このアプリのバージョンコード/ 2015年08月//9341081 //////////////////////
-//    public boolean pref_list_simple =false;				//シンプルなリスト表示（サムネールなど省略）
-//    public boolean pref_cyakusinn_fukki=true;		//終話後に自動再生
-//    public boolean pref_bt_renkei =true;				//Bluetoothの接続に連携して一時停止/再開
-//    public boolean pref_lockscreen =true;				//ロックスクリーンプレイヤー</string>
-//    public boolean pref_notifplayer =true;				//ノティフィケーションプレイヤー</string>
-//    public String myPFN = "ma_pref";
-//    public String pref_rundam_list_size = "100";				//ランダム再生リストアップ曲数
-//    public int repeatType;							//リピート再生の種類
-//    public String repeatArtist;					//リピートさせるアーティスト名
-//    public boolean rp_pp = false;							//2点間リピート中
-//    public int pp_start = 0;						//リピート区間開始点
-//    public int pp_end;								//リピート区間終了点
-//    public boolean zenkyokuAri;					//全曲リスト有り
-//    public String b_action ="";
-//    public boolean IsPlayingNow = false;		//既に再生中
-//    public String pref_artist_bunnri = "50";			//アーティストリストを分離する曲数
-//    public String pref_saikin_tuika = "30";				//最近追加リストのデフォルト日数
-//    public String pref_saikin_sisei = "100";			//最近再生加リストのデフォルト曲数
-//
-//    public long crossFeadTime=0;		//再生終了時、何ms前に次の曲に切り替えるか
-//    public boolean pref_pb_bgc;		//プレイヤーの背景は白
-//    public int saiseiJikan;					//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-//    public int pref_zenkai_saiseKyoku = 0;		//前回の連続再生曲数
-//    public long pref_zenkai_saiseijikann = 0;		//前回の連続再生時間
-//    public int pref_file_kyoku;					//曲累計
-//    public String pref_file_saisinn;					//最新更新日
-//    public String pref_file_in ="";		//内蔵メモリ
-//    public String pref_file_ex ;						//メモリーカードの音楽ファイルフォルダ
-//    public String pref_file_wr;						//設定保存フォルダ
-//    public String pref_commmn_music="";		//共通音楽フォルダ
-//    public boolean prTT_dpad = false;			//ダイヤルキー有り
-//    public int pref_zenkyoku_list_id;			// 全曲リスト
-//    public int saikintuika_list_id;			//最近追加
-//    public int saikinsisei_list_id;			//最近再生
-//
-//    public String pref_gyapless = null;			//クロスフェード時間
-//    public boolean pref_reset = false;					//設定を初期化
-//    public boolean pref_listup_reset = false;			//調整リストを初期化
-//    public String pref_saisei_nagasa  ="0";		//再生時間
 
     //	MaraSonActivityの動作経路
     static final int RESULT_ENABLE = 1;

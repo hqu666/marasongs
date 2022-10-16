@@ -225,6 +225,7 @@
     <string name="pref_sonota_vercord">このアプリのバージョンコード</string>
     <string name="pref_reset">設定初期化</string>
     <string name="pref_listup_reset">調整リストのリセット</string>
+    <string name="pref_now_set" >この状態に更新</string>
     <string name="hhmmss">hh:mm:ss</string>
 
     <!-- 未使用？ -->
