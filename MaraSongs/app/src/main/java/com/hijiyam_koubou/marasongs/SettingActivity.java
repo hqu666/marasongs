@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.preference.PreferenceManager;
 
 import java.util.Locale;
@@ -411,7 +410,7 @@ public class SettingActivity extends AppCompatActivity {
         String dbMsg="";
         try{
             boolean isApply =true;
-            boolean checked = ((SwitchCompat) view).isChecked();
+            boolean checked = ((Switch) view).isChecked();
             dbMsg+=",checked=" + checked;
             switch(view.getId()) {
                 case R.id.pref_pb_bgc:
@@ -981,36 +980,36 @@ public class SettingActivity extends AppCompatActivity {
                 setdPrif();
             }
             Intent data = new Intent();			// 返すデータ(Intent&Bundle)の作成
-            Bundle bundle = new Bundle();
-            data.putExtras(bundle);
-//			if(pref_reset){				//設定を初期化
-//				myEditor.clear();		//プリファレンスの内容削除
-//				myEditor.commit();
-//				data.putExtras(bundle);
-//				setResult(RESULT_CANCELED, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
-//			}else{
             dbMsg +="、reqCode=" + reqCode + "、backCode=" + backCode;
-            bundle.putInt("key.reqCode", reqCode);
-            bundle.putInt("key.backCode", backCode);
-            dbMsg= "シンプルなリスト表示="+ myPreferences.pref_list_simple;	////////////////
-            bundle.putString("key.pref_list_simple", String.valueOf(myPreferences.pref_list_simple));				//シンプルなリスト表示（サムネールなど省略）
-            dbMsg +=",プレイヤーの背景(w)="+ myPreferences.pref_pb_bgc;	////////////////
-            bundle.putString("key.myPreferences.pref_pb_bgc", String.valueOf(myPreferences.pref_pb_bgc));			//プレイヤーの背景
-            dbMsg= dbMsg +",クロスフェード="+ myPreferences.pref_gyapless;				///////////////
-            bundle.putString("key.pref_gyapless", myPreferences.pref_gyapless);		//クロスフェード時間
-//				dbMsg= dbMsg +",コンピレーション分岐点="+ pref_compBunki;				///////////////
-//				bundle.putString("key.pref_compBunki", String.valueOf(pref_compBunki));			//pref_compBunki;		//コンピレーション分岐点
-            dbMsg += ",ロックスクリーンプレイヤー＝" + myPreferences.pref_lockscreen;//////////////
-            bundle.putString("key.pref_lockscreen", String.valueOf(myPreferences.pref_lockscreen));
-            dbMsg += ",ノティフィケーションプレイヤー＝" + myPreferences.pref_notifplayer;//////////////
-            bundle.putString("key.pref_notifplayer", String.valueOf(myPreferences.pref_notifplayer));
-            dbMsg= dbMsg +",Bluetoothの接続に連携="+ myPreferences.pref_bt_renkei;				///////////////
-            bundle.putString("key.pref_bt_renkei", String.valueOf(myPreferences.pref_bt_renkei));
-//            dbMsg= dbMsg +",visualizerType="+ visualizerType;				///////////////
-//            bundle.putString("visualizerType", String.valueOf(visualizerType) );
-            data.putExtras(bundle);
+            data.putExtra("reqCode", reqCode);
+            data.putExtra("backCode", backCode);
+//            Bundle bundle = new Bundle();
+//            data.putExtras(bundle);
+////			if(pref_reset){				//設定を初期化
+////				myEditor.clear();		//プリファレンスの内容削除
+////				myEditor.commit();
+////				data.putExtras(bundle);
+////				setResult(RESULT_CANCELED, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
+////			}else{
+//            dbMsg += "シンプルなリスト表示="+ myPreferences.pref_list_simple;	////////////////
+//            bundle.putString("key.pref_list_simple", String.valueOf(myPreferences.pref_list_simple));				//シンプルなリスト表示（サムネールなど省略）
+//            dbMsg +=",プレイヤーの背景(w)="+ myPreferences.pref_pb_bgc;	////////////////
+//            bundle.putString("key.myPreferences.pref_pb_bgc", String.valueOf(myPreferences.pref_pb_bgc));			//プレイヤーの背景
+//            dbMsg += dbMsg +",クロスフェード="+ myPreferences.pref_gyapless;				///////////////
+//            bundle.putString("key.pref_gyapless", myPreferences.pref_gyapless);		//クロスフェード時間
+////				dbMsg= dbMsg +",コンピレーション分岐点="+ pref_compBunki;				///////////////
+////				bundle.putString("key.pref_compBunki", String.valueOf(pref_compBunki));			//pref_compBunki;		//コンピレーション分岐点
+//            dbMsg += ",ロックスクリーンプレイヤー＝" + myPreferences.pref_lockscreen;//////////////
+//            bundle.putString("key.pref_lockscreen", String.valueOf(myPreferences.pref_lockscreen));
+//            dbMsg += ",ノティフィケーションプレイヤー＝" + myPreferences.pref_notifplayer;//////////////
+//            bundle.putString("key.pref_notifplayer", String.valueOf(myPreferences.pref_notifplayer));
+//            dbMsg += dbMsg +",Bluetoothの接続に連携="+ myPreferences.pref_bt_renkei;				///////////////
+//            bundle.putString("key.pref_bt_renkei", String.valueOf(myPreferences.pref_bt_renkei));
+////            dbMsg= dbMsg +",visualizerType="+ visualizerType;				///////////////
+////            bundle.putString("visualizerType", String.valueOf(visualizerType) );
+//            data.putExtras(bundle);
             setResult(RESULT_OK, data);		// setResult() で bundle を載せた送るIntent dataをセットする	// 第一引数は…Activity.RESULT_OK, Activity.RESULT_CANCELED など
-            myLog(TAG,"quitMeが発生");
+            myLog(TAG,dbMsg);
             SettingActivity.this.finish();
         } catch (Exception e) {		//汎用
             myErrorLog(TAG,dbMsg+"で"+e.toString());
@@ -1181,6 +1180,7 @@ public class SettingActivity extends AppCompatActivity {
         return true;
     }
 
+    /**actionBar.setDisplayHomeAsUpEnabled(true);で表示したボタンのクリック*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final String TAG = "onOptionsItemSelected";
@@ -1192,22 +1192,22 @@ public class SettingActivity extends AppCompatActivity {
             String helpURL;
             int nowSelectMenu = item.getItemId();
             myLog(TAG,dbMsg);
-            switch (nowSelectMenu) {
-                case R.id.menu_item_sonota_help:						//ヘルプ表示	MENU_HELP
-                    Intent intentWV = new Intent(SettingActivity.this,wKit.class);			//webでヘルプ表示
-                    if(locale.equals( Locale.JAPAN)){										//日本語の場合のみconstant for ja_JP.
-                        helpURL = "file:///android_asset/pref.html";		//日本語ヘルプ
-                        intentWV.putExtra("dataURI",helpURL);		//"file:///android_asset/index.html"
-                    }else {
-                        helpURL = "file:///android_asset/en/pref.html";	//英語ヘルプ
-                    }
-                    startActivity(intentWV);
-                    return true;
-                case android.R.id.home:
-                case R.id.menu_item_sonota_end:					//終了	MENU_END
+//            switch (nowSelectMenu) {
+//                case R.id.menu_item_sonota_help:						//ヘルプ表示	MENU_HELP
+//                    Intent intentWV = new Intent(SettingActivity.this,wKit.class);			//webでヘルプ表示
+//                    if(locale.equals( Locale.JAPAN)){										//日本語の場合のみconstant for ja_JP.
+//                        helpURL = "file:///android_asset/pref.html";		//日本語ヘルプ
+//                        intentWV.putExtra("dataURI",helpURL);		//"file:///android_asset/index.html"
+//                    }else {
+//                        helpURL = "file:///android_asset/en/pref.html";	//英語ヘルプ
+//                    }
+//                    startActivity(intentWV);
+//                    return true;
+//                case android.R.id.home:
+//                case R.id.menu_item_sonota_end:					//終了	MENU_END
                     quitMe();		//このアプリを終了する
-                    return true;
-            }
+//                    return true;
+//            }
             return false;
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg +"で"+e.toString());
