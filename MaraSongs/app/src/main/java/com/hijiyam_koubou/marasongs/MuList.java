@@ -3609,10 +3609,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
-			dbMsg +=" 、dataFN="+ dataFN;
-			dbMsg +=" 、listName="+ listName;
-			dbMsg +=" 、IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
-			//		dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+			dbMsg +=" 、[ " + myPreferences.nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+			myEditor.putString ("pref_data_url", dataFN);
+			myEditor.putString ("nowList_id", myPreferences.nowList_id);
+			myEditor.putString ("nowList", listName);
+			myEditor.apply();
 			if(mFilter == null){
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
@@ -3626,9 +3627,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}else{
 				stopService(MPSIntent);
 			}
-			dbMsg +=" 、[ " + myPreferences.nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
-			MPSIntent.putExtra("myPreferences.nowList_id",myPreferences.nowList_id);
-			MPSIntent.putExtra("myPreferences.nowList",listName);
+			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("pref_data_url",dataFN);
 			MPSIntent.putExtra("continu_status","toPlay");
 			if(! IsPlaying){
