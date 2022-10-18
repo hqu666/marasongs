@@ -10785,27 +10785,25 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 					dbMsg += ",imanoJyoutai= " + imanoJyoutai ;
 
-					if ( imanoJyoutai == veiwPlayer && myPreferences.saisei_fname.equals("")){ 		//
-						if( playingItem != null ){
-							titolName =playingItem.title;		//曲名
-							dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-						}
-						dbMsg += "(" + albumName;///////////////////////
-//					if ( position  >= 0) {
-						if( albumMei != null){
-							MuList.this.albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,artistMei , albumMei );			//アルバムアートUriだけを返す	this ,
-							dbMsg += ",albumArt=" + MuList.this.albumArt;
-						}
-//					}
-						myLog(TAG, dbMsg);
-						sigotoFuriwake(reqCode, artistMei , MuList.this.albumName  , MuList.this.titolName , MuList.this.albumArt);		//表示するリストの振り分け		titolAL ,
-					} else {
+//					if ( imanoJyoutai == veiwPlayer && myPreferences.saisei_fname.equals("")){ 		//
+//						if( playingItem != null ){
+//							titolName =playingItem.title;		//曲名
+//							dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+//						}
+//						dbMsg += "(" + albumName;///////////////////////
+//						if( albumMei != null){
+//							MuList.this.albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,artistMei , albumMei );			//アルバムアートUriだけを返す	this ,
+//							dbMsg += ",albumArt=" + MuList.this.albumArt;
+//						}
+//						myLog(TAG, dbMsg);
+////						sigotoFuriwake(reqCode, artistMei , MuList.this.albumName  , MuList.this.titolName , MuList.this.albumArt);		//表示するリストの振り分け		titolAL ,
+//					} else {
 						if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 							makePlainList( albumList);			//階層化しないシンプルなリスト
 						} else {
 							setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
 						}
-					}
+//					}
 					dbMsg +=",albumList= " + MuList.this.albumList.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					if( 0 < MuList.this.albumList.size()){
 						subTStr = MuList.this.albumList.size() + getResources().getString(R.string.pp_mai);
@@ -10930,9 +10928,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							Bundle bundle = result.getData().getExtras();
 							int reqCode = (int) bundle.getInt("reqCode");
 							boolean kakikomi  = false;
-						//		bundle = intent.getExtras();
-
-						//		int reqCode = intent.getIntExtra("reqCode" , 0);
 								dbMsg += ",reqCode="+reqCode;
 								Boolean retBool;
 								switch(reqCode) {
