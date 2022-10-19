@@ -3610,10 +3610,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
 			dbMsg +=" 、[ " + myPreferences.nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
-			myEditor.putString ("pref_data_url", dataFN);
-			myEditor.putString ("nowList_id", myPreferences.nowList_id);
-			myEditor.putString ("nowList", listName);
-			myEditor.apply();
 			if(mFilter == null){
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
@@ -3657,40 +3653,42 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	 *  onClickでプレイヤーのクリック
 	 *  jyoukyouBunki
 	 *  */
-	public void send2Player(String pref_data_url , String listName ,boolean toPlaying) {																//プレイヤーにuriを送る   , String aName
+	public void send2Player(String dataFN , String listName ,boolean toPlaying) {																//プレイヤーにuriを送る   , String aName
 		final String TAG = "send2Player";
 		String dbMsg = "";
 		try{
-			dbMsg += ",pref_data_url=" + pref_data_url;/////////////////////////////////////
-			boolean retBool = setPrefStr("pref_data_url" , pref_data_url , MuList.this);        //プリファレンスの読込み
-			dbMsg += "を書込み" + retBool;
-			dbMsg += ",setPref=" + toPlaying;/////////////////////////////////////
+			dbMsg +=" 、[ " + myPreferences.nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
+			myEditor.putString ("pref_data_url", dataFN);
+			myEditor.putString ("nowList_id", myPreferences.nowList_id);
+			myEditor.putString ("nowList", listName);
+			myEditor.apply();
+			dbMsg += ",toPlaying=" + toPlaying;/////////////////////////////////////
 			if(toPlaying){
 				imanoJyoutai = chyangeSong;
 				IsPlaying = false;
 //				sousinnMaeSyori( pref_data_url );
 			}
 			dbMsg += ",プレイリスト[ID=" + myPreferences.nowList_id + "]" + listName;
-			dbMsg += "]pref_data_url=" + pref_data_url;
+			dbMsg += "]pref_data_url=" + dataFN;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
-			toPlaying = send2Service( pref_data_url,listName,toPlaying);
+	//		toPlaying = send2Service( dataFN,listName,toPlaying);
 //			dbMsg += ",toPlaying=" + toPlaying;
 //
-//			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
-//
-//			intent.putExtra("reqCode",imanoJyoutai);
-//			intent.putExtra("myPreferences.nowList",myPreferences.nowList);
-//			intent.putExtra("pref_data_url",pref_data_url);
-//			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
-//			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
-////			if(toPlaying) {
-////				intent.putExtra("to_play",true);
-////			}else{
-////				intent.putExtra("to_play",false);
-////			}
-//			intent.putExtra("toPlaying",toPlaying);
-//			resultLauncher.launch(intent);
+			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
+
+			intent.putExtra("reqCode",imanoJyoutai);
+			intent.putExtra("nowList",myPreferences.nowList);
+			intent.putExtra("pref_data_url",dataFN);
+			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
+			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
+//			if(toPlaying) {
+//				intent.putExtra("to_play",true);
+//			}else{
+//				intent.putExtra("to_play",false);
+//			}
+			intent.putExtra("toPlaying",toPlaying);
+			resultLauncher.launch(intent);
 
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
