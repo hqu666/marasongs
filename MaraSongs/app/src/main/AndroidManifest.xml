@@ -94,14 +94,8 @@
             android:name=".SettingActivity"
             android:exported="false"
             />
-<!--        android:label="@string/title_activity_setting"-->
-<!--        android:theme="@style/NoActionBar"-->
 
         <activity android:name=".wKit" />
-<!--        <activity-->
-<!--            android:name=".preferences"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/title_activity_preferences" />-->
 
         <receiver
             android:name=".MusicPlayerReceiver"

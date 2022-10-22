@@ -3659,6 +3659,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg +=" 、[ " + myPreferences.nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
 			myEditor.putString ("pref_data_url", dataFN);
+			if(listName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+				myPreferences.nowList_id = "-1";
+				dbMsg +=">>[ " + myPreferences.nowList_id+ "] ";
+			}
 			myEditor.putString ("nowList_id", myPreferences.nowList_id);
 			myEditor.putString ("nowList", listName);
 			myEditor.apply();
@@ -3675,10 +3679,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	//		toPlaying = send2Service( dataFN,listName,toPlaying);
 //			dbMsg += ",toPlaying=" + toPlaying;
 //
-			Intent intent = new Intent(MuList.this, MaraSonActivity.class);
+			Intent intent = new Intent(getApplication(), MaraSonActivity.class);
 
 			intent.putExtra("reqCode",imanoJyoutai);
-			intent.putExtra("nowList",myPreferences.nowList);
+			intent.putExtra("nowList_id",myPreferences.nowList_id);
+			intent.putExtra("nowList",listName);
 			intent.putExtra("pref_data_url",dataFN);
 			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
 			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
