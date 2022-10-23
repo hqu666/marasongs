@@ -1,22 +1,12 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Service;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothHealth;
 import android.bluetooth.BluetoothProfile;
-import android.bluetooth.BluetoothProfile.ServiceListener;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
@@ -24,14 +14,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class BuletoohtReceiver extends BroadcastReceiver{
 //	MusicPlayerService MPS = new MusicPlayerService();
@@ -131,7 +125,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 								stateBaseStr = stateBaseStr+ context.getResources().getString(R.string.bt_discnnected);				//切断
 								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
-								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+								context.startService(MPSIntent);
 								break;
 							case BluetoothProfile.STATE_CONNECTING:																	//1
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_connecting);				//接続処理中
@@ -141,7 +135,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_connected);				//接続済み
 								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);						//		ACTION_PLAYPAUSE
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
-								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+								context.startService(MPSIntent);
 								break;
 							case BluetoothProfile.STATE_DISCONNECTING:																//3
 								stateBaseStr =  stateBaseStr+ context.getResources().getString(R.string.bt_discnnecting);				//切断処理中
@@ -158,7 +152,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 								stateBaseStr =  stateBaseStr+ context.getResources().getString(R.string.bt_playing);					//再生中
 //								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);		
 //								dbMsg +=">指定するAction>" + MPSIntent.getAction();
-//								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+//								context.startService(MPSIntent);
 //			//					service.processPlayRequest();
 								break;
 							case BluetoothA2dp.STATE_NOT_PLAYING:																	//11
@@ -166,7 +160,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_not_playing);				//一時停止
 //								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
 //								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
-//								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+//								context.startService(MPSIntent);
 ////								if( service.pref_bt_renkei ){	//終話後に自動再生
 ////									service.processPauseRequest();
 ////								}
@@ -211,7 +205,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 									break;
 								}
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
-								context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+								context.startService(MPSIntent);
 							}
 						}
 						dbMsg += "、stateBaseStr=" + stateBaseStr;

@@ -1,14 +1,13 @@
 package com.hijiyam_koubou.marasongs;
 
+import static com.hijiyam_koubou.marasongs.MusicPlayerService.ACTION_STATE_CHANGED;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
-
-import static com.hijiyam_koubou.marasongs.MusicPlayerService.ACTION_STATE_CHANGED;
 
 /*リモートコントロール（ロックスクリーンやBluethootアンプ）からブロードキャストされるマルチメディアイベントを受け取るレシーバ。 */
 public class MusicPlayerReceiver extends BroadcastReceiver {
@@ -69,22 +68,22 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 					case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 //						MPSIntent.putExtra("mIndex",mIndex);	//現リスト中の順番;
 //						registerReceiver(mReceiver, mFilter);
-						MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);	//	ontext.startService(new Intent(MusicPlayerService.ACTION_PLAYPAUSE));
+						MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_PLAY:
-						MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);				//context.startService(new Intent(MusicPlayerService.ACTION_PLAY));
+						MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_PAUSE:
-						MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);			//	context.startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+						MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_STOP:
-						MPSIntent.setAction(MusicPlayerService.ACTION_STOP);				//	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
+						MPSIntent.setAction(MusicPlayerService.ACTION_STOP);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_NEXT:
-						MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);				//	context.startService(new Intent(MusicPlayerService.ACTION_SKIP));
+						MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);;
 						break;
 					case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-						MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);			//	context.startService(new Intent(MusicPlayerService.ACTION_REWIND));					// plays the previous song
+						MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
 						break;
 					}
 					dbMsg +=" ,ロックスクリーンから" + MPSIntent.getAction();/////////////////////////////////////

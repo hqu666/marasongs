@@ -376,21 +376,21 @@ public class MaraSonActivity extends AppCompatActivity
 						if( MPSIntent == null){
 //							MusicPlayerService MPS = new MusicPlayerService(MaraSonActivity.this);
 //							Class<? extends MusicPlayerService> mpsClass = MPS.getClass();
-							MPSIntent = new Intent(MaraSonActivity.this, MusicPlayerService.class);
+							MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
 							dbMsg +=">>" + MPSIntent;/////////////////////////////////////
 						}
 						MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);					//service内のquitMe
 						startService(MPSIntent);
-						stopService(MPSIntent);			//こっちで消える？
+//						stopService(MPSIntent);			//こっちで消える？
 					}else if(serviceName.contains("NotifRecever")){
-						MPSIntent = new Intent(MaraSonActivity.this, NotifRecever.class);
+						MPSIntent = new Intent(getApplication(), NotifRecever.class);
 						dbMsg += ",NotifRecever="+ MPSIntent;//////////////////
-						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+//						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
 						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
 					}else if(serviceName.contains("BuletoohtReceiver")){
-						MPSIntent = new Intent(MaraSonActivity.this, BuletoohtReceiver.class);
+						MPSIntent = new Intent(getApplication(), BuletoohtReceiver.class);
 						dbMsg += ",BuletoohtReceiver="+ MPSIntent;//////////////////
-						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+//						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
 						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
 					}
 				}
@@ -1901,17 +1901,17 @@ public class MaraSonActivity extends AppCompatActivity
 	 * 曲名リストを読み込み何曲目かを返す
 	 * (db未作成時は-1)
 	 * @param artistMei アーティスト名
-	 * @param albumMei アルバム名
+	 * @param albumName アルバム名
 	 * 使用メソッド retDB();			//全曲dbを返す
 	 */
-	public int titolList_yomikomi(String artistMei , String albumMei)throws IOException{					//曲名リストを読み込む(db未作成時は-)
+	public int titolList_yomikomi(String artistMei , String albumName)throws IOException{					//曲名リストを読み込む(db未作成時は-)
 		int titolTotal = -1;				//曲合計
 		final String TAG = "titolList_yomikomi";
 		String dbMsg="";/////////////////////////////////////
 		try{
 			this.artistMei = artistMei;
-			dbMsg += artistMei + "の" + albumMei;
-			this.albumMei = albumMei;
+			dbMsg += artistMei + "の" + albumName;
+			this.albumMei = albumName;
 //			new Thread(new Runnable() {				//ワーカースレッドの生成
 //				public void run() {
 //		//			myLog(TAG, "in Thread button1 thread id = " + Thread.currentThread().getId());
@@ -2220,7 +2220,7 @@ public class MaraSonActivity extends AppCompatActivity
 			int mcPosition = saiseiSeekMP.getProgress();
 			int saiseiJikan = saiseiSeekMP.getMax();
 			dbMsg="再生中の状況保存[" + mcPosition +"/" + saiseiJikan +"]から" + albumArtist;	//dataFN +
-			Intent intentPRF = new Intent(MaraSonActivity.this,SettingActivity.class);			//プリファレンス
+			Intent intentPRF = new Intent(getApplication(),SettingActivity.class);			//プリファレンス
 			intentPRF.putExtra("reqCode",reqCode);					//設定;
 			intentPRF.putExtra("pref_apiLv",pref_apiLv);				//APIL
 			intentPRF.putExtra("pref_bt_renkei",myPreferences.pref_bt_renkei);	//Bluetoothの接続に連携して一時停止/再開
@@ -2361,7 +2361,7 @@ public class MaraSonActivity extends AppCompatActivity
 				prefHyouji(settei_hyouji);					//設定表示☆toolBarのメニューでメニューＩＤは反映されない
 				return true;
 			case R.id.menu_item_sonota_help:						//ヘルプ表示	MENU_HELP
-//				Intent intentWV = new Intent(MaraSonActivity.this,wKit.class);			//webでヘルプ表示
+//				Intent intentWV = new Intent(getApplication(),wKit.class);			//webでヘルプ表示
 //				if(locale.equals( Locale.JAPAN)){										//日本語の場合のみconstant for ja_JP.
 //					helpURL = "http://www.geocities.jp/hqu666/maramongs/player.html";		//日本語ヘルプ				//	helpURL = "file:///android_asset/list.html";		//日本語ヘルプ
 //				}else {
@@ -2474,7 +2474,7 @@ public class MaraSonActivity extends AppCompatActivity
 				Boolean kakikomi = myEditor.commit();	// データの保存
 				dbMsg +=",kakikomi="+kakikomi;
 			}
-			Intent intent = new Intent(MaraSonActivity.this, MuList.class);			//
+			Intent intent = new Intent(getApplication(), MuList.class);
 			int reqCode = CONTEXT_runum_sisei ;			//ランダム再生
 			dbMsg +="reqCode="+ reqCode;/////////////////////////////////////
 			intent.putExtra("reqCode",reqCode);
@@ -3978,7 +3978,7 @@ public class MaraSonActivity extends AppCompatActivity
 					songLyric = getResources().getString(R.string.yomikomi_hunou);		//e="">この曲はタグ情報を読み込めませんでした。</string>
 					lyricAri = false;			//歌詞を取得できた
 					dbMsg= "filepath=" + filepath;
-					Intent intentTB = new Intent(MaraSonActivity.this,TagBrows.class);
+					Intent intentTB = new Intent(getApplication(),TagBrows.class);
 					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
 					intentTB.putExtra("filePath",filepath);
 					lyricAri = false;			//歌詞を取得できた
@@ -4009,8 +4009,8 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "lyric2web[MaraSonActivity]";
 		String dbMsg= "";
 		try{
-			dbMsg +=",hozonnsaki=" + hozonnsaki ;/////////////////////////////////////
-			Intent intentWV = new Intent(MaraSonActivity.this,wKit.class);			//webでヘルプ表示
+			dbMsg +=",hozonnsaki=" + hozonnsaki ;
+			Intent intentWV = new Intent(getApplication(),wKit.class);			//webでヘルプ表示
 			File wFile = new File(hozonnsaki);
 			dbMsg +=",exists=" + wFile.exists();
 
@@ -4093,11 +4093,11 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg= "";
 		try{
 //			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
-			dbMsg +=  "MPSIntent=" + MPSIntent;/////////////////////////////////////
-			dbMsg +=".getAction=" + MPSIntent.getAction();/////////////////////////////////////
+			dbMsg +=  "MPSIntent=" + MPSIntent;
+			dbMsg +=".getAction=" + MPSIntent.getAction();
 			MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
-			dbMsg +=">>" + MPSIntent.getAction();/////////////////////////////////////
-			MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+			dbMsg +=">>" + MPSIntent.getAction();
+			MPSName = startService(MPSIntent);
 			dbMsg +=" ,ComponentName=" + MPSName;
 			//Timerも停止するので書き換えが起きない
 			ppPBT.setImageResource(R.drawable.pl_r_btn);
@@ -4115,7 +4115,17 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg +=  "mFilter=" + mFilter ;
 			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
-			send2Service(myPreferences.pref_data_url , myPreferences.nowList ,mcPosition,true);
+			dbMsg +=  "MPSIntent=" + MPSIntent;
+			dbMsg +=".getAction=" + MPSIntent.getAction();
+			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+			MPSIntent.putExtra("pref_position",mcPosition);	//再生ポジション
+			dbMsg +=">>" + MPSIntent.getAction();
+			MPSName = startService(MPSIntent);
+			dbMsg +=" ,ComponentName=" + MPSName;
+			//Timerも停止するので書き換えが起きない
+			ppPBT.setImageResource(R.drawable.pousebtn);
+			ppPBT.setContentDescription(getResources().getText(R.string.play));
+//			send2Service(myPreferences.pref_data_url , myPreferences.nowList ,mcPosition,true);
 //			if(mFilter == null){
 //				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 //				dbMsg= ">>psSarviceUri=" + psSarviceUri;/////////////////////////////////////
@@ -4127,7 +4137,7 @@ public class MaraSonActivity extends AppCompatActivity
 //			if( MPSIntent == null){
 //		//		MusicPlayerService MPS = new MusicPlayerService(MaraSonActivity.this);
 //		//		Class<? extends MusicPlayerService> mpsClass = MPS.getClass();
-//				MPSIntent = new Intent(MaraSonActivity.this, MusicPlayerService.class);
+//				MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
 //				dbMsg+= ">>" + MPSIntent;/////////////////////////////////////
 //			}
 //			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
@@ -4143,7 +4153,7 @@ public class MaraSonActivity extends AppCompatActivity
 ////			dbMsg +=">> " + mcPosition +"ms)";
 ////		//	int myPreferences.pref_mIndex = myPreferences.pref_mIndex;			//getPrefInt("myPreferences.pref_mIndex" , 0 , MaraSonActivity.this);
 ////			sendPlaying( MPSIntent , dataFN , mcPosition , myPreferences.pref_mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
-//			MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+//			MPSName = startService(MPSIntent);
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4156,7 +4166,7 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg += ",MPSIntent=" + MPSIntent;/////////////////////////////////////
 			if( MPSIntent == null){
-				MPSIntent = new Intent(MaraSonActivity.this, MusicPlayerService.class);
+				MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
 				dbMsg= ">>" + MPSIntent;/////////////////////////////////////
 			}
 			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY_READ);
@@ -4227,6 +4237,8 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.putExtra("pref_data_url",dataFN);
 			MPSIntent.putExtra("mcPosition",mcPosition);
 			MPSIntent.putExtra("continu_status","toPlay");
+			MPSIntent.putExtra("callClass",this.getClass());
+
 //			if(! IsPlaying){
 //				//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //				IsPlaying = false;
@@ -4253,7 +4265,7 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg=  "MPSIntent=" + MPSIntent;/////////////////////////////////////
 			MPSIntent.setAction(MusicPlayerService.ACTION_STOP);
-			MPSName = startService(MPSIntent);	//Intent intent = new Intent(MusicPlayerService.ACTION_STOP);
+			MPSName = startService(MPSIntent);
 			ppPBT.setImageResource(R.drawable.pl_r_btn);
 			ppPBT.setContentDescription(getResources().getText(R.string.pause));
 			myLog(TAG, dbMsg);
@@ -4274,7 +4286,7 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg= "";
 		try{
 			dbMsg +=ORGUT.nowTime(true,true,true);
-//			Intent intent = new Intent(MaraSonActivity.this, MuList.class);			//
+//			Intent intent = new Intent(getApplication(), MuList.class);			//
 //			intent.putExtra("requestCode",imanoJyoutai);
 ////			intent.putExtra("resultCode",imanoJyoutai);
 //			dbMsg +="reqCode="+ reqCode;//;アルバム=195
@@ -4457,7 +4469,7 @@ public class MaraSonActivity extends AppCompatActivity
 			//	ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
 				MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);
-				MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
+				MPSName = startService(MPSIntent);		//onStartCommandへ
 				dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 			} else if (v == rewPBT) {				//mButtonRewind
 //				dbMsg += ",rewPBT(" + myPreferences.pref_mIndex +")";
@@ -4471,7 +4483,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//		ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
 				MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
-				MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_REWIND));
+				MPSName = startService(MPSIntent);
 				dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 			} else if (v == vol_btn) {								//ボリュームボタン
 				dbMsg += ",vol_btn";
@@ -4893,7 +4905,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//			audioManage.setStreamMute(AudioManager.STREAM_MUSIC, false);
 					dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
 					if( MPSIntent == null){
-						MPSIntent = new Intent(MaraSonActivity.this, MusicPlayerService.class);
+						MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
 						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
 					}
 					MPSIntent.setAction(MusicPlayerService.ACTION_ACT_CLOSE);			//アクティビティがクローズされた事の通達
@@ -5151,7 +5163,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//							dbMsg +="、ファイル数=" + ruikei_titol;
 		//							if(Integer.parseInt(ruikei_titol) >0 ){
 		//								MaraSonActivity.this.finish();											//reStart
-		//								startActivity(new Intent(MaraSonActivity.this,MaraSonActivity.class));
+		//								startActivity(new Intent(getApplication(),MaraSonActivity.class));
 		//							}else{
 		//								AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 		//								alertDialogBuilder.setTitle(getResources().getString(R.string.saisinnFileKakuninn_f_titol));		//音楽ファイルを確認できません
@@ -5241,7 +5253,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//								dbMsg += ",再生中=" + IsPlaying;/////////////////////////////////////
 		////							if( IsPlaying ){
 		////								MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);				//ACTION_STOP?
-		////								MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
+		////								MPSName = startService(MPSIntent);		//onStartCommandへ
 		////							}
 		////								dbMsg += ",mcPosition="+mcPosition;
 		////								saiseiJikan = bundle.getInt("saiseiJikan");
@@ -5255,7 +5267,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//								dataFN = n_dataFN;
 		////							if( IsPlaying ){
 		////								MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);				//ACTION_STOP?
-		////								MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
+		////								MPSName = startService(MPSIntent);		//onStartCommandへ
 		////							}
 		//							}
 		//							dbMsg +=",pp_start=" + pp_start;/////////////////////////////////////
@@ -5372,7 +5384,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//												quitMe();		//このアプリを終了する
 		//												overridePendingTransition(0, 0);
 		////									MaraSonActivity.this.finish();
-		////									Intent intentM = new Intent(MaraSonActivity.this, MaraSonActivity.class);
+		////									Intent intentM = new Intent(getApplication(), MaraSonActivity.class);
 		////								//	intent.putExtra("reqCode",syoki_start_up_sai);								//再起動
 		//												startActivity(intentM);		//再起動実行
 		//											}
@@ -5406,7 +5418,7 @@ public class MaraSonActivity extends AppCompatActivity
 //							break;
 //						case LyricWeb:												//192;歌詞のweb表示
 //							MPSIntent.setAction(MusicPlayerService.ACTION_DATA_OKURI);				//データ送りのみ
-//							MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
+//							MPSName = startService(MPSIntent);		//onStartCommandへ
 //							dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 //							break;
 								case LyricCheck:						//192 歌詞の有無確認
@@ -5818,7 +5830,7 @@ public class MaraSonActivity extends AppCompatActivity
 			if( MPSIntent == null ){
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg += ">>psSarviceUri=" + psSarviceUri;/////////////////////////////////////
-				MPSIntent = new Intent(MaraSonActivity.this, MusicPlayerService.class);
+				MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
 			}
 			int sMax = saiseiSeekMP.getMax();
 			dbMsg += ",sMax=" + sMax + "[ms]";
@@ -5931,7 +5943,7 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			dbMsg += ",IsPlaying="+ IsPlaying;
 //			if(! IsPlaying){
-//				Intent intent = new Intent( MaraSonActivity.this, MusicPlayerService.class);
+//				Intent intent = new Intent(getApplication(), MusicPlayerService.class);
 //				intent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
 //				startService(intent) ;
 //			}

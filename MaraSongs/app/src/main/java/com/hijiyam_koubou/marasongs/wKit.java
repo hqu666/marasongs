@@ -221,10 +221,10 @@ public class wKit extends Activity {
 				if( MPSIntent == null ){
 					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 					dbMsg= dbMsg +">>psSarviceUri=" + psSarviceUri + "";/////////////////////////////////////
-					MPSIntent = new Intent(wKit.this, MusicPlayerService.class);
+					MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
 				}
 				MPSIntent.setAction(MusicPlayerService.ACTION_DATA_OKURI);				//データ送りのみ
-				MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
+				MPSName = startService(MPSIntent);		//onStartCommandへ
 				dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				wk_rew_bt.setOnClickListener(new View.OnClickListener() {			//戻しボタン
 					public void onClick(View v) {
@@ -233,7 +233,7 @@ public class wKit extends Activity {
 						try{
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 							MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
-							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_REWIND));
+							MPSName = startService(MPSIntent);
 							dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				//			myLog(TAG,dbMsg);
 						}catch (Exception e) {
@@ -260,7 +260,7 @@ public class wKit extends Activity {
 							dbMsg +=".getAction=" + MPSIntent.getAction();/////////////////////////////////////
 							MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);
 							dbMsg +=">>" + MPSIntent.getAction();/////////////////////////////////////
-							MPSName = startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+							MPSName = startService(MPSIntent);
 							dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
 		//					myLog(TAG,dbMsg);
 						}catch (Exception e) {
@@ -275,7 +275,7 @@ public class wKit extends Activity {
 						try{
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 							MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);
-							MPSName = startService(MPSIntent);		//onStartCommandへ	//startService(new Intent(MusicPlayerService.ACTION_SKIP));
+							MPSName = startService(MPSIntent);		//onStartCommandへ
 							dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				//			myLog(TAG,dbMsg);
 						}catch (Exception e) {
@@ -990,7 +990,7 @@ public class wKit extends Activity {
 					songLyric = getResources().getString(R.string.yomikomi_hunou);		//e="">この曲はタグ情報を読み込めませんでした。</string>
 					lyricAri = false;			//歌詞を取得できた
 					dbMsg= "filepath=" + filepath;
-					Intent intentTB = new Intent(wKit.this,TagBrows.class);
+					Intent intentTB = new Intent(getApplication(),TagBrows.class);
 					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
 					intentTB.putExtra("filePath",filepath);
 					lyricAri = false;			//歌詞を取得できた

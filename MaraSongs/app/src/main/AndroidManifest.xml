@@ -63,10 +63,10 @@
 
         <activity
             android:name=".MuList"
-            android:excludeFromRecents="true"
             android:exported="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:taskAffinity=""
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,10 +76,10 @@
         </activity>
         <activity
             android:name=".MaraSonActivity"
-            android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:taskAffinity=""
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -95,7 +95,9 @@
             android:exported="false"
             />
 
-        <activity android:name=".wKit" />
+        <activity android:name=".wKit"
+            android:screenOrientation="fullSensor"
+            />
 
         <receiver
             android:name=".MusicPlayerReceiver"

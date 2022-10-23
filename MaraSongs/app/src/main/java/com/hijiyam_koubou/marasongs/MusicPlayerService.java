@@ -77,11 +77,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	//	, OnErrorListener,
 	public Context rContext;			//static
 	/**プレイヤー*/
-	public Class<? extends Context> playerClass;
+	public Class<? extends MaraSonActivity> playerClass;
 	public OrgUtil ORGUT;				//自作関数集
 
 	public MyApp myApp;
-	MaraSonActivity MUP;								//音楽プレイヤー
+//	public MaraSonActivity MUP;								//音楽プレイヤー
 	public MediaPlayer mPlayer = null;
 	public MediaPlayer mPlayer2 = null;
 
@@ -206,7 +206,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public String action;									//ボタンなどで指定されたアクション
 
 	public Handler btHandler = null;		//new Handler();
-	//public IntentFilter btFilter = new IntentFilter();						//BluetoothA2dpのACTIONを保持する
 	public BluetoothAdapter mBluetoothAdapter = null;
 	public BuletoohtReceiver btReceiver;							//public BuletoohtReceiver btReceiver;		BroadcastReceiver
 	public String dviceStyteStr;									//デバイスの接続情報
@@ -843,7 +842,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg += "を書込み" + retBool;
 			retBool = setPrefInt( "pref_duration", mPlayer.getDuration(),MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
-			lpNotificationMake( myPreferences.pref_data_url , mcPosition , mPlayer);
+	//		lpNotificationMake( myPreferences.pref_data_url , mcPosition , mPlayer);
 			//	}
 
 
@@ -1473,6 +1472,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	//private static final String ACTION_NEXT = "com.your.package.name.NEXT";
 	/**SDK_INT31以降のノティフィケーションビルダ*/
 	private NotificationCompat.Builder builder;
+	/**ノテフィケーションから起動するアクティビティ*/
+	public Intent notifyIntent;
+	public PendingIntent pendingIntent;
 	/**play/pouseボタン*/
 	private PendingIntent ppIntent;
 	private NotificationCompat.Action ppAction;
@@ -1515,7 +1517,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //
 //					if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 //						// Start the service
-//						startService(new Intent(context, MediaBrowserService.class));
+//						startService(new Intent(getApplication(), MediaBrowserService.class));
 //						// Set the session active  (and update metadata and state)
 //						mediaSession.setActive(true);
 //						// start the player (custom call)
@@ -1602,24 +1604,26 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * 呼出し元    sendPlayerState
 	  */
 	@SuppressLint("NewApi")
-	public void lpNotificationMake(String dataFN ,int mcPosition , MediaPlayer player) {
+	public void lpNotificationMake(String urlStr) {
 		final String TAG = "lpNotificationMake";
 		String dbMsg="";
 		try{
-			dbMsg += "dataFNn="+dataFN;
+//			dbMsg += "dataFNn="+dataFN;
 	//		getDataInfo(dataFN);
-			dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
-			Context context = getApplicationContext();
+//			dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
+//			Context context = getApplicationContext();
 			String channelId = "default";
-			String title = context.getString(R.string.app_name);
+			String title = getApplicationContext().getString(R.string.app_name);
 			// 通知からActivityを起動できるようにする
-			Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
+//			Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
 			// Set the Activity to start in a new, empty task
 			notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			PendingIntent pendingIntent = PendingIntent.getActivity(
-					this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+			dbMsg += " ,notifyIntent="+notifyIntent.getClass().getName();		//android.content.Intent
+			pendingIntent = PendingIntent.getActivity(
+					getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
 							| PendingIntent.FLAG_IMMUTABLE
 			);
+			dbMsg += " ,pendingIntent="+pendingIntent.getClass().getName();				//android.app.PendingIntent
 			notificationManager = NotificationManagerCompat.from(this);
 			// Notification　Channel 設定
 			mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
@@ -1630,107 +1634,81 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			if(31<= android.os.Build.VERSION.SDK_INT){
 				if(metadataBuilder == null){
 					dbMsg += " , metadataBuilder == null";
-				}else {
-					if(mediaSession ==null){
-						dbMsg += " , mediaSession == null";
-						mediaSession = new MediaSession(getApplicationContext(),  getResources().getString(R.string.app_name));
-					}
+					getDataInfo(urlStr);
+				}
+				if(mediaSession ==null){
+					dbMsg += " , mediaSession == null";
+					mediaSession = new MediaSession(getApplicationContext(),  getResources().getString(R.string.app_name));
+				}
 
-					dbMsg += " , DURATION=" + metadataBuilder.build().getLong(MediaMetadata.METADATA_KEY_DURATION);
-					// Get the session's metadata
-					MediaController controller = mediaSession.getController();
+				dbMsg += " , DURATION=" + metadataBuilder.build().getLong(MediaMetadata.METADATA_KEY_DURATION);
+				// Get the session's metadata
+				MediaController controller = mediaSession.getController();
 
-					NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
-					// タイトルなどの表示
-					mediaSession.setMetadata(metadataBuilder.build());
-					mediaSession.setCallback(nfCallback);
-					//	dbMsg += " Notification そのものをタップしたとき="+pendingIntent.getCreatorUid();
-					builder.setContentIntent(pendingIntent);
-//					builder.setContentIntent(controller.getSessionActivity());
-							// Stop the service when the notification is swiped away
-			//		builder.setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP));
-							// Make the transport controls visible on the lockscreen
-					builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-					dbMsg += ",PendingIntent";
-					Intent intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+				// タイトルなどの表示
+				mediaSession.setMetadata(metadataBuilder.build());
+				mediaSession.setCallback(nfCallback);
+				dbMsg += " Notification そのものをタップしたとき="+pendingIntent.getCreatorUid();
+				builder.setContentIntent(pendingIntent);
+				builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+				Intent intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
 
-					intentNR.setAction(ACTION_REWIND);
-					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_REWINDE);
-					PendingIntent rewIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_REWINDE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_IMMUTABLE);
-					NotificationCompat.Action rewAction = new NotificationCompat.Action(android.R.drawable.ic_media_rew,ACTION_REWIND,rewIntent);
+				intentNR.setAction(ACTION_REWIND);
+				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_REWINDE);
+				PendingIntent rewIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_REWINDE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_IMMUTABLE);
+				NotificationCompat.Action rewAction = new NotificationCompat.Action(android.R.drawable.ic_media_rew,ACTION_REWIND,rewIntent);
 
-					intentNR.setAction(ACTION_PLAYPAUSE);
-					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
-					ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-					int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
-					String ppTitol = "pause";
-					if (mPlayer != null) {
-						dbMsg += ",isPlaying = " + mPlayer.isPlaying();
-						if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
-							ppIcon = android.R.drawable.ic_media_play;
-							ppTitol = "play";
-						}
-					}else{
+				intentNR.setAction(ACTION_PLAYPAUSE);
+				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
+				ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+				int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
+				String ppTitol = "pause";
+				if (mPlayer != null) {
+					dbMsg += ",isPlaying = " + mPlayer.isPlaying();
+					if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
 						ppIcon = android.R.drawable.ic_media_play;
 						ppTitol = "play";
 					}
-					dbMsg += ",ppTitol = " + ppTitol;
-					ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
+				}else{
+					ppIcon = android.R.drawable.ic_media_play;
+					ppTitol = "play";
+				}
+				dbMsg += ",ppTitol = " + ppTitol;
+				ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
 
-					intentNR.setAction(ACTION_SKIP);
-					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_SKIP);
-					PendingIntent ffIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_SKIP, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-					NotificationCompat.Action ffAction = new NotificationCompat.Action(android.R.drawable.ic_media_ff,ACTION_SKIP,ffIntent);
+				intentNR.setAction(ACTION_SKIP);
+				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_SKIP);
+				PendingIntent ffIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_SKIP, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+				NotificationCompat.Action ffAction = new NotificationCompat.Action(android.R.drawable.ic_media_ff,ACTION_SKIP,ffIntent);
 
-					intentNR.setAction(ACTION_SYUURYOU_NOTIF);				//intentNR = new Intent(ACTION_STOP);
-					intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_quit);
-					PendingIntent quitIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_quit, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-					NotificationCompat.Action quitAction = new NotificationCompat.Action(android.R.drawable.ic_lock_power_off,ACTION_SYUURYOU_NOTIF,quitIntent);
+				intentNR.setAction(ACTION_SYUURYOU_NOTIF);
+				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_quit);
+				PendingIntent quitIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_quit, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+				NotificationCompat.Action quitAction = new NotificationCompat.Action(android.R.drawable.ic_lock_power_off,ACTION_SYUURYOU_NOTIF,quitIntent);
 
 //					// 左から順に並びます
-					builder.addAction(rewAction);
-					builder.addAction(ppAction);
-					builder.addAction(ffAction);
-					builder.addAction(quitAction);
+				builder.addAction(rewAction);
+				builder.addAction(ppAction);
+				builder.addAction(ffAction);
+				builder.addAction(quitAction);
 
-					builder.setSmallIcon(R.drawable.ic_launcher);
-					dbMsg += ",setStyle";
-					builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-									.setMediaSession(MediaSessionCompat.Token.fromToken(mediaSession.getSessionToken()))
-									.setShowActionsInCompactView(0)
-							// Add a cancel button
-//									.setShowCancelButton(true)
-//									.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_STOP))
-					);
+				builder.setSmallIcon(R.drawable.ic_launcher);
+				dbMsg += ",setStyle";
+				builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+								.setMediaSession(MediaSessionCompat.Token.fromToken(mediaSession.getSessionToken()))
+								.setShowActionsInCompactView(0)
+				);
 
-					dbMsg += " Notification型のインスタンス生成";
-					lpNotification = builder.build();
-					startForeground(NOTIFICATION_ID, lpNotification);
-				}
+				dbMsg += " Notification型のインスタンス生成";
+				lpNotification = builder.build();
+				startForeground(NOTIFICATION_ID, lpNotification);
 			}else {
 				Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.no_image);
 				Bitmap artwork = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
 				dbMsg += ",albumArt =" + album_art;
-//				if (album_art != null) {
-//					drawable = new BitmapDrawable(getResources(), album_art);
-//					Bitmap orgBitmap = ((BitmapDrawable) drawable).getBitmap();                    //DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
-//					dbMsg += ",orgBitmap=" + orgBitmap;
-//					Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 96, 96, false);                                        //100x100の大きさにリサイズ
-//					dbMsg += ",resizedBitmap=" + resizedBitmap;
-//					drawable = new BitmapDrawable(getResources(), resizedBitmap);
-//					artwork = ORGUT.retBitMap(album_art, 144, 144, getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-//					dbMsg += ">>" + album_art;
-//				}
-
-//				mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//				// Notification　Channel 設定
-//				mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
-//				if (mNotificationManager != null) {
-//					mNotificationManager.createNotificationChannel(mNotificationChannel);
-					nBuilder = new Notification.Builder(context, channelId);
+					nBuilder = new Notification.Builder(getApplicationContext(), channelId);
 					PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_MUTABLE);        //http://y-anz-m.blogspot.jp/2011/07/androidappwidget-pendingintent-putextra.html
-					//	FLAG_IMMUTABLE を指定すると、パラメータを追加をしたとしても、元々のIntentは変更はされず、起動された側でも取得できずにnull
-					//FLAG_MUTABLE を指定すると、変更が可能となり、先程のパラメータを追加したときに、起動された側で取得することが出来ます。
 					if (mediaSession != null) {
 						mediaSession.release();
 						mediaSession = null;
@@ -1857,7 +1835,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					mNotificationManager.notify(NOTIFICATION_ID, lpNotification);
 
 					startForeground(1, lpNotification);
-//				}
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -1960,11 +1937,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if( mNotification != null ){
 					mNotificationManager.cancelAll();
 				}
-				mNotificationManager = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);	// NotificationManagerを取得		NotificationManagerCompat
+				mNotificationManager = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);	// NotificationManagerを取得
 				dbMsg += ";" + mNotificationManager;/////////////////////////////////////
 				ntfViews = new RemoteViews(this.getPackageName(), R.layout.remote_controll);		//ノティフィケーションのレイアウトをファイルからRemoteViewsを生成
 				PendingIntent pendingIntent = PendingIntent.getActivity( getApplicationContext() , 0
-						,new Intent(getApplicationContext() , MaraSonActivity.class), PendingIntent.FLAG_UPDATE_CURRENT );
+						,new Intent(getApplicationContext() ,playerClass), PendingIntent.FLAG_UPDATE_CURRENT );
 						//既にPendingIntentオブジェクトを作成している場合、そのオブジェクトが持つ`Intent`オブジェクト自体は置き換えず、`
 						//Intent`オブジェクトが持つ`Extras`のみを置き換えます。
 				mNotification = new Notification();		// Notificationを生成・初期化
@@ -1981,14 +1958,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		//		myLog(TAG,dbMsg);
 
 				////////ボタンの処理	☆	extends Service 	のonStartCommandで処理							NotifRecever
-				Intent intentNR = new Intent(MusicPlayerService.this, NotifRecever.class);
+				Intent intentNR = new Intent(getApplication(), NotifRecever.class);
 				ntfViews.setImageViewResource(R.id.stop, android.R.drawable.ic_lock_power_off);
-				intentNR.setAction(ACTION_SYUURYOU_NOTIF);				//intentNR = new Intent(ACTION_STOP);
+				intentNR.setAction(ACTION_SYUURYOU_NOTIF);
 				PendingIntent piStop = PendingIntent.getService(this, 0, intentNR, PendingIntent.FLAG_UPDATE_CURRENT);
 				ntfViews.setOnClickPendingIntent(R.id.stop, piStop);						//piStop
 
 				ntfViews.setImageViewResource(R.id.ppPButton  , R.drawable.play_notif);
-				intentNR.setAction(ACTION_PLAYPAUSE);					//intentNR = new Intent(ACTION_PLAY);
+				intentNR.setAction(ACTION_PLAYPAUSE);
 				PendingIntent piPlay = PendingIntent.getService(this, 0, intentNR, PendingIntent.FLAG_UPDATE_CURRENT);
 				ntfViews.setOnClickPendingIntent(R.id.ppPButton, piPlay);
 		///////////////////////////////////////////ボタンの処理///////////////////////////
@@ -2016,7 +1993,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			if( player != null ){
 				if (android.os.Build.VERSION.SDK_INT >= 11 && myPreferences.pref_notifplayer) {
 					dbMsg += ",mNotification=" + mNotification;/////////////////////////////////////
-					makeNotification();					//ノティフィケーション作成			<createBody
+			//		makeNotification();					//ノティフィケーション作成			<createBody
 					dbMsg += "[" + mIndex +"]";/////////////////////////////////////
 					dbMsg +=",isPlaying=" + player.isPlaying();/////////////////////////////////////
 					if(player.isPlaying() ){
@@ -3735,7 +3712,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			final String TAG = "MusicPlayBinder[]";
 			String dbMsg="[MusicPlayerService]bindServicから開始";/////////「プロセス間通信」（IPC：Inter Process Communication）によるリモートメソッドコールを行う
 			try{
-//				Intent notificationIntent = new Intent(this, MusicPlayerService.class);									// 通知押下時に、MusicPlayServiceのonStartCommandを呼び出すためのintent
+//				Intent notificationIntent = new Intent(getApplication(), MusicPlayerService.class);									// 通知押下時に、MusicPlayServiceのonStartCommandを呼び出すためのintent
 //				PendingIntent pendingIntent = PendingIntent.getService(this, 0, notificationIntent, 0);
 //				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());				// サービスを永続化するために、通知を作成する
 //				builder.setContentIntent(pendingIntent);
@@ -3800,11 +3777,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			Class<?> callClass = intent.getClass();
 			dbMsg +="、callClass=" + callClass.getName();
 			rContext = this.getApplicationContext();			//com.hijiyam_koubou.marasongs.MyApp
-		//	playerClass = rContext.getClass();
-		//	dbMsg += ",playerClass=" + playerClass.getName();
-//			if(myPreferences == null){
-//				myPreferences = new MyPreferences(MusicPlayerService.this);
-//			}
 			readPref();
 			if(sharedPref ==null){
 				MyConstants.PREFS_NAME = this.getResources().getString(R.string.pref_main_file);
@@ -3826,19 +3798,17 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				action = ACTION_LISTSEL;
 				dbMsg +=">>" + action;
 			}
-			int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
+			int mcPosition = getPrefInt("mcPosition" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 			dbMsg +=" , mcPosition=" + mcPosition;
-		//	Bundle extras = intent.getExtras();
+			if( mPlayer !=null ){
+				dbMsg +=" ,isPlaying=" + mPlayer.isPlaying() ;/////////////////////////////////////
+				mPlayer.seekTo(mcPosition);
+			}		//	Bundle extras = intent.getExtras();
 			if (action.equals(ACTION_START_SERVICE)) {
 				dbMsg += ".読み込み前[ " + myPreferences.nowList_id+ "] " + myPreferences.nowList + " の "+ myPreferences.pref_data_url;		// + "の" + saiseiJikan + "から";
-//				myPreferences.nowList_id = String.valueOf(intent.getIntExtra("nowList_id", 0));
-//				myPreferences.nowList=intent.getStringExtra("nowList");
-//				dbMsg += "[" + myPreferences.nowList_id+ "]" + myPreferences.nowList;
-//				myPreferences.pref_data_url=intent.getStringExtra("pref_data_url");
-//				dbMsg += ",pref_data_url=" + myPreferences.pref_data_url;
-//				boolean toPlaying = intent.getBooleanExtra("IsPlaying", true);
-//				dbMsg += ",toPlaying=" + toPlaying;
-
+//				playerClass = (Class<? extends MaraSonActivity>) intent.getSerializableExtra("callClass");
+//				dbMsg += ",playerClass=" + playerClass.getName();
+				notifyIntent = new Intent(MusicPlayerService.this, MaraSonActivity.class);		//getApplication()
 				String readID = String.valueOf(intent.getIntExtra("nowList_id", 0));				//extras.getInt("nowList_id");
 				dbMsg += ",渡されたのは[ " + readID+ "] ";
 				if(myPreferences.nowList_id != readID){
@@ -3875,14 +3845,20 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				if(musicPlaylist == null){
 					musicPlaylist = new MusicPlaylist(MusicPlayerService.this);
 				}
-				playNextSong(mIndex,true);
+				lpNotificationMake(myPreferences.pref_data_url);
 				IsPlaying=intent.getBooleanExtra("IsPlaying",false);
+				dbMsg += ",IsPlaying=" + IsPlaying;
+				playNextSong(mIndex,IsPlaying);
 //				if(IsPlaying){
 //					configAndStartMediaPlayer();
 //				}else{
 //					mState = State.Paused;
 //				}
-				dbMsg += "＞＞＞＞＞リストから選曲";
+				//プレイヤー画面を開く
+				startActivity(notifyIntent);
+//				public Intent notifyIntent;
+//				public PendingIntent pendingIntent;
+			dbMsg += "＞＞＞＞＞リストから選曲";
 			} else if (action.equals(ACTION_PLAYPAUSE)) {
 				dbMsg +="でPLAY/PAUSE";
 				processTogglePlaybackRequest();
@@ -4046,7 +4022,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					}else if ( 14 <= android.os.Build.VERSION.SDK_INT  &&  android.os.Build.VERSION.SDK_INT < 21) {													//
 						//					myPreferences.pref_notifplayer = Boolean.valueOf( (String) keys.get("myPreferences.pref_notifplayer"));
 						if( myPreferences.pref_notifplayer ){
-							makeNotification();				//ノティフィケーション作成
+						//	makeNotification();				//ノティフィケーション作成
 						}
 					}else if ( 31 <= android.os.Build.VERSION.SDK_INT) {													//
 //						// Create a MediaSessionCompat
