@@ -1478,7 +1478,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	/**play/pouseボタン*/
 	private PendingIntent ppIntent;
 	private NotificationCompat.Action ppAction;
-	NotificationManagerCompat notificationManager;
+	private NotificationManagerCompat notificationManager;
+	private String channelId = "default";
 	/**ノティフィケーションインスタンス*/
 	public  Notification lpNotification;
 	public TransportControls lpNControls;
@@ -1604,15 +1605,14 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	 * 呼出し元    sendPlayerState
 	  */
 	@SuppressLint("NewApi")
-	public void lpNotificationMake(String urlStr) {
+	public void lpNotificationMake(String dataFN) {
 		final String TAG = "lpNotificationMake";
 		String dbMsg="";
 		try{
-//			dbMsg += "dataFNn="+dataFN;
+			dbMsg += "dataFN="+dataFN;
 	//		getDataInfo(dataFN);
 //			dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
 //			Context context = getApplicationContext();
-			String channelId = "default";
 			String title = getApplicationContext().getString(R.string.app_name);
 			// 通知からActivityを起動できるようにする
 //			Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
@@ -1625,8 +1625,13 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			);
 			dbMsg += " ,pendingIntent="+pendingIntent.getClass().getName();				//android.app.PendingIntent
 			notificationManager = NotificationManagerCompat.from(this);
-			// Notification　Channel 設定
-			mNotificationChannel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
+//			if (notificationManager.getNotificationChannel(String.valueOf(channelId)) == null) {
+				dbMsg += " ,Notification　Channel 設定";
+				mNotificationChannel = new NotificationChannel(String.valueOf(NOTIFICATION_ID), title, NotificationManager.IMPORTANCE_DEFAULT);
+				dbMsg += " ,通知音を消す";
+				mNotificationChannel.setSound(null,null);			//setSound(Uri.parse("android.resource://" + packageName + "/" + R.raw.sample), null)
+				notificationManager.createNotificationChannel(mNotificationChannel);
+//			}
 			if (notificationManager != null) {
 				notificationManager.createNotificationChannel(mNotificationChannel);
 			}
@@ -1634,7 +1639,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			if(31<= android.os.Build.VERSION.SDK_INT){
 				if(metadataBuilder == null){
 					dbMsg += " , metadataBuilder == null";
-					getDataInfo(urlStr);
+					getDataInfo(dataFN);
 				}
 				if(mediaSession ==null){
 					dbMsg += " , mediaSession == null";
@@ -1645,7 +1650,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				// Get the session's metadata
 				MediaController controller = mediaSession.getController();
 
-				NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(this, String.valueOf(NOTIFICATION_ID));
 				// タイトルなどの表示
 				mediaSession.setMetadata(metadataBuilder.build());
 				mediaSession.setCallback(nfCallback);
@@ -1702,7 +1707,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 				dbMsg += " Notification型のインスタンス生成";
 				lpNotification = builder.build();
-				startForeground(NOTIFICATION_ID, lpNotification);
+				notificationManager.notify(NOTIFICATION_ID, lpNotification);
+			//	startForeground(NOTIFICATION_ID, lpNotification);
 			}else {
 				Drawable drawable = getApplicationContext().getResources().getDrawable(R.drawable.no_image);
 				Bitmap artwork = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
