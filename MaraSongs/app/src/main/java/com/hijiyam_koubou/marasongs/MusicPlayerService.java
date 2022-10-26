@@ -495,27 +495,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		String dbMsg="開始";/////////////////////////////////////
 		try{
 			dbMsg += "mPlayer="+ mPlayer.getTrackInfo();
-//			if( mPlayer != null){
-//				mPlayer.pause();
-//				int mcPosition = mPlayer.getCurrentPosition();
-//				dbMsg +=",mcPosition=" + mcPosition;/////////////////////////////////////
-//				if( mcPosition > 3000 ){					//3秒以上なら
-//					if(rp_pp){						//2点間リピート中で//リピート区間終了点
-//						mcPosition = pp_start;		//リピート区間開始点
-//					}else {
-//						mcPosition = 0;
-//					}
-//					mPlayer.seekTo(mcPosition);		//先頭に戻す
-//					action = MusicPlayerService.ACTION_PLAY;
-//					mPlayer.start();
-//				}else{											//1秒未満なら
-					if(mPlayer != null){
-						if( mPlayer.isPlaying() ){
-							processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
-						}
-					}
-//				}
-//			}
+			if(mPlayer != null){
+				if( mPlayer.isPlaying() ){
+					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
+				}
+			}
 			dbMsg +=",[" + mIndex + "]";
 			dbMsg += "/" + listEnd+ "]";
 			nextIndex = mIndex - 1;
@@ -842,7 +826,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			dbMsg += "を書込み" + retBool;
 			retBool = setPrefInt( "pref_duration", mPlayer.getDuration(),MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
-	//		lpNotificationMake( myPreferences.pref_data_url , mcPosition , mPlayer);
+			lpNotificationMake( myPreferences.pref_data_url);
 			//	}
 
 
@@ -1593,6 +1577,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 			};
 
+
+
 	/**
 	 * sendPlayerStateから呼出しボタンをアップする度に呼び出される
 	 * ？ロックスクリーンでは呼び出されない？
@@ -1619,10 +1605,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			// Set the Activity to start in a new, empty task
 			notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			dbMsg += " ,notifyIntent="+notifyIntent.getClass().getName();		//android.content.Intent
-			pendingIntent = PendingIntent.getActivity(
-					getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
-							| PendingIntent.FLAG_IMMUTABLE
-			);
+			if(pendingIntent == null){
+				pendingIntent = PendingIntent.getActivity(
+						getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+								| PendingIntent.FLAG_IMMUTABLE
+				);
+			}
 			dbMsg += " ,pendingIntent="+pendingIntent.getClass().getName();				//android.app.PendingIntent
 			notificationManager = NotificationManagerCompat.from(this);
 //			if (notificationManager.getNotificationChannel(String.valueOf(channelId)) == null) {
@@ -1649,7 +1637,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += " , DURATION=" + metadataBuilder.build().getLong(MediaMetadata.METADATA_KEY_DURATION);
 				// Get the session's metadata
 				MediaController controller = mediaSession.getController();
-
 				NotificationCompat.Builder builder = new NotificationCompat.Builder(this, String.valueOf(NOTIFICATION_ID));
 				// タイトルなどの表示
 				mediaSession.setMetadata(metadataBuilder.build());
@@ -3289,7 +3276,9 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			String[] items = urlStr.split(File.separator);
 			albumArtistName = items[items.length-3];
 			dbMsg += ",albumArtistName=" + albumArtistName;
-			metadataBuilder = new MediaMetadata.Builder();
+			if(metadataBuilder == null){
+				metadataBuilder = new MediaMetadata.Builder();
+			}
 			// To provide most control over how an item is displayed set the
 			// display fields in the metadata
 			metadataBuilder.putString(MediaMetadata.METADATA_KEY_MEDIA_ID, String.valueOf(audioId));
