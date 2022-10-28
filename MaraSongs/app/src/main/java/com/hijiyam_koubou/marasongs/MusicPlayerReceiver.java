@@ -34,12 +34,12 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 				if (rAction.equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
 					dbMsg +=",Headphonesが外された" ;															//offしか発生しない
 					Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
-//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
+//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 				}else if (rAction.equals(android.media.AudioManager.ACTION_HEADSET_PLUG)) {
 					dbMsg +=",Headphonessoucy装着" ;
-//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
+//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
 				} else if (rAction.equals(Intent.ACTION_MEDIA_BUTTON)) {
@@ -59,7 +59,8 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 						dbMsg= dbMsg +"を"  + (
 						keyEvent.getAction() == KeyEvent.ACTION_DOWN ? "押した" :
 						keyEvent.getAction() == KeyEvent.ACTION_UP ? "UP" :
-						keyEvent.getAction() == KeyEvent.ACTION_MULTIPLE ? "MULTIPLE" : "Unknown");			//ロックスクリーン以外はここでエラーで止まる
+						keyEvent.getAction() == KeyEvent.ACTION_MULTIPLE ? "MULTIPLE" : "Unknown");
+						//ロックスクリーン以外はここでエラーで止まる
 					}
 					dbMsg +=",getKeyCode=" + keyEvent.getKeyCode();
 					myLog(TAG,dbMsg);

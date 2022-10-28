@@ -123,7 +123,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 							case BluetoothProfile.STATE_DISCONNECTED:																//0			getApplicationContext().
 								dbMsg += "、STATE_DISCONNECTED;切断された" ;
 								stateBaseStr = stateBaseStr+ context.getResources().getString(R.string.bt_discnnected);				//切断
-								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
+								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);
 								break;
@@ -133,7 +133,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 							case BluetoothProfile.STATE_CONNECTED:																	//2
 								dbMsg += "、接続された"  ;
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_connected);				//接続済み
-								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);						//		ACTION_PLAYPAUSE
+								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);
 								break;
@@ -158,7 +158,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 							case BluetoothA2dp.STATE_NOT_PLAYING:																	//11
 								dbMsg += "、STATE_NOT_PLAYING:";				//接続が切れた時に発生した
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_not_playing);				//一時停止
-//								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);						//		ACTION_PLAYPAUSE
+//								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 //								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 //								context.startService(MPSIntent);
 ////								if( service.pref_bt_renkei ){	//終話後に自動再生

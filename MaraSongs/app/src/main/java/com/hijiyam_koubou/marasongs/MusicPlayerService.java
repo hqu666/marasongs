@@ -186,7 +186,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	public Item playingItem;
 	public String album_artist =null;		//リストアップしたアルバムアーティスト名
 	public int crossFeadTime = 500;		//再生終了時、何ms前に次の曲に切り替えるか
-//	public int mcPosition;			//現在の再生ポジション☆生成時は最初から
+	public int mcPosition;			//現在の再生ポジション☆生成時は最初から
 	public int saiseiJikan;				//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
 	public long ruikeiSTTime;			//累積時間
 	public long ruikeikasannTime;			//累積加算時間
@@ -358,16 +358,37 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //		https://sites.google.com/site/androidappzz/home/dev/volumesample				//着信音量を取得、設定する方法
 	/**
 	 *  mStateで再生中なら停止(State.Paused)、停止してたら再生*/
-	private void processTogglePlaybackRequest() {												//②ⅲ?Play/Pauseの反転		<ACTION_PLAYPAUSE
+	private void processTogglePlaybackRequest() {
 		final String TAG = "processTogglePlaybackRequest";
-		String dbMsg="";/////////////////////////////////////
+		String dbMsg="";
 		try{
 			dbMsg +="mState= " + mState;/////////////////////////////////////
 			if (mState == State.Paused || mState == State.Stopped) {
+				ppAction.icon = android.R.drawable.ic_media_pause;
 				processPlayRequest();
 			} else {
+				ppAction.icon = android.R.drawable.ic_media_play;
 				processPauseRequest();
 			}
+
+
+//				ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//				int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
+//				String ppTitol = "pause";
+//				if (mPlayer != null) {
+//					dbMsg += ",isPlaying = " + mPlayer.isPlaying();
+//					if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
+//						ppIcon = android.R.drawable.ic_media_play;
+//						ppTitol = "play";
+//					}
+//				}else{
+//					ppIcon = android.R.drawable.ic_media_play;
+//					ppTitol = "play";
+//				}
+//				dbMsg += ",ppTitol = " + ppTitol;
+//				ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
+
+
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -380,7 +401,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		final String TAG = "processPlayRequest";
 		String dbMsg ="";
 		try{
-			int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);		//sharedPref.getInt("pref_position" , 0);
+//			int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);		//sharedPref.getInt("pref_position" , 0);
 			int saiseiJikan = getPrefInt("pref_duration" , 0, MusicPlayerService.this);
 			dbMsg +="mState= " + mState + " ,mcPosition= " + mcPosition + "/" +  saiseiJikan + "[ms]";
 			if (mState == State.Retrieving) {
@@ -442,7 +463,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				mPlayer.pause();
 				mState = State.Paused;			// Pause media player and cancel the 'foreground service' state.
 				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
-				int mcPosition=  mPlayer.getCurrentPosition();
+				mcPosition=  mPlayer.getCurrentPosition();
 				dbMsg += " , mcPosition= " + mcPosition + "[ms]";
 				setPrefInt("pref_position", mcPosition, MusicPlayerService.this);        //sharedPref.getInt("pref_position" , 0);
 				sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
@@ -1467,6 +1488,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	/**ノティフィケーションインスタンス*/
 	public  Notification lpNotification;
 	public TransportControls lpNControls;
+	public Intent intentNR;
 	public  MediaSession mediaSession;		//final
 	public MediaMetadata.Builder metadataBuilder;
 //	private PlaybackStateCompat.Builder stateBuilder;
@@ -1577,8 +1599,6 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 			};
 
-
-
 	/**
 	 * sendPlayerStateから呼出しボタンをアップする度に呼び出される
 	 * ？ロックスクリーンでは呼び出されない？
@@ -1596,13 +1616,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		String dbMsg="";
 		try{
 			dbMsg += "dataFN="+dataFN;
-	//		getDataInfo(dataFN);
-//			dbMsg += "[mcPosition="+ORGUT.sdf_mss.format(mcPosition) + "/" + ";"+ORGUT.sdf_mss.format(saiseiJikan) + "]";
-//			Context context = getApplicationContext();
 			String title = getApplicationContext().getString(R.string.app_name);
-			// 通知からActivityを起動できるようにする
-//			Intent notifyIntent = new Intent(getApplicationContext(), MaraSonActivity.class);
-			// Set the Activity to start in a new, empty task
 			notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			dbMsg += " ,notifyIntent="+notifyIntent.getClass().getName();		//android.content.Intent
 			if(pendingIntent == null){
@@ -1613,13 +1627,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 			}
 			dbMsg += " ,pendingIntent="+pendingIntent.getClass().getName();				//android.app.PendingIntent
 			notificationManager = NotificationManagerCompat.from(this);
-//			if (notificationManager.getNotificationChannel(String.valueOf(channelId)) == null) {
-				dbMsg += " ,Notification　Channel 設定";
-				mNotificationChannel = new NotificationChannel(String.valueOf(NOTIFICATION_ID), title, NotificationManager.IMPORTANCE_DEFAULT);
-				dbMsg += " ,通知音を消す";
-				mNotificationChannel.setSound(null,null);			//setSound(Uri.parse("android.resource://" + packageName + "/" + R.raw.sample), null)
-				notificationManager.createNotificationChannel(mNotificationChannel);
-//			}
+			dbMsg += " ,Notification　Channel 設定";
+			mNotificationChannel = new NotificationChannel(String.valueOf(NOTIFICATION_ID), title, NotificationManager.IMPORTANCE_DEFAULT);
+			dbMsg += " ,通知音を消す";
+			mNotificationChannel.setSound(null,null);			//setSound(Uri.parse("android.resource://" + packageName + "/" + R.raw.sample), null)
+			notificationManager.createNotificationChannel(mNotificationChannel);
 			if (notificationManager != null) {
 				notificationManager.createNotificationChannel(mNotificationChannel);
 			}
@@ -1644,7 +1656,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += " Notification そのものをタップしたとき="+pendingIntent.getCreatorUid();
 				builder.setContentIntent(pendingIntent);
 				builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-				Intent intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
+				intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
 
 				intentNR.setAction(ACTION_REWIND);
 				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_REWINDE);
@@ -1654,7 +1666,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				intentNR.setAction(ACTION_PLAYPAUSE);
 				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
 				ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-				int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
+				int ppIcon = android.R.drawable.ic_media_pause;
+				//getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
 				String ppTitol = "pause";
 				if (mPlayer != null) {
 					dbMsg += ",isPlaying = " + mPlayer.isPlaying();
@@ -1667,7 +1680,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 					ppTitol = "play";
 				}
 				dbMsg += ",ppTitol = " + ppTitol;
-				ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
+				ppAction = new NotificationCompat.Action(ppIcon, ACTION_PLAYPAUSE, ppIntent);
 
 				intentNR.setAction(ACTION_SKIP);
 				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_SKIP);
@@ -1679,7 +1692,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				PendingIntent quitIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_quit, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 				NotificationCompat.Action quitAction = new NotificationCompat.Action(android.R.drawable.ic_lock_power_off,ACTION_SYUURYOU_NOTIF,quitIntent);
 
-//					// 左から順に並びます
+				// 左から順に並びます
 				builder.addAction(rewAction);
 				builder.addAction(ppAction);
 				builder.addAction(ffAction);
@@ -1835,6 +1848,7 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		}
 	}
 	//05-07 21:43:02.811: E/MediaPlayer(5999): Should have subtitle controller already set
+
 
 	private Notification.Action generateAction( int icon, String title, String intentAction ,int flag) {
 		final String TAG = "generateAction";
@@ -3853,14 +3867,10 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				startActivity(notifyIntent);
 //				public Intent notifyIntent;
 //				public PendingIntent pendingIntent;
-			dbMsg += "＞＞＞＞＞リストから選曲";
+				dbMsg += "＞＞＞＞＞リストから選曲";
 			} else if (action.equals(ACTION_PLAYPAUSE)) {
 				dbMsg +="でPLAY/PAUSE";
 				processTogglePlaybackRequest();
-
-//		//		dataUketori(intent);										//クライアントからデータを受け取りグローバル変数にセット
-//				processPlayRequest();
-//				processTogglePlaybackRequest();														//②ⅲ?Play/Pauseの反転
 			} else if (action.equals(ACTION_PLAY_READ)) {							//"readPlaying[MaraSonActivity]
 			//	dataUketori(intent);			//クライアントからデータを受け取りグローバル変数にセット
 				processPlayRequest();
