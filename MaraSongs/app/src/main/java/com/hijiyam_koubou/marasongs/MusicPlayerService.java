@@ -364,31 +364,11 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 		try{
 			dbMsg +="mState= " + mState;/////////////////////////////////////
 			if (mState == State.Paused || mState == State.Stopped) {
-				ppAction.icon = android.R.drawable.ic_media_pause;
 				processPlayRequest();
 			} else {
-				ppAction.icon = android.R.drawable.ic_media_play;
 				processPauseRequest();
 			}
-
-
-//				ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//				int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
-//				String ppTitol = "pause";
-//				if (mPlayer != null) {
-//					dbMsg += ",isPlaying = " + mPlayer.isPlaying();
-//					if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
-//						ppIcon = android.R.drawable.ic_media_play;
-//						ppTitol = "play";
-//					}
-//				}else{
-//					ppIcon = android.R.drawable.ic_media_play;
-//					ppTitol = "play";
-//				}
-//				dbMsg += ",ppTitol = " + ppTitol;
-//				ppAction = new NotificationCompat.Action(ppIcon,ppTitol,ppIntent);
-
-
+			ppIconChaange();
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -1483,13 +1463,17 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 	/**play/pouseボタン*/
 	private PendingIntent ppIntent;
 	private NotificationCompat.Action ppAction;
+	private NotificationCompat.Action pp2Play;
+	private NotificationCompat.Action pp2Pouse;
 	private NotificationManagerCompat notificationManager;
 	private String channelId = "default";
+	private androidx.media.app.NotificationCompat.MediaStyle NotifStyle;
 	/**ノティフィケーションインスタンス*/
 	public  Notification lpNotification;
 	public TransportControls lpNControls;
 	public Intent intentNR;
-	public  MediaSession mediaSession;		//final
+	public MediaSession mediaSession;		//final
+
 	public MediaMetadata.Builder metadataBuilder;
 //	private PlaybackStateCompat.Builder stateBuilder;
 	/**ノティフィケーションマネージャー*/
@@ -1529,13 +1513,15 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 //						mediaSession.setActive(true);
 //						// start the player (custom call)
 								mPlayer.start();
-								dbMsg += ">>" + mPlayer.isPlaying();
 //						// Register BECOME_NOISY BroadcastReceiver
 //						registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
 //						// Put the service in the foreground, post notification
 //						service.startForeground(id, myPlayerNotification);
 							}
+						}else{
+							mPlayer.pause();
 						}
+						dbMsg += ">>" + mPlayer.isPlaying();
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG, dbMsg + "で" + e);
@@ -1599,6 +1585,39 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				}
 			};
 
+	/**play/pauseアイコン切り替え*/
+	public NotificationCompat.Action ppIconChaange() {
+		final String TAG = "ppIconChaange";
+		String dbMsg = "";
+		NotificationCompat.Action retAction = null;
+		try {
+			intentNR.setAction(ACTION_PLAYPAUSE);
+			intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
+			ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+			int ppIcon = android.R.drawable.ic_media_pause;
+			if(mPlayer != null){
+				dbMsg += ",isPlaying=" + mPlayer.isPlaying();
+				if(! mPlayer.isPlaying()){
+					ppIcon = android.R.drawable.ic_media_play;
+					//mPlayer.start();
+				}else {
+					//	mPlayer.pause();
+				}
+				dbMsg += ">>" + mPlayer.isPlaying();
+			}else{
+				dbMsg += "mPlayer = null";
+				ppIcon = android.R.drawable.ic_media_play;
+			}
+			retAction = new NotificationCompat.Action(ppIcon,ACTION_PLAYPAUSE,ppIntent);
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG, dbMsg + "で" + e);
+		}
+		return retAction;
+	}
+
+
+
 	/**
 	 * sendPlayerStateから呼出しボタンをアップする度に呼び出される
 	 * ？ロックスクリーンでは呼び出されない？
@@ -1656,6 +1675,8 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				dbMsg += " Notification そのものをタップしたとき="+pendingIntent.getCreatorUid();
 				builder.setContentIntent(pendingIntent);
 				builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+				NotifStyle = new androidx.media.app.NotificationCompat.MediaStyle();
 				intentNR = new Intent(getApplicationContext(), NotifRecever.class);			//MusicPlayerService.this
 
 				intentNR.setAction(ACTION_REWIND);
@@ -1667,20 +1688,12 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
 				ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 				int ppIcon = android.R.drawable.ic_media_pause;
+				ppAction = new NotificationCompat.Action(ppIcon,ACTION_PLAYPAUSE,ppIntent);
 				//getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
-				String ppTitol = "pause";
-				if (mPlayer != null) {
-					dbMsg += ",isPlaying = " + mPlayer.isPlaying();
-					if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
-						ppIcon = android.R.drawable.ic_media_play;
-						ppTitol = "play";
-					}
-				}else{
-					ppIcon = android.R.drawable.ic_media_play;
-					ppTitol = "play";
-				}
-				dbMsg += ",ppTitol = " + ppTitol;
-				ppAction = new NotificationCompat.Action(ppIcon, ACTION_PLAYPAUSE, ppIntent);
+//				String ppTitol = "pause";
+
+				pp2Pouse = new NotificationCompat.Action(android.R.drawable.ic_media_pause, ACTION_PLAYPAUSE, ppIntent);
+				pp2Play = new NotificationCompat.Action(android.R.drawable.ic_media_play, ACTION_PLAYPAUSE, ppIntent);
 
 				intentNR.setAction(ACTION_SKIP);
 				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_SKIP);
@@ -1694,15 +1707,28 @@ public class MusicPlayerService  extends Service implements  MusicFocusable,Prep
 
 				// 左から順に並びます
 				builder.addAction(rewAction);
-				builder.addAction(ppAction);
+				builder.addAction(ppIconChaange());
+//				builder.addAction(pp2Pouse);
+//				builder.addAction(pp2Play);
 				builder.addAction(ffAction);
 				builder.addAction(quitAction);
+//				if (mPlayer != null) {
+//					dbMsg += ",isPlaying = " + mPlayer.isPlaying();
+//					if (! mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
+//						NotifStyle.setShowActionsInCompactView(2);
+//					}else{
+//						NotifStyle.setShowActionsInCompactView(1);
+//					}
+//				}else{
+//					NotifStyle.setShowActionsInCompactView(1);
+//				}
+//				builder.setStyle(NotifStyle);
 
-				builder.setSmallIcon(R.drawable.ic_launcher);
+				builder.setSmallIcon(R.drawable.ic_launcher_notif);
 				dbMsg += ",setStyle";
 				builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
 								.setMediaSession(MediaSessionCompat.Token.fromToken(mediaSession.getSessionToken()))
-								.setShowActionsInCompactView(0)
+								.setShowActionsInCompactView(1)			//0,1,3,4
 				);
 
 				dbMsg += " Notification型のインスタンス生成";
