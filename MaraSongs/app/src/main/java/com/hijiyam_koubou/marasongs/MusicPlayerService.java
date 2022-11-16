@@ -70,8 +70,12 @@ import androidx.preference.PreferenceManager;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 
 import java.io.File;
 import java.io.IOException;
@@ -316,9 +320,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //							mainEditor.putString("nowList",myPreferences.nowList);							//再生中のプレイリスト名
 							mainEditor.putInt("pref_mIndex", mIndex );
 							mainEditor.putString("pref_data_url",dataFN);				//再生していた曲	.commit()
-							if(mPlayer !=  null){
-								mcPosition = mPlayer.getCurrentPosition();
-								saiseiJikan = mPlayer.getDuration();
+							if(exoPlayer !=  null){
+								mcPosition = (int) exoPlayer.getCurrentPosition();
+								saiseiJikan = (int) exoPlayer.getDuration();
 							}
 							mainEditor.putInt("pref_position", mcPosition);		//再生ポジション
 							mainEditor.putInt("pref_duration", saiseiJikan);	//再生時間
@@ -420,15 +424,15 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //			}
 
 			tryToGetAudioFocus();
-			dbMsg +="mPlayer= " + mPlayer ;
-			if(mPlayer == null){
+			dbMsg +="mPlayer= " + exoPlayer ;
+			if(exoPlayer == null){
 				playNextSong(mIndex,true);
 			} else{
 				if (mState == State.Stopped) {		// actually play the song
 					dbMsg += " , Stopped>>次曲へ " ;
 					playNextSong(mIndex,true);
 				} else if (mState == State.Paused
-				|| 0< mPlayer.getCurrentPosition()
+				|| 0< exoPlayer.getCurrentPosition()
 				) {			//0531元SoucsはPausedだけ   || 0 < mcPosition
 					configAndStartMediaPlayer();					//ポーズを解除
 				} else {
@@ -436,7 +440,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					playNextSong(mIndex,true);
 				}
 			}
-			sendPlayerState( mPlayer );					//一曲分のデータ抽出して他のActvteyに渡す。
+			sendPlayerState( exoPlayer );					//一曲分のデータ抽出して他のActvteyに渡す。
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -455,16 +459,16 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				return;
 			}
 			dbMsg +=">> " + mState;/////////////////////////////////////
-			dbMsg +=",mPlayer " + mPlayer;/////////////////////////////////////
-			if( mPlayer != null){
-				dbMsg +=",isPlaying=" + mPlayer.isPlaying();/////////////////////////////////////
-				mPlayer.pause();
+			dbMsg +=",mPlayer " + exoPlayer;/////////////////////////////////////
+			if( exoPlayer != null){
+				dbMsg +=",isPlaying=" + exoPlayer.isPlaying();/////////////////////////////////////
+				exoPlayer.setPlayWhenReady(false);//.pause();
 				mState = State.Paused;			// Pause media player and cancel the 'foreground service' state.
-				dbMsg +=">isPlaying>" + mPlayer.isPlaying();/////////////////////////////////////
-				mcPosition=  mPlayer.getCurrentPosition();
+				dbMsg +=">isPlaying>" + exoPlayer.isPlaying();/////////////////////////////////////
+				mcPosition= (int) exoPlayer.getCurrentPosition();
 				dbMsg += " , mcPosition= " + mcPosition + "[ms]";
 				setPrefInt("pref_position", mcPosition, MusicPlayerService.this);        //sharedPref.getInt("pref_position" , 0);
-				sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
+				sendPlayerState(exoPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -485,22 +489,22 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				nextIndex = 0;
 			}
 			dbMsg +=  ">>" + nextIndex;
-			dbMsg += "mPlayer="+ mPlayer;/////////////////////////////////////
-			if(mPlayer != null){
-				if( mPlayer.isPlaying() ){
+			dbMsg += "mPlayer="+ exoPlayer;/////////////////////////////////////
+			if(exoPlayer != null){
+				if( exoPlayer.isPlaying() ){
 					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
 				}
 			}
 //			frCount++;
 //			dbMsg +=  "," + mIndex +"+"+ frCount+";選択中="+ sentakuCyuu;/////////////////////////////////////
-//			if( mPlayer == null){
+//			if( exoPlayer == null){
 //			//	Thread.sleep(1000);			//書ききる為の時間
 //				okuriMpdosi(frCount);
 //				frCount = 0;
 //			}
 			playNextSong(nextIndex,true);
-			sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
-			changeCount( mPlayer );
+			sendPlayerState(exoPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
+			changeCount( exoPlayer );
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -513,9 +517,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "processRewindRequest[MusicPlayerService]";
 		String dbMsg="開始";/////////////////////////////////////
 		try{
-			dbMsg += "mPlayer="+ mPlayer.getTrackInfo();
-			if(mPlayer != null){
-				if( mPlayer.isPlaying() ){
+//			dbMsg += "mPlayer="+ exoPlayer.getTrackInfo();
+			if(exoPlayer != null){
+				if( exoPlayer.isPlaying() ){
 					processStopRequest(false);					//タイマーを破棄して/mPlayerの破棄へ
 				}
 			}
@@ -528,14 +532,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg +=">>[" + nextIndex + "]";
 			mPlayer2 = null;
 			playNextSong(nextIndex,true);
-//			frCount--;
-//			dbMsg=dbMsg+ ","+  mIndex +"-"+ frCount;/////////////////////////////////////
-//			if( mPlayer == null){
-//				okuriMpdosi(frCount);
-//				frCount = 0;
-//			}
-			sendPlayerState(mPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
-			changeCount( mPlayer );
+			sendPlayerState(exoPlayer);					//一曲分のデータ抽出して他のActvteyに渡す。
+			changeCount( exoPlayer );
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -563,7 +561,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			}
 			dbMsg +=">> " + mIndex;/////////////////////////////////////
 			dbMsg +=",処理後に追加されたfrCount= " + frCount;/////////////////////////////////////
-			if( frCount == 0 ||  mPlayer == null) {                    //カウントが追加されていなければ
+			if( frCount == 0 ||  exoPlayer == null) {                    //カウントが追加されていなければ
 				dbMsg += "[" + (mIndex) + "/" + listEnd + "曲目へ]";///////////
 				Cursor playingItem = musicPlaylist.getPlaylistItems(Integer.parseInt(myPreferences.nowList_id), mIndex);
 				if (playingItem.moveToFirst()) {
@@ -596,7 +594,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					playNextSong(mIndex,true);            // If we're stopped, just go ahead to the next song and start playing
 				} else {                                    //カウントの変動が続いていたら判定ループに戻ってもう一度送り操作
 					//		myLog(TAG,dbMsg);
-					changeCount(mPlayer);                        //タイマーオブジェクトを使ったカウンタ更新を追加
+					changeCount(exoPlayer);                        //タイマーオブジェクトを使ったカウンタ更新を追加
 				}
 				playingItem.close();
 
@@ -617,11 +615,11 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		String dbMsg="";
 		try{
 			dbMsg +="mState=" + mState;
-			if(mPlayer != null){
+			if(exoPlayer != null){
 				setPref();		//プリファレンス記載
-				dbMsg +=",isPlaying=" + mPlayer.isPlaying();
-				if ( mPlayer.isPlaying()) {				//	mState == State.Playing || mState == State.Paused
-					mPlayer.stop();
+				dbMsg +=",isPlaying=" + exoPlayer.isPlaying();
+				if ( exoPlayer.isPlaying()) {				//	mState == State.Playing || mState == State.Paused
+					exoPlayer.stop();
 					mState = State.Stopped;
 					stopCount();		//タイマーオブジェクトを破棄
 				}
@@ -650,20 +648,20 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			}
 	//		stopForeground(true);		//APIL5 このサービスの消去 stop being a foreground service
 			if (releaseMediaPlayer  ) {		// stop and release the Media Player, if it's available
-				if ( mPlayer != null) {		// stop and release the Media Player, if it's available
-					dbMsg +=",isPlaying=" + mPlayer.isPlaying() ;/////////////////////////////////////
-					if( mPlayer.isPlaying()  ){
-						mPlayer.pause();
+				if ( exoPlayer != null) {		// stop and release the Media Player, if it's available
+					dbMsg +=",isPlaying=" + exoPlayer.isPlaying() ;/////////////////////////////////////
+					if( exoPlayer.isPlaying()  ){
+						exoPlayer.setPlayWhenReady(false);
 					}
 	//				musicVol = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 	//				dbMsg +=",musicVol=" + musicVol;/////////////////////////////////////
 	//				mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
 	//				dbMsg +=">>" + musicVol;/////////////////////////////////////
 	//  				myLog(TAG,dbMsg);
-					mPlayer.reset();
-					mPlayer.release();
+//					exoPlayer.reset();
+					exoPlayer.release();
 				}
-				mPlayer = null;
+				exoPlayer = null;
 
 			}
 			stopForeground(true);		//APIL5 このサービスの消去 stop being a foreground service
@@ -700,19 +698,19 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "configAndStartMediaPlayer";
 		String dbMsg="";
 		try{
-			if(mPlayer != null){				//レジューム対応を追加
+			if(exoPlayer != null){				//レジューム対応を追加
 				int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
-				dbMsg += " , mcPosition= " + mPlayer.getCurrentPosition() +">Pref>" + mcPosition + "[ms]";
-				if (!mPlayer.isPlaying()) {
+				dbMsg += " , mcPosition= " + exoPlayer.getCurrentPosition() +">Pref>" + mcPosition + "[ms]";
+				if (!exoPlayer.isPlaying()) {
 					if(0 < mcPosition ){
-						mPlayer.seekTo(mcPosition);		// Attempt to perform seekTo in wrong state
-						dbMsg += " >>" + mPlayer.getCurrentPosition();/////////////////////////////////////
+						exoPlayer.seekTo(mcPosition);		// Attempt to perform seekTo in wrong state
+						dbMsg += " >>" + exoPlayer.getCurrentPosition();/////////////////////////////////////
 					}
-					dbMsg += ", isPlaying=" + mPlayer.isPlaying();
-					mPlayer.start();
-					dbMsg += " >>" + mPlayer.isPlaying();
+					dbMsg += ", isPlaying=" + exoPlayer.isPlaying();
+					exoPlayer.setPlayWhenReady(true);
+					dbMsg += " >>" + exoPlayer.isPlaying();
 					mState = State.Playing;
-					changeCount( mPlayer );						//タイマーオブジェクトを使ったカウンタ更新を追加
+					changeCount( exoPlayer );						//タイマーオブジェクトを使ったカウンタ更新を追加
 				}
 	//		} else {
 	//			dbMsg="mAudioFocus=" + mAudioFocus +"(" + AudioFocus.NoFocusNoDuck+ "/" + AudioFocus.NoFocusCanDuck+ ")";/////////////////////////////////////
@@ -811,30 +809,31 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg += myPreferences.pref_data_url;
 			getDataInfo(myPreferences.pref_data_url);
 //						if(mPlayer == null){
-			if(mPlayer != null){
-				if (mPlayer.isPlaying()) {
-					mPlayer.stop();
+			if(exoPlayer != null){
+				if (exoPlayer.isPlaying()) {
+					exoPlayer.stop();
 					stopCount();
 				}
 				try {
-					mPlayer.reset();
-					mPlayer.release();
-					mPlayer = null;
+//					exoPlayer.reset();
+					exoPlayer.release();
+					exoPlayer = null;
 				} catch (IllegalStateException e) {
 					myErrorLog(TAG,dbMsg+"で"+e);
 				}
 			}
-			mPlayer = getMediaPlayer(getApplicationContext(),myPreferences.pref_data_url);  //createMediaPlayerIfNeeded()?
-			mPlayer.setLooping(true);						//☆以下二つより先に行わないとIllegalStateExceptionが発生
-			mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			exoPlayer = (ExoPlayer) getMediaPlayer(getApplicationContext(),myPreferences.pref_data_url);  //createMediaPlayerIfNeeded()?
+	//		exoPlayer.setLooping(true);						//☆以下二つより先に行わないとIllegalStateExceptionが発生
+		//	setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		//	exoPlayer.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 			stopCount();
 			getDataInfo(myPreferences.pref_data_url);
 			if(toPlay){
-				mPlayer.start();
+				exoPlayer.setPlayWhenReady(true);
 				mState = State.Playing;
-//				changeCount( mPlayer );						//タイマーオブジェクトを使ったカウンタ更新を追加
+//				changeCount( exoPlayer );						//タイマーオブジェクトを使ったカウンタ更新を追加
 			}
-			changeCount(mPlayer);                        //タイマーオブジェクトを使ったカウンタ更新を追加
+			changeCount(exoPlayer);                        //タイマーオブジェクトを使ったカウンタ更新を追加
 			mIndex = itemIndex;
 			boolean retBool = setPrefStr( "pref_data_url", String.valueOf(myPreferences.pref_data_url),MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
@@ -843,7 +842,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			int mcPosition = 0;
 			retBool = setPrefInt( "pref_position", mcPosition,MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
-			retBool = setPrefInt( "pref_duration", mPlayer.getDuration(),MusicPlayerService.this);   			//再生中のファイル名
+			retBool = setPrefInt( "pref_duration", (int) exoPlayer.getDuration(),MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
 			lpNotificationMake( myPreferences.pref_data_url);
 			//	}
@@ -1090,9 +1089,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg += "、g_timer=" + g_timer;/////////////////////////////////////
 			dbMsg += "、g_handler=" + g_handler;/////////////////////////////////////
 			player.setLooping(false);		//ループ再生はしない
-			changeCount( player );						//シークバーの逐次更新；タイマーオブジェクトを使ったカウンタ更新を追加
+			changeCount((ExoPlayer) player);						//シークバーの逐次更新；タイマーオブジェクトを使ったカウンタ更新を追加
 			myLog(TAG,dbMsg);
-			sendPlayerState(mPlayer);					//ここまでの設定結果をBroad
+			sendPlayerState((ExoPlayer) mPlayer);					//ここまでの設定結果をBroad
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		}
@@ -1114,24 +1113,24 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		String dbMsg = "[MusicPlayerService]";
 		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
 		try {
-			dbMsg += "mPlayer = " + mPlayer;
+			dbMsg += "mPlayer = " + exoPlayer;
 			int mcPosition = 0;
-			if (mPlayer != null) {								//MediaPlayerが生成されていれば
-				if(mPlayer.isPlaying()){						//再生中なら
-					mPlayer.pause();								//止める☆stopだとprepareAsync called in state 1が発生する？
-					mcPosition = mPlayer.getCurrentPosition();
+			if (exoPlayer != null) {								//MediaPlayerが生成されていれば
+				if(exoPlayer.isPlaying()){						//再生中なら
+					exoPlayer.setPlayWhenReady(false);							//止める☆stopだとprepareAsync called in state 1が発生する？
+					mcPosition = (int) exoPlayer.getCurrentPosition();
 					setPrefInt("pref_position" , mcPosition, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 				}
-				mPlayer.reset();									//MediaPlayerを抹消
+		//		exoPlayer.reset();									//MediaPlayerを抹消
 				/*状態が「Idle」に移行。 「Preparing」「End」以外の状態で呼び出すことが可能です。
 				 * 次のデータを再生したい場合は、 とにかく「Idle」に戻って 、データの読み込みからやり直す*/
-				mPlayer = null;
+				exoPlayer = null;
 				createMediaPlayerIfNeeded();				//再起して作り直し
 			} else {
-				mPlayer = getMediaPlayer( this.getApplicationContext() , myPreferences.pref_data_url);			//			?rContext
+				exoPlayer = (ExoPlayer) getMediaPlayer( this.getApplicationContext() , myPreferences.pref_data_url);			//			?rContext
 				if (21 <= android.os.Build.VERSION.SDK_INT  ) {
 				}else if (14 <= android.os.Build.VERSION.SDK_INT  ){
-//					makeLockScreenP( mPlayer );					//ロックスクリーン作成 < songInfoSett
+//					makeLockScreenP( exoPlayer );					//ロックスクリーン作成 < songInfoSett
 				}
 //				// Make sure the media player will acquire a wake-lock while playing. If we don't do that, the CPU might go to sleep while the song is playing, causing playback to stop.
 //				// Remember that to use this, we have to declare the android.permission.WAKE_LOCK permission in AndroidManifest.xml.
@@ -1139,7 +1138,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //				mPlayer.setOnCompletionListener(MusicPlayerService.this);   //曲の終了を感知する
 ////				mPlayer.setOnErrorListener(this);
 ////				mPlayer.setLooping(true);						//20150321
-				dbMsg +=">> " + mPlayer;//////////////////////////////////
+				dbMsg +=">> " + exoPlayer;//////////////////////////////////
 		//		mPlayer.setAuxEffectSendLevel(1.0f);					//効果のレベル；デフォルトでは、センドレベルはは0.0fなので必要
 				dbMsg +=",equalizerSet=" + equalizerSet;/////////////////////////////////////
 				if(! equalizerSet){
@@ -1203,14 +1202,14 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	 * タイマーオブジェクトを使ったカウンタ更新/曲の変わり目検出
 	 * playNextSong  , configAndStartMediaPlayer
 	 * */
-	public void changeCount(MediaPlayer player){		//タイマーオブジェクトを使ったカウンタ更新←playNextSong  , configAndStartMediaPlayer
+	public void changeCount(ExoPlayer player){		//タイマーオブジェクトを使ったカウンタ更新←playNextSong  , configAndStartMediaPlayer
 	final String TAG = "changeCount";
 	String dbMsg="開始";/////////////////////////////////////
 		try{
 			kankaku = 100;
 			stTime = System.currentTimeMillis()  ;
 			dbMsg += ","+ stTime + "mS ";/////////////////////////////////////
-			rPlayer= player;
+//			rPlayer= player;
 			dbMsg +=",タイマー設定；g_timer="+g_timer;/////////////////////////////////////
 	  		if(g_timer == null){
 	  			g_timer = new Timer(true);  		// タイマの設定
@@ -1228,7 +1227,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 								Intent intent = new Intent(ACTION_STATE_CHANGED);
 								dbMsg +=",action=" + action ;
 								int mcPosition = 0;
-								if( mPlayer == null ){
+								if( exoPlayer == null ){
 									mcPosition = getPrefInt("pref_position" , 0 , MusicPlayerService.this);
 									saiseiJikan = getPrefInt("pref_duration" , 0 , MusicPlayerService.this);
 									if(rp_pp){						//2点間リピート中で//リピート区間終了点
@@ -1237,9 +1236,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 									IsPlaying  = false ;			//再生中か
 									IsSeisei  = false ;				//生成中
 								} else {
-									mcPosition = mPlayer.getCurrentPosition();
-									saiseiJikan = mPlayer.getDuration();
-									IsPlaying  = mPlayer.isPlaying() ;			//再生中か
+									mcPosition = (int) exoPlayer.getCurrentPosition();
+									saiseiJikan = (int) exoPlayer.getDuration();
+									IsPlaying  = exoPlayer.isPlaying() ;			//再生中か
 									IsSeisei  = true ;				//生成中
 								}
 								dbMsg += "[" + mcPosition + "/"+saiseiJikan + "]";
@@ -1249,7 +1248,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 									if(mNotificationManager != null){
 										int ppIcon = android.R.drawable.ic_media_pause;                //getApplicationContext().getResources().getInteger(android.R.drawable.ic_media_pause);
 										String ppTitol = "pause";
-										if (mPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
+										if (exoPlayer.isPlaying()) {        //(mState == State.Paused || mState == State.Stopped
 											ppIcon = android.R.drawable.ic_media_pause;
 											ppTitol = "pause";
 										}else{
@@ -1271,10 +1270,10 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 								if( ( nokori <= crossFeadTime
 //											|| (rp_pp && pp_end < mcPosition)					//2点間リピート中で//リピート区間終了点
 								)){			//	&&  (Build.VERSION.SDK_INT <16)
-									if(mPlayer.isPlaying()){
+									if(exoPlayer.isPlaying()){
 										dbMsg +="," + titolName +"再生中の残" + nokori + "/" + crossFeadTime + "mSで次曲へ";/////////////////////////////////////
 										myLog(TAG,dbMsg);
-										onCompletion( mPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
+										onCompletion((MediaPlayer) exoPlayer);		/** 再生中にデータファイルのENDが現れた場合にコールCalled when media player is done playing current song. */
 										return;
 									}
 								} else {							// if( nokori <= crossFeadTime-100  )
@@ -1438,7 +1437,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		try{
 			dbMsg += "渡されたplayer=" +player ;/////////////////////////////////////
 			dbMsg +=",既存のplayer=" +player ;/////////////////////////////////////
-			if( player == mPlayer ){
+			if( player == exoPlayer ){
 				imanoJyoutai =  MuList.sonomama ;
 				dbMsg=dbMsg+ "、isPlaying=" + player.isPlaying() ;/////////////////////////////////////
 				if( !player.isPlaying() ){
@@ -1461,7 +1460,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				songInfoSett( player);
 				setPref();		//プリファレンス記載
 			}
-			dbMsg=dbMsg+ "現在再生中、mPlayer=" + mPlayer.getAudioSessionId() ;/////////////////////////////////////
 			dbMsg +=",状態=" + imanoJyoutai ;/////////////////////////////////////
 		//	myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -1613,17 +1611,17 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
 			ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 			int ppIcon = android.R.drawable.ic_media_pause;
-			if(mPlayer != null){
-				dbMsg += ",isPlaying=" + mPlayer.isPlaying();
-				if(! mPlayer.isPlaying()){
+			if(exoPlayer != null){
+				dbMsg += ",isPlaying=" + exoPlayer.isPlaying();
+				if(! exoPlayer.isPlaying()){
 					ppIcon = android.R.drawable.ic_media_play;
-					//mPlayer.start();
+					//exoPlayer.start();
 				}else {
-					//	mPlayer.pause();
+					//	exoPlayer.pause();
 				}
-				dbMsg += ">>" + mPlayer.isPlaying();
+				dbMsg += ">>" + exoPlayer.isPlaying();
 			}else{
-				dbMsg += "mPlayer = null";
+				dbMsg += "exoPlayer = null";
 				ppIcon = android.R.drawable.ic_media_play;
 			}
 			retAction = new NotificationCompat.Action(ppIcon,ACTION_PLAYPAUSE,ppIntent);
@@ -1706,8 +1704,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
 				ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 				playing=false;
-				if(mPlayer != null){
-					if(mPlayer.isPlaying()) {
+				if(exoPlayer != null){
+					if(exoPlayer.isPlaying()) {
 						playing=true;
 					}
 				}
@@ -2326,8 +2324,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck : AudioFocus.NoFocusNoDuck;
 			dbMsg="mAudioFocus= " + mAudioFocus;/////////////////////////////////////
 			myLog(TAG,dbMsg);
-			if (mPlayer != null ) {		// start/restart/pause media player with new focus settings
-				if (mPlayer.isPlaying()) {
+			if (exoPlayer != null ) {		// start/restart/pause media player with new focus settings
+				if (exoPlayer.isPlaying()) {
 					configAndStartMediaPlayer();
 				}
 			}
@@ -2353,7 +2351,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				tryToGetAudioFocus();
 				playNextSong(mIndex,true);
 			} else {
-				sendPlayerState(mPlayer);
+				sendPlayerState(exoPlayer);
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -2367,7 +2365,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	 * 				 , processPlayRequest , processPauseRequest , songInfoSett . onMusicRetrieverPrepared
 	 * */
 	@SuppressLint({"InlinedApi", "Range"})
-	private void sendPlayerState( MediaPlayer player ) {			//①?、②ⅲStop?	,	onStartCommand(ACTION_PLAY_READ,ACTION_REQUEST_STATE),
+	private void sendPlayerState( ExoPlayer player ) {			//①?、②ⅲStop?	,	onStartCommand(ACTION_PLAY_READ,ACTION_REQUEST_STATE),
 		final String TAG = "sendPlayerState";
 		String dbMsg="";
 		try {
@@ -2394,9 +2392,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //				int duration = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)));
 			int mcPosition =0;
 			IsPlaying =false;
-			if (mPlayer != null){
-				mcPosition = mPlayer.getCurrentPosition();
-				IsPlaying = mPlayer.isPlaying();
+			if (exoPlayer != null){
+				mcPosition = (int) exoPlayer.getCurrentPosition();
+				IsPlaying = exoPlayer.isPlaying();
 			}
 			dbMsg += ">>mcPosition=" + mcPosition + "/" + saiseiJikan + "mS]";
 			dbMsg += ",再生中か= " + IsPlaying;
@@ -3016,35 +3014,35 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "setEqualizer[MusicPlayerService]";
 		String dbMsg="";
 		try{
-			dbMsg +=",mPlayer=" + mPlayer;
-			if( pref_toneList != null ){
-				dbMsg +=",pref_toneList=" + pref_toneList.size() + "件";
-				if( 0 == pref_toneList.size() ){
-					dbMsg +=",getAudioSessionId=" + mPlayer.getAudioSessionId();
-					if( mEqualizer != null ){
-						mEqualizer.release();
-						mEqualizer = null;
-					}
-					mEqualizer = new Equalizer(0, mPlayer.getAudioSessionId());		// Eaulizerを生成
-					dbMsg +=",mEqualizer=" + mEqualizer;
-					short bands = mEqualizer.getNumberOfBands();			// イコライザのバンド数
-					short minEQLevel = mEqualizer.getBandLevelRange()[0];			 // イコライザのバンドの最小値
-					dbMsg +=",EQLevel=" + minEQLevel;
-					short maxEQLevel = mEqualizer.getBandLevelRange()[1];
-					dbMsg +="～" + maxEQLevel;
-					toneList = new ArrayList<Map<String, Object>>();
-					for (int i = bands-1; -1 < i ; i--) {
-						dbMsg +="(" + i + "/" + bands + ")";
-						int freq = mEqualizer.getCenterFreq((short) i) / 1000;					// イコライザの周波数帯の値を取得
-						dbMsg +=",freq=" + String.format("%6dHz", freq);
-						short band = mEqualizer.getBandLevel((short) i);				// 現在のイコライザのバンドの値を取得
-						dbMsg +=",band=" + band;
-						equalizerPartKousinBody( i , freq , band );					//Equalizerの部分更新本体
-					}			//for (int i = 0; i < bands; i++) {
-				}
-			}
-			Thread.sleep(500);
-			equalizerSet = true;
+//			dbMsg +=",mPlayer=" + exoPlayer;
+//			if( pref_toneList != null ){
+//				dbMsg +=",pref_toneList=" + pref_toneList.size() + "件";
+//				if( 0 == pref_toneList.size() ){
+//					dbMsg +=",getAudioSessionId=" + exoPlayer.getAudioSessionId();
+//					if( mEqualizer != null ){
+//						mEqualizer.release();
+//						mEqualizer = null;
+//					}
+//					mEqualizer = new Equalizer(0, exoPlayer.getAudioSessionId());		// Eaulizerを生成
+//					dbMsg +=",mEqualizer=" + mEqualizer;
+//					short bands = mEqualizer.getNumberOfBands();			// イコライザのバンド数
+//					short minEQLevel = mEqualizer.getBandLevelRange()[0];			 // イコライザのバンドの最小値
+//					dbMsg +=",EQLevel=" + minEQLevel;
+//					short maxEQLevel = mEqualizer.getBandLevelRange()[1];
+//					dbMsg +="～" + maxEQLevel;
+//					toneList = new ArrayList<Map<String, Object>>();
+//					for (int i = bands-1; -1 < i ; i--) {
+//						dbMsg +="(" + i + "/" + bands + ")";
+//						int freq = mEqualizer.getCenterFreq((short) i) / 1000;					// イコライザの周波数帯の値を取得
+//						dbMsg +=",freq=" + String.format("%6dHz", freq);
+//						short band = mEqualizer.getBandLevel((short) i);				// 現在のイコライザのバンドの値を取得
+//						dbMsg +=",band=" + band;
+//						equalizerPartKousinBody( i , freq , band );					//Equalizerの部分更新本体
+//					}			//for (int i = 0; i < bands; i++) {
+//				}
+//			}
+//			Thread.sleep(500);
+//			equalizerSet = true;
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -3081,26 +3079,26 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg +=";" + freq + "Hz)";
 			dbMsg += band;
 	//02-16 17:22:12.578: E/equalizerPartKousinBody[MusicPlayerService](15613): (0;60Hz)2でjava.lang.NullPointerException
-			dbMsg +=",mPlayer=" + mPlayer;
-			if(mPlayer != null){
-				dbMsg +=",mEqualizer=" + mEqualizer;
-				if(mEqualizer != null){
-					mEqualizer.release();
-					mEqualizer =null;
-					dbMsg +=">>" + mEqualizer;
-				}
-				mEqualizer = new Equalizer(0, mPlayer.getAudioSessionId());		// Eaulizerを生成
-				dbMsg +=",mEqualizer=" + mEqualizer.getCenterFreq((short) rdIndex) / 1000 + "Hz";
-				dbMsg +="," + mEqualizer.getBandLevel((short) rdIndex) + "db" ;
-				 try {
-					mEqualizer.setBandLevel(Short.valueOf(String.valueOf(rdIndex)), Short.valueOf(String.valueOf(band)) );							// イコライザにバンドの値を設定
-					mEqualizer.setEnabled(true);
-				} catch(Exception e) {
-					myErrorLog(TAG, "Create second effect: wait was interrupted.");
-					mEqualizer.release();
-				}
-				dbMsg +=">>" + mEqualizer.getBandLevel((short) rdIndex) + "db" ;
-			}
+			dbMsg +=",exoPlayer=" + exoPlayer;
+//			if(exoPlayer != null){
+//				dbMsg +=",mEqualizer=" + mEqualizer;
+//				if(mEqualizer != null){
+//					mEqualizer.release();
+//					mEqualizer =null;
+//					dbMsg +=">>" + mEqualizer;
+//				}
+//				mEqualizer = new Equalizer(0, exoPlayer.getAudioSessionId());		// Eaulizerを生成
+//				dbMsg +=",mEqualizer=" + mEqualizer.getCenterFreq((short) rdIndex) / 1000 + "Hz";
+//				dbMsg +="," + mEqualizer.getBandLevel((short) rdIndex) + "db" ;
+//				 try {
+//					mEqualizer.setBandLevel(Short.valueOf(String.valueOf(rdIndex)), Short.valueOf(String.valueOf(band)) );							// イコライザにバンドの値を設定
+//					mEqualizer.setEnabled(true);
+//				} catch(Exception e) {
+//					myErrorLog(TAG, "Create second effect: wait was interrupted.");
+//					mEqualizer.release();
+//				}
+//				dbMsg +=">>" + mEqualizer.getBandLevel((short) rdIndex) + "db" ;
+//			}
 	//		myLog(TAG,dbMsg);
 		} catch (UnsupportedOperationException e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -3124,7 +3122,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			Bundle extras = intent.getExtras();
 			bBoot = extras.getBoolean("bBoot");
 			dbMsg +=  "bBoot=" + bBoot;
-			if(mPlayer != null){
+			if(exoPlayer != null){
 				bassBoostBody( bBoot );		//ベースブーストOn/Off本体
 			}
 		//	Thread.sleep(500);
@@ -3143,26 +3141,26 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "bassBoostBody[MusicPlayerService]";
 		String dbMsg="";
 		try {
-			dbMsg +=  "bBoot=" + bBoot;
-			if(mBassBoost != null){
-				mBassBoost.release();
-				mBassBoost = null;
-			}
-			mBassBoost = new BassBoost(0, mPlayer.getAudioSessionId());
-			dbMsg +=",supported=" + mBassBoost.getStrengthSupported();
-			if(  mBassBoost.getStrengthSupported() ){
-				short roundedStrength = mBassBoost.getRoundedStrength();
-				dbMsg +=" roundedStrength = " + roundedStrength;
-				if (bBoot) {					//roundedStrength > 0
-					mBassBoost.setStrength((short) 1000); //effect and 1000 per mille designates the strongest
-				} else {
-					mBassBoost.setStrength((short) 0); // off
-				}
-				mBassBoost.setEnabled(true);
-				roundedStrength = mBassBoost.getRoundedStrength();
-				dbMsg +=">>" + roundedStrength;
-			}
-	//		myLog(TAG, dbMsg);
+//			dbMsg +=  "bBoot=" + bBoot;
+//			if(mBassBoost != null){
+//				mBassBoost.release();
+//				mBassBoost = null;
+//			}
+//			mBassBoost = new BassBoost(0, exoPlayer.getAudioSessionId());
+//			dbMsg +=",supported=" + mBassBoost.getStrengthSupported();
+//			if(  mBassBoost.getStrengthSupported() ){
+//				short roundedStrength = mBassBoost.getRoundedStrength();
+//				dbMsg +=" roundedStrength = " + roundedStrength;
+//				if (bBoot) {					//roundedStrength > 0
+//					mBassBoost.setStrength((short) 1000); //effect and 1000 per mille designates the strongest
+//				} else {
+//					mBassBoost.setStrength((short) 0); // off
+//				}
+//				mBassBoost.setEnabled(true);
+//				roundedStrength = mBassBoost.getRoundedStrength();
+//				dbMsg +=">>" + roundedStrength;
+//			}
+//	//		myLog(TAG, dbMsg);
 		} catch (UnsupportedOperationException e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
 		} catch (Exception e) {
@@ -3186,7 +3184,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			Bundle extras = intent.getExtras();
 			reverbBangou = extras.getShort("reverbBangou");					//リバーブ効果番号
 			dbMsg +=  "reverbBangou=" + reverbBangou;
-			if(mPlayer != null){
+			if(exoPlayer != null){
 				presetReverbBody(reverbBangou);					//リバーブ設定本体
 			}
 			final CharSequence[] items =getResources().getStringArray(R.array.effect_rev);
@@ -3208,19 +3206,19 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "presetReverbBody[MusicPlayerService]";
 		String dbMsg="";
 		try {
-			dbMsg +=  "reverbBangou=" + reverbBangou;
-			dbMsg +=",mPresetReverb=" + mPresetReverb;
-			if(mPresetReverb != null){
-				mPresetReverb.release();
-				mPresetReverb = null;
-			}
-			dbMsg +=",mPlayer=" + mPlayer;
-			mPlayer.setAuxEffectSendLevel(1.0f);											//効果のセンドレベル；デフォルトは0.0fなので必要
-			mPresetReverb = new PresetReverb(0, mPlayer.getAudioSessionId());
-			mPresetReverb.setPreset(reverbBangou);
-			mPresetReverb.setEnabled(true);
-			Thread.sleep(500);
-			dbMsg +=",Properties=" + mPresetReverb.getProperties().toString();
+//			dbMsg +=  "reverbBangou=" + reverbBangou;
+//			dbMsg +=",mPresetReverb=" + mPresetReverb;
+//			if(mPresetReverb != null){
+//				mPresetReverb.release();
+//				mPresetReverb = null;
+//			}
+//			dbMsg +=",exoPlayer=" + exoPlayer;
+//			exoPlayer.setAuxEffectSendLevel(1.0f);											//効果のセンドレベル；デフォルトは0.0fなので必要
+//			mPresetReverb = new PresetReverb(0, exoPlayer.getAudioSessionId());
+//			mPresetReverb.setPreset(reverbBangou);
+//			mPresetReverb.setEnabled(true);
+//			Thread.sleep(500);
+//			dbMsg +=",Properties=" + mPresetReverb.getProperties().toString();
 	//		myLog(TAG,dbMsg);
 		} catch (UnsupportedOperationException e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -3249,12 +3247,11 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				mVisualizer.release();
 			}
 			mVisualizer = null;
-			dbMsg +=",mPlayer=" + MusicPlayerService.this.mPlayer;
-			if(  MusicPlayerService.this.mPlayer != null ){
-				mVisualizer = new Visualizer( MusicPlayerService.this.mPlayer.getAudioSessionId());					//セッションIDで紐付ける Create the Visualizer object and attach it to our media player.
-				mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
-				dbMsg +=",mVisualizer=" +mVisualizer;
-				ObjectResults objectResults = new ObjectResults( mVisualizer);					//Serializableを使ったオブジェクトの受け渡し
+			if(  MusicPlayerService.this.exoPlayer != null ){
+//				mVisualizer = new Visualizer( MusicPlayerService.this.exoPlayer.getAudioSessionId());					//セッションIDで紐付ける Create the Visualizer object and attach it to our media player.
+//				mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+//				dbMsg +=",mVisualizer=" +mVisualizer;
+//				ObjectResults objectResults = new ObjectResults( mVisualizer);					//Serializableを使ったオブジェクトの受け渡し
 			} else {
 				mVisualizer = null;
 			}
@@ -3595,42 +3592,42 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "onAudioFocusChange[MusicPlayerService]";
 		String dbMsg=ORGUT.nowTime(true,true,true);/////////////////////////////////////
 		try {
-			dbMsg="focusChange="+focusChange+",isPlaying="+mPlayer.isPlaying();/////////////////////////////////////
+			dbMsg="focusChange="+focusChange+",isPlaying="+exoPlayer.isPlaying();/////////////////////////////////////
 			myLog(TAG,dbMsg);
 			switch (focusChange) {
 				case AudioManager.AUDIOFOCUS_GAIN:            // resume playback
-					if ( mPlayer == null ) {
-						int mcPosition = mPlayer.getCurrentPosition();
+					if ( exoPlayer == null ) {
+						int mcPosition = (int) exoPlayer.getCurrentPosition();
 						//initMediaPlayer();
-						if ( !mPlayer.isPlaying() ) {
+						if ( !exoPlayer.isPlaying() ) {
 							dbMsg = dbMsg + ",mcPosition=" + mcPosition;/////////////////////////////////////
-							mPlayer.seekTo(mcPosition);
-							mPlayer.start();
+							exoPlayer.seekTo(mcPosition);
+							exoPlayer.setPlayWhenReady(true);
 							mState = State.Playing;
-							mPlayer.setVolume(1.0f , 1.0f);
+				//			exoPlayer.setVolume(1 , 1);
 							myLog(TAG , dbMsg);
 						}
 					}
 	  			break;
 	  		case AudioManager.AUDIOFOCUS_LOSS:			// Lost focus for an unbounded amount of time: stop playback and release media player
-	  			if (mPlayer.isPlaying()){
+	  			if (exoPlayer.isPlaying()){
 	  				myLog(TAG,dbMsg);
-	  				mPlayer.pause();			//mPlayer.stop();  kitcut以降はQCMediaPlayer mediaplayer NOT presentが発生する
-	  				mPlayer.release();
-	  				mPlayer = null;
+					exoPlayer.setPlayWhenReady(false);
+	  				exoPlayer.release();
+	  				exoPlayer = null;
 	  			}
 	  			break;
 
 	  		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:			// Lost focus for a short time, but we have to stop playback.
 	  																// We don't release the media player because playback is likely to resume
-	  			if (mPlayer.isPlaying()){
-	  				mPlayer.pause();
+	  			if (exoPlayer.isPlaying()){
+					exoPlayer.setPlayWhenReady(false);
 	  			}
 	  			break;
 
 	  		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:			// Lost focus for a short time, but it's ok to keep playing at an attenuated level
-	  			if (mPlayer.isPlaying()){
-	  				mPlayer.setVolume(0.1f, 0.1f);
+	  			if (exoPlayer.isPlaying()){
+	  	//			exoPlayer.setVolume(0.1f, 0.1f);
 	  			}
 	  			break;
 	  		}	//switch (focusChange) {
@@ -3693,12 +3690,12 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg +=" , number = " + number;/////////////////////////////////////
 			switch(state) {	  								  /* 各状態でTextViewを追加する */
 			case TelephonyManager.CALL_STATE_RINGING:	/* 着信 */
-				dbMsg +=">>着信;mPlayer=" + mPlayer;/////////////////////////////////////
-				if(mPlayer != null){
-					dbMsg +=">>isPlaying=" + mPlayer.isPlaying();/////////////////////////////////////
-					if(mPlayer.isPlaying()){
+				dbMsg +=">>着信;exoPlayer=" + exoPlayer;/////////////////////////////////////
+				if(exoPlayer != null){
+					dbMsg +=">>isPlaying=" + exoPlayer.isPlaying();/////////////////////////////////////
+					if(exoPlayer.isPlaying()){
 						setPref();		//プリファレンス記載
-						mPlayer.pause();
+						exoPlayer.setPlayWhenReady(false);
 					}
 				}
 				break;
@@ -3735,8 +3732,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //				}
 				break;
 			}
-			if(mPlayer != null){
-				dbMsg +=">>isPlaying=" + mPlayer.isPlaying();/////////////////////////////////////
+			if(exoPlayer != null){
+				dbMsg +=">>isPlaying=" + exoPlayer.isPlaying();/////////////////////////////////////
 			}
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
@@ -3962,9 +3959,10 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	///MediaBrowserServiceCompat////////////////////
 	private static final String MY_MEDIA_ROOT_ID = "media_root_id";
 	private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
-	ExoPlayer exoPlayer;
-//	private MediaSessionCompat mediaSession;
+	public ExoPlayer exoPlayer;
 	private PlaybackStateCompat.Builder stateBuilder;
+	public MediaSource mSource = null;
+
 	/** [onLoadChildren]でparentIdに入ってくる。Android 11のメディアの再開の場合はこの値 */
 	private String ROOT_RECENT = "root_recent";
 	/** [onLoadChildren]でparentIdに入ってくる。[ROOT_RECENT]以外の場合 */
@@ -4073,21 +4071,21 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 								.setAudioAttributes(attrs)
 								.build();
 						int result = am.requestAudioFocus(audioFocusRequest);
-						dbMsg +=",isPlaying=" + mPlayer.isPlaying();
+						dbMsg +=",isPlaying=" + exoPlayer.isPlaying();
 						if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 							// Start the service
 							startService(new Intent(rContext, MediaBrowserService.class));
 							// Set the session active  (and update metadata and state)
 							mediaSession.setActive(true);
 							// start the player (custom call)
-	//						mPlayer.start(); もしくは
+	//						exoPlayer.start(); もしくは
 							exoPlayer.setPlayWhenReady(true);
 							// Register BECOME_NOISY BroadcastReceiver
 			//				registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
 							// Put the service in the foreground, post notification
 			//			service.startForeground(id, myPlayerNotification);
 						}
-						dbMsg +=">>" + mPlayer.isPlaying();
+						dbMsg +=">>" + exoPlayer.isPlaying();
 						myLog(TAG,dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG,dbMsg+"で"+e);
@@ -4109,7 +4107,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 						// Set the session inactive  (and update metadata and state)
 						mediaSession.setActive(false);
 						// stop the player (custom call)
-				//		dbMsg +=",isPlaying=" + mPlayer.isPlaying();
+				//		dbMsg +=",isPlaying=" + exoPlayer.isPlaying();
 					//	mPlayer.stop();もしくは
 						exoPlayer.setPlayWhenReady(false);
 					//	dbMsg +=">>" + mPlayer.isPlaying();
@@ -4196,9 +4194,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			}
 			int mcPosition = getPrefInt("mcPosition" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 			dbMsg +=" , mcPosition=" + mcPosition;
-			if( mPlayer !=null ){
-				dbMsg +=" ,isPlaying=" + mPlayer.isPlaying() ;/////////////////////////////////////
-				mPlayer.seekTo(mcPosition);
+			if( exoPlayer !=null ){
+				dbMsg +=" ,isPlaying=" + exoPlayer.isPlaying() ;/////////////////////////////////////
+				exoPlayer.seekTo(mcPosition);
 			}		//	Bundle extras = intent.getExtras();
 			if(mediaSession ==null){
 				dbMsg += " , mediaSession == null";
@@ -4263,16 +4261,16 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			} else if (action.equals(ACTION_PLAY_READ)) {							//"readPlaying[MaraSonActivity]
 			//	dataUketori(intent);			//クライアントからデータを受け取りグローバル変数にセット
 				processPlayRequest();
-				if( mPlayer !=null ){
-					dbMsg +=" ,isPlaying=" + mPlayer.isPlaying() ;/////////////////////////////////////
-					mPlayer.seekTo(mcPosition);
-					if(! mPlayer.isPlaying()){
-						mPlayer.start();
+				if( exoPlayer !=null ){
+					dbMsg +=" ,isPlaying=" + exoPlayer.isPlaying() ;/////////////////////////////////////
+					exoPlayer.seekTo(mcPosition);
+					if(! exoPlayer.isPlaying()){
+						exoPlayer.setPlayWhenReady(true);
 						mState = State.Playing;
 					}
 				}
-//				sendPlayerState(mPlayer);																		//②ⅲStop?//一曲分のデータ抽出して他のActvteyに渡す。
-				changeCount(mPlayer);						//シークバーの初期更新：タイマーオブジェクトを使ったカウンタ更新を追加
+//				sendPlayerState(exoPlayer);																		//②ⅲStop?//一曲分のデータ抽出して他のActvteyに渡す。
+				changeCount(exoPlayer);						//シークバーの初期更新：タイマーオブジェクトを使ったカウンタ更新を追加
 			} else if (action.equals(ACTION_PLAY)) {
 				mState = State.Playing;
 				dbMsg +="から再生,";
@@ -4286,14 +4284,14 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				processPauseRequest();																	//②ⅲPause?
 			} else if (action.equals(ACTION_SKIP)) {
 				dbMsg +="で送り";
-				if( mPlayer !=null ){
-					mPlayer.pause();
+				if( exoPlayer !=null ){
+					exoPlayer.setPlayWhenReady(false);
 				}
 				processSkipRequest();																	//②ⅲFF?次の曲に順送り
 			} else if (action.equals(ACTION_REWIND)) {
 				dbMsg +="から戻し,";
-				if( mPlayer !=null ){
-					mPlayer.pause();
+				if( exoPlayer !=null ){
+					exoPlayer.setPlayWhenReady(false);
 				}
 				processRewindRequest();																//②ⅲRew?
 			} else if (action.equals(ACTION_STOP)) {
@@ -4313,12 +4311,12 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //					new PrepareMusicRetrieverTask(this).execute(getApplicationContext());		// Create the retriever and start an asynchronous task that will prepare it.
 
 				}
-				sendPlayerState(mPlayer);																		//②ⅲStop?//一曲分のデータ抽出して他のActvteyに渡す。
+				sendPlayerState(exoPlayer);																		//②ⅲStop?//一曲分のデータ抽出して他のActvteyに渡す。
 			} else if (action.equals(ACTION_KEIZOKU)) {
 				dbMsg +="で終了準備,";
 	//			dataUketori(intent);			//クライアントからデータを受け取りグローバル変数にセット
 				processPlayRequest();
-				sendPlayerState(mPlayer);
+				sendPlayerState(exoPlayer);
 			} else if (action.equals(ACTION_SYUURYOU)) {				//終了準備
 				dbMsg +="で終了処理,";
 				quitMe( startId );			//このサービスを閉じる
@@ -4327,7 +4325,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				dbMsg +=" ,actClose=" + actClose ;/////////////////////////////////////
 				if(! actClose ){
 					imanoJyoutai = MaraSonActivity.quit_all;
-					sendPlayerState(mPlayer);
+					sendPlayerState(exoPlayer);
 				}
 				dbMsg +=" ,startId=" + startId ;/////////////////////////////////////
 				quitMe( startId );			//このサービスを閉じる
@@ -4355,7 +4353,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				dbMsg += ",リバーブ効果["+ reverbBangou + "]" + reverbMei;		//次に再生するリスト名;リクエストリスト
 				setupPresetReverb(intent);					//リバーブ設定
 			} else if (action.equals(ACTION_DATA_OKURI)) {				//データ送りのみ
-				sendPlayerState(mPlayer);
+				sendPlayerState(exoPlayer);
 			} else if (action.equals(ACTION_UKETORI)) {				//データ受け取りのみ
 //				dataUketori(intent);
 				processPlayRequest();
@@ -4493,8 +4491,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			intentNR.putExtra("RequestCode",MyConstants.ACTION_CODE_PLAYPAUSE);
 			ppIntent = PendingIntent.getBroadcast(getApplicationContext(), MyConstants.ACTION_CODE_PLAYPAUSE, intentNR,PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 			playing=false;
-			if(mPlayer != null){
-				if(mPlayer.isPlaying()) {
+			if(exoPlayer != null){
+				if(exoPlayer.isPlaying()) {
 					playing=true;
 				}
 			}
@@ -4546,7 +4544,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg += " Notification型のインスタンス生成";
 			lpNotification = builder.build();
 			notificationManager.notify(NOTIFICATION_ID, lpNotification);
-			startForeground(NOTIFICATION_ID, lpNotification);
 	/*
 			NotificationCompat notification;
 			// 通知を作成。通知チャンネルのせいで長い
@@ -4563,20 +4560,21 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			} else {
 				new NotificationCompat.Builder(this);
 			}
-		//	notification.apply {
-			notification.setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.sessionToken).setShowActionsInCompactView(0));
-			notification.setSmallIcon(R.drawable.ic_background_icon);
-				// 通知領域に置くボタン
-				if (exoPlayer.isPlaying()) {
-					addAction(NotificationCompat.Action(R.drawable.ic_pause_black_24dp, "一時停止", MediaButtonReceiver.buildMediaButtonPendingIntent(this@BackgroundPlaylistCachePlayService, PlaybackStateCompat.ACTION_PAUSE)));
-				} else {
-					addAction(NotificationCompat.Action(R.drawable.ic_play_arrow_24px, "再生", MediaButtonReceiver.buildMediaButtonPendingIntent(this@BackgroundPlaylistCachePlayService, PlaybackStateCompat.ACTION_PLAY)));
-				}
-				addAction(NotificationCompat.Action(R.drawable.ic_clear_black, "停止", MediaButtonReceiver.buildMediaButtonPendingIntent(this@BackgroundPlaylistCachePlayService, PlaybackStateCompat.ACTION_STOP)));
-		//	}
+				*/
+//			lpNotification.apply {
+//				lpNotification.setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.sessionToken).setShowActionsInCompactView(0));
+//				lpNotification.setSmallIcon(R.drawable.ic_background_icon);
+//				// 通知領域に置くボタン
+//				if (exoPlayer.isPlaying()) {
+//					addAction(NotificationCompat.Action(R.drawable.ic_pause_black_24dp, "一時停止", MediaButtonReceiver.buildMediaButtonPendingIntent(this@BackgroundPlaylistCachePlayService, PlaybackStateCompat.ACTION_PAUSE)));
+//				} else {
+//					addAction(NotificationCompat.Action(R.drawable.ic_play_arrow_24px, "再生", MediaButtonReceiver.buildMediaButtonPendingIntent(this@BackgroundPlaylistCachePlayService, PlaybackStateCompat.ACTION_PLAY)));
+//				}
+//				addAction(NotificationCompat.Action(R.drawable.ic_clear_black, "停止", MediaButtonReceiver.buildMediaButtonPendingIntent(this@BackgroundPlaylistCachePlayService, PlaybackStateCompat.ACTION_STOP)));
+//			}
 			// 通知表示
-			startForeground(84, notification.build());
-			*/
+			//startForeground(84, notification.build());
+			startForeground(NOTIFICATION_ID, lpNotification);
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -4656,8 +4654,12 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					dbMsg += ">>mediaItems=" + mediaItems.size() + "件";
 
 					// ExoPlayer用意
-					exoPlayer = ExoPlayerFactory.newSimpleInstance(rContext, new DefaultTrackSelector());
-				//	exoPlayer = SimpleExoPlayer.Builder(this).build(),
+					DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+					exoPlayer = ExoPlayerFactory.newSimpleInstance(rContext, new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter)));
+//					MediaBrowserCompat mBrowser = new MediaBrowserCompat(this, new ComponentName(getApplicationContext(), this.class), connectionCallback, null);
+//					MediaControllerCompat mController =  new MediaControllerCompat(this, mBrowser.getSessionToken());
+//					//	exoPlayer = ExoPlayerFactory.newSimpleInstance(rContext, new DefaultTrackSelector());
+//				//	exoPlayer = SimpleExoPlayer.Builder(this).build(),
 					dbMsg += ",mediaSession作成" ;
 					// Create a MediaSessionCompat
 					mediaSession = new MediaSessionCompat(getApplicationContext(),  getResources().getString(R.string.app_name));
@@ -4717,11 +4719,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 				exoPlayer = ExoPlayerFactory.newSimpleInstance(context, new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter)));
 				* */
-//					MediaSource mediaSource = createMediaSource(); // TODO これから説明します
-//					exoPlayer.prepare(mediaSource);
-					// ExoPlayerの再生状態が更新されたときも通知を更新する
-
-
+					mSource = createMediaSource(Uri.parse(myPreferences.pref_data_url)); // TODO これから説明します
+					exoPlayer.prepare(mSource);
 
 				}
 
@@ -4742,12 +4741,16 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		}
 	}
 
-	private MediaSource createMediaSource() {
+	private MediaSource createMediaSource(Uri sorceUri) {
 		final String TAG = "createMediaSource";
 		String dbMsg="";
 		MediaSource retSource = null;
 		try{
 			dbMsg += ",exoPlayer=" + exoPlayer.isPlaying();
+//			dataSourceFactory = DefaultDataSourceFactory(rContext, Util.getUserAgent(rContext, rContext.getPackageName()));
+//			retSource = ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(myPreferences.pref_data_url));
+			retSource =new ExtractorMediaSource(sorceUri,null,null,null,null);
+			LoopingMediaSource loopingSource = new LoopingMediaSource(retSource);   //setLooping(true);の代わり
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -4769,7 +4772,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		//	Intent intent = getIntent();は通らないのでreadPref
 
 			dbMsg="nowAction=" + nowAction;/////////onStartCommandで更新
-			mPlayer = null;
+			exoPlayer = null;
 			mPlayer2 = null;
 			if(nowAction != null || nowAction != ACTION_SYUURYOU){
 				createBody();
@@ -4786,7 +4789,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		final String TAG = "onDestroy";
 		String dbMsg="";
 		try{
-			dbMsg += ",mPlayer=" + mPlayer;/////////////////////////////////////
+			dbMsg += ",mPlayer=" + exoPlayer;/////////////////////////////////////
 			relaxResources(true);		//mPlayerの破棄
 			dbMsg += ",nowSartId=" + nowSartId;/////////////////////////////////////
 			myLog(TAG,dbMsg);
