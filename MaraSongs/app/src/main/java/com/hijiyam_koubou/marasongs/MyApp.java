@@ -50,13 +50,13 @@ public class MyApp extends Application {
     }
     //////////////////////
     public static void myLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myLog(TAG , dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myLog(TAG , dbMsg);
     }
 
     public static void myErrorLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myErrorLog(TAG , dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myErrorLog(TAG , dbMsg);
     }
 
 }

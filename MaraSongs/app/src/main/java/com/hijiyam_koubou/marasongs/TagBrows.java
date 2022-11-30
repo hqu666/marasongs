@@ -5430,8 +5430,8 @@ private byte majorVersion = (byte) 0;
 			dbMsg += uketori +  "文字)";
 			String eucjpStr;
 			fName = "lyric.htm";
-			Util UTIL = new Util();
-			String pref_file_in = Util.getPrefStr("pref_file_in", "/android/data/" + this.getPackageName(), this);
+			MyUtil MyUtil = new MyUtil();
+			String pref_file_in = MyUtil.getPrefStr("pref_file_in", "/android/data/" + this.getPackageName(), this);
 			dbMsg += ",pref_file_in=" + pref_file_in;
 			String hozonnsaki = "//storage/emulated/0/Android/data/com.hijiyam_koubou.marasongs/files/" + fName;	 					//pref_file_in + fName;			///data/data/
 			dbMsg += ",hozonnsaki=" + hozonnsaki;
@@ -6040,13 +6040,13 @@ private byte majorVersion = (byte) 0;
 //	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , "[TagBrows]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , "[TagBrows]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , "[TagBrows]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , "[TagBrows]" + dbMsg);
 	}
 }
 /**汎用資料

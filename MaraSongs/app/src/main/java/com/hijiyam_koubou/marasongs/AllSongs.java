@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
 
 public class AllSongs extends Activity implements plogTaskCallback{		// extends ProgressDialog implements  Runnable
     OrgUtil ORGUT;				//自作関数集
-    Util UTIL;
+    MyUtil MyUtil;
     MyPreferences myPreferences;
 
     public Context cContext ;
@@ -357,7 +357,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
         try{
             startPart = System.currentTimeMillis();		// 開始時刻の取得
             ORGUT = new OrgUtil();				//自作関数集
-            UTIL = new Util();
+            MyUtil = new MyUtil();
 //            musicPlaylist = new MusicPlaylist(AllSongs.this);
 
             dbMsg+="cContext=" + this.cContext;/////////////////////////////////////
@@ -737,7 +737,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 dbMsg += ">>" + readStr + "]" ;
                 readStr = String.valueOf(trackCount);
             }
-            readStr = UTIL.checKTrack( readStr);
+            readStr = MyUtil.checKTrack( readStr);
             if (readStr.contains("/")){									//トラックNo/曲数　の場合がある
                 String[] tStrs = readStr.split("/");
                 readStr = tStrs[0];
@@ -1498,7 +1498,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
                 }
                 dbMsg += ">>ら" + rTRACK;
             } else{
-                rTRACK = UTIL.checKTrack( rTRACK);
+                rTRACK = MyUtil.checKTrack( rTRACK);
             }
             if( rStr == null){
                 kakikae = true ;
@@ -2836,21 +2836,21 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     }
     ///////////////////////////////////////////////////////////////////////////////////
     public static void myLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myLog(TAG , "[AllSongs]"+ dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myLog(TAG , "[AllSongs]"+ dbMsg);
     }
 
     public static void myErrorLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myErrorLog(TAG , "[AllSongs]"+dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myErrorLog(TAG , "[AllSongs]"+dbMsg);
     }
 
     public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
         boolean retBool = false;
         final String TAG = "setPrefStr";
         String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-        Util UTIL = new Util();
-        retBool = Util.setPreStr(keyNmae , wrightVal,context);
+        MyUtil MyUtil = new MyUtil();
+        retBool = MyUtil.setPreStr(keyNmae , wrightVal,context);
         return retBool;
     }
 

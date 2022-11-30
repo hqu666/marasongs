@@ -2,8 +2,6 @@ package com.hijiyam_koubou.marasongs;
 
 import java.io.Serializable;
 
-import android.util.Log;
-
 public class ObjectResults  implements Serializable {
 	static Object object;
 
@@ -34,13 +32,13 @@ public class ObjectResults  implements Serializable {
 	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 
 /*http://techbooster.jpn.org/andriod/application/7190/

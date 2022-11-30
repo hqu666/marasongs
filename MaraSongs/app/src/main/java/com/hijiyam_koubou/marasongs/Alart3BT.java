@@ -1,18 +1,14 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
 import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Alart3BT extends AlertDialog implements DialogInterface {
 	private AlertDialog alertDialog;
@@ -290,13 +286,13 @@ public class Alart3BT extends AlertDialog implements DialogInterface {
 	}
 //////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-	Util UTIL = new Util();
-	Util.myLog(TAG , dbMsg);
+	MyUtil MyUtil = new MyUtil();
+	MyUtil.myLog(TAG , dbMsg);
 }
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 
 }

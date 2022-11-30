@@ -5965,15 +5965,15 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "getPrefStr";
 		String dbMsg="[MaraSonActivity]keyNmae=" + keyNmae + ",defaultVal=" + defaultVal;
 		try {
-//			Util UTIL = new Util();
-//			retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+//			MyUtil MyUtil = new MyUtil();
+//			retStr = MyUtil.getPrefStr(keyNmae , defaultVal,context);
 //
 //			context = MaraSonActivity.this;
 			dbMsg +=",context=" + context;
 			String pefName = context.getResources().getString(R.string.pref_main_file);
 			dbMsg +=",pefName=" + pefName;
-			Util UTIL = new Util();
-			retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+			MyUtil MyUtil = new MyUtil();
+			retStr = MyUtil.getPrefStr(keyNmae , defaultVal,context);
 //			SharedPreferences shPref = context.getSharedPreferences(pefName , context.MODE_PRIVATE);        //	getSharedPreferences(prefFname,MODE_PRIVATE);
 //			retStr = shPref.getString(keyNmae , defaultVal);
 			dbMsg +=  ",retStr="  + retStr;
@@ -5988,8 +5988,8 @@ public class MaraSonActivity extends AppCompatActivity
 		int retInt = -99;
 		final String TAG = "getPrefStr";
 		String dbMsg="[MaraSonActivity]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retInt = MyUtil.getPrefInt(keyNmae , defaultVal,context);
 
 //		try {
 //			Context context = getApplicationContext();
@@ -6011,24 +6011,24 @@ public class MaraSonActivity extends AppCompatActivity
 		boolean retBool = false;
 		final String TAG = "setPrefInt";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPrefInt(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
 	public void messageShow(String titolStr , String mggStr) {
-		Util UTIL = new Util();
-		Util.messageShow(titolStr , mggStr , MaraSonActivity.this);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.messageShow(titolStr , mggStr , MaraSonActivity.this);
 	}
 
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , "[MaraSonActivity];" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , "[MaraSonActivity];" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , "[MaraSonActivity];" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , "[MaraSonActivity];" + dbMsg);
 	}
 }
 /**

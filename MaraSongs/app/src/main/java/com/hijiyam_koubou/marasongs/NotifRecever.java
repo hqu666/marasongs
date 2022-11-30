@@ -41,12 +41,12 @@ public class NotifRecever extends BroadcastReceiver {
 	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , "[NotifRecever]"+dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , "[NotifRecever]"+dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , "[NotifRecever]"+dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , "[NotifRecever]"+dbMsg);
 	}
 }

@@ -1,11 +1,9 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+
+import java.util.List;
 
 /**
  * 外部ストレージから音楽ファイルを探すための非同期タスク。
@@ -65,13 +63,13 @@ public class PrepareMusicRetrieverTask extends AsyncTask<Context, Void, List<Ite
 	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 
 }

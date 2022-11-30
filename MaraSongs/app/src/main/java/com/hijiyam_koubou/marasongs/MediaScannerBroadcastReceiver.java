@@ -3,9 +3,6 @@ package com.hijiyam_koubou.marasongs;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
 
 public class MediaScannerBroadcastReceiver extends BroadcastReceiver {
 
@@ -41,13 +38,13 @@ SDカードがマウントされた時；暗黙Intent(action=android.intent.acti
 
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 
 

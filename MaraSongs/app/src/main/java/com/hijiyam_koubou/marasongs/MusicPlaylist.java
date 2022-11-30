@@ -813,21 +813,21 @@ public class MusicPlaylist {
 
     //////////////////////////////////////
     public static void myLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myLog(TAG , dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myLog(TAG , dbMsg);
     }
 
     public static void myErrorLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myErrorLog(TAG , dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myErrorLog(TAG , dbMsg);
     }
 
     public static String getPrefStr(String keyNmae , String defaultVal, Context context) {        //プリファレンスの読込み
         String retStr = "";
         final String TAG = "getPrefStr";
         String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-        Util UTIL = new Util();
-        retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+        MyUtil MyUtil = new MyUtil();
+        retStr = MyUtil.getPrefStr(keyNmae , defaultVal,context);
         return retStr;
     }
 
@@ -835,8 +835,8 @@ public class MusicPlaylist {
         boolean retBool = false;
         final String TAG = "setPrefInt";
         String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-        Util UTIL = new Util();
-        retBool = Util.setPrefInt(keyNmae , wrightVal,context);
+        MyUtil MyUtil = new MyUtil();
+        retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
         return retBool;
     }
 

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import android.util.Log;
-
 public class MuArrays  implements Comparable<Object>{
 	public Map<String, Object> artistMap;				//アーティストリスト用
 	public static  List<Map<String, Object>> artistAL;		//アーティストリスト用ArrayList
@@ -83,12 +81,12 @@ public class MuArrays  implements Comparable<Object>{
 	}
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 }

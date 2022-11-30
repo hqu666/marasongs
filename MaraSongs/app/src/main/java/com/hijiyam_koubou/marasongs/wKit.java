@@ -1132,12 +1132,12 @@ public class wKit extends Activity {
 		}            //MusicPlayerReceiver
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , "[wKit]" +dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , "[wKit]" +dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , "[wKit]" +dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , "[wKit]" +dbMsg);
 	}
 }

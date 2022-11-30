@@ -1303,13 +1303,13 @@ public class SettingActivity extends AppCompatActivity {
 
     ///////////////////////////////////////////////////////////////////////////////////
     public static void myLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myLog(TAG , "[SettingActivity]" + dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myLog(TAG , "[SettingActivity]" + dbMsg);
     }
 
     public static void myErrorLog(String TAG , String dbMsg) {
-        Util UTIL = new Util();
-        Util.myErrorLog(TAG , "[SettingActivity]"+ dbMsg);
+        MyUtil MyUtil = new MyUtil();
+        MyUtil.myErrorLog(TAG , "[SettingActivity]"+ dbMsg);
     }
 
 }

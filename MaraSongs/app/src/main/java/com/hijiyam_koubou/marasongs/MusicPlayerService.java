@@ -37,6 +37,7 @@ import android.media.audiofx.PresetReverb;
 import android.media.audiofx.Visualizer;
 import android.media.browse.MediaBrowser;
 import android.media.session.MediaController.TransportControls;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -51,6 +52,7 @@ import android.service.media.MediaBrowserService;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.telephony.PhoneStateListener;
@@ -75,7 +77,10 @@ import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,6 +100,20 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	// implements MusicFocusable,PrepareMusicRetrieverTask.MusicRetrieverPreparedListener  , OnCompletionListener, OnPreparedListener
 	//	, OnErrorListener,
 	public Context rContext;			//static
+	final String TAG = MusicPlayerService.class.getSimpleName();//ログ用タグ
+	final String ROOT_ID = "root";//クライアントに返すID onGetRoot / onLoadChildrenで使用
+
+	Handler handler;//定期的に処理を回すためのHandler
+
+	MediaSessionCompat mSession;//主役のMediaSession
+	AudioManager am;//AudioFoucsを扱うためのManager
+
+	int index = 0;//再生中のインデックス
+
+	ExoPlayer exoPlayer;//音楽プレイヤーの実体
+
+	List<MediaSessionCompat.QueueItem> queueItems = new ArrayList<>();//キューに使用するリスト
+	MediaSession.QueueItem queueItem;
 	/**プレイヤー*/
 	public Class<? extends MaraSonActivity> playerClass;
 	public OrgUtil ORGUT;				//自作関数集
@@ -103,6 +122,14 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //	public MaraSonActivity MUP;								//音楽プレイヤー
 	public MediaPlayer mPlayer = null;
 	public MediaPlayer mPlayer2 = null;
+
+	private List<MediaSession.QueueItem> mPlayingQueue; // 再生キューリスト
+	private int mCurrentQueueIndex;                     // 再生キューのインデックス
+	private static final String MEDIA_ID_ROOT = "__ROOT__";
+	public MediaSessionCompat mediaSession;			//Androidシリーズでメディア再生処理を共通化するサーバの様なsもの
+	public MediaSessionCompat.Token mSessionToken;	// Media Sessionの固有のID
+	public MediaBrowserCompat mBrowser;
+	public MediaControllerCompat mController;
 
 	/**Urlだけのプレイリスト用簡易リスト*/
 	public ArrayList<String> plSL;
@@ -1484,11 +1511,12 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	private NotificationManagerCompat notificationManager;
 	private String channelId = "default";
 	private androidx.media.app.NotificationCompat.MediaStyle NotifStyle;
+
 	/**ノティフィケーションインスタンス*/
 	public  Notification lpNotification;
 	public TransportControls lpNControls;
 	public Intent intentNR;
-	public MediaSessionCompat mediaSession;		//final
+
 
 	public MediaMetadata.Builder metadataBuilder;
 //	private PlaybackStateCompat.Builder stateBuilder;
@@ -1631,8 +1659,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		}
 		return retAction;
 	}
-
-
 
 	/**
 	 * sendPlayerStateから呼出しボタンをアップする度に呼び出される
@@ -3436,8 +3462,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		MediaBrowserCompat.MediaItem retItem = null;
 		try{
 			dbMsg+= "[" + mediaId ;
-			dbMsg+= "]" + dataUri + ":::" +  artistName ;
-			dbMsg+= "," + albumName ;
+			dbMsg+= "]" + dataUri + ":artist=" +  artistName ;
+			dbMsg+= ",album="+ albumName ;
 			dbMsg+= "," + title ;
 			dbMsg+= "," + duration +"[mS]";
 
@@ -3480,13 +3506,78 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		return retItem;
 	}
 
+	private MediaSessionCompat.QueueItem createQueueItem(int index , String mediaId, String dataUri, String artistName,String albumName, String title, String duration) {
+		MediaMetadataRetriever retriever;
+		MediaDescriptionCompat mediaDescriptionCompat;
+		final String TAG = "createQueueItem";
+		String dbMsg= "";
+		MediaSessionCompat.QueueItem retItem = null;
+		try{
+			dbMsg+= "[" + mediaId ;
+			dbMsg+= "]" + dataUri + ":artist=" +  artistName ;
+			dbMsg+= ",album="+ albumName ;
+			dbMsg+= "," + title ;
+			dbMsg+= "," + duration +"[mS]";
+			dbMsg+= "," + index +"件目";
+
+
+//			MediaDescription.Builder mediaDescriptionBuilder = new MediaDescription.Builder();
+//			mediaDescriptionBuilder.setMediaId(mediaId);			//"sample.mp3"
+//			mediaDescriptionBuilder.setMediaUri(Uri.parse(dataUri));
+//			mediaDescriptionBuilder.setTitle(title);
+//			mediaDescriptionBuilder.setSubtitle(artistName);
+//			//	mediaDescriptionBuilder.setIconUri(createArt(retriever));
+//			Bundle extras = new Bundle();
+//			extras.putInt(
+//					MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM,
+//					MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM);
+//			extras.putInt(
+//					MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
+//					MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM);
+//			extras.putInt(
+//					MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
+//					MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM);
+//			mediaDescriptionBuilder.setExtras(extras);
+			// 再生データ情報の設定
+			MediaDescription.Builder mdb1 = new MediaDescription.Builder();
+
+			// 再生データ1
+			final Bundle mediaBundle1 = new Bundle();
+			mediaBundle1.putString("Path", dataUri); // データパス
+			mediaBundle1.putInt("Index", index);                      // 曲のインデックス
+			mdb1.setMediaId(mediaId);                         // メディアID
+			mdb1.setTitle(title);                             // タイトル
+			mdb1.setSubtitle(artistName);                       // サブタイトル
+			mdb1.setExtras(mediaBundle1);
+			retItem = MediaSessionCompat.QueueItem.fromQueueItem(new MediaSession.QueueItem(mdb1.build(), 0));
+//			JSONArray mPlayingQueue = null;
+//			retItem = (MediaSessionCompat.QueueItem) mPlayingQueue.get(Integer.parseInt(mediaId));
+
+//			mediaDescriptionCompat = MediaDescriptionCompat.fromMediaDescription(new MediaMetadataCompat.Builder()
+//				.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID,mediaId )			//"sample.mp3"
+//				.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI,dataUri)
+//				.putString(MediaMetadataCompat.METADATA_KEY_TITLE,title)
+//				.putString(MediaMetadataCompat.METADATA_KEY_ARTIST,artistName)
+//				.putString(MediaMetadataCompat.METADATA_KEY_ALBUM,albumName)
+//				.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, Long.parseLong(duration)*1000)
+//	//				.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,createArt(retriever))
+//				.build());
+//			retItem = new MediaBrowserCompat.MediaItem(mediaDescriptionCompat, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE);
+//
+			dbMsg+= ",retItem.id=" + retItem.getQueueItem().toString() ;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retItem;
+	}
 
 	/**指定されたリストを内部配列に読み込む*/
 	@SuppressLint("Range")
-	public List<MediaBrowserCompat.MediaItem> setMediaItemList(int playlistId , String listName){
+	public List<MediaSessionCompat.QueueItem> setMediaItemList(int playlistId , String listName){
 		final String TAG = "setMediaItemList";
 		String dbMsg= "";
-		List<MediaBrowserCompat.MediaItem> pSL = new ArrayList<>();
+		List<MediaSessionCompat.QueueItem> pSL = new ArrayList<>();
 		try{
 			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + listName;
 			pSL.clear();
@@ -3510,8 +3601,17 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				dbMsg += ",全曲=" + zCursor.getCount() + "件";
 				if(zCursor.moveToFirst()){
 					do{
+						Long audioID = Long.valueOf(zCursor.getString(zCursor.getColumnIndex("AUDIO_ID")));
+//						MediaSessionCompat.QueueItem media;
+//						media.
+
+						//					for (MediaBrowserCompat.MediaItem media : MusicLibrary.getMediaItems()) {
+//						queueItems.add(new MediaSessionCompat.QueueItem(media.getDescription(), i));
+//						i++;
+//					}
 				//		@SuppressLint("Range")  String cVal = zCursor.getString(zCursor.getColumnIndex("DATA"));
-						MediaBrowserCompat.MediaItem cVal = createMediaItem(
+						MediaSessionCompat.QueueItem queueItem = createQueueItem(
+								pSL.size(),
 								zCursor.getString(zCursor.getColumnIndex("AUDIO_ID")),
 								zCursor.getString(zCursor.getColumnIndex("DATA")),
 								zCursor.getString(zCursor.getColumnIndex("ARTIST")),
@@ -3519,20 +3619,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 								zCursor.getString(zCursor.getColumnIndex("TITLE")),
 								zCursor.getString(zCursor.getColumnIndex("DURATION"))
 						);
-						/*
-								zCursor.getString(zCursor.getColumnIndex("DATA")),
-		"AUDIO_ID text not null," +				//1.元々のID
-					"ALBUM text, " +					//5.album
-					"TRACK text, " +					//6.track;					//トラックNo,
-					"TITLE text, " +					//7.title;					//タイトル
-					"DURATION text, " +				//8.duration;				//再生時間
-					"YEAR text, " +					//9.MediaStore.Audio.Media.YEAR
-					"DATA text, " +					//10.data;					//URI
-					"MODIFIED text, " +				//11.idkousinnbi = cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
-					"COMPOSER text, " +				//12.idcomposer = cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER);
-					"LAST_YEAR text, " +				//13.MediaStore.Audio.Albums.LAST_YEAR
-					"ALBUM_ARTIST_INDEX integer" +		//14.表示順の調整			//ALBUM_ARTIST_INDEXのID						* */
-						pSL.add(cVal);
+						String path = queueItem.getDescription().getExtras().getString("Path");
+						pSL.add(queueItem);
+					//	dbMsg += "[" + pSL.size() + "]" + path;
 					}while( zCursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
 				}
 				zCursor.close();
@@ -3554,7 +3643,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 								rCursor.getString(rCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),
 								rCursor.getString(rCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION))
 						);
-						pSL.add(cVal);
+						pSL.add(MediaSessionCompat.QueueItem.fromQueueItem(cVal));
 					}while( rCursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
 				}
 				rCursor.close();
@@ -3959,7 +4048,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	///MediaBrowserServiceCompat////////////////////
 	private static final String MY_MEDIA_ROOT_ID = "media_root_id";
 	private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
-	public ExoPlayer exoPlayer;
 	private PlaybackStateCompat.Builder stateBuilder;
 	public MediaSource mSource = null;
 
@@ -4010,7 +4098,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			// Assume for example that the music catalog is already loaded/cached.
 			dbMsg += "[" + myPreferences.nowList_id +  "]" + myPreferences.nowList;
 			mediaItems = new ArrayList<>();
-			mediaItems = setMediaItemList(Integer.parseInt(myPreferences.nowList_id), myPreferences.nowList);
+//			mediaItems = setMediaItemList(Integer.parseInt(myPreferences.nowList_id), myPreferences.nowList);
 			dbMsg += ">>mediaItems=" + mediaItems.size() + "件";
 			// Check if this is the root menu:
 			if (MY_MEDIA_ROOT_ID.equals(parentMediaId)) {
@@ -4052,6 +4140,29 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //	}
 
 	MediaSessionCompat.Callback MySessionCallback = new MediaSessionCompat.Callback() {
+		//曲のIDから再生する
+		//WearやAutoのブラウジング画面から曲が選択された場合もここが呼ばれる
+		@Override
+		public void onPlayFromMediaId(String mediaId, Bundle extras) {
+			//今回はAssetsフォルダに含まれる音声ファイルを再生
+			//Uriから再生する
+			DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getApplicationContext(), Util.getUserAgent(getApplicationContext(), "AppName"));
+			MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse("file:///android_asset/" + MusicLibrary.getMusicFilename(mediaId)));
+
+			//今回は簡易的にmediaIdからインデックスを割り出す。
+			for (MediaSessionCompat.QueueItem item : queueItems)
+				if (item.getDescription().getMediaId().equals(mediaId))
+					index = (int) item.getQueueId();
+
+			exoPlayer.prepare(mediaSource);
+
+			mSession.setActive(true);
+
+			onPlay();
+
+			//MediaSessionが配信する、再生中の曲の情報を設定
+			mSession.setMetadata(MusicLibrary.getMetadata(getApplicationContext(), mediaId));
+		}
 				@Override
 				public void onPlay() {
 					final String TAG = "onPlay";
@@ -4581,6 +4692,127 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		}
 	}
 
+	//接続時に呼び出されるコールバック
+	private MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+		@Override
+		public void onConnected() {
+			final String TAG = "onConnected";
+			String dbMsg="";
+//			try {
+				//接続が完了するとSessionTokenが取得できるので
+				//それを利用してMediaControllerを作成
+				mController = new MediaControllerCompat(MusicPlayerService.this, mBrowser.getSessionToken());
+				//サービスから送られてくるプレイヤーの状態や曲の情報が変更された際のコールバックを設定
+				mController.registerCallback(controllerCallback);
+
+				//既に再生中だった場合コールバックを自ら呼び出してUIを更新
+				if (mController.getPlaybackState() != null && mController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
+					controllerCallback.onMetadataChanged(mController.getMetadata());
+					controllerCallback.onPlaybackStateChanged(mController.getPlaybackState());
+				}
+				myLog(TAG,dbMsg);
+//			} catch (RemoteException ex) {
+//				ex.printStackTrace();
+//			//	myErrorLog(TAG,dbMsg+"で"+ ex);
+//				Toast.makeText(MusicPlayerService.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+//			}
+			//サービスから再生可能な曲のリストを取得
+			mBrowser.subscribe(mBrowser.getRoot(), subscriptionCallback);
+		}
+	};
+
+	//MediaControllerのコールバック
+	private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
+		//再生中の曲の情報が変更された際に呼び出される
+		@Override
+		public void onMetadataChanged(MediaMetadataCompat metadata) {
+			final String TAG = "onMetadataChanged";
+			String dbMsg="";
+			try {
+				dbMsg += ",title =　" + metadata.getDescription().getTitle();
+			//	textView_title.setText(metadata.getDescription().getTitle());
+//				imageView.setImageBitmap(metadata.getDescription().getIconBitmap());
+				dbMsg += ",duration =　" + metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+		//		textView_duration.setText(Long2TimeString(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)));
+		//		seekBar.setMax((int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+				myLog(TAG,dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+"で"+e);
+			}
+		}
+
+		//プレイヤーの状態が変更された時に呼び出される
+		@Override
+		public void onPlaybackStateChanged(PlaybackStateCompat state) {
+			final String TAG = "onPlaybackStateChanged";
+			String dbMsg="";
+			try {
+
+				//プレイヤーの状態によってボタンの挙動とアイコンを変更する
+				if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+					dbMsg += "state =　STATE_PLAYING";
+					//再生ボタン
+//					button_play.setOnClickListener(new View.OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							final String TAG = "onClick";
+//							String dbMsg="";
+//							try {
+//								mController.getTransportControls().pause();
+//								myLog(TAG,dbMsg);
+//							} catch (Exception e) {
+//								myErrorLog(TAG,dbMsg+"で"+e);
+//							}
+//						}
+//					});
+//					button_play.setImageResource(R.drawable.exo_controls_pause);
+				} else {
+						dbMsg += "state ≠ STATE_PLAYING";
+//					button_play.setOnClickListener(new View.OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							final String TAG = "onClick";
+//							String dbMsg="";
+//							try {
+//								mController.getTransportControls().play();
+//								myLog(TAG,dbMsg);
+//							} catch (Exception e) {
+//								myErrorLog(TAG,dbMsg+"で"+e);
+//							}
+//						}
+//					});
+//					button_play.setImageResource(R.drawable.exo_controls_play);
+				}
+				dbMsg += "、再生ポジション=" + state.getPosition();
+		//		textView_position.setText(Long2TimeString(state.getPosition()));
+				//シーク
+		//		seekBar.setProgress((int) state.getPosition());
+				myLog(TAG,dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+"で"+e);
+			}
+		}
+	};
+
+	//Subscribeした際に呼び出されるコールバック
+	private MediaBrowserCompat.SubscriptionCallback subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
+		@Override
+		public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
+			final String TAG = "onChildrenLoaded";
+			String dbMsg="";
+			try {
+				String id = children.get(0).getMediaId();
+				dbMsg += "、id=" + id;
+				//既に再生中でなければ初めの曲を再生をリクエスト
+				if (mController.getPlaybackState() == null){
+					//playFromMediaIdを呼び出すと、サービス側のMediaSessionのコールバック内のonPlayFromMediaIdが呼ばれる
+					mController.getTransportControls().playFromMediaId(id, null);				}
+				myLog(TAG,dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+"で"+e);
+			}
+		}
+	};
 
 	/**
 	 * 設定を読み込み各サービスを起動
@@ -4647,40 +4879,94 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				}else if (21 <= android.os.Build.VERSION.SDK_INT && android.os.Build.VERSION.SDK_INT <31) {
 					//		RC = new RemoteController(getApplicationContext());
 				}else if ( 31 <= android.os.Build.VERSION.SDK_INT) {
+					// 再生リストのオブジェクトを作る
+					mPlayingQueue = new ArrayList<MediaSession.QueueItem>();
+					// 再生キューの位置を初期化
+					mCurrentQueueIndex = myPreferences.pref_mIndex;
 					// Assume for example that the music catalog is already loaded/cached.
+					//AudioManagerを取得
+					am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+					dbMsg += ",mediaSession作成" ;
+					if(mediaSession ==null){
+						dbMsg += " , mediaSession == null";
+						mediaSession = new MediaSessionCompat(getApplicationContext(),  getResources().getString(R.string.app_name));
+					}
+					//このMediaSessionが提供する機能を設定
+					mediaSession.setFlags(
+											MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | 		//ヘッドフォン等のボタンを扱う
+											MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS | //キュー系のコマンドの使用をサポート
+											MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS); //再生、停止、スキップ等のコントロールを提供
+
+
+//					// Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
+//					stateBuilder = new PlaybackStateCompat.Builder()
+//							.setActions(
+//									PlaybackStateCompat.ACTION_PLAY |
+//											PlaybackStateCompat.ACTION_PLAY_PAUSE);
+//					mediaSession.setPlaybackState(stateBuilder.build());
+
+					//クライアントからの操作に応じるコールバックを設定
+					mediaSession.setCallback(MySessionCallback);
+
+					// Set the session's token so that client activities can communicate with it.
+					mSessionToken = mediaSession.getSessionToken();
+					setSessionToken(mSessionToken);
+					dbMsg += ",getSessionToken=" + mediaSession.getSessionToken().toString();
+					//Media Sessionのメタデータや、プレイヤーのステータスが更新されたタイミングで
+					//通知の作成/更新をする
+					mediaSession.getController().registerCallback(new MediaControllerCompat.Callback() {
+						@Override
+						public void onPlaybackStateChanged(PlaybackStateCompat state) {
+							final String TAG = "onPlaybackStateChanged";
+							String dbMsg="";
+							try{
+								dbMsg += ",state=" + state ;
+								lpNotificationMake(myPreferences.pref_data_url);
+								//CreateNotification();
+								myLog(TAG,dbMsg);
+							} catch (Exception e) {
+								myErrorLog(TAG,dbMsg+"で"+e);
+							}
+						}
+
+						@Override
+						public void onMetadataChanged(MediaMetadataCompat metadata) {
+							final String TAG = "onMetadataChanged";
+							String dbMsg="";
+							try{
+								dbMsg += ",metadata=" + metadata ;
+								lpNotificationMake(myPreferences.pref_data_url);
+								//CreateNotification();
+								myLog(TAG,dbMsg);
+							} catch (Exception e) {
+								myErrorLog(TAG,dbMsg+"で"+e);
+							}
+						}
+					});
+
+					//キューにアイテムを追加
+//					int i = 0;
+//					for (MediaBrowserCompat.MediaItem media : MusicLibrary.getMediaItems()) {
+//						queueItems.add(new MediaSessionCompat.QueueItem(media.getDescription(), i));
+//						i++;
+//					}
 					dbMsg += "[" + myPreferences.nowList_id +  "]" + myPreferences.nowList;
-					mediaItems = new ArrayList<>();
-					mediaItems = setMediaItemList(Integer.parseInt(myPreferences.nowList_id), myPreferences.nowList);
-					dbMsg += ">>mediaItems=" + mediaItems.size() + "件";
+//					mediaItems = new ArrayList<>();
+					queueItems = setMediaItemList(Integer.parseInt(myPreferences.nowList_id), myPreferences.nowList);
+					queueItem = mPlayingQueue.get(mCurrentQueueIndex);
+
+					dbMsg += ">>queueItems=" + queueItems.size() + "件";
+					mediaSession.setQueue(queueItems);//WearやAutoにキューが表示される
 
 					// ExoPlayer用意
 					DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 					exoPlayer = ExoPlayerFactory.newSimpleInstance(rContext, new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter)));
-//					MediaBrowserCompat mBrowser = new MediaBrowserCompat(this, new ComponentName(getApplicationContext(), this.class), connectionCallback, null);
-//					MediaControllerCompat mController =  new MediaControllerCompat(this, mBrowser.getSessionToken());
+					//new MediaBrowserCompat(this, new ComponentName(getApplicationContext(), this.class), connectionCallback, null);
+					mBrowser = new MediaBrowserCompat(this, new ComponentName(this, MusicPlayerService.class), connectionCallback, null);
+					mController =  new MediaControllerCompat(this, mBrowser.getSessionToken());
 //					//	exoPlayer = ExoPlayerFactory.newSimpleInstance(rContext, new DefaultTrackSelector());
 //				//	exoPlayer = SimpleExoPlayer.Builder(this).build(),
-					dbMsg += ",mediaSession作成" ;
-					// Create a MediaSessionCompat
-					mediaSession = new MediaSessionCompat(getApplicationContext(),  getResources().getString(R.string.app_name));
-					// Enable callbacks from MediaButtons and TransportControls
-					mediaSession.setFlags(
-							MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-									MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-					// Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-					stateBuilder = new PlaybackStateCompat.Builder()
-							.setActions(
-									PlaybackStateCompat.ACTION_PLAY |
-											PlaybackStateCompat.ACTION_PLAY_PAUSE);
-					mediaSession.setPlaybackState(stateBuilder.build());
-
-					// MySessionCallback() has methods that handle callbacks from a media controller
-					mediaSession.setCallback(MySessionCallback);
-
-					// Set the session's token so that client activities can communicate with it.
-					setSessionToken(mediaSession.getSessionToken());
-					dbMsg += ",getSessionToken=" + mediaSession.getSessionToken().toString();
 
 					// ExoPlayerの再生状態が更新されたときも通知を更新する
 					exoPlayer.addListener(new Player.EventListener()  {
@@ -4734,7 +5020,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 ////					mState = State.Paused;
 ////				}
 			//画面遷移のやり方でプレイヤー画面を開く
-			startActivity(notifyIntent);
+////一旦停止			startActivity(notifyIntent);
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
@@ -4804,8 +5090,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		String retStr = "";
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retStr = MyUtil.getPrefStr(keyNmae , defaultVal,context);
 		return retStr;
 	}
 
@@ -4813,8 +5099,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		int retInt = -99;
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retInt = Util.getPrefInt(keyNmae , defaultVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retInt = MyUtil.getPrefInt(keyNmae , defaultVal,context);
 		return retInt;
 	}
 
@@ -4822,8 +5108,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		boolean retBool = false;
 		final String TAG = "setPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPreStr(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPreStr(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
@@ -4831,19 +5117,19 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 		boolean retBool = false;
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPrefInt(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , "[MusicPlayerService]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , "[MusicPlayerService]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , "[MusicPlayerService]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , "[MusicPlayerService]" + dbMsg);
 	}
 }
 

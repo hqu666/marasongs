@@ -211,8 +211,8 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					if(playlistNAME.equals(parent.getContext().getResources().getString(R.string.listmei_zemkyoku))){	// 全曲リスト
 						String track = treeEntry.getTrack();
 						dbMsg +=  ",track="+track;
-						Util UTIL = new Util();
-						track = UTIL.checKTrack( track);
+						MyUtil MyUtil = new MyUtil();
+						track = MyUtil.checKTrack( track);
 						rInt = Integer.valueOf(track);
 					}
 					rStr = " " + rInt +",";
@@ -293,13 +293,13 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , "[MyTreeAdapter]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , "[MyTreeAdapter]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , "[MyTreeAdapter]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , "[MyTreeAdapter]" + dbMsg);
 	}
 
 }

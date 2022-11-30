@@ -150,8 +150,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		try{
 			int cPosition = cursor.getPosition();
 			dbMsg += "," + cPosition + "/" + cursor.getCount() + "曲目,idCount=" + idCount;
-			Util UTIL = new Util();
-//			UTIL.dBaceColumnCheck( cursor ,  cPosition);
+			MyUtil MyUtil = new MyUtil();
+//			MyUtil.dBaceColumnCheck( cursor ,  cPosition);
 
 			@SuppressLint("Range") int auduo_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("AUDIO_ID")));
 			@SuppressLint("Range") String ArtistName = cursor.getString(cursor.getColumnIndex("ARTIST"));
@@ -162,7 +162,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			dbMsg += ",ALBUM=" + albumName;
 			@SuppressLint("Range") String trackVar = cursor.getString(cursor.getColumnIndex("TRACK"));
 			dbMsg += ",TRACK=" + trackVar;
-			trackVar = UTIL.checKTrack(trackVar);
+			trackVar = MyUtil.checKTrack(trackVar);
 //			if (trackVar.contains("/")){
 //				String[] tStrs = trackVar.split("/");
 //				trackVar = tStrs[0];
@@ -171,7 +171,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			dbMsg += ",TITLE=" + titleNeme;
 			@SuppressLint("Range") String duration = cursor.getString(cursor.getColumnIndex("DURATION"));
 			dbMsg += ",DURATION=" + duration;
-			String moh = UTIL.stf.format(new Date(Long.valueOf(duration)));
+			String moh = MyUtil.stf.format(new Date(Long.valueOf(duration)));
 			dbMsg += "=" + moh;
 				//I'll Be Alright
 			@SuppressLint("Range") String dataUrl = cursor.getString(cursor.getColumnIndex("DATA"));
@@ -202,8 +202,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			}
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
-			Util UTIL = new Util();
-			UTIL.dBaceColumnCheck(  cursor ,  idCount);
+			MyUtil MyUtil = new MyUtil();
+			MyUtil.dBaceColumnCheck(  cursor ,  idCount);
 		}
 		return items;
 	}
@@ -620,21 +620,21 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 
 	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
 		boolean retBool = false;
 		final String TAG = "setPrefInt";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPrefInt(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
@@ -642,8 +642,8 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 		boolean retBool = false;
 		final String TAG = "setPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPreStr(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPreStr(keyNmae , wrightVal,context);
 		return retBool;
 	}
 

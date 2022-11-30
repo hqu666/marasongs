@@ -1,7 +1,5 @@
 package com.hijiyam_koubou.marasongs;
 
-import android.util.Log;
-
 public class AsyncTaskResult<T> {
 	/*	AsyncTask#doInBackgroundの戻り値を考える	http://d.hatena.ne.jp/tomorrowkey/20100824/1282655538
     AsyncTaskのdoInBackgroundメソッドからonPostExecuteメソッドへ渡す引数用の独自クラス
@@ -44,13 +42,13 @@ public class AsyncTaskResult<T> {
 
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 
 }//http://d.hatena.ne.jp/tomorrowkey/20100824/1282655538

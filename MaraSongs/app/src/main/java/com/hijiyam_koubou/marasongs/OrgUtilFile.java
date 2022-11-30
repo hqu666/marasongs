@@ -1,12 +1,5 @@
 package com.hijiyam_koubou.marasongs;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +10,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class OrgUtilFile extends Activity {
 //	public String dbBlock="";
@@ -584,12 +584,12 @@ public class OrgUtilFile extends Activity {
 	}		//http://fernweh.jp/b/startactivityforresult/
 	///////////////////////////////////////////////////////////////////////////////////
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG , dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG , dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG , dbMsg);
 	}
 }

@@ -127,7 +127,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	                                                                 //plogTaskCallback,
 	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 	public OrgUtil ORGUT;						//自作関数集
-	public Util UTIL;
+	public MyUtil MyUtil;
 	public MyApp myApp;
 	public MyPreferences myPreferences;
 	public MusicPlaylist musicPlaylist ;
@@ -353,26 +353,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //	public static void  messageShow(String titolStr , String mggStr) {
 //		final String TAG = "messageShow";
 //		String dbMsg = "[MuList]"+titolStr + "\n" + mggStr;
-//		Util UTIL = new Util();
-//		 UTIL.messageShow(titolStr , mggStr , MuList.this);
+//		MyUtil MyUtil = new MyUtil();
+//		 MyUtil.messageShow(titolStr , mggStr , MuList.this);
 //	}
 
 	public static void myLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myLog(TAG ,  "[MuList]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myLog(TAG ,  "[MuList]" + dbMsg);
 	}
 
 	public static void myErrorLog(String TAG , String dbMsg) {
-		Util UTIL = new Util();
-		Util.myErrorLog(TAG ,  "[MuList]" + dbMsg);
+		MyUtil MyUtil = new MyUtil();
+		MyUtil.myErrorLog(TAG ,  "[MuList]" + dbMsg);
 	}
 
 	public static String getPrefStr(String keyNmae , String defaultVal,Context context) {        //プリファレンスの読込み
 		String retStr = "";
 		final String TAG = "getPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retStr = Util.getPrefStr(keyNmae , defaultVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retStr = MyUtil.getPrefStr(keyNmae , defaultVal,context);
 		return retStr;
 	}
 
@@ -380,8 +380,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		boolean retBool = false;
 		final String TAG = "setPrefbool";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPrefBool(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPrefBool(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
@@ -389,8 +389,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		boolean retBool = false;
 		final String TAG = "setPrefInt";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPrefInt(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
@@ -398,8 +398,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		boolean retBool = false;
 		final String TAG = "setPrefStr";
 		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
-		Util UTIL = new Util();
-		retBool = Util.setPreStr(keyNmae , wrightVal,context);
+		MyUtil MyUtil = new MyUtil();
+		retBool = MyUtil.setPreStr(keyNmae , wrightVal,context);
 		return retBool;
 	}
 
@@ -3421,8 +3421,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						String aName = null;
 						String track = cursor.getString(cursor.getColumnIndex( "TRACK" ));
 						dbMsg +=" [ "+ track + " ] ";
-						Util UTIL = new Util();
-						track = UTIL.checKTrack( track);
+						MyUtil MyUtil = new MyUtil();
+						track = MyUtil.checKTrack( track);
 
 						aName = cursor.getString(cursor.getColumnIndex( "TITLE" ));			//MediaStore.Audio.Media.TITLE
 						dbMsg +=aName;/////////////////////////////////////////////////////////////////////////////////////////////
@@ -5356,8 +5356,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( rCursor.moveToFirst() ){
 				reqCode = MyConstants.PUPRPOSE_lIST;
 				String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
-				Util UTIL = new Util();
-				UTIL.dBaceColumnCheck(rCursor ,0);
+				MyUtil MyUtil = new MyUtil();
+				MyUtil.dBaceColumnCheck(rCursor ,0);
 				MuList.this.plAL = new ArrayList<Map<String, Object>>();
 				MuList.this.plAL.clear();
 				MuList.this.plSL =  new ArrayList<String>();				//プレイリスト用簡易リスト
@@ -5493,7 +5493,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=  "="+cVal;
 					}else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
 						String cVal = playLists.getString(i);
-					//	cVal = UTIL.checKTrack( cVal);
+					//	cVal = MyUtil.checKTrack( cVal);
 						MuList.this.objMap.put(cName ,cVal );
 					}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
 						String cVal = String.valueOf(playLists.getInt(i));
@@ -5747,8 +5747,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			int audioID = Integer.valueOf((String)MuList.this.plAL.get(i).get(MediaStore.Audio.Playlists.Members.AUDIO_ID ));
 			dbMsg +=  ",audioID="+audioID;
 			String track = String.valueOf(MuList.this.plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
-			Util UTIL = new Util();
-			track = UTIL.checKTrack( track);
+			MyUtil MyUtil = new MyUtil();
+			track = MyUtil.checKTrack( track);
 			dbMsg +=  ",track="+track;
 			String dataURL = String.valueOf(MuList.this.plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
 			dbMsg +=  ",dataURL="+dataURL;
@@ -6023,7 +6023,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=  ",audioID="+audioID;
 			String track = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
 			dbMsg +=  ",track="+track;
-			track = UTIL.checKTrack( track);
+			track = MyUtil.checKTrack( track);
 			String dataURL = String.valueOf(plAL.get(i).get( "DATA"  ));				//MediaStore.Audio.Playlists.Members.DATA
 			dbMsg +=  ",dataURL="+dataURL;
 			String duration = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.DURATION ));
@@ -6153,8 +6153,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			int audioID = Integer.valueOf((String)plAL.get(i).get(MediaStore.Audio.Playlists.Members.AUDIO_ID ));
 			dbMsg += ",audioID="+audioID;
 			String track = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.TRACK ));
-			Util UTIL = new Util();
-			track = UTIL.checKTrack( track);
+			MyUtil MyUtil = new MyUtil();
+			track = MyUtil.checKTrack( track);
 			String dataURL = String.valueOf(plAL.get(i).get( MediaStore.Audio.Playlists.Members.DATA ));
 			dbMsg +=  ",dataURL="+dataURL;
 			String duration = String.valueOf(plAL.get(i).get(MediaStore.Audio.Playlists.Members.DURATION ));
@@ -7740,7 +7740,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if(ORGUT == null){
 					ORGUT = new OrgUtil();		//自作関数集
 				}
-				Util UTIL = new Util();
+				MyUtil MyUtil = new MyUtil();
 				String b_albumName = "";
 				if(playLists.moveToFirst()){
 					for (int i = 0; i < rCount; i++) {
@@ -7751,7 +7751,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								modifiedList.add(String.valueOf(albumName));
 								dbMsg += "[" + modifiedList.size() + "]" + albumName;
 //							   if(i == 0){
-								UTIL.dBaceColumnCheck(playLists ,i);
+								MyUtil.dBaceColumnCheck(playLists ,i);
 //							   }
 							}
 							b_albumName = albumName;
@@ -7774,7 +7774,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			} else{
 				String titolStr = getResources().getString(R.string.playlist_namae_saikintuika);		//最近追加
 				String mggStr = listUpDates + "日前から追加された楽曲は有りません";
-				Util.messageShow(titolStr , mggStr ,  MuList.this);
+				MyUtil.messageShow(titolStr , mggStr ,  MuList.this);
 				myLog(TAG, dbMsg);
 			}
 		}catch (Exception e) {
@@ -7884,8 +7884,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			Cursor cursor = getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
 			int rCount = cursor.getCount();
 			dbMsg +=";"+ rCount + "件";
-			Util UTIL = new Util();
-			String albumArtist = UTIL.getAlbumArtist(cursor);
+			MyUtil MyUtil = new MyUtil();
+			String albumArtist = MyUtil.getAlbumArtist(cursor);
 			dbMsg +=",albumArtist="+ albumArtist;
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MuList.this);
 			ZenkyokuHelper workHelper = new ZenkyokuHelper(MuList.this , workTable);
@@ -7903,7 +7903,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += "を"+ playOrder + "曲目に";
 					@SuppressLint("Range") String track = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
 					dbMsg += "["+ track + "]";
-//					track = UTIL.checKTrack( track);
+//					track = MyUtil.checKTrack( track);
 //					dbMsg += ">>"+ track + "]";
 					@SuppressLint("Range") String dataVal = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 					dbMsg += ",dataVal="+ dataVal;
@@ -7925,7 +7925,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						artistID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
 						alubmID = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 					}
-					workDb.insert(workTable, null, UTIL.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );////データベース書込み//
+					workDb.insert(workTable, null, MyUtil.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );////データベース書込み//
 //					pStrlist += titolName + "," + dataVal +"\n";		//汎用プレイリストの内容
 
 				}while(cursor.moveToNext());		// && listUpCount < listUpDates
@@ -7962,9 +7962,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					String composer = cursor.getString(cursor.getColumnIndex("COMPOSER"));
 					String lastYear = cursor.getString(cursor.getColumnIndex("LAST_YEAR"));
 
-					MuList.this.plAL.add( UTIL.writetOneListRecord( playOrder, audioID, albumArtist,artistName, albumName, titolName, dataVal, track, duration, year, modified,artistID,alubmID) );
+					MuList.this.plAL.add( MyUtil.writetOneListRecord( playOrder, audioID, albumArtist,artistName, albumName, titolName, dataVal, track, duration, year, modified,artistID,alubmID) );
 					//データベース書込み/////////////////////////////////////////////////
-					newSongDb.insert(MuList.this.saikintuikaTablename, null,  UTIL.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );
+					newSongDb.insert(MuList.this.saikintuikaTablename, null,  MyUtil.writetOneDBRecord( pOrder, audioID,albumArtist, artistName, albumName, titolName, dataVal, track, duration, year, modified, composer, lastYear) );
 					/////////////////////////////////////////////////データベース書込み//
 					if(dataVal.equals(dataFN)){ 				//再生中の曲が検出されたら
 						MuList.this.mIndex = playOrder;
@@ -8122,8 +8122,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			//>isOpen>true , isReadOnly=false , isWriteAheadLoggingEnabled=false , getPageSize=4096 , getMaximumSize=4398046507008 , 既存=170レコード
 			Cursor cursor = newSongDb.query(saikintuikaTablename , null , null , null , null , null , null);
 			if(cursor.moveToFirst()){
-				Util UTIL = new Util();
-				UTIL.dbColumnCheck(cursor ,0);
+				MyUtil MyUtil = new MyUtil();
+				MyUtil.dbColumnCheck(cursor ,0);
 
 				int preexistCount =  cursor.getCount();
 				dbMsg += " , 既存=" + preexistCount + "レコード";
@@ -8153,7 +8153,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						MuList.this.listTopFname = dataVal;							//リストの先頭ファイル名（プレイリスト作成時など）
 					}
 					String track = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-					track = UTIL.checKTrack( track);
+					track = MyUtil.checKTrack( track);
 					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.TRACK , track );
 					MuList.this.objMap.put(MediaStore.Audio.Playlists.Members.DURATION ,  cursor.getString(cursor.getColumnIndex("DURATION")) );
 					MuList.this.objMap.put("year" ,cursor.getString(cursor.getColumnIndex("YEAR")) );
@@ -11191,7 +11191,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			IsPlaying = false;
 		//	CONST = new MyConstants();
 			ORGUT = new OrgUtil();		//自作関数集
-			UTIL = new Util();
+			MyUtil = new MyUtil();
 			myApp = (MyApp) MuList.this.getApplication();
 
 			musicPlaylist = new MusicPlaylist(MuList.this);
