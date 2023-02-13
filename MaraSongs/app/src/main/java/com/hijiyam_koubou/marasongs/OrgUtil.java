@@ -13,6 +13,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -1509,6 +1511,107 @@ public class OrgUtil  extends Activity{				//
 		return retUri;
 	}
 
+	/**
+	 * (Media Sessionの)albumArtResIdを返す
+	 * **/
+	public int getAlbumArtResId(long albumId,Context con) {
+		final String TAG = "getAlbumArtResId";
+		String dbMsg= "" ;
+		int retId = 0;
+		try{
+			dbMsg += ",albumId=" + albumId ;
+			Uri artUri = Uri.parse("content://media/external/audio/albumart");
+			Uri retUri = ContentUris.withAppendedId(artUri, albumId);
+			dbMsg += ",retUri=" + retUri ;
+			Drawable drawable = new BitmapDrawable(con.getResources(), String.valueOf(retUri));
+			dbMsg += ",drawable=" + drawable ;
+			retId=Integer.valueOf(drawable.toString());
+			myLog(TAG,dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG,dbMsg +"で"+e.toString());
+		}
+		return retId;
+	}
+
+	/**
+	 *  MediaStore.Audio.Albumsを検索してALBUM_IDを返す
+	 * **/
+	public String retAlbumID(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
+		String retStr = null;
+		final String TAG = "retAlbumArtUri";
+		String dbMsg= "" ;
+		try{
+			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Albums.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+			}
+			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String c_selection =  MediaStore.Audio.Albums.ARTIST +" LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM +" = ?";
+			String[] c_selectionArgs= { "%" + artistMei + "%" , albumMei };   			//⑥引数groupByには、groupBy句を指定します。
+			String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+			Cursor cursor = context.getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);			//getApplicationContext()
+			dbMsg += "," +cursor.getCount() + "件";
+			if( cursor.moveToFirst() ){
+				int colCount = cursor.getColumnCount();
+				do{
+					int targetIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID);
+					dbMsg += "[" +targetIndex + "/" + colCount + "]";
+					retStr= cursor.getString(targetIndex);
+				}while(cursor.moveToNext());
+			}
+			dbMsg += ",retStr=" +retStr;
+			cursor.close();
+			myLog(TAG,dbMsg);
+		}catch(IllegalArgumentException e){
+			myErrorLog(TAG,dbMsg +"で"+e.toString());
+		}catch (Exception e) {
+			myErrorLog(TAG,dbMsg +"で"+e.toString());
+		}
+		return retStr;
+	}
+
+	/**
+	 *  MediaStore.Audio.Albumsを検索してALBUM_IDを返す
+	 * **/
+	public String retGenre(Context context , String artistMei , String albumMei) throws IOException {			//アルバムアートUriだけを返す		ContextWrapper context ,
+		String retStr = null;
+		final String TAG = "retGenre";
+		String dbMsg= "" ;
+		try{
+			dbMsg += "artistMei=" + artistMei + ",albumMei=" +albumMei ;/////////////////////////////////////
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+			}
+			String[] c_columns = null;		 		//③引数columnsには、検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
+			String c_selection =  MediaStore.Audio.Media.ARTIST +" LIKE ?  AND " + MediaStore.Audio.Albums.ALBUM +" = ?";
+			String[] c_selectionArgs= { "%" + artistMei + "%" , albumMei };   			//⑥引数groupByには、groupBy句を指定します。
+			String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
+			Cursor cursor = context.getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);			//getApplicationContext()
+			dbMsg += "," +cursor.getCount() + "件";
+			if( cursor.moveToFirst() ){
+				int colCount = cursor.getColumnCount();
+				do{
+					int targetIndex = cursor.getColumnIndex(MediaStore.Audio.Media.GENRE);
+					dbMsg += "[" +targetIndex + "/" + colCount + "]";
+					retStr= cursor.getString(targetIndex);
+				}while(cursor.moveToNext());
+			}
+			dbMsg += ",retStr=" +retStr;
+			cursor.close();
+			myLog(TAG,dbMsg);
+		}catch(IllegalArgumentException e){
+			myErrorLog(TAG,dbMsg +"で"+e.toString());
+		}catch (Exception e) {
+			myErrorLog(TAG,dbMsg +"で"+e.toString());
+		}
+		return retStr;
+	}
 
 	public ImageView IV;
 	public Bitmap mDummyAlbumArt = null;

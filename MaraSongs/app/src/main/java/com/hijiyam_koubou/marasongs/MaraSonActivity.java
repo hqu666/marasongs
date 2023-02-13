@@ -34,6 +34,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
@@ -74,6 +78,7 @@ import android.widget.ViewFlipper;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
@@ -1426,11 +1431,11 @@ public class MaraSonActivity extends AppCompatActivity
 							if( b_albumArt == null ){
 								b_albumArt = "";
 							}
-							if( ! b_albumArt.equals(albumArt)){
-								MaraSonActivity.this.jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
-								b_albumArt = albumArt;
-								dbMsg +=">b_albumArt>" + b_albumArt ;/////////////////////////////////////
-							}
+//							if( ! b_albumArt.equals(albumArt)){
+//								MaraSonActivity.this.jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
+//								b_albumArt = albumArt;
+//								dbMsg +=">b_albumArt>" + b_albumArt ;/////////////////////////////////////
+//							}
 							listBetuSettei( myPreferences.nowList );					//リスト毎のヘッダー部変更
 							if( rp_pp ){			//2点間リピート中
 								String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start);				//二点間再生開始点(mmss000)
@@ -5549,6 +5554,123 @@ public class MaraSonActivity extends AppCompatActivity
 
 	public int reqCode;
 
+	////イマドキなAndroid音楽プレーヤーの作り方  https://qiita.com/siy1121/items/f01167186a6677c22435 ///////
+	MediaBrowserCompat mBrowser;
+	MediaControllerCompat mController;
+
+	private void Play(String id) {
+		final String TAG = "onConnected";
+		String dbMsg="";
+		try {
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		//MediaControllerからサービスへ操作を要求するためのTransportControlを取得する
+		//playFromMediaIdを呼び出すと、サービス側のMediaSessionのコールバック内のonPlayFromMediaIdが呼ばれる
+		mController.getTransportControls().playFromMediaId(id, null);
+	}
+	//接続時に呼び出されるコールバック
+	private MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+		@Override
+		public void onConnected() {
+			final String TAG = "onConnected";
+			String dbMsg="";
+			try {
+				//接続が完了するとSessionTokenが取得できるので
+				//それを利用してMediaControllerを作成
+				mController = new MediaControllerCompat(MaraSonActivity.this, mBrowser.getSessionToken());
+				//サービスから送られてくるプレイヤーの状態や曲の情報が変更された際のコールバックを設定
+				mController.registerCallback(controllerCallback);
+
+				//既に再生中だった場合コールバックを自ら呼び出してUIを更新
+				if (mController.getPlaybackState() != null && mController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
+					controllerCallback.onMetadataChanged(mController.getMetadata());
+					controllerCallback.onPlaybackStateChanged(mController.getPlaybackState());
+				}
+				dbMsg +=",UIを更新";
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+			//サービスから再生可能な曲のリストを取得
+			mBrowser.subscribe(mBrowser.getRoot(), subscriptionCallback);
+		}
+	};
+
+	//Subscribeした際に呼び出されるコールバック
+	private MediaBrowserCompat.SubscriptionCallback subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
+		@Override
+		public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
+			final String TAG = "onConnected";
+			String dbMsg="";
+			try {
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+
+			//既に再生中でなければ初めの曲を再生をリクエスト
+			if (mController.getPlaybackState() == null)
+				Play(children.get(0).getMediaId());
+		}
+	};
+
+	//MediaControllerのコールバック
+	private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
+		//再生中の曲の情報が変更された際に呼び出される
+		@Override
+		public void onMetadataChanged(MediaMetadataCompat metadata) {
+			final String TAG = "onMetadataChanged";
+			String dbMsg="";
+			try {
+				titol_tv.setText(metadata.getDescription().getTitle());
+				mpJakeImg.setImageBitmap(metadata.getDescription().getIconBitmap());
+				String durationStr = ORGUT.sdf_mss.format(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+				dbMsg += "[" + durationStr+ "]";
+				totalTimePTF.setText(durationStr);
+//org				totalTimePTF.setText(Long2TimeString(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)));
+				saiseiSeekMP.setMax((int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+
+		}
+
+		//プレイヤーの状態が変更された時に呼び出される
+		@Override
+		public void onPlaybackStateChanged(PlaybackStateCompat state) {
+			final String TAG = "onPlaybackStateChanged";
+			String dbMsg="";
+			try {
+				dbMsg += ",state= " + state;
+				//プレイヤーの状態によってボタンの挙動とアイコンを変更する
+				if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+					ppPBT.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							mController.getTransportControls().pause();
+						}
+					});
+					ppPBT.setImageResource(R.drawable.pousebtn);
+				} else {
+					ppPBT.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							mController.getTransportControls().play();
+						}
+					});
+					ppPBT.setImageResource(R.drawable.pl_r_btn);
+				}
+				String mcPositionStr = ORGUT.sdf_mss.format(state.getPosition());
+				dbMsg += "[" + mcPositionStr+ "]";
+				//org	saiseiPositionPTF.setText(Long2TimeString(state.getPosition()));
+				saiseiPositionPTF.setText(mcPositionStr);	   		//再生画面の経過時間枠
+				saiseiSeekMP.setProgress((int) state.getPosition());
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		}
+	};
+	///////イマドキなAndroid音楽プレーヤーの作り方//
+
 	//①起動	②プリファレンスが無くて再読み込み	③ベース色など変更でリスタート
 	@SuppressWarnings("deprecation")
 	@Override
@@ -5579,23 +5701,7 @@ public class MaraSonActivity extends AppCompatActivity
 			musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
 //			NotificationManager mNotificationManager = (NotificationManager)this.getSystemService(Activity.NOTIFICATION_SERVICE);
 //			dbMsg += ",NotificationManager="+ mNotificationManager.toString() ;
-			//スレッド起動確認///////////////////////////////////
-			if( activityManager == null ){
-				kidou_Kakuninn ();							//起動確認;音量設定/前回終了
-			}
-			List<android.app.ActivityManager.RunningServiceInfo> listServiceInfo = activityManager.getRunningServices(Integer.MAX_VALUE);
-			dbMsg += ",listServiceInfo="+ listServiceInfo.size() + "件" ;
-			boolean found = false;
-			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	//起動中のサービス名を取得 クラス名を比較
-				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {		// 実行中のサービスと一致 = ノティフィケーションからの起動
-					dbMsg +="起動中のサービス=" + curr.service.getClassName();///////////	dbMsg=dbMsg +">>"+ MusicPlayerService.class.getName();/////////////////////////////////////
-					found = true;
-					kidou_jyoukyou = kidou_notif ;						//ノティフィケーションからの起動
-					imanoJyoutai = MuList.sonomama;
-					break;
-				}
-			}
-			///////////////////////////////////スレッド起動確認//
+			//スレッド起動確認の元の位置
 			Intent intent = getIntent();
 			reqCode = intent.getIntExtra("reqCode", 0);
 			dbMsg += ",reqCode=" + reqCode;
@@ -5767,10 +5873,38 @@ public class MaraSonActivity extends AppCompatActivity
 			ffPBT.setOnKeyListener( this);
 			saiseiSeekMP.setOnKeyListener( this);
 			saiseiSeekMP.setOnSeekBarChangeListener (this);
-			ppPBT.setOnKeyListener( this);
+		//	ppPBT.setOnKeyListener( this);
 
 			convertFormat = new SimpleDateFormat("HH:mm:ss");
 			convertFormat.setTimeZone(TimeZone.getTimeZone("UTC"));								//時差を抜いた時分秒表示
+			//スレッド起動確認///////////////////////////////////
+			if( activityManager == null ){
+				kidou_Kakuninn ();							//起動確認;音量設定/前回終了
+			}
+			List<android.app.ActivityManager.RunningServiceInfo> listServiceInfo = activityManager.getRunningServices(Integer.MAX_VALUE);
+			dbMsg += ",listServiceInfo="+ listServiceInfo.size() + "件" ;
+			boolean found = false;
+			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	//起動中のサービス名を取得 クラス名を比較
+				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {		// 実行中のサービスと一致 = ノティフィケーションからの起動
+					dbMsg +="起動中のサービス=" + curr.service.getClassName();///////////	dbMsg=dbMsg +">>"+ MusicPlayerService.class.getName();/////////////////////////////////////
+					found = true;
+					kidou_jyoukyou = kidou_notif ;						//ノティフィケーションからの起動
+					imanoJyoutai = MuList.sonomama;
+					break;
+				}
+			}
+			////イマドキなAndroid音楽プレーヤーの作り方  https://qiita.com/siy1121/items/f01167186a6677c22435 ///////////////////////////////////スレッド起動確認//
+			if(!found){
+				//サービスは開始しておく
+				//Activity破棄と同時にServiceも停止して良いならこれは不要
+				startService(new Intent(this, MusicPlayerService.class));
+
+				//MediaBrowserを初期化
+				mBrowser = new MediaBrowserCompat(this, new ComponentName(this, MusicPlayerService.class), connectionCallback, null);
+				//接続(サービスをバインド)
+				mBrowser.connect();
+			}
+			////イマドキなAndroid音楽プレーヤーの作り方
 			//広告表示//////////////////////////////////////////////////
 			advertisement_ll = findViewById(R.id.advertisement_ll);
 			ad_layout = findViewById(R.id.ad_layout);
