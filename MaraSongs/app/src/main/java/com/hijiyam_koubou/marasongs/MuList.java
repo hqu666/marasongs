@@ -132,7 +132,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public MyPreferences myPreferences;
 	public MusicPlaylist musicPlaylist ;
 	private MuList.ploglessTask plTask;
-	public MusicLibrary mibrary;
+//	public MusicLibrary mibrary;
 
 	/**定数*/
 	public Locale locale;							// アプリで使用されているロケール情報を取得
@@ -3668,16 +3668,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			myEditor.putString ("nowList_id", myPreferences.nowList_id);
 			myEditor.putString ("nowList", listName);
 
-			mibrary = new MusicLibrary();
-			int totalCount = mibrary.makeList(this, Long.parseLong(myPreferences.nowList_id),listName);
-			dbMsg += ",totalCount=" + totalCount;
-			OrgUtil oUtil = new OrgUtil();
-			String[] infos = dataFN.split(File.separator);
-			String albumID=oUtil.retAlbumID(this,infos[infos.length-3],infos[infos.length-2]);
-			dbMsg += ",albumID=" + albumID;
-			int mIndex = mibrary.getIndex(albumID);
-			dbMsg += ",mIndex=" + mIndex;
-			myEditor.putInt ("pref_mIndex", mIndex);
+//			mibrary = new MusicLibrary();
+//			int totalCount = mibrary.makeList(this, Long.parseLong(myPreferences.nowList_id),listName);
+//			dbMsg += ",totalCount=" + totalCount;
+//			OrgUtil oUtil = new OrgUtil();
+//			String[] infos = dataFN.split(File.separator);
+//			String albumID=oUtil.retAlbumID(this,infos[infos.length-3],infos[infos.length-2]);
+//			dbMsg += ",albumID=" + albumID;
+//			int mIndex = mibrary.getIndex(albumID);
+//			dbMsg += ",mIndex=" + mIndex;
+//			myEditor.putInt ("pref_mIndex", mIndex);
 			myEditor.apply();
 
 

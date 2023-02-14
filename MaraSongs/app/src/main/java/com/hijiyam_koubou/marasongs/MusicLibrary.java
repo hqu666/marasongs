@@ -134,7 +134,7 @@ public class MusicLibrary {
                 if( rCursor.moveToFirst() ){
                     do{
                         int rPosi = rCursor.getPosition();
-                        dbMsg= "[" + rPosi +"/" + rCursor.getCount() +"曲]";		//MuList.this.rCount
+                        dbMsg += "[" + rPosi +"/" + rCursor.getCount() +"曲]";		//MuList.this.rCount
                         String audio_id = null;
                         String dataVal = null;
                         String subText = null;

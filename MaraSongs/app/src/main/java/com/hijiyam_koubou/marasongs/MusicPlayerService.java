@@ -102,6 +102,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 	// implements MusicFocusable,PrepareMusicRetrieverTask.MusicRetrieverPreparedListener  , OnCompletionListener, OnPreparedListener
 	//	, OnErrorListener,
 	public Context rContext;			//static
+	public MusicLibrary mLibrary;
 
 	MediaSessionCompat.QueueItem queueItem;
 	/**プレイヤー*/
@@ -4164,7 +4165,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				//今回はAssetsフォルダに含まれる音声ファイルを再生
 				//Uriから再生する
 				DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getApplicationContext(), Util.getUserAgent(getApplicationContext(), "AppName"));
-				MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse("file:///android_asset/" + MusicLibrary.getMusicFilename(mediaId)));
+				MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse("file:///android_asset/" + mLibrary.getMusicFilename(mediaId)));
 
 				//今回は簡易的にmediaIdからインデックスを割り出す。
 				for (MediaSessionCompat.QueueItem item : queueItems)
@@ -4176,7 +4177,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				onPlay();
 
 				//MediaSessionが配信する、再生中の曲の情報を設定
-				mSession.setMetadata(MusicLibrary.getMetadata(getApplicationContext(), mediaId));
+				mSession.setMetadata(mLibrary.getMetadata(getApplicationContext(), mediaId));
 				myLog(TAG,dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG,dbMsg+"で"+e);
@@ -4303,7 +4304,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			try{
 				dbMsg +=",index=" + index;
 				index++;
-				if (index >= MusicLibrary.getMediaItems().size())//ライブラリの最後まで再生したら
+				if (index >= mLibrary.getMediaItems().size())//ライブラリの最後まで再生したら
 					index = 0;//最初に戻す
 				dbMsg +=">>" + index;
 				onPlayFromMediaId(queueItems.get(index).getDescription().getMediaId(), null);
@@ -5155,6 +5156,15 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					mCurrentQueueIndex = myPreferences.pref_mIndex;
 					dbMsg += ",.再生キューの位置[" + mCurrentQueueIndex + "]";
 					////イマドキなAndroid音楽プレーヤーの作り方  https://qiita.com/siy1121/items/f01167186a6677c22435 ///////
+					mLibrary = new MusicLibrary();
+					int totalCount = mLibrary.makeList(this, Long.parseLong(myPreferences.nowList_id),myPreferences.nowList);
+					dbMsg += ",totalCount=" + totalCount;
+					OrgUtil oUtil = new OrgUtil();
+					String[] infos = myPreferences.pref_data_url.split(File.separator);
+					String albumID=oUtil.retAlbumID(this,infos[infos.length-3],infos[infos.length-2]);
+					dbMsg += ",albumID=" + albumID;
+					int mIndex = mLibrary.getIndex(albumID);
+					dbMsg += ",mIndex=" + mIndex;
 					// Assume for example that the music catalog is already loaded/cached.
 					//AudioManagerを取得
 					am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -5217,7 +5227,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 
 					//キューにアイテムを追加
 					int i = 0;
-					for (MediaBrowserCompat.MediaItem media : MusicLibrary.getMediaItems()) {
+					for (MediaBrowserCompat.MediaItem media : mLibrary.getMediaItems()) {			//MusicLibrary.getMediaItems()
 						queueItems.add(new MediaSessionCompat.QueueItem(media.getDescription(), i));
 						dbMsg += "\n[" + i +  "]" + media.toString();
 						i++;
@@ -5225,12 +5235,12 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					dbMsg += "[" + myPreferences.nowList_id +  "]" + myPreferences.nowList;
 					// 再生リストのオブジェクトを作る
 					mPlayingQueue = new ArrayList<MediaSession.QueueItem>();
-					queueItems = setMediaItemList(Integer.parseInt(myPreferences.nowList_id), myPreferences.nowList);
-					dbMsg += ">>queueItems=" + mCurrentQueueIndex + " / " + queueItems.size() + "件";
-					queueItem = queueItems.get(mCurrentQueueIndex);
-					mediaSession.setQueue(queueItems);//WearやAutoにキューが表示される
-//					E/MediaSessionCompat: Found duplicate queue id: 0
-//					java.lang.IllegalArgumentException: id of each queue item should be unique
+//					queueItems = setMediaItemList(Integer.parseInt(myPreferences.nowList_id), myPreferences.nowList);
+//					dbMsg += ">>queueItems=" + mCurrentQueueIndex + " / " + queueItems.size() + "件";
+//					queueItem = queueItems.get(mCurrentQueueIndex);
+//					mediaSession.setQueue(queueItems);//WearやAutoにキューが表示される
+////					E/MediaSessionCompat: Found duplicate queue id: 0
+////					java.lang.IllegalArgumentException: id of each queue item should be unique
 					// ExoPlayer用意
 					DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 					exoPlayer = ExoPlayerFactory.newSimpleInstance(rContext, new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter)));
