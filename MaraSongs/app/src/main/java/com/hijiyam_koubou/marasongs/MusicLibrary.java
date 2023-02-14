@@ -63,6 +63,7 @@ public class MusicLibrary {
         int totalSongs = -1;
         try {
             OrgUtil oUtil = new OrgUtil();
+            dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + listName;
             if(listName.equals( con.getResources().getString(R.string.listmei_zemkyoku))) {
                 String fn = con.getString(R.string.zenkyoku_file);			//全曲リスト名
                 dbMsg +=  ",fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
@@ -124,7 +125,6 @@ public class MusicLibrary {
                     dbMsg += "全曲拾えず" ;
                 }
             }else{
-                dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + listName;
                 final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
                 final String[] columns = null;			//{ idKey, nameKey };
                 String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
@@ -214,10 +214,12 @@ public class MusicLibrary {
                                     //	cVal = MyUtil.checKTrack( cVal);
                                 }else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
                                     String cVal = rCursor.getString(i);
-                                    int cInt = Integer.parseInt(cVal);
                                     dbMsg +=  "="+cVal;
                                     if(cVal != null){
-                                        albumArtResId = oUtil.getAlbumArtResId(cInt,con);
+//                                        cVal =  cVal.replace(";", "");
+//                                        dbMsg +=  ">>"+cVal;
+                                        Long cLing = Long.valueOf(cVal);
+                                        albumArtResId = oUtil.getAlbumArtResId(cLing,con);
                                     }
                                     if(albumArtResId ==0){
                                         albumArtResId =R.drawable.no_image;
@@ -288,7 +290,7 @@ public class MusicLibrary {
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
-            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+            myErrorLog(TAG , dbMsg + " でエラー発生；" + er);
         }
         return totalSongs;
     }
