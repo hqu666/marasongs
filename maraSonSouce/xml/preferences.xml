@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/pref_titol" >
+
+	<PreferenceScreen
+		android:key="pref_player"
+		android:title="@string/pref_player"
+		android:summary="@string/pref_player"
+		android:selectable="true"
+		android:enabled="true">
+
+		<com.hijiyam_koubou.marasongs.NumberPickerPreference
+			android:key="pref_gyapless"
+			android:title="@string/pref_gyapless"
+			android:summary="@string/pref_gyapless_msg"
+			android:defaultValue="100"
+			/>
+
+		<SwitchPreferenceCompat
+		    android:key="pref_pb_bgc"
+		    android:summary="Summary"
+		     android:summaryOn="@string/pref_pb_bgc_bk"
+		      android:summaryOff="@string/pref_pb_bgc_wh"
+		      android:switchTextOff="@string/pref_pb_bgc_wh"
+		      android:switchTextOn="@string/pref_pb_bgc_bk"
+		      android:title="@string/pref_pb_bgc_titol"
+		      android:enabled="true" />
+
+		<com.hijiyam_koubou.marasongs.NumberPickerPreference
+			android:key="pref_compBunki"
+			android:title="@string/pref_compBunki"
+			android:summary="@string/pref_compBunki_msg"
+			android:defaultValue="40"
+			/>
+
+		<SwitchPreferenceCompat
+			android:key="pref_list_simple"
+			android:summary="Summary"
+			android:summaryOn="@string/pref_list_simple_summaryOn"
+			android:summaryOff="@string/pref_list_simple_summaryOff"
+			android:switchTextOff="@string/comon_syousai"
+			android:switchTextOn="@string/comon_simple"
+			android:title="@string/pref_list_simple_title"
+			android:enabled="true"/>
+	</PreferenceScreen>
+
+	<PreferenceScreen
+	    android:key="pref_plist"
+	    android:title="@string/pref_playlist"
+	    android:selectable="true" android:enabled="true"
+	    android:summary="@string/pref_playlist">
+
+		<com.hijiyam_koubou.marasongs.NumberPickerPreference
+			android:key="pref_artist_bunnri"
+			android:title="@string/pref_titol_plist_artist_bunnri"
+			android:summary="@string/pref_msg_plist_artist_bunnri"
+			android:defaultValue="100"
+			/>
+
+		<com.hijiyam_koubou.marasongs.NumberPickerPreference
+			android:key="pref_saikin_tuika"
+			android:title="@string/pref_titol_plist_saikin_tuika"
+			android:summary="@string/pref_msg_plist_saikin_tuika"
+			android:defaultValue="7"
+			/>
+
+		<com.hijiyam_koubou.marasongs.NumberPickerPreference
+			android:key="pref_saikin_sisei"
+			android:title="@string/playlist_namae_saikinsisei"
+			android:summary="@string/pref_msg_plist_saikin_sisei"
+			android:defaultValue="100"
+			/>
+
+		<com.hijiyam_koubou.marasongs.NumberPickerPreference
+			android:key="pref_rundam_list_size"
+			android:title="@string/pref_rundam_list_size"
+			android:summary="@string/pref_rundam_list_size_dm"
+			android:defaultValue="100"
+			/>
+
+		<EditTextPreference
+			android:selectable="false"
+			android:key="pref_nitenka_memo"
+			android:title="@string/pref_nitenkan"
+			android:layout="@layout/sc_text"/>
+
+		<EditTextPreference
+			android:selectable="false"
+			android:key="pref_filse"
+			android:title="@string/common_sansyou"
+			android:layout="@layout/sc_text"/>
+
+	</PreferenceScreen>
+
+	<PreferenceScreen
+	    android:key="pref_effect"
+	    android:title="@string/pref_effect"
+	    android:selectable="true" android:enabled="true"
+	    android:summary="@string/pref_effect">
+
+		<EditTextPreference
+			android:selectable="false"
+			android:key="pref_eff_memo"
+			android:title="@string/common_sansyou"
+			android:layout="@layout/sc_text"/>
+
+		<ListPreference
+			android:key="visualizerType"
+			android:title="@string/pref_effect_vi"
+			 android:summary="@string/pref_effect_vi"
+			 android:entries="@array/effect_vi"
+			 android:entryValues="@array/effect_vi"
+			 android:dialogTitle="@string/pref_effect_vi"
+			 />
+	</PreferenceScreen>
+
+	<PreferenceScreen
+		android:key="pref_kisyubetu"
+		android:title="@string/pref_kisyubetu" android:summary="@string/pref_kisyubetu" android:selectable="true" android:enabled="true">
+
+		<SwitchPreferenceCompat
+			android:key="pref_notifplayer"
+			android:summary="Summary"
+			android:summaryOn="@string/comon_tukau"
+			android:summaryOff="@string/comon_tukawanai"
+			android:switchTextOff="@string/comon_tukawanai"
+			android:switchTextOn="@string/comon_tukau"
+			android:title="@string/pref_notifplayer"
+			android:enabled="true"/>
+
+		<SwitchPreferenceCompat
+			android:key="pref_lockscreen"
+			android:summary="Summary"
+			android:summaryOn="@string/comon_tukau"
+			android:summaryOff="@string/comon_tukawanai"
+			android:switchTextOff="@string/comon_tukawanai"
+			android:switchTextOn="@string/comon_tukau"
+			android:title="@string/pref_lockscreen"
+			android:enabled="true"/>
+
+		<SwitchPreferenceCompat
+			android:key="pref_bt_renkei"
+			android:summary="Summary"
+			android:summaryOn="@string/comon_suru"
+			android:summaryOff="@string/comon_sinai"
+			android:switchTextOff="@string/comon_sinai"
+			android:switchTextOn="@string/comon_suru"
+			android:title="@string/pref_bt_renkei_titol"
+			android:enabled="true"/>
+
+		<SwitchPreferenceCompat
+			android:key="pref_cyakusinn_fukki"
+			android:summary="Summary"
+			android:summaryOn="@string/comon_suru"
+			android:summaryOff="@string/comon_sinai"
+			android:switchTextOff="@string/comon_sinai"
+			android:switchTextOn="@string/comon_suru"
+			android:title="@string/pref_cyakusinn_fukki"
+			android:enabled="true"/>
+	</PreferenceScreen>
+	
+	<PreferenceScreen
+		android:key="pref_sonota"
+		android:title="@string/pref_sonota" >
+
+		<SwitchPreferenceCompat
+			android:key="pref_reset"
+			android:summary="Summary"
+			android:summaryOn="@string/pref_reset_msg"
+			android:summaryOff="@string/comon_sinai"
+			android:switchTextOff="@string/comon_sinai"
+			android:switchTextOn="@string/comon_suru"
+			android:title="@string/pref_reset"
+			android:enabled="true"/>
+
+		<SwitchPreferenceCompat
+			android:key="pref_listup_reset"
+			android:summary="Summary"
+			android:summaryOn="@string/pref_reset_msg"
+			android:summaryOff="@string/comon_sinai"
+			android:switchTextOff="@string/comon_sinai"
+			android:switchTextOn="@string/comon_suru"
+			android:title="@string/pref_listup_reset"
+			android:enabled="true"/>
+		<EditTextPreference
+			android:selectable="false"
+			android:key="pref_memo"
+			android:title="@string/common_sansyou"
+			android:layout="@layout/sc_text"/>
+	</PreferenceScreen>
+
+</PreferenceScreen>

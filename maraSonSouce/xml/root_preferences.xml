@@ -1,0 +1,244 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--    <PreferenceCategory app:title="@string/messages_header">-->
+
+<!--        <ListPreference-->
+<!--            app:defaultValue="reply"-->
+<!--            app:entries="@array/reply_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="reply"-->
+<!--            app:title="@string/reply_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+<!--    </PreferenceCategory>-->
+
+    <PreferenceCategory
+        app:title="@string/pref_player">
+<!--        app:key="pref_player"-->
+<!--        app:summary="@string/pref_player"-->
+<!--        app:selectable="true"-->
+<!--        app:enabled="true"-->
+        <EditTextPreference
+            app:key="pref_gyapless"
+            app:title="@string/pref_gyapless"
+            app:defaultValue="100"
+            app:useSimpleSummaryProvider="true"
+            />
+<!--        <com.hijiyam_koubou.marasongs.NumberPickerPreference-->
+<!--            app:summary="@string/pref_gyapless_msg"-->
+<!--
+   -->
+<!--            />-->
+
+        <SwitchPreferenceCompat
+            app:key="pref_pb_bgc"
+            app:summary="Summary"
+            app:summaryOn="@string/pref_pb_bgc_bk"
+            app:summaryOff="@string/pref_pb_bgc_wh"
+            app:switchTextOff="@string/pref_pb_bgc_wh"
+            app:switchTextOn="@string/pref_pb_bgc_bk"
+            app:title="@string/pref_pb_bgc_titol"
+            app:enabled="true" />
+
+        <EditTextPreference
+            app:key="pref_compBunki"
+            app:title="@string/pref_compBunki"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="40"
+            />
+<!--        <com.hijiyam_koubou.marasongs.NumberPickerPreference-->
+<!--            app:key="pref_compBunki"-->
+<!--            app:title="@string/pref_compBunki"-->
+<!--            app:summary="@string/pref_compBunki_msg"-->
+<!--            app:defaultValue="40"-->
+<!--            />-->
+
+        <SwitchPreferenceCompat
+            app:key="pref_list_simple"
+            app:summary="Summary"
+            app:summaryOn="@string/pref_list_simple_summaryOn"
+            app:summaryOff="@string/pref_list_simple_summaryOff"
+            app:switchTextOff="@string/comon_syousai"
+            app:switchTextOn="@string/comon_simple"
+            app:title="@string/pref_list_simple_title"
+            app:enabled="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/pref_playlist"
+        >
+<!--        app:key="pref_plist"-->
+<!--        app:selectable="true" app:enabled="true"-->
+<!--        app:summary="@string/pref_playlist"-->
+        <EditTextPreference
+            app:key="pref_artist_bunnri"
+            app:title="@string/pref_titol_plist_artist_bunnri"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="100"
+            />
+
+<!--        <com.hijiyam_koubou.marasongs.NumberPickerPreference-->
+<!--            app:key="pref_artist_bunnri"-->
+<!--            app:title="@string/pref_titol_plist_artist_bunnri"-->
+<!--            app:summary="@string/pref_msg_plist_artist_bunnri"-->
+<!--            app:defaultValue="100"-->
+<!--            />-->
+        <EditTextPreference
+            app:key="pref_saikin_tuika"
+            app:title="@string/pref_titol_plist_saikin_tuika"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="7"
+            />
+
+<!--        <com.hijiyam_koubou.marasongs.NumberPickerPreference-->
+<!--            app:key="pref_saikin_tuika"-->
+<!--            app:title="@string/pref_titol_plist_saikin_tuika"-->
+<!--            app:summary="@string/pref_msg_plist_saikin_tuika"-->
+<!--            app:defaultValue="7"-->
+<!--            />-->
+        <EditTextPreference
+            app:key="pref_saikin_sisei"
+            app:title="@string/playlist_namae_saikinsisei"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="100"
+            />
+
+<!--        <com.hijiyam_koubou.marasongs.NumberPickerPreference-->
+<!--            app:key="pref_saikin_sisei"-->
+<!--            app:title="@string/playlist_namae_saikinsisei"-->
+<!--            app:summary="@string/pref_msg_plist_saikin_sisei"-->
+<!--            app:defaultValue="100"-->
+<!--            />-->
+        <EditTextPreference
+            app:key="pref_rundam_list_size"
+            app:title="@string/pref_rundam_list_size"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="100"
+            />
+<!--        <com.hijiyam_koubou.marasongs.NumberPickerPreference-->
+<!--            app:key="pref_rundam_list_size"-->
+<!--            app:title="@string/pref_rundam_list_size"-->
+<!--            app:summary="@string/pref_rundam_list_size_dm"-->
+<!--            app:defaultValue="100"-->
+<!--            />-->
+
+        <EditTextPreference
+            app:selectable="false"
+            app:key="pref_nitenka_memo"
+            app:title="@string/pref_nitenkan"
+            app:layout="@layout/sc_text"/>
+
+        <EditTextPreference
+            app:selectable="false"
+            app:key="pref_filse"
+            app:title="@string/common_sansyou"
+            app:layout="@layout/sc_text"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/pref_kisyubetu"
+        >
+<!--        app:key="pref_kisyubetu"-->
+<!--        app:summary="@string/pref_kisyubetu"-->
+<!--        app:selectable="true" app:enabled="true"-->
+        <SwitchPreferenceCompat
+            app:key="pref_notifplayer"
+            app:summary="Summary"
+            app:summaryOn="@string/comon_tukau"
+            app:summaryOff="@string/comon_tukawanai"
+            app:switchTextOff="@string/comon_tukawanai"
+            app:switchTextOn="@string/comon_tukau"
+            app:title="@string/pref_notifplayer"
+            app:enabled="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="pref_lockscreen"
+            app:summary="Summary"
+            app:summaryOn="@string/comon_tukau"
+            app:summaryOff="@string/comon_tukawanai"
+            app:switchTextOff="@string/comon_tukawanai"
+            app:switchTextOn="@string/comon_tukau"
+            app:title="@string/pref_lockscreen"
+            app:enabled="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="pref_bt_renkei"
+            app:summary="Summary"
+            app:summaryOn="@string/comon_suru"
+            app:summaryOff="@string/comon_sinai"
+            app:switchTextOff="@string/comon_sinai"
+            app:switchTextOn="@string/comon_suru"
+            app:title="@string/pref_bt_renkei_titol"
+            app:enabled="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="pref_cyakusinn_fukki"
+            app:summary="Summary"
+            app:summaryOn="@string/comon_suru"
+            app:summaryOff="@string/comon_sinai"
+            app:switchTextOff="@string/comon_sinai"
+            app:switchTextOn="@string/comon_suru"
+            app:title="@string/pref_cyakusinn_fukki"
+            app:enabled="true"/>
+    </PreferenceCategory>
+
+<!--    <PreferenceCategory-->
+<!--        app:title="@string/pref_effect"-->
+<!--        >-->
+<!--        &lt;!&ndash;        app:key="pref_effect"&ndash;&gt;-->
+<!--        &lt;!&ndash;        app:selectable="true" app:enabled="true"&ndash;&gt;-->
+<!--        &lt;!&ndash;        app:summary="@string/pref_effect"&ndash;&gt;-->
+
+<!--        <EditTextPreference-->
+<!--            app:selectable="false"-->
+<!--            app:key="pref_eff_memo"-->
+<!--            app:title="@string/common_sansyou"-->
+<!--            app:layout="@layout/sc_text"/>-->
+
+<!--        <ListPreference-->
+<!--            app:defaultValue="@string/pref_effect_vi"-->
+<!--            app:entries="@array/effect_vi"-->
+<!--            app:entryValues="@array/effect_vi"-->
+<!--            app:key="visualizerType"-->
+<!--            app:title="@string/pref_effect_vi"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+<!--        &lt;!&ndash;        app:summary="@string/pref_effect_vi"&ndash;&gt;-->
+<!--        &lt;!&ndash;        app:dialogTitle="@string/pref_effect_vi"&ndash;&gt;-->
+<!--    </PreferenceCategory>-->
+
+    <PreferenceCategory
+        app:title="@string/pref_sonota" >
+<!--        app:key="pref_sonota"-->
+
+        <SwitchPreferenceCompat
+            app:key="pref_reset"
+            app:summary="Summary"
+            app:summaryOn="@string/pref_reset_msg"
+            app:summaryOff="@string/comon_sinai"
+            app:switchTextOff="@string/comon_sinai"
+            app:switchTextOn="@string/comon_suru"
+            app:title="@string/pref_reset"
+            app:enabled="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="pref_listup_reset"
+            app:summary="Summary"
+            app:summaryOn="@string/pref_reset_msg"
+            app:summaryOff="@string/comon_sinai"
+            app:switchTextOff="@string/comon_sinai"
+            app:switchTextOn="@string/comon_suru"
+            app:title="@string/pref_listup_reset"
+            app:enabled="true"/>
+
+        <EditTextPreference
+            app:selectable="false"
+            app:key="pref_memo"
+            app:title="@string/common_sansyou"
+            />
+<!--        app:layout="@layout/sc_text"-->
+    </PreferenceCategory>
+
+</PreferenceScreen>

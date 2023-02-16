@@ -28,6 +28,7 @@ public class MusicLibrary {
     private static final TreeMap<String, MediaMetadataCompat> music = new TreeMap<>();
     private static final HashMap<String, Integer> albumRes = new HashMap<>();
     private static final HashMap<String, String> musicFileName = new HashMap<>();
+    private MediaMetadataCompat metadata;
 
 //    static {
 //        createMediaMetadataCompat(
@@ -295,24 +296,28 @@ public class MusicLibrary {
         return totalSongs;
     }
 
-    public int getIndex(String mediaId) {
+    /**指定された選択されているプレイリスト上でデータのインデックスを返す*/
+    public int getIndex(String uriStr) {
         final String TAG = "getIndex";
         String dbMsg = "";
-        int indexInt = 0;
+        int indexInt = -1;
         try {
-            for (MediaMetadataCompat metadata : music.values()) {
-                if( metadata.containsKey(mediaId)) {
-                    break;
+            dbMsg += ",uriStr=" + uriStr;
+            int totalCount = musicFileName.size();
+            dbMsg += ",totalCount=" + totalCount;
+            if(musicFileName.containsValue(uriStr)){
+                dbMsg += ",件中に有り";
+                for (String tUri : musicFileName.values()) {
+                    indexInt++;
+                    if( tUri.equals(uriStr)) {
+                        dbMsg += ",検出="+tUri;
+                        break;
+                    }
                 }
-                indexInt++;
+            }else{
+                dbMsg += ",件中になし";
             }
-//                for (int i = 0; i < music.size(); i++) {
-//                    MediaMetadataCompat rItem = music.get(i);
-//                    rItem.getClass().
-//                            System.out.println(music.get(i));
-//                }
-//            }
-            dbMsg = "indexInt=" + indexInt;
+            dbMsg += "indexInt=" + indexInt;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -327,14 +332,17 @@ public class MusicLibrary {
     private static String getAlbumArtUri(String albumArtResName) {
         final String TAG = "getAlbumArtUri";
         String dbMsg = "";
+        String retStr="";
         try {
+            dbMsg = ",albumArtResName=" + albumArtResName;
+            retStr = ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                    BuildConfig.APPLICATION_ID + "/drawable/" + albumArtResName;
+            dbMsg = ",retStr=" + retStr;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
-
-        return ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-                BuildConfig.APPLICATION_ID + "/drawable/" + albumArtResName;
+        return retStr;
     }
 
     public static String getMusicFilename(String mediaId) {
@@ -431,7 +439,7 @@ public class MusicLibrary {
             String genre,
             long duration,
             TimeUnit durationUnit,
-            String musicFilename,
+            String filename,
             int albumArtResId,
             String albumArtResName) {
         final String TAG = "createMediaMetadataCompat";
@@ -457,7 +465,7 @@ public class MusicLibrary {
                             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                             .build());
             albumRes.put(mediaId, albumArtResId);
-            musicFileName.put(mediaId, musicFilename);
+            musicFileName.put(mediaId, filename);
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);

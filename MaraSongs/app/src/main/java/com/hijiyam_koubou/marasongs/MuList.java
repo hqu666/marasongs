@@ -3691,24 +3691,25 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "]pref_data_url=" + dataFN;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
-	// 20230209 変更	toPlaying = send2Service( dataFN,listName,toPlaying);
+	// 20230209 変更
+			toPlaying = send2Service( dataFN,listName,toPlaying);
 			dbMsg += ",toPlaying=" + toPlaying;
-////
-			Intent intent = new Intent(getApplication(), MaraSonActivity.class);
-
-			intent.putExtra("reqCode",imanoJyoutai);
-			intent.putExtra("nowList_id",myPreferences.nowList_id);
-			intent.putExtra("nowList",listName);
-			intent.putExtra("pref_data_url",dataFN);
-			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
-			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
-//			if(toPlaying) {
-//				intent.putExtra("to_play",true);
-//			}else{
-//				intent.putExtra("to_play",false);
-//			}
-			intent.putExtra("toPlaying",toPlaying);
-			resultLauncher.launch(intent);
+//////
+//			Intent intent = new Intent(getApplication(), MaraSonActivity.class);
+//
+//			intent.putExtra("reqCode",imanoJyoutai);
+//			intent.putExtra("nowList_id",myPreferences.nowList_id);
+//			intent.putExtra("nowList",listName);
+//			intent.putExtra("pref_data_url",dataFN);
+//			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
+//			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
+////			if(toPlaying) {
+////				intent.putExtra("to_play",true);
+////			}else{
+////				intent.putExtra("to_play",false);
+////			}
+//			intent.putExtra("toPlaying",toPlaying);
+//			resultLauncher.launch(intent);
 
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {

@@ -336,7 +336,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //							mainEditor = sharedPref.edit();
 //							mainEditor.putString("nowList_id",String.valueOf(myPreferences.nowList_id));		//再生中のプレイリストID
 //							mainEditor.putString("nowList",myPreferences.nowList);							//再生中のプレイリスト名
-							mainEditor.putInt("pref_mIndex", mIndex );
+			//				mainEditor.putInt("pref_mIndex", mIndex );
 							mainEditor.putString("pref_data_url",dataFN);				//再生していた曲	.commit()
 							if(exoPlayer !=  null){
 								mcPosition = (int) exoPlayer.getCurrentPosition();
@@ -605,7 +605,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					}
 //					int duration = (int) playingItem.duration;
 //					dbMsg += ">>" + playingItem.data + "の" + mcPosition + "[ms]" + duration + "[ms]";
-//					setPrefInt("pref_mIndex", mIndex, MusicPlayerService.this);
 //					setPrefInt("pref_duration", duration, MusicPlayerService.this);
 //					setPrefInt("pref_position", mcPosition, MusicPlayerService.this);        //sharedPref.getInt("pref_position" , 0);
 					action = MusicPlayerService.ACTION_PLAY;
@@ -811,8 +810,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //					dbMsg += "を書込み" + retBool;
 //					retBool = setPrefInt( "pref_position", 0,MusicPlayerService.this);   			//再生中のファイル名
 //					dbMsg += "を書込み" + retBool;
-//					retBool = setPrefInt( "pref_mIndex", nextIndex,MusicPlayerService.this);   			//再生中のファイル名
-//					dbMsg += "を書込み" + retBool;
 //					getDataInfo(NextDataFN);
 //
 //					mPlayer = mPlayer2;
@@ -855,8 +852,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			mIndex = itemIndex;
 			boolean retBool = setPrefStr( "pref_data_url", String.valueOf(myPreferences.pref_data_url),MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
-			retBool = setPrefInt( "pref_mIndex", itemIndex,MusicPlayerService.this);   			//再生中のファイル名
-			dbMsg += "を書込み" + retBool;
+//			retBool = setPrefInt( "pref_mIndex", itemIndex,MusicPlayerService.this);   			//再生中のファイル名
+//			dbMsg += "を書込み" + retBool;
 			int mcPosition = 0;
 			retBool = setPrefInt( "pref_position", mcPosition,MusicPlayerService.this);   			//再生中のファイル名
 			dbMsg += "を書込み" + retBool;
@@ -896,7 +893,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 //				}
 
 /*
-				mIndex = getPrefInt("pref_mIndex" ,0 , MusicPlayerService.this);
 				String dataFN = getPrefStr("myPreferences.pref_data_url" ,"" , MusicPlayerService.this);
 				dbMsg +=",現在myPreferences.nowList[" + myPreferences.nowList_id + "]" + myPreferences.nowList + ";" +dataFN ;
 				int mcPosition = getPrefInt("pref_position" ,0 , MusicPlayerService.this);
@@ -1412,7 +1408,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 ////					mIndex--;
 ////				}
 ////				dbMsg += ">>[" + mIndex +"]";
-////				setPrefInt("pref_mIndex" , mIndex, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 ////				playingItem = musicPlaylist.getPlaylistItems(myPreferences.nowList_id,mIndex);
 ////				if(playingItem.moveToFirst()) {
 ////					creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));        //playingItem.artist;	//クレジットされているアーティスト名
@@ -2389,7 +2384,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg += ",操作指定=" + action + "<<b_state=" + b_state;
 			dbMsg += ",再生中のプレイリスト[" + myPreferences.nowList_id + "]";
 			dbMsg += myPreferences.nowList;
-//			mIndex = getPrefInt("pref_mIndex" , 0 , MusicPlayerService.this);
 			dbMsg += " ,mIndex " + mIndex;
 //			Cursor playingItem = musicPlaylist.getPlaylistItems(myPreferences.nowList_id, mIndex);
 //			if (playingItem.moveToFirst()) {
@@ -2753,15 +2747,14 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			String b_list = myPreferences.nowList;
 			dbMsg += "intent/extrasから現在[" + myPreferences.nowList_id + "]" + b_list;
 			int rInt = 0;
-	//2022		mIndex = getPrefInt("pref_mIndex" , 0 , MusicPlayerService.this);
 			dbMsg += "[" + mIndex + "]";
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MusicPlayerService.this);
 			dbMsg += "pref:dataFN="+ dataFN ;			// = extras.getInt("mIndex");		//現リスト中の順番;
-			if(mIndex < 0 ){
-				mIndex = getCarentIndex(dataFN,plSL);
-				dbMsg += ">>mIndex>" + mIndex;
-				setPrefInt("pref_mIndex",mIndex,MusicPlayerService.this);
-			}
+//			if(mIndex < 0 ){
+//				mIndex = getCarentIndex(dataFN,plSL);
+//				dbMsg += ">>mIndex>" + mIndex;
+//				setPrefInt("pref_mIndex",mIndex,MusicPlayerService.this);
+//			}
 			int mcPosition = getPrefInt("pref_position" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 			int saiseiJikan = getPrefInt("pref_duration" , 0, MusicPlayerService.this);  //sharedPref.getInt("pref_position" , 0);
 			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]IsPlaying=" + IsPlaying;
@@ -4636,9 +4629,9 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				if(-1 < rInt){
 					mIndex = rInt;
 				}
-				dbMsg += "で[mIndex：" + mIndex + "/"+ listEnd + "件]";
-				boolean retBool = setPrefInt("pref_mIndex", mIndex, this);        //プリファレンスの読込み
-				dbMsg += "を書込み" + retBool;
+//				dbMsg += "で[mIndex：" + mIndex + "/"+ listEnd + "件]";
+//				boolean retBool = setPrefInt("pref_mIndex", mIndex, this);        //プリファレンスの読込み
+//				dbMsg += "を書込み" + retBool;
 				if(musicPlaylist == null){
 					musicPlaylist = new MusicPlaylist(MusicPlayerService.this);
 				}
@@ -4793,7 +4786,7 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			}
 			long position = exoPlayer.getCurrentPosition();
 			long duration = exoPlayer.getDuration();
-			dbMsg += "," + position + "/" + duration ;
+			dbMsg += ",position=" + position + "/" + duration +"ms";
 			// 再生状態を更新
 			stateBuilder.setState(state, position, 1.0f); // 最後は再生速度
 			stateBuilder.build();
@@ -4826,7 +4819,6 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 			dbMsg += ",exoPlayer=" + exoPlayer.isPlaying();
 			dbMsg += "[" + myPreferences.nowList_id + "]";
 			dbMsg += ">>"+ myPreferences.nowList;
-//				mIndex = getPrefInt("pref_mIndex" , 0 , MusicPlayerService.this);
 			dbMsg += "[" + myPreferences.pref_mIndex + "]";
 			dbMsg += ">>"+ myPreferences.pref_data_url;
 //				String dataFN = getPrefStr( "pref_data_url" ,"" , MusicPlayerService.this);
@@ -5163,8 +5155,8 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 					String[] infos = myPreferences.pref_data_url.split(File.separator);
 					String albumID=oUtil.retAlbumID(this,infos[infos.length-3],infos[infos.length-2]);
 					dbMsg += ",albumID=" + albumID;
-					int mIndex = mLibrary.getIndex(albumID);
-					dbMsg += ",mIndex=" + mIndex;
+					int mIndex = mLibrary.getIndex(myPreferences.pref_data_url);
+					dbMsg += ",mIndex=" + mIndex + "/" + totalCount;
 					// Assume for example that the music catalog is already loaded/cached.
 					//AudioManagerを取得
 					am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);

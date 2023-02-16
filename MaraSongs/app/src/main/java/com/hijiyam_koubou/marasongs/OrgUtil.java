@@ -1525,7 +1525,6 @@ public class OrgUtil  extends Activity{				//
 			dbMsg += ",retUri=" + retUri ;
 			Drawable drawable = new BitmapDrawable(con.getResources(), String.valueOf(retUri));
 			dbMsg += ",drawable=" + drawable ;
-			retId=Integer.valueOf(drawable.toString());
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
