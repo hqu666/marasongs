@@ -5282,7 +5282,10 @@ public class MusicPlayerService  extends MediaBrowserServiceCompat{
 				DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 				exoPlayer = ExoPlayerFactory.newSimpleInstance(context, new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter)));
 				* */
-					mSource = createMediaSource(Uri.parse(myPreferences.pref_data_url)); // TODO これから説明します
+					//Uriから再生する
+					DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getApplicationContext(), Util.getUserAgent(getApplicationContext(), getResources().getString(R.string.app_name)));
+					mSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(myPreferences.pref_data_url)); // TODO これから説明します
+//					mSource = createMediaSource(Uri.parse(myPreferences.pref_data_url)); // TODO これから説明します
 					exoPlayer.prepare(mSource);
 					///////////イマドキなAndroid音楽プレーヤーの作り方 ///////
 				}else if (android.os.Build.VERSION.SDK_INT <11 ) {

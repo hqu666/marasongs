@@ -131,11 +131,11 @@ public class MusicLibrary {
                 String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
                 Cursor rCursor= con.getContentResolver().query(uri, columns, null, null, c_orderBy );
                 totalSongs = rCursor.getCount();
-                dbMsg += ",取得" + totalSongs + "件";
+                dbMsg += ",汎用リスト取得" + totalSongs + "件";
                 if( rCursor.moveToFirst() ){
                     do{
                         int rPosi = rCursor.getPosition();
-                        dbMsg += "[" + rPosi +"/" + rCursor.getCount() +"曲]";		//MuList.this.rCount
+                        dbMsg += "\n[" + rPosi +"/" + rCursor.getCount() +"曲]";		//MuList.this.rCount
                         String audio_id = null;
                         String dataVal = null;
                         String subText = null;
@@ -144,6 +144,7 @@ public class MusicLibrary {
                         String AlbumName = null;
                         String titolName = null;
                         String genreName = null;
+                        String playOrder = null;
                         long duration = 0;
                         int albumArtResId= 0;           //R.drawable.no_image,
                         for(int i = 0 ; i < rCursor.getColumnCount() ; i++ ){				//MuList.this.koumoku
@@ -210,6 +211,9 @@ public class MusicLibrary {
                                     }
                                     dbMsg +=  "="+cVal;
                                     dataVal=cVal;
+                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.PLAY_ORDER)){
+                                    playOrder = rCursor.getString(i);
+                                    //	cVal = MyUtil.checKTrack( cVal);
                                 }else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
                                     String cVal = rCursor.getString(i);
                                     //	cVal = MyUtil.checKTrack( cVal);
@@ -270,21 +274,22 @@ public class MusicLibrary {
                                                 break;
                                         }
                                     }
-                                    dbMsg += "="+cVal;
+                                  //  dbMsg += "="+cVal;
                                 }
-                                createMediaMetadataCompat(
-                                        audio_id + "",
-                                        titolName,
-                                        ArtistName,
-                                        AlbumName,
-                                        genreName,
-                                        duration,
-                                        TimeUnit.SECONDS,
-                                        dataVal,
-                                        albumArtResId,
-                                        albumArtist);
                             }
                         }
+                        dbMsg += "\n[" + playOrder +"/" + rCursor.getCount() +"曲目]"+ dataVal;
+                        createMediaMetadataCompat(
+                                audio_id + "",
+                                titolName,
+                                ArtistName,
+                                AlbumName,
+                                genreName,
+                                duration,
+                                TimeUnit.SECONDS,
+                                dataVal,
+                                albumArtResId,
+                                albumArtist);
                     }while(rCursor.moveToNext());
                     rCursor.close();
                 }
