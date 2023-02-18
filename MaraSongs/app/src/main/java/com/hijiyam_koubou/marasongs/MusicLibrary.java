@@ -30,31 +30,6 @@ public class MusicLibrary {
     private static final HashMap<String, String> musicFileName = new HashMap<>();
     private MediaMetadataCompat metadata;
 
-//    static {
-//        createMediaMetadataCompat(
-//                "Jazz_In_Paris",
-//                "Jazz in Paris",
-//                "Media Right Productions",
-//                "Jazz & Blues",
-//                "Jazz",
-//                103,
-//                TimeUnit.SECONDS,
-//                "jazz_in_paris.mp3",
-//                R.drawable.no_image,
-//                "album_jazz_blues");
-//        createMediaMetadataCompat(
-//                "The_Coldest_Shoulder",
-//                "The Coldest Shoulder",
-//                "The 126ers",
-//                "Youtube Audio Library Rock 2",
-//                "Rock",
-//                160,
-//                TimeUnit.SECONDS,
-//                "the_coldest_shoulder.mp3",
-//                R.drawable.no_image,
-//                "album_youtube_audio_library_rock_2");
-//    }
-
     /**
      * 指定されたプレイリストからmediasessionのリスト作成
      * **/

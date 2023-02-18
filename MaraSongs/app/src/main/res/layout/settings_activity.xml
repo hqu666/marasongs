@@ -1,0 +1,441 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            >
+
+            <TableLayout
+                android:id="@+id/headAria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#00BCD4"
+                        android:text="@string/pref_player" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pref_gyapless" />
+
+                        <EditText
+                            android:id="@+id/pref_gyapless"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:text="@string/pp_zerozrozero" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pp_msec"
+                            />
+                    </LinearLayout>
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+                        <Switch
+                            android:id="@+id/pref_pb_bgc"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:text="@string/pref_pb_bgc_titol"
+                            android:onClick="onSwitchClicked"
+                            />
+<!--                        android:textOff="@string/comon_sinai"-->
+<!--                        android:textOn="@string/comon_suru"-->
+
+<!--                        <CheckBox-->
+<!--                            android:id="@+id/pref_pb_bgc"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:onClick="onCheckboxClicked"-->
+<!--                            android:text="@string/pref_pb_bgc_titol" />-->
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#00BCD4"
+                        android:text="@string/pref_playlist" />
+
+                </TableRow>
+<!--                <EditTextPreference-->
+<!--                    app:key="pref_artist_bunnri"-->
+<!--                    app:title="@string/pref_titol_plist_artist_bunnri"-->
+<!--                    app:useSimpleSummaryProvider="true"-->
+<!--                    app:defaultValue="100"-->
+<!--                    />-->
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+                        <Switch
+                            android:id="@+id/pref_list_simple"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:text="@string/pref_list_simple_title"
+                            android:textOff="@string/comon_sinai"
+                            android:textOn="@string/comon_suru"
+                            android:onClick="onSwitchClicked"
+                            />
+                        <!--                        <CheckBox-->
+                        <!--                            android:id="@+id/pref_list_simple"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:layout_weight="1"-->
+                        <!--                            android:text="@string/pref_list_simple_title"-->
+                        <!--                            android:onClick="onCheckboxClicked"-->
+                        <!--                            />-->
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pref_titol_plist_saikin_tuika" />
+
+                        <EditText
+                            android:id="@+id/pref_saikin_tuika"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:text="@string/pp_zerozrozero"
+                            tools:ignore="TouchTargetSizeCheck" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/common_nitibun"
+                            />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/playlist_namae_saikinsisei" />
+
+                        <EditText
+                            android:id="@+id/pref_saikin_sisei"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:text="@string/pp_zerozrozero" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/comon_kyoku"
+                            />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pref_rundam_list_size" />
+
+                        <EditText
+                            android:id="@+id/pref_rundam_list_size"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:text="@string/pp_zerozrozero" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/comon_kyoku"
+                            />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#00BCD4"
+                        android:text="@string/pref_kisyubetu" />
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+<!--                        <CheckBox-->
+<!--                            android:id="@+id/pref_notifplayer"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="@string/pref_notifplayer"-->
+<!--                            android:onClick="onCheckboxClicked"-->
+<!--                            />-->
+                        <Switch
+                            android:id="@+id/pref_notifplayer"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:text="@string/pref_notifplayer"
+                            android:textOff="@string/comon_tukawanai"
+                            android:textOn="@string/comon_tukau"
+                            />
+
+                    </LinearLayout>
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+<!--                        <CheckBox-->
+<!--                            android:id="@+id/pref_lockscreen"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="@string/pref_lockscreen"-->
+<!--                            android:onClick="onCheckboxClicked"-->
+<!--                            />-->
+                        <Switch
+                            android:id="@+id/pref_lockscreen"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:text="@string/pref_lockscreen"
+                            android:textOff="@string/comon_tukawanai"
+                            android:textOn="@string/comon_tukau"
+                            />
+                    </LinearLayout>
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+<!--                        <CheckBox-->
+<!--                            android:id="@+id/pref_bt_renkei"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="@string/pref_bt_renkei_titol"-->
+<!--                            android:onClick="onCheckboxClicked"-->
+<!--                            />-->
+                        <Switch
+                            android:id="@+id/pref_bt_renkei"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:text="@string/pref_bt_renkei_titol"
+                            android:textOff="@string/comon_sinai"
+                            android:textOn="@string/comon_suru"
+                            />
+                    </LinearLayout>
+                </TableRow>
+
+                <!--                <SwitchPreferenceCompat-->
+<!--                    app:key="pref_cyakusinn_fukki"-->
+<!--                    app:summary="Summary"-->
+<!--                    app:summaryOn="@string/comon_suru"-->
+<!--                    app:summaryOff="@string/comon_sinai"-->
+<!--                    app:switchTextOff="@string/comon_sinai"-->
+<!--                    app:switchTextOn="@string/comon_suru"-->
+<!--                    app:title="@string/pref_cyakusinn_fukki"-->
+<!--                    app:enabled="true"/>-->
+<!--    <PreferenceCategory-->
+<!--        app:title="@string/pref_effect"-->
+<!--        >-->
+<!--        &lt;!&ndash;        app:key="pref_effect"&ndash;&gt;-->
+<!--        &lt;!&ndash;        app:selectable="true" app:enabled="true"&ndash;&gt;-->
+<!--        &lt;!&ndash;        app:summary="@string/pref_effect"&ndash;&gt;-->
+
+<!--        <EditTextPreference-->
+<!--            app:selectable="false"-->
+<!--            app:key="pref_eff_memo"-->
+<!--            app:title="@string/common_sansyou"-->
+<!--            app:layout="@layout/sc_text"/>-->
+
+<!--        <ListPreference-->
+<!--            app:defaultValue="@string/pref_effect_vi"-->
+<!--            app:entries="@array/effect_vi"-->
+<!--            app:entryValues="@array/effect_vi"-->
+<!--            app:key="visualizerType"-->
+<!--            app:title="@string/pref_effect_vi"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+<!--        &lt;!&ndash;        app:summary="@string/pref_effect_vi"&ndash;&gt;-->
+<!--        &lt;!&ndash;        app:dialogTitle="@string/pref_effect_vi"&ndash;&gt;-->
+<!--    </PreferenceCategory>-->
+
+
+            </TableLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="#00BCD4"
+                android:text="@string/common_sansyou"
+                />
+
+            <TextView
+                android:id="@+id/pref_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start|top"
+                android:text=" \n " />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+
+                <Button
+                    android:id="@+id/pref_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pref_reset" />
+
+                <Button
+                    android:id="@+id/pref_listup_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pref_now_set" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
