@@ -314,10 +314,10 @@ public class MusicLibrary {
         String dbMsg = "";
         String retStr="";
         try {
-            dbMsg = ",albumArtResName=" + albumArtResName;
+            dbMsg += ",albumArtResName=" + albumArtResName;
             retStr = ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
                     BuildConfig.APPLICATION_ID + "/drawable/" + albumArtResName;
-            dbMsg = ",retStr=" + retStr;
+            dbMsg += ",retStr=" + retStr;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -328,37 +328,47 @@ public class MusicLibrary {
     public static String getMusicFilename(String mediaId) {
         final String TAG = "getMusicFilename";
         String dbMsg = "";
+        String musicFilenam = "";
         try {
+            dbMsg += ",mediaId=" + mediaId;
+            musicFilenam= musicFileName.containsKey(mediaId) ? musicFileName.get(mediaId) : null;
+            dbMsg += ",musicFilenam=" + musicFilenam;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
-
-        return musicFileName.containsKey(mediaId) ? musicFileName.get(mediaId) : null;
+        return musicFilenam;
     }
 
     private static int getAlbumRes(String mediaId) {
         final String TAG = "getAlbumRes";
         String dbMsg = "";
+        int retInt = -1;
         try {
+            dbMsg += ",mediaId=" + mediaId;
+            retInt = albumRes.containsKey(mediaId) ? albumRes.get(mediaId) : 0;
+            dbMsg += ",retInt=" + retInt;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
-
-        return albumRes.containsKey(mediaId) ? albumRes.get(mediaId) : 0;
+        return retInt;
     }
 
-    public static Bitmap getAlbumBitmap(Context context, String mediaId) {
+    /**mediaIdで指定されたMediaMetadataCompatのBitmapを返す*/
+    public Bitmap getAlbumBitmap(Context context, String mediaId) {         //static
         final String TAG = "getAlbumBitmap";
         String dbMsg = "";
+        Bitmap retBitmap=null;
         try {
+            dbMsg += ",mediaId=" + mediaId;
+            retBitmap = BitmapFactory.decodeResource(context.getResources(),MusicLibrary.getAlbumRes(mediaId));
+            dbMsg += ",retBitmap=" + retBitmap.getWidth() + "×"+ retBitmap.getWidth() + "," + retBitmap.getByteCount() + "byte";
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
-        return BitmapFactory.decodeResource(context.getResources(),
-                MusicLibrary.getAlbumRes(mediaId));
+        return retBitmap;
     }
 
     ///サービスのonCreatから呼ばれる
@@ -371,6 +381,7 @@ public class MusicLibrary {
                 result.add(
                         new MediaBrowserCompat.MediaItem(
                                 metadata.getDescription(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE));
+                dbMsg += "\n[" + result.size() +  "]" + result.toString();
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
@@ -379,14 +390,16 @@ public class MusicLibrary {
         return result;
     }
 
-    public static MediaMetadataCompat getMetadata(Context context, String mediaId) {
+    /**mediaIdで指定されたMediaMetadataCompatを返す*/
+    public MediaMetadataCompat getMetadata(Context context, String mediaId) {
         final String TAG = "getMetadata";
         String dbMsg = "";
         MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
         try {
-            dbMsg +=  "mediaId=" + mediaId;
+            dbMsg +=  "mediaId[" + mediaId + "]";
             MediaMetadataCompat metadataWithoutBitmap = music.get(mediaId);
             Bitmap albumArt = getAlbumBitmap(context, mediaId);
+            dbMsg +=  ",albumArt=" + albumArt.getWidth() + "×" + albumArt.getHeight();
 
             // Since MediaMetadataCompat is immutable, we need to create a copy to set the album art.
             // We don't set it initially on all queueItems so that they don't take unnecessary memory.
@@ -404,6 +417,7 @@ public class MusicLibrary {
                     MediaMetadataCompat.METADATA_KEY_DURATION,
                     metadataWithoutBitmap.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
             builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt);
+            dbMsg +=  "," + builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI,"");
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -411,6 +425,9 @@ public class MusicLibrary {
         return builder.build();
     }
 
+    /**
+     * 一曲分のeMediaMetadataCompatを作製する
+     * */
     private static void createMediaMetadataCompat(
             String mediaId,
             String title,
