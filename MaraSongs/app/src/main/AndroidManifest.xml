@@ -45,7 +45,7 @@
         android:theme="@style/Theme.AppCompat"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get provider-->
+        <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get providernなのでapplication直下へ-->
             <meta-data
                 android:name="com.google.android.gms.ads.APPLICATION_ID"
                 android:value="@string/banner_test_id" />
