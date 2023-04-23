@@ -76,6 +76,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.media3.common.MediaItem;
 import androidx.preference.PreferenceManager;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
@@ -88,6 +90,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -236,6 +239,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public List<String> subList = null;		//アルバム付加情報
 	public List<String> titoSubList = null;		//曲名付加情報
 	public String nowListSub;				//再生中のプレイリストの詳細
+	public List<MediaItem> mediaItemList;
 //	public String pref_file_wr;		//再生中のプレイリストの保存場所
 	public int reqestList_id = 0;			//アクティビテイ方戻されたのプレイリストID
 
@@ -504,23 +508,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if ( 0 < unPermissionArray.size() ) {
 					dbMsg += "::許諾処理へ";
 					final String[] unPERMISSIONS = unPermissionArray.toArray(new String[unPermissionArray.size()]);
-			//		Toast.makeText(this, getResources().getString(R.string.permission_msg), Toast.LENGTH_LONG).show();  // "ACCESS_FINE_LOCATION PERMISSION_GRANTED"と表示.
-
-////					myPreferences = new MyPreferences();
-////					myPreferences.setdPrif(MuList.this);
-//					new AlertDialog.Builder(MuList.this)
-//							.setTitle( getResources().getString(R.string.permission_titol) )
-//							.setMessage( getResources().getString(R.string.permission_msg))
-//							.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
-//								final String TAG = "checkMyPermission2";
-//								String dbMsg = "";
-//								@Override
-//								public void onClick(DialogInterface dialog , int which) {
-									dbMsg += "、unPERMISSIONS=" + unPERMISSIONS.length + "件";
-									// ユーザーにパーミッションを要求すると、次のようなポップアップ
-//									requestPermissions(unPERMISSIONS , REQUEST_PREF);
-				//	if (shouldShowRequestPermissionRationale(unPERMISSIONS[0])) {
-						ActivityCompat.requestPermissions(MuList.this, unPERMISSIONS, REQUEST_PREF);
+//					// 通知		https://www.jisei-firm.com/android_develop43/
+//					if (Build.VERSION.SDK_INT > 32) {
+//						if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//							requestPermissions.add(Manifest.permission.POST_NOTIFICATIONS);
+//						}
+//					}
+//					if (!requestPermissions.isEmpty()) {
+//						ActivityCompat.requestPermissions(this, requestPermissions.toArray(new String[0]), REQUEST_MULTI_PERMISSIONS);
+//					}
+//					//https://www.jisei-firm.com/android_develop43/
+					dbMsg += "、unPERMISSIONS=" + unPERMISSIONS.length + "件";
+					ActivityCompat.requestPermissions(MuList.this, unPERMISSIONS, REQUEST_PREF);
 				//	}
 //									for ( String permissionName : unPERMISSIONS ) {
 //										int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
@@ -3695,21 +3694,24 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			toPlaying = send2Service( dataFN,listName,toPlaying);
 			dbMsg += ",toPlaying=" + toPlaying;
 //////
-//			Intent intent = new Intent(getApplication(), MaraSonActivity.class);
-//
-//			intent.putExtra("reqCode",imanoJyoutai);
-//			intent.putExtra("nowList_id",myPreferences.nowList_id);
-//			intent.putExtra("nowList",listName);
-//			intent.putExtra("pref_data_url",dataFN);
-//			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
-//			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
-////			if(toPlaying) {
-////				intent.putExtra("to_play",true);
-////			}else{
-////				intent.putExtra("to_play",false);
-////			}
-//			intent.putExtra("toPlaying",toPlaying);
-//			resultLauncher.launch(intent);
+			Intent intent = new Intent(getApplication(), MaraSonActivity.class);
+
+			intent.putExtra("reqCode",imanoJyoutai);
+			intent.putExtra("nowList_id",myPreferences.nowList_id);
+			intent.putExtra("nowList",listName);
+			intent.putExtra("pref_data_url",dataFN);
+			intent.putExtra("mediaItemList", (Serializable) mediaItemList);
+
+
+			dbMsg +=",再生中=" + IsPlaying;/////////////////////////////////////
+			intent.putExtra( "IsPlaying",IsPlaying);		// ;			//再生中か
+//			if(toPlaying) {
+//				intent.putExtra("to_play",true);
+//			}else{
+//				intent.putExtra("to_play",false);
+//			}
+			intent.putExtra("toPlaying",toPlaying);
+			resultLauncher.launch(intent);
 
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
@@ -5355,6 +5357,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
 			long start = System.currentTimeMillis();		// 開始時刻の取得
+			mediaItemList = new ArrayList<MediaItem>();
 			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + MuList.this.sousalistName ;
 			final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 			final String[] columns = null;			//{ idKey, nameKey };
@@ -5565,6 +5568,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			MuList.this.objMap.put("img" , ORGUT.retAlbumArtUri( getApplicationContext() , ArtistName , AlbumName ) );			//アルバムアートUriだけを返す
 			MuList.this.plAL.add( objMap);
+			MediaItem mItem =  new MediaItem.Builder().setUri((String) objMap.get(MediaStore.Audio.Playlists.Members.DATA)).build();
+			dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
+			dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
+			dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
+			dbMsg +=  "["+ mItem.mediaMetadata.trackNumber + "]";
+			dbMsg +=  ",title="+ mItem.mediaMetadata.title;
+			dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
+			dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
+			dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
+			mediaItemList.add(mItem);
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg  + "で" + e);

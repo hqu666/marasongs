@@ -14,9 +14,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -29,17 +32,16 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" /> <!-- ALIL33 -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+        android:maxSdkVersion="33" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- Android package visibility setting -->
+
+    <!-- Android package visibility setting -->
     <queries>
 
         <!-- For browser content -->
@@ -58,7 +60,11 @@
         <!-- End of CustomTabsService -->
     </queries>
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <permission
+        android:name="com.hijiyam_koubou.marasongs.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.hijiyam_koubou.marasongs.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application
         android:name="com.hijiyam_koubou.marasongs.MyApp"
@@ -72,9 +78,22 @@
         android:testOnly="true"
         android:theme="@style/Theme.AppCompat"
         android:usesCleartextTraffic="true" >
+
+        <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get provider -->
         <meta-data
-            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true" />
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/banner_test_id" />
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
+        <!-- android:value="@string/banner_ad_unit_id" /> -->
+        <service
+            android:name="com.hijiyam_koubou.marasongs.MusicService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="TODO" />
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.gms.ads.AD_MANAGER_APP" -->
+        <!-- android:value="true" /> -->
         <!--
    ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
 		<meta-data
@@ -93,7 +112,7 @@
             android:name="com.hijiyam_koubou.marasongs.MuList"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:taskAffinity=""
             android:theme="@style/AppTheme" >
             <intent-filter>
@@ -105,13 +124,16 @@
         <activity
             android:name="com.hijiyam_koubou.marasongs.MaraSonActivity"
             android:excludeFromRecents="true"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:taskAffinity=""
             android:theme="@style/AppTheme" >
-            <meta-data
-                android:name="com.google.android.gms.ads.APPLICATION_ID"
-                android:value="@string/banner_ad_unit_id" />
+
+            <!-- <meta-data -->
+            <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
+            <!-- android:value="@string/banner_test_id" /> -->
+            <!-- <meta-data -->
+            <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
+            <!-- android:value="@string/banner_ad_unit_id" /> -->
         </activity>
         <activity
             android:name="com.hijiyam_koubou.marasongs.AllSongs"
@@ -207,6 +229,10 @@
             android:name="com.hijiyam_koubou.marasongs.TagBrows"
             android:theme="@style/Theme.TranslucentBackground" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true" />
+
         <provider
             android:name="com.google.android.gms.ads.MobileAdsInitProvider"
             android:authorities="com.hijiyam_koubou.marasongs.mobileadsinitprovider"
@@ -218,6 +244,10 @@
             android:enabled="true"
             android:exported="false" />
 
+        <activity
+            android:name="com.google.android.gms.ads.OutOfContextTestingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="false" />
         <activity
             android:name="com.google.android.gms.common.api.GoogleApiActivity"
             android:exported="false"

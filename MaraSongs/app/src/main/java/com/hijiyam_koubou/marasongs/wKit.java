@@ -31,10 +31,10 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.AdListener;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdSize;
+//import com.google.android.gms.ads.AdView;
 
 import net.nend.android.NendAdInterstitial.NendAdInterstitialStatusCode;
 import net.nend.android.NendAdListener;
@@ -496,9 +496,9 @@ public class wKit extends Activity {
 							layout_ad.setY(location[1]); 				//(motoTakasa- (50 * scaleXY)) ///☆利かない	nendAdView.setX( dWidth - nendWith);		nendAdView.setGravity(Gravity.RIGHT | Gravity.TOP);
 							layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
 					//		myLog(TAG,dbMsg);
-							if(! adMobNow){
-								adMobLoad();													//Google AdMobの広告設定
-							}
+//							if(! adMobNow){
+//								adMobLoad();													//Google AdMobの広告設定
+//							}
 						} catch (Exception e) {
 							myErrorLog(TAG,dbMsg+"で"+e);
 						}
@@ -533,13 +533,13 @@ public class wKit extends Activity {
 		}
 	}
 
-	private AdView mAdView = null;							//Google広告表示エリア
+//	private AdView mAdView = null;							//Google広告表示エリア
 	private  LinearLayout layout_ad;
 	public int adWidth = 0;
 	public int adHight = 0;
-	private AdRequest adRequest;			// 一般的なリクエストを行う
+//	private AdRequest adRequest;			// 一般的なリクエストを行う
 	boolean adMobNow;
-	public View adViewC;
+//	public View adViewC;
 	/**
 	 * Google AdMobの広告設定
 	 *
@@ -547,184 +547,184 @@ public class wKit extends Activity {
 	 * 		http://ja.stackoverflow.com/questions/12820/android%E3%81%A7admob%E3%81%8C%E8%A1%A8%E7%A4%BA%E3%81%95%E3%82%8C%E3%81%AA%E3%81%84
 	 * XML でバナーを作成する		https://developers.google.com/mobile-ads-sdk/docs/admob/fundamentals?hl=ja#header
 	 * */
-	@SuppressLint("NewApi")
-	public void adMobLoad(){		//Google AdMobの広告設定
-		final String TAG = "adMobLoad";
-		String dbMsg = "";//////////////////
-		try{
-			layout_ad.setVisibility(View.VISIBLE);
-			int kariHaba = 256;
-			int[] location = new int[2];
-			dbMsg +=",adWidth=" + adWidth;
-			if( adWidth == 0 ){
-				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-				dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-				adWidth = koukokuW;				// ( dWidth-276) / 2 ;			// dWidth-location[0] ;//			//画面幅-ボタン幅 / 2		dWidth / 2 - dWidth / 20
-				dbMsg +=">adWidth>" + adWidth;
-			//	layout_ad.setX(dWidth - adWidth);
-				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-				dbMsg +=">>layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-			}
-			float scaleXY =adWidth * 1.0f / dWidth;						/// = 0.3		( koukokuW * koukokuW / dWidth)	☆設定したサイズが読み込みリアを超えない様に320に対してマージンを設定	288.0f/45		256/40
-			dbMsg +=",scaleXY=" + scaleXY;
-			adWidth = (int)( 320 * scaleXY);				//320x50_as;6.4	最終；getAdSize[118x18_as;6.55],(682,1621)]
-			dbMsg += ",adWidth=" + adWidth;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
-			adHight = (int) (50 * scaleXY);			//* kariHaba/320
-			dbMsg += ",adHight=" + adHight;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
-	//		if( mAdView == null ){
-				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
-				dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;	//正解[0 × ?]
-				mAdView = new AdView(this);
-		//		LayoutParams lp = new LayoutParams(adWidth , LayoutParams.WRAP_CONTENT);
-				mAdView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id2));
-	//		}
-			mAdView.setAdSize(new AdSize( adWidth , adHight));		//	mAdView.setAdSize(AdSize.BANNER);だと	Not enough space to show ad. Needs 320x50 dp, but only has 180x49 dp.
-			layout_ad.addView(mAdView);			// ,lp
-
-			AdRequest adRequest = new AdRequest.Builder().build();
-		//	dbMsg += ",mAdView=" + mAdView;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
-			//テスト		https://developers.google.com/mobile-ads-sdk/docs/admob/intermediate?hl=ja
-			//未登録機はlogcatで03-21 21:21:41.232: I/Ads(10844): Use AdRequest.Builder.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302") to get test ads on this device.	を検索
-//			adRequest = new AdRequest.Builder()
-//				.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)				// すべてのエミュレータ
-//				.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302")	//Xpelia Z5 (Android5.1.1)
-//				.addTestDevice("170A4E96B8EE2D03CFAB2DF201D0655D")	//SHL32(Android4.4.4/AQUOS K タッチパネル無し)
-//				.addTestDevice("F3B787B1C99665529E01E5BB0647FD8D")	//	304SH(Android4.4.2)
-//				.addTestDevice("772C6F3DB402CD1F9D8A66E1555E54C5")	//SH08E(Android4.2.2/7インチタブレット)
-//				.addTestDevice("B339C45F7878E57784B1940379760332")		//	206SH(Android4.2.2)
-//				.addTestDevice("EFF070C53D3F43AF29325F8E5529D704")	//	203SH(Android4.1.2)
-//				.addTestDevice("2CCFE123DEF10276C319F12B66D744FA")	//	iS15SH(Android4.0.3)Ads: Use AdRequest.Builder.addTestDevice("") to get test ads on this device.で取得
-////				.tagForChildDirectedTreatment(true)									//児童向けで
-//				.build();
-	//		dbMsg +="、getAdUnitId=" + mAdView.getAdUnitId();//ca-app-pub-3146425308522831/2530772303
-	//		dbMsg += ",　request=" + adRequest;
-			mAdView.loadAd(adRequest);
-			mAdView.setAdListener(new AdListener() {
-				@Override
-				public void onAdOpened() {					// 広告オーバーレイに移動する前にアプリの状態を保存する
-					final String TAG = "onAdOpened[adMobLoad]";
-					String dbMsg = "広告からオーバーレイを開いて画面全体が覆われた";//////////////////
-					try{
-						dbMsg +="、mAdView=" + mAdView;
-						myLog(TAG,dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG,dbMsg+"で"+e);
-						}
-					}
-
-				@Override
-				public void onAdLoaded() {
-					final String TAG = "onAdLoaded[adMobLoad]";
-					String dbMsg = "広告が表示された";//////////////////
-					try{
-						dbMsg +="、mAdView=" + mAdView;			//.AdView@41b75f70
-						dbMsg += ",getChildCount=" + mAdView.getChildCount();						//1
-						adMobNow = true;
-						if(0<mAdView.getChildCount()){
-							adViewC = mAdView.getChildAt(0);
-			//				adViewC.setOnClickListener(AtarekunnActivity.this);
-			//				adViewC.setOnKeyListener( AtarekunnActivity.this);			//	, View.OnKeyListener	使用時のみ
-//							if(prTT_dpad){
-//								adMobKeys();		//Google AdMobの広告用のキー設定
-//							}
-						}
-						dbMsg +=",getChildAt=" + adViewC;
-			//			dbMsg +=",ClassName=" + mAdView.getMediationAdapterClassName();		//null
-						//errer発生	getTransitionName	getOutlineProvider	getOverlay
-			//			myLog(TAG,dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG,dbMsg+"で"+e);
-					}
-				}
-
-				@SuppressLint("NewApi")
-				@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-				@Override
-				public void onAdClosed() {
-					final String TAG = "onAdClosed[adMobLoad]";
-					String dbMsg = "ユーザーが広告をクリックし、アプリケーションに戻ろうとした";//////////////////
-					try{
-						dbMsg = ",mAdView=" + mAdView;
-						myLog(TAG,dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG,dbMsg+"で"+e);
-						}
-					}
-
-		//		@Override
-				public void onAdLeftApplication() {
-					final String TAG = "onAdLeftApplication[adMobLoad]";
-					String dbMsg = "広告からアプリケーションを終了した場合";//////////////////
-					try{
-						dbMsg +="、mAdView=" + mAdView;
-						myLog(TAG,dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG,dbMsg+"で"+e);
-						}
-					}
-
-		//		@Override
-				public void onAdFailedToLoad(int errorCode) {
-					final String TAG = "onAdFailedToLoad[adMobLoad]";
-					String dbMsg = "広告リクエストが失敗した";//////////////////
-					try{
-						dbMsg += ":errorCode=" + errorCode;
-						switch(errorCode) {
-						case AdRequest.ERROR_CODE_INTERNAL_ERROR:
-							dbMsg += ":ERROR_CODE_INTERNAL_ERROR";
-							break;
-						case AdRequest.ERROR_CODE_INVALID_REQUEST:
-							dbMsg += ":ERROR_CODE_INVALID_REQUEST";
-							break;
-						case AdRequest.ERROR_CODE_NETWORK_ERROR:
-							dbMsg += ":ERROR_CODE_NETWORK_ERROR";
-							break;
-						case AdRequest.ERROR_CODE_NO_FILL:
-							dbMsg += ":広告が来ない";
-			//				adMobNow = false;
-					//		mAdView.setVisibility(View.GONE);
-//							artist_tv.setNextFocusUpId(ppPBT.getId());
-//							ppPBT.setNextFocusDownId(artist_tv.getId());
-//							stopPButton.setNextFocusDownId(artist_tv.getId());		//タイトル
-							break;
-						}
-						if( mAdView != null ){
-							mAdView.destroy();
-							dbMsg = ">>"+ mAdView;//////////////////
-							layout_ad.setVisibility(View.GONE);
-						}
-						if( ! nenvNow){
-							nendAdView.setVisibility(View.VISIBLE);
-							nendLoad();		//nendの広告設定
-						}
-						myLog(TAG,dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG,dbMsg+"で"+e);
-						}
-					}
-				});
-			dbMsg += "[" + mAdView.getHeight() + "×" + mAdView.getWidth() + "]";///is15[75×480]
-			dbMsg +="ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//			dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" + layout_ad.getHeight() + "]";
+//	@SuppressLint("NewApi")
+//	public void adMobLoad(){		//Google AdMobの広告設定
+//		final String TAG = "adMobLoad";
+//		String dbMsg = "";//////////////////
+//		try{
+//			layout_ad.setVisibility(View.VISIBLE);
+//			int kariHaba = 256;
+//			int[] location = new int[2];
+//			dbMsg +=",adWidth=" + adWidth;
+//			if( adWidth == 0 ){
+//				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
+//				dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+//				adWidth = koukokuW;				// ( dWidth-276) / 2 ;			// dWidth-location[0] ;//			//画面幅-ボタン幅 / 2		dWidth / 2 - dWidth / 20
+//				dbMsg +=">adWidth>" + adWidth;
+//			//	layout_ad.setX(dWidth - adWidth);
+//				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
+//				dbMsg +=">>layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+//			}
+//			float scaleXY =adWidth * 1.0f / dWidth;						/// = 0.3		( koukokuW * koukokuW / dWidth)	☆設定したサイズが読み込みリアを超えない様に320に対してマージンを設定	288.0f/45		256/40
+//			dbMsg +=",scaleXY=" + scaleXY;
+//			adWidth = (int)( 320 * scaleXY);				//320x50_as;6.4	最終；getAdSize[118x18_as;6.55],(682,1621)]
+//			dbMsg += ",adWidth=" + adWidth;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
+//			adHight = (int) (50 * scaleXY);			//* kariHaba/320
+//			dbMsg += ",adHight=" + adHight;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
+//	//		if( mAdView == null ){
+//				layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html			中心？
+//				dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;	//正解[0 × ?]
+//				mAdView = new AdView(this);
+//		//		LayoutParams lp = new LayoutParams(adWidth , LayoutParams.WRAP_CONTENT);
+//				mAdView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id2));
+//	//		}
+//			mAdView.setAdSize(new AdSize( adWidth , adHight));		//	mAdView.setAdSize(AdSize.BANNER);だと	Not enough space to show ad. Needs 320x50 dp, but only has 180x49 dp.
+//			layout_ad.addView(mAdView);			// ,lp
+//
+//			AdRequest adRequest = new AdRequest.Builder().build();
+//		//	dbMsg += ",mAdView=" + mAdView;//	https://developers.google.com/mobile-ads-sdk/docs/admob/android/quick-start#faq
+//			//テスト		https://developers.google.com/mobile-ads-sdk/docs/admob/intermediate?hl=ja
+//			//未登録機はlogcatで03-21 21:21:41.232: I/Ads(10844): Use AdRequest.Builder.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302") to get test ads on this device.	を検索
+////			adRequest = new AdRequest.Builder()
+////				.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)				// すべてのエミュレータ
+////				.addTestDevice("EF6049FA0F4D49D1A08E68C5037D6302")	//Xpelia Z5 (Android5.1.1)
+////				.addTestDevice("170A4E96B8EE2D03CFAB2DF201D0655D")	//SHL32(Android4.4.4/AQUOS K タッチパネル無し)
+////				.addTestDevice("F3B787B1C99665529E01E5BB0647FD8D")	//	304SH(Android4.4.2)
+////				.addTestDevice("772C6F3DB402CD1F9D8A66E1555E54C5")	//SH08E(Android4.2.2/7インチタブレット)
+////				.addTestDevice("B339C45F7878E57784B1940379760332")		//	206SH(Android4.2.2)
+////				.addTestDevice("EFF070C53D3F43AF29325F8E5529D704")	//	203SH(Android4.1.2)
+////				.addTestDevice("2CCFE123DEF10276C319F12B66D744FA")	//	iS15SH(Android4.0.3)Ads: Use AdRequest.Builder.addTestDevice("") to get test ads on this device.で取得
+//////				.tagForChildDirectedTreatment(true)									//児童向けで
+////				.build();
+//	//		dbMsg +="、getAdUnitId=" + mAdView.getAdUnitId();//ca-app-pub-3146425308522831/2530772303
+//	//		dbMsg += ",　request=" + adRequest;
+//			mAdView.loadAd(adRequest);
+//			mAdView.setAdListener(new AdListener() {
+//				@Override
+//				public void onAdOpened() {					// 広告オーバーレイに移動する前にアプリの状態を保存する
+//					final String TAG = "onAdOpened[adMobLoad]";
+//					String dbMsg = "広告からオーバーレイを開いて画面全体が覆われた";//////////////////
+//					try{
+//						dbMsg +="、mAdView=" + mAdView;
+//						myLog(TAG,dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG,dbMsg+"で"+e);
+//						}
+//					}
+//
+//				@Override
+//				public void onAdLoaded() {
+//					final String TAG = "onAdLoaded[adMobLoad]";
+//					String dbMsg = "広告が表示された";//////////////////
+//					try{
+//						dbMsg +="、mAdView=" + mAdView;			//.AdView@41b75f70
+//						dbMsg += ",getChildCount=" + mAdView.getChildCount();						//1
+//						adMobNow = true;
+//						if(0<mAdView.getChildCount()){
+//							adViewC = mAdView.getChildAt(0);
+//			//				adViewC.setOnClickListener(AtarekunnActivity.this);
+//			//				adViewC.setOnKeyListener( AtarekunnActivity.this);			//	, View.OnKeyListener	使用時のみ
+////							if(prTT_dpad){
+////								adMobKeys();		//Google AdMobの広告用のキー設定
+////							}
+//						}
+//						dbMsg +=",getChildAt=" + adViewC;
+//			//			dbMsg +=",ClassName=" + mAdView.getMediationAdapterClassName();		//null
+//						//errer発生	getTransitionName	getOutlineProvider	getOverlay
+//			//			myLog(TAG,dbMsg);
+//					} catch (Exception e) {
+//						myErrorLog(TAG,dbMsg+"で"+e);
+//					}
+//				}
+//
+//				@SuppressLint("NewApi")
+//				@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+//				@Override
+//				public void onAdClosed() {
+//					final String TAG = "onAdClosed[adMobLoad]";
+//					String dbMsg = "ユーザーが広告をクリックし、アプリケーションに戻ろうとした";//////////////////
+//					try{
+//						dbMsg = ",mAdView=" + mAdView;
+//						myLog(TAG,dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG,dbMsg+"で"+e);
+//						}
+//					}
+//
+//		//		@Override
+//				public void onAdLeftApplication() {
+//					final String TAG = "onAdLeftApplication[adMobLoad]";
+//					String dbMsg = "広告からアプリケーションを終了した場合";//////////////////
+//					try{
+//						dbMsg +="、mAdView=" + mAdView;
+//						myLog(TAG,dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG,dbMsg+"で"+e);
+//						}
+//					}
+//
+//		//		@Override
+//				public void onAdFailedToLoad(int errorCode) {
+//					final String TAG = "onAdFailedToLoad[adMobLoad]";
+//					String dbMsg = "広告リクエストが失敗した";//////////////////
+//					try{
+//						dbMsg += ":errorCode=" + errorCode;
+//						switch(errorCode) {
+//						case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+//							dbMsg += ":ERROR_CODE_INTERNAL_ERROR";
+//							break;
+//						case AdRequest.ERROR_CODE_INVALID_REQUEST:
+//							dbMsg += ":ERROR_CODE_INVALID_REQUEST";
+//							break;
+//						case AdRequest.ERROR_CODE_NETWORK_ERROR:
+//							dbMsg += ":ERROR_CODE_NETWORK_ERROR";
+//							break;
+//						case AdRequest.ERROR_CODE_NO_FILL:
+//							dbMsg += ":広告が来ない";
+//			//				adMobNow = false;
+//					//		mAdView.setVisibility(View.GONE);
+////							artist_tv.setNextFocusUpId(ppPBT.getId());
+////							ppPBT.setNextFocusDownId(artist_tv.getId());
+////							stopPButton.setNextFocusDownId(artist_tv.getId());		//タイトル
+//							break;
+//						}
+//						if( mAdView != null ){
+//							mAdView.destroy();
+//							dbMsg = ">>"+ mAdView;//////////////////
+//							layout_ad.setVisibility(View.GONE);
+//						}
+//						if( ! nenvNow){
+//							nendAdView.setVisibility(View.VISIBLE);
+//							nendLoad();		//nendの広告設定
+//						}
+//						myLog(TAG,dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG,dbMsg+"で"+e);
+//						}
+//					}
+//				});
+//			dbMsg += "[" + mAdView.getHeight() + "×" + mAdView.getWidth() + "]";///is15[75×480]
+//			dbMsg +="ディスプレイ["+dWidth+" × "+ dHeigh +"]" ;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+////			dbMsg += ",layout_ad[" + layout_ad.getWidth() + "×" + layout_ad.getHeight() + "]";
+////			layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
+////			dbMsg +="("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+//			dbMsg += ",最終；getAdSize[" + mAdView.getAdSize() + "]";
+//			mAdView.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
+//			dbMsg +=",("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
 //			layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-//			dbMsg +="("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-			dbMsg += ",最終；getAdSize[" + mAdView.getAdSize() + "]";
-			mAdView.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-			dbMsg +=",("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-			layout_ad.getLocationOnScreen(location);							//http://y-anz-m.blogspot.jp/2012/10/androidview.html
-			dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
-			adMobNow = true;
-			myLog(TAG,dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG,dbMsg+"で"+e);
-
-			//04-03 20:59:46.519: W/cr_AwContents(7414): onDetachedFromWindow called when already detached. Ignoring
-//04-03 20:59:46.591: W/cr_BindingManager(7414): Cannot call determinedVisibility() - never saw a connection for the pid: 7414
-//			04-03 21:03:12.598: E/Ads(7414): JS: Uncaught ReferenceError: AFMA_ReceiveMessage is not defined (:1)
-
-
-		}
-	}
+//			dbMsg +=",layout_ad("+ location[0] +","+ location[1] +")]" ;						//広告表示枠[798 × 6(0.0,148.0)]
+//			adMobNow = true;
+//			myLog(TAG,dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG,dbMsg+"で"+e);
+//
+//			//04-03 20:59:46.519: W/cr_AwContents(7414): onDetachedFromWindow called when already detached. Ignoring
+////04-03 20:59:46.591: W/cr_BindingManager(7414): Cannot call determinedVisibility() - never saw a connection for the pid: 7414
+////			04-03 21:03:12.598: E/Ads(7414): JS: Uncaught ReferenceError: AFMA_ReceiveMessage is not defined (:1)
+//
+//
+//		}
+//	}
 //http://pentan.info/android/app/multi_thread.html
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 

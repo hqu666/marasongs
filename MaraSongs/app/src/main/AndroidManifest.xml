@@ -8,9 +8,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -23,16 +26,15 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" /> <!-- ALIL33 -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+        android:maxSdkVersion="33" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:name=".MyApp"
@@ -43,10 +45,21 @@
         android:theme="@style/Theme.AppCompat"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
-        <meta-data
-            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true" />
+        <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get provider-->
+            <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="@string/banner_test_id" />
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="@string/banner_ad_unit_id" />-->
+        <service
+            android:name=".MusicService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="TODO" />
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.AD_MANAGER_APP"-->
+<!--            android:value="true" />-->
         <!--
    ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
 		<meta-data
@@ -63,10 +76,10 @@
 
         <activity
             android:name=".MuList"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:taskAffinity=""
             android:excludeFromRecents="true"
+            android:exported="true"
+            android:screenOrientation="fullSensor"
+            android:taskAffinity=""
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,14 +89,16 @@
         </activity>
         <activity
             android:name=".MaraSonActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:taskAffinity=""
             android:excludeFromRecents="true"
+            android:screenOrientation="fullSensor"
+            android:taskAffinity=""
             android:theme="@style/AppTheme">
-            <meta-data
-                android:name="com.google.android.gms.ads.APPLICATION_ID"
-                android:value="@string/banner_ad_unit_id" />
+<!--            <meta-data-->
+<!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--                android:value="@string/banner_test_id" />-->
+<!--            <meta-data-->
+<!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--                android:value="@string/banner_ad_unit_id" />-->
         </activity>
         <activity
             android:name=".AllSongs"
@@ -92,12 +107,10 @@
         <activity android:name=".CreditNameHensyuu" />
         <activity
             android:name=".SettingActivity"
-            android:exported="false"
-            />
-
-        <activity android:name=".wKit"
-            android:screenOrientation="fullSensor"
-            />
+            android:exported="false" />
+        <activity
+            android:name=".wKit"
+            android:screenOrientation="fullSensor" />
 
         <receiver
             android:name=".MusicPlayerReceiver"
@@ -108,6 +121,7 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
         <service
             android:name=".MusicPlayerService"
             android:exported="true">
@@ -123,13 +137,14 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-        <receiver android:name="androidx.media.session.MediaButtonReceiver"
+
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".NotifRecever"
             android:exported="true">

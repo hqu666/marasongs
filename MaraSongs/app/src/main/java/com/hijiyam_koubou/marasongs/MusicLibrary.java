@@ -3,6 +3,7 @@ package com.hijiyam_koubou.marasongs;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -305,6 +306,35 @@ public class MusicLibrary {
         return indexInt;
     }
 
+    public String getMediaId(String uriStr) {
+        final String TAG = "getMediaId";
+        String dbMsg = "";
+        String retID = null;
+        try {
+            dbMsg += ",uriStr=" + uriStr;
+            int totalCount = musicFileName.size();
+            dbMsg += ",totalCount=" + totalCount;
+            if(musicFileName.containsValue(uriStr)){
+                dbMsg += ",件中に有り";
+                for (String tUri : musicFileName.values()) {
+                    if( tUri.equals(uriStr)) {
+                        dbMsg += ",検出="+tUri;
+                        retID = String.valueOf(musicFileName.keySet());
+                        break;
+                    }
+                }
+            }else{
+                dbMsg += ",件中になし";
+            }
+            dbMsg += "retID=" + retID;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return retID;
+    }
+
+
     public static String getRoot() {
         return "root";
     }
@@ -390,6 +420,9 @@ public class MusicLibrary {
         return result;
     }
 
+//    public AssetFileDescriptor getAssetsFile(Context context) {
+//        return context.resources.openRawResourceFd(R.raw.sample);
+//    }
     /**mediaIdで指定されたMediaMetadataCompatを返す*/
     public MediaMetadataCompat getMetadata(Context context, String mediaId) {
         final String TAG = "getMetadata";

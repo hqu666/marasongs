@@ -159,8 +159,8 @@
 	<string name="pref_compBunki">Compilation setting[%]</string><!--コンピレーション設定[曲]-->
 	<string name="pref_compBunki_msg">As for the compilation and the number of the music to judge, it is in an album</string>
 	<string name="pref_bt_renkei_titol"> Bluetooth cooperation</string>
-	<string name="pref_bt_renkei_titol0">It stop in connection with connection of Bluetooth</string><!-- Bluetoothの接続に連携して一時停止-->
-	<string name="pref_bt_renkei_titol1">It reopen in connection with connection of Bluetooth</string>
+<!--	<string name="pref_bt_renkei_titol0">It stop in connection with connection of Bluetooth</string>&lt;!&ndash; Bluetoothの接続に連携して一時停止&ndash;&gt;-->
+<!--	<string name="pref_bt_renkei_titol1">It reopen in connection with connection of Bluetooth</string>-->
 	<string name="psSarviceUri">.PlayerService</string>
 	<string name="pref_sonota_vercord">versionCode of this</string>
 
