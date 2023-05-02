@@ -155,7 +155,7 @@
 80        android:usesCleartextTraffic="true" >
 80-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:46:9-44
 81
-82        <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get provider -->
+82        <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get providernなのでapplication直下へ -->
 83        <meta-data
 83-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:49:13-51:58
 84            android:name="com.google.android.gms.ads.APPLICATION_ID"

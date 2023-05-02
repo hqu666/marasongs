@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
@@ -73,14 +74,41 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.media3.common.AudioAttributes;
+import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.Player;
+import androidx.media3.common.TrackSelectionParameters;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.common.util.Util;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.RenderersFactory;
+import androidx.media3.exoplayer.drm.DefaultDrmSessionManagerProvider;
+import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
+import androidx.media3.exoplayer.ima.ImaAdsLoader;
+import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource;
+import androidx.media3.exoplayer.offline.DownloadRequest;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.ads.AdsLoader;
+import androidx.media3.exoplayer.util.DebugTextViewHelper;
+import androidx.media3.exoplayer.util.EventLogger;
+import androidx.media3.session.MediaSession;
+import androidx.media3.ui.PlayerView;
 import androidx.preference.PreferenceManager;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
+
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -90,7 +118,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,7 +163,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public MusicPlaylist musicPlaylist ;
 	private MuList.ploglessTask plTask;
 //	public MusicLibrary mibrary;
-
+	private Bundle NowSavedInstanceState;				//onCreateの引数
 	/**定数*/
 	public Locale locale;							// アプリで使用されているロケール情報を取得
 
@@ -3648,6 +3675,522 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		return IsPlaying;
 	}
 
+
+	/**
+	 * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
+	 * */
+	protected PlayerView playerView;					//project.PlayerView
+	private Tracks lastSeenTracks;
+	public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
+	private MediaSession mediaSession;            //MediaSessionCompat
+	private PlaybackStateCompat.Builder stateBuilder;
+	private List<MediaItem> mediaItems;
+
+	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
+	private boolean startAutoPlay;
+	private int startItemIndex;
+	private long startPosition;
+	private DebugTextViewHelper debugViewHelper;
+	private TrackSelectionParameters trackSelectionParameters;
+	private DataSource.Factory dataSourceFactory;
+	private ImaServerSideAdInsertionMediaSource.AdsLoader.@MonotonicNonNull State
+			serverSideAdsLoaderState;
+	@Nullable
+	private AdsLoader clientSideAdsLoader;
+
+	private void showToast(int messageId) {
+		final String TAG = "showToast";
+		String dbMsg="";
+		try {
+			showToast(getString(messageId));
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	private void showToast(String message) {
+		final String TAG = "showToast";
+		String dbMsg="";
+		try {
+			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	@Nullable
+	private ImaServerSideAdInsertionMediaSource.AdsLoader serverSideAdsLoader;
+
+	private void showControls() {
+		final String TAG = "showControls";
+		String dbMsg="";
+		try {
+
+			//	debugRootView.setVisibility(View.VISIBLE);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	private class PlayerEventListener implements Player.Listener {
+
+		@Override
+		public void onPlaybackStateChanged(@Player.State int playbackState) {
+			final String TAG = "onPlaybackStateChanged";
+			String dbMsg="[PlayerEventListener]";
+			try {
+
+				if (playbackState == Player.STATE_ENDED) {
+					showControls();
+				}
+				updateButtonVisibility();
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		}
+
+
+		@Override
+		public void onPlayerError(PlaybackException error) {
+			final String TAG = "onPlayerError";
+			String dbMsg="[PlayerEventListener]";
+			try {
+
+				if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
+					exoPlayer.seekToDefaultPosition();
+					exoPlayer.prepare();
+				} else {
+					updateButtonVisibility();
+					showControls();
+				}
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		}
+
+		@Override
+		@SuppressWarnings("ReferenceEquality")
+		public void onTracksChanged(Tracks tracks) {
+			final String TAG = "onTracksChanged";
+			String dbMsg="[PlayerEventListener]";
+			try {
+
+				updateButtonVisibility();
+				if (tracks == lastSeenTracks) {
+					return;
+				}
+				if (tracks.containsType(C.TRACK_TYPE_VIDEO)
+						&& !tracks.isTypeSupported(C.TRACK_TYPE_VIDEO, /* allowExceedsCapabilities= */ true)) {
+					showToast("Media includes video tracks, but none are playable by this device");
+				}
+				if (tracks.containsType(C.TRACK_TYPE_AUDIO)
+						&& !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {
+					showToast("Media includes audio tracks, but none are playable by this device");
+				}
+				lastSeenTracks = tracks;	} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+
+		}
+	}
+
+	@OptIn(markerClass = UnstableApi.class)
+	private void configurePlayerWithServerSideAdsLoader() {
+		final String TAG = "configurePlayerWithServerSideAdsLoader";
+		String dbMsg="";
+		try {
+
+			serverSideAdsLoader.setPlayer(exoPlayer);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	private static List<MediaItem> createMediaItems(Intent intent, DownloadTracker downloadTracker) {
+		final String TAG = "createMediaItems";
+		String dbMsg="";
+		try {
+
+			List<MediaItem> mediaItems = new ArrayList<>();
+			for (MediaItem item : IntentUtil.createMediaItemsFromIntent(intent)) {
+				mediaItems.add(
+						maybeSetDownloadProperties(
+								item, downloadTracker.getDownloadRequest(item.localConfiguration.uri)));
+			}
+			return mediaItems;
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return null;
+	}
+
+	@OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
+	private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
+		final String TAG = "maybeSetDownloadProperties";
+		String dbMsg="";
+		try {
+
+			if (downloadRequest == null) {
+				return item;
+			}
+			MediaItem.Builder builder = item.buildUpon();
+			builder
+					.setMediaId(downloadRequest.id)
+					.setUri(downloadRequest.uri)
+					.setCustomCacheKey(downloadRequest.customCacheKey)
+					.setMimeType(downloadRequest.mimeType)
+					.setStreamKeys(downloadRequest.streamKeys);
+			@Nullable
+			MediaItem.DrmConfiguration drmConfiguration = item.localConfiguration.drmConfiguration;
+			if (drmConfiguration != null) {
+				builder.setDrmConfiguration(
+						drmConfiguration.buildUpon().setKeySetId(downloadRequest.keySetId).build());
+			}
+			return builder.build();
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return null;
+	}
+
+	/**
+	 * 指定されたプレイリストの曲情報をList<MediaItem>に返す
+	 * **/
+	private List<MediaItem> createMediaItems(Intent intent) {
+		final String TAG = "createMediaItems";
+		String dbMsg="";
+		List<MediaItem> retList = new ArrayList<MediaItem>();
+		try {
+			dbMsg += "選択されたプレイリスト[ID=" + myPreferences.nowList_id + "]" + myPreferences.nowList ;
+//			final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", Long.parseLong(myPreferences.nowList_id));
+//			final String[] columns = null;			//{ idKey, nameKey };
+//			String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+//			Cursor rCursor= this.getContentResolver().query(uri, columns, null, null, c_orderBy );
+//			dbMsg += ",rCursor=" + rCursor.getCount() + "件";
+//			if( rCursor.moveToFirst() ) {
+//				int rPosi = rCursor.getPosition();
+//				dbMsg= "[" + rPosi +"/" + rCursor.getCount() +"曲]";		//MuList.this.rCount
+//				String subText = null;
+//				String ArtistName = null;
+//				String AlbumArtistName = null;
+//				String AlbumName = null;
+//				String songTitol = null;
+//				String Dur = null;
+//				objMap = new HashMap<String, Object>();
+//				for(int i = 0 ; i < rCursor.getColumnCount() ; i++ ){				//MuList.this.koumoku
+//					String cName = rCursor.getColumnName(i);
+//					dbMsg += "[" + i +"/" + rCursor.getColumnCount() +"項目]"+ cName;
+//					if(
+////					cName.equals(MediaStore.Audio.Playlists.Members.INSTANCE_ID) ||	//[1/66]instance_id
+////					cName.equals(MediaStore.Audio.Playlists.Members.TITLE_KEY) ||	//[13/37]title_key
+////					cName.equals(MediaStore.Audio.Playlists.Members.SIZE) ||			//[7/37]_size=4071748
+////					cName.equals(MediaStore.Audio.Playlists.Members.IS_RINGTONE) ||	//[20/37]is_ringtone=0
+////					cName.equals(MediaStore.Audio.Playlists.Members.IS_MUSIC) ||			//[21/37]is_music=1
+////					cName.equals(MediaStore.Audio.Playlists.Members.IS_ALARM) ||			//[22/37]is_alarm=0
+////					cName.equals(MediaStore.Audio.Playlists.Members.IS_NOTIFICATION) ||	//[23/37]is_notification=0
+////					cName.equals(MediaStore.Audio.Playlists.Members.IS_PODCAST) ||			//[24/37]is_podcast=
+////				 	cName.equals(MediaStore.Audio.Playlists.Members.ARTIST_KEY) ||		//
+////					cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_KEY) ||		//[35/37]album_key
+//							cName.equals(MediaStore.Audio.Playlists.Members.XMP)){		//[31/66項目]xmp=【Blob】[32/37]artist_key
+//						dbMsg += "は読み込めない";
+//					}else{
+//						if( cName.equals("album_artist")){		//[26/37]
+//							String cVal = rCursor.getString(i);
+//							if(cVal != null){
+//								cVal = cVal;
+//							}
+//							dbMsg +=  "="+cVal;
+//							AlbumArtistName = cVal;
+//							objMap.put(cName ,cVal );
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.ARTIST)){		//[33/37]artist=Santana
+//							String cVal = rCursor.getString(i);
+//							if(cVal != null){
+//								cVal = cVal;
+//							}else{
+//								cVal = getResources().getString(R.string.bt_unknown);			//不明
+//							}
+//							dbMsg +=  "="+cVal;
+//							ArtistName = cVal;
+//							objMap.put(cName ,cVal );
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM)){		//[33/37]artist=Santana
+//							String cVal = rCursor.getString(i);
+//							if(cVal != null){
+//								cVal = cVal;
+//							}else{
+//								cVal = getResources().getString(R.string.bt_unknown);			//不明
+//							}
+//							dbMsg +=  "="+cVal;
+//							AlbumName = cVal;
+//							objMap.put(cName ,cVal );
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.TITLE)){		//[12/37]title=Just Feel Better
+//							String cVal = rCursor.getString(i);
+//							if(cVal != null){
+//								cVal = cVal;
+//							}else{
+//								cVal = getResources().getString(R.string.bt_unknown);			//不明
+//							}
+//							objMap.put(cName ,cVal );
+//							objMap.put("main" ,cVal );
+//							dbMsg +=  "="+cVal;
+//						//	MuList.this.plSL.add(cVal);
+//							songTitol = cVal;
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.DURATION)){	//[14/37]duration=252799>>04:12 799
+//							String cVal = rCursor.getString(i);
+//							dbMsg +=  "="+cVal;
+//							if(cVal != null){
+//								cVal = cVal;
+//							}
+//							objMap.put(cName ,cVal );
+//							Dur = "["+ ORGUT.sdf_mss.format(Long.valueOf(cVal)) + "]";
+//							dbMsg +=  ">>"+Dur;
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
+//							String cVal = rCursor.getString(i);
+//							if(cVal != null){
+//								cVal = cVal;
+//							}
+//							objMap.put(cName ,cVal );
+//						//	MuList.this.saisei_fnameList.add(cVal);
+//						//	MuList.this.plSL.add(cVal);
+//						//	dbMsg +=  "="+cVal;
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
+//							String cVal = rCursor.getString(i);
+//							//	cVal = MyUtil.checKTrack( cVal);
+//							objMap.put(cName ,cVal );
+//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
+//							String cVal = String.valueOf(rCursor.getInt(i));
+//							objMap.put(cName ,cVal );
+//							dbMsg +=  "="+cVal;
+//						}else{
+//							int cPosition = rCursor.getColumnIndex(cName);
+//							dbMsg += "『" + cPosition+"』";
+//							String cVal ="";
+//							if(0<cPosition){
+//								int colType = rCursor.getType(cPosition);
+//								//		dbMsg += ",Type=" + colType + ",";
+//								switch (colType){
+//									case Cursor.FIELD_TYPE_NULL:          //0
+//										cVal ="【null】" ;
+//										break;
+//									case Cursor.FIELD_TYPE_INTEGER:         //1
+//										@SuppressLint("Range") int cInt = rCursor.getInt(cPosition);
+//										dbMsg += cInt+"【int】";
+//										cVal=String.valueOf(cInt);
+//										break;
+//									case Cursor.FIELD_TYPE_FLOAT:         //2
+//										@SuppressLint("Range") float cFlo = rCursor.getFloat(cPosition);
+//										dbMsg += cFlo+"【float】";
+//										cVal=String.valueOf(cFlo);
+//										break;
+//									case Cursor.FIELD_TYPE_STRING:          //3
+//										cVal = rCursor.getString(cPosition);
+//										dbMsg +=  cVal+"【String】";
+//										break;
+//									case Cursor.FIELD_TYPE_BLOB:         //4
+//										//@SuppressLint("Range") String cBlob = String.valueOf(cursor.getBlob(cPosition));
+//										cVal ="【Blob】";
+//										break;
+//									default:
+//										cVal = String.valueOf(rCursor.getString(cPosition));
+//										dbMsg +=  cVal;
+//										break;
+//								}
+//							}
+//							dbMsg += "="+cVal;
+//							objMap.put(cName ,cVal );
+//						}
+//					}
+//					MediaItem mItem =  new MediaItem.Builder().setUri((String) objMap.get(MediaStore.Audio.Playlists.Members.DATA)).build();
+//				//20Aip
+
+//				}
+//			}else{
+//				retList = Collections.emptyList();
+//			}
+
+			String action = intent.getAction();
+			boolean actionIsListView = IntentUtil.ACTION_VIEW_LIST.equals(action);
+			if (!actionIsListView && !IntentUtil.ACTION_VIEW.equals(action)) {
+				showToast("action");			//R.string.unexpected_intent_action,
+				finish();
+				return Collections.emptyList();
+			}
+
+			List<MediaItem> mediaItems = mediaItemList;
+//			List<MediaItem> mediaItems = createMediaItems(intent, DemoUtil.getDownloadTracker(this));
+			dbMsg += ",mediaItems=" + mediaItems.size() + "件";
+			for (int i = 0; i < mediaItems.size(); i++) {
+				MediaItem mediaItem = mediaItems.get(i);
+
+				if (!Util.checkCleartextTrafficPermitted(mediaItem)) {
+					showToast("Cleartext HTTP traffic not permitted. See https://exoplayer.dev/issues/cleartext-not-permitted");			//R.string.error_cleartext_not_permitted
+					finish();
+					return Collections.emptyList();
+				}
+				if (Util.maybeRequestReadExternalStoragePermission(/* activity= */ this, mediaItem)) {
+					// The player will be reinitialized if the permission is granted.
+					return Collections.emptyList();
+				}
+
+				MediaItem.DrmConfiguration drmConfiguration = mediaItem.localConfiguration.drmConfiguration;
+				if (drmConfiguration != null) {
+					if (Build.VERSION.SDK_INT < 18) {
+						showToast("DRM content not supported on API levels below 18");		//R.string.error_drm_unsupported_before_api_18
+						finish();
+						return Collections.emptyList();
+					} else if (!FrameworkMediaDrm.isCryptoSchemeSupported(drmConfiguration.scheme)) {
+						showToast("This device does not support the required DRM scheme");			//R.string.error_drm_unsupported_scheme
+						finish();
+						return Collections.emptyList();
+					}
+				}
+			}
+			dbMsg += ",最終" + retList.size() + "件";
+			return mediaItems;
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retList;
+	}
+
+	private AdsLoader getClientSideAdsLoader(MediaItem.AdsConfiguration adsConfiguration) {
+		final String TAG = "getClientSideAdsLoader";
+		String dbMsg="";
+		try {
+			// The ads loader is reused for multiple playbacks, so that ad playback can resume.
+			if (clientSideAdsLoader == null) {
+				clientSideAdsLoader = new ImaAdsLoader.Builder(/* context= */ this).build();
+			}
+			clientSideAdsLoader.setPlayer(exoPlayer);
+			return clientSideAdsLoader;
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return null;
+	}
+
+
+	@OptIn(markerClass = UnstableApi.class) // SSAI configuration
+	private MediaSource.Factory createMediaSourceFactory() {
+		final String TAG = "createMediaSourceFactory";
+		String dbMsg="";
+		try {
+			DefaultDrmSessionManagerProvider drmSessionManagerProvider = new DefaultDrmSessionManagerProvider();
+			drmSessionManagerProvider.setDrmHttpDataSourceFactory(
+					DemoUtil.getHttpDataSourceFactory(/* context= */ this));
+			ImaServerSideAdInsertionMediaSource.AdsLoader.Builder serverSideAdLoaderBuilder =
+					new ImaServerSideAdInsertionMediaSource.AdsLoader.Builder(/* context= */ this, playerView);
+			if (serverSideAdsLoaderState != null) {
+				serverSideAdLoaderBuilder.setAdsLoaderState(serverSideAdsLoaderState);
+			}
+			serverSideAdsLoader = serverSideAdLoaderBuilder.build();
+			ImaServerSideAdInsertionMediaSource.Factory imaServerSideAdInsertionMediaSourceFactory =
+					new ImaServerSideAdInsertionMediaSource.Factory(
+							serverSideAdsLoader,
+							new DefaultMediaSourceFactory(/* context= */ this)
+									.setDataSourceFactory(dataSourceFactory));
+			return new DefaultMediaSourceFactory(/* context= */ this)
+					.setDataSourceFactory(dataSourceFactory)
+					.setDrmSessionManagerProvider(drmSessionManagerProvider)
+					.setLocalAdInsertionComponents(
+							this::getClientSideAdsLoader, /* adViewProvider= */ playerView)
+					.setServerSideAdInsertionMediaSourceFactory(imaServerSideAdInsertionMediaSourceFactory);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return null;
+	}
+
+	@OptIn(markerClass = UnstableApi.class)
+	private void setRenderersFactory(ExoPlayer.Builder playerBuilder, boolean preferExtensionDecoders) {
+		final String TAG = "setRenderersFactory";
+		String dbMsg="";
+		try {
+
+			RenderersFactory renderersFactory =
+					DemoUtil.buildRenderersFactory(/* context= */ this, preferExtensionDecoders);
+			playerBuilder.setRenderersFactory(renderersFactory);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	private void updateButtonVisibility() {
+		final String TAG = "updateButtonVisibility";
+		String dbMsg="";
+		try {
+			lp_ppPButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+			//	selectTracksButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+//	@Override
+	public void onVisibilityChanged(int visibility) {
+		final String TAG = "onVisibilityChanged";
+		String dbMsg="";
+		try {
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	/**
+	 * exoPlayerを生成する
+	 * @return Whether initialization was successful.
+	 * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
+	 */
+	protected boolean initializePlayer() {
+		final String TAG = "initializePlayer";
+		String dbMsg="";
+		try {
+			if (exoPlayer == null) {
+				Intent intent = getIntent();
+				dbMsg="mediaItemList=" + mediaItemList.size() + "件";
+//				mediaItems = createMediaItems(intent);
+//				if (mediaItems.isEmpty()) {
+//					return false;
+//				}
+
+				lastSeenTracks = Tracks.EMPTY;
+				exoPlayer = new ExoPlayer.Builder( MuList.this).build();
+//				ExoPlayer.Builder playerBuilder =
+//						new ExoPlayer.Builder(/* context= */ this)
+//								.setMediaSourceFactory(createMediaSourceFactory());
+//				setRenderersFactory(
+//						playerBuilder, intent.getBooleanExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, false));
+//				exoPlayer = playerBuilder.build();
+				if(NowSavedInstanceState != null){
+					trackSelectionParameters =
+							TrackSelectionParameters.fromBundle(
+									NowSavedInstanceState.getBundle("track_selection_parameters"));
+					exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
+				}
+				exoPlayer.addListener(new PlayerEventListener());
+				exoPlayer.addAnalyticsListener(new EventLogger());
+				exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);
+				exoPlayer.setPlayWhenReady(startAutoPlay);
+				playerView.setPlayer(exoPlayer);
+				configurePlayerWithServerSideAdsLoader();
+				debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_artist);			//debugTextView
+				debugViewHelper.start();
+			}
+			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
+			if (haveStartPosition) {
+				exoPlayer.seekTo(startItemIndex, startPosition);
+			}
+			exoPlayer.setMediaItems(mediaItemList, /* resetPosition= */ !haveStartPosition);
+			exoPlayer.prepare();
+			updateButtonVisibility();
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return true;
+	}
+	///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
+
+
+
 	/**
 	 *  プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台
 	 *  listClickのタイトルリストクリック3通り
@@ -3690,6 +4233,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "]pref_data_url=" + dataFN;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 
+			initializePlayer();
+/*
 	// 20230209 変更
 			toPlaying = send2Service( dataFN,listName,toPlaying);
 			dbMsg += ",toPlaying=" + toPlaying;
@@ -3712,7 +4257,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			}
 			intent.putExtra("toPlaying",toPlaying);
 			resultLauncher.launch(intent);
-
+*/
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg +"で"+e.toString());
@@ -5566,9 +6111,42 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if(AlbumArtistName != null){
 				ArtistName = AlbumArtistName;
 			}
-			MuList.this.objMap.put("img" , ORGUT.retAlbumArtUri( getApplicationContext() , ArtistName , AlbumName ) );			//アルバムアートUriだけを返す
+			Uri imageUri = Uri.parse(ORGUT.retAlbumArtUri(getApplicationContext(), ArtistName, AlbumName));
+			MuList.this.objMap.put("img" , imageUri.toString() );			//アルバムアートUriだけを返す
 			MuList.this.plAL.add( objMap);
-			MediaItem mItem =  new MediaItem.Builder().setUri((String) objMap.get(MediaStore.Audio.Playlists.Members.DATA)).build();
+
+			MediaMetadata metadata = new MediaMetadata.Builder()
+					.setAlbumTitle((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ALBUM))
+					.setTitle((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.TITLE))
+					.setArtist((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ARTIST))
+					.setGenre((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.GENRE))
+			//		.setIsBrowsable(true)					//isBrowsable
+					.setIsPlayable(true)
+					.setArtworkUri(imageUri)
+				//	.setMediaType(mediaType)			//int objMap.get(MediaStore.Audio.Playlists.Members.MIME_TYPE)
+					.setAlbumArtist((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ALBUM_ARTIST))
+					.build();
+			String uriStr = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+			dbMsg +=  ",\nUri="+ uriStr;
+			Uri rUri = Uri.parse(uriStr);
+	//		List<MediaItem.SubtitleConfiguration> subtitleConfigurations = New List<MediaItem.SubtitleConfiguration>();
+			MediaItem mItem = new MediaItem.Builder()
+					.setMediaId((String) objMap.get(MediaStore.Audio.Playlists.Members.AUDIO_ID))
+			//		.setSubtitleConfigurations(subtitleConfigurations)
+					.setMediaMetadata(metadata)
+					.setUri(rUri)
+					.build();
+
+			//1
+//			MediaItem.RequestMetadata reqestMetadata = new MediaItem.RequestMetadata.Builder().setMediaUri(rUri).build();
+//			MediaItem.Builder builder = new MediaItem.Builder();
+//			MediaItem mItem =  builder.setRequestMetadata(reqestMetadata).build();
+			//2
+	//		MediaItem mItem =  MediaItem.fromUri(rUri);
+			//3
+	//		MediaItem mItem =  new MediaItem.Builder().setUri(rUri).build();	mItem.requestMetadata.mediaUri
+			//.mediaId= (String) objMap.get(MediaStore.Audio.Playlists.Members.AUDIO_ID);
+
 			dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
 			dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
 			dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
@@ -5576,7 +6154,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=  ",title="+ mItem.mediaMetadata.title;
 			dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
 			dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
-			dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
+	//		dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
 			mediaItemList.add(mItem);
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -5715,12 +6293,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				setHeadImgList(plAL );				//イメージとサブテキストを持ったリストを構成
 			}
 			if( sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){
-
-
 				reqCode = MyConstants.SELECT_TREE;
 			}else{
 				reqCode = MyConstants.SELECT_SONG;
 			}
+			dbMsg += ",mediaItemList="+mediaItemList.size() + "件";
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -11205,6 +11782,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			long start = System.currentTimeMillis();	// 開始時刻の取得
 			dbMsg +=  ",start="+ start ;/////////////////////////////////////
+			NowSavedInstanceState = savedInstanceState;
 			MyConstants.PREFS_NAME = this.getResources().getString(R.string.pref_main_file);
 			myPreferences = new MyPreferences(this);
 			dbMsg +="、PREFS_NAME=" + MyConstants.PREFS_NAME;
@@ -11338,6 +11916,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			lp_ppPButton.setOnClickListener(this);
 			lp_stop.setOnClickListener(this);
 			rc_fbace.setOnClickListener(this);
+
+			playerView = findViewById(R.id.player_view);
+//			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
+//		//	playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+//			playerView.requestFocus();
+
 
 //			list_player.setVisibility(View.GONE);  //再生したまま戻って来るまで非表示
 			mainHTF.setOnKeyListener( this);
