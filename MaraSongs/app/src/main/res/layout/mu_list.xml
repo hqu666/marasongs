@@ -90,12 +90,12 @@
 		tools:listitem="@android:layout/simple_list_item_1"/>
 
 
-	<androidx.media3.ui.PlayerView
-		android:id="@+id/player_view"
-		android:layout_width="match_parent"
-		android:layout_height="56dp"
-		app:show_shuffle_button="true"
-		app:show_subtitle_button="true" />
+<!--	<androidx.media3.ui.PlayerView-->
+<!--		android:id="@+id/player_view"-->
+<!--		android:layout_width="match_parent"-->
+<!--		android:layout_height="112dp"-->
+<!--		app:show_shuffle_button="true"-->
+<!--		app:show_subtitle_button="true" />-->
 
 
 	<include

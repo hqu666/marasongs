@@ -3773,7 +3773,6 @@ id progress_titol
 id progress_val
 id radio
 id ratio
-id rc_Img
 id rc_fbace
 id rd_album_rd
 id rd_artist_rd

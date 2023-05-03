@@ -219,7 +219,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public int headImgH = 52;			//ヘッダーのアイコン高さ
 	public int headImgW = 52;			//ヘッダーのアイコン高さ
 	public LinearLayout list_player;		//プレイヤーのインクルード
-	public ImageButton lp_ppPButton;			//プレイヤーの再生/停止ボタン
+//	public ImageButton lp_ppPButton;			//プレイヤーの再生/停止ボタン
 	public ImageButton lp_stop;					//プレイヤーの終了ボタン
 	public TextView lp_artist ;					//プレイヤーのアーティスト表示
 	public TextView lp_album ;					//プレイヤーのアルバム表示
@@ -4118,7 +4118,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "updateButtonVisibility";
 		String dbMsg="";
 		try {
-			lp_ppPButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+//			lp_ppPButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
 			//	selectTracksButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4331,18 +4331,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg +=",action= "+ action;
 			if(action != null){
-				String btDescription = lp_ppPButton.getContentDescription() + "";			//.toString();
-				dbMsg +=",btDescription= "+ btDescription;
-				if (btDescription == null) {           //再生中か
-					retBool = false;
-				}else if (btDescription.equals(getResources().getText(R.string.play)) && action.equals( "com.example.android.remotecontrol.ACTION_PLAY")) {           //再生中か
-					retBool = false;
-				}else if (btDescription.equals(getResources().getText(R.string.pause)) && action.equals( "com.example.android.remotecontrol.ACTION_PAUSE")) {
-					retBool = false;
-				} else{
-					dbMsg +=",retBool= "+ retBool;
-					myLog(TAG, dbMsg);
-				}
+//				String btDescription = lp_ppPButton.getContentDescription() + "";			//.toString();
+//				dbMsg +=",btDescription= "+ btDescription;
+//				if (btDescription == null) {           //再生中か
+//					retBool = false;
+//				}else if (btDescription.equals(getResources().getText(R.string.play)) && action.equals( "com.example.android.remotecontrol.ACTION_PLAY")) {           //再生中か
+//					retBool = false;
+//				}else if (btDescription.equals(getResources().getText(R.string.pause)) && action.equals( "com.example.android.remotecontrol.ACTION_PAUSE")) {
+//					retBool = false;
+//				} else{
+//					dbMsg +=",retBool= "+ retBool;
+//					myLog(TAG, dbMsg);
+//				}
 			} else{
 				retBool = false;
 			}
@@ -4417,11 +4417,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							if(IsPlaying){
 								action =  "com.example.android.remotecontrol.ACTION_PLAY";
 								IsPlayingNow = true;		//既に再生中
-								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
+//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
 							}else{
 								action =  "com.example.android.remotecontrol.ACTION_PAUSE";
 								IsPlayingNow = false;
-								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
+//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
 							}
 							if(isActionChange(action)){
 								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
@@ -4460,16 +4460,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										lp_title.setText( titolName);
 										String album_art =intent.getStringExtra("album_art") +"";
 										dbMsg +=",album_art=" + album_art;
-										if(! album_art.equals("")){
-											OrgUtil ORGUT = new OrgUtil();				//自作関数集
-											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
-											Display disp = wm.getDefaultDisplay();
-											ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-											int width = rc_Img.getWidth();
-											width = width*9/10;
-											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-											rc_Img.setImageBitmap(mDummyAlbumArt);
-										}
+//										if(! album_art.equals("")){
+//											OrgUtil ORGUT = new OrgUtil();				//自作関数集
+//											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
+//											Display disp = wm.getDefaultDisplay();
+//											ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+//											int width = rc_Img.getWidth();
+//											width = width*9/10;
+//											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
+//											rc_Img.setImageBitmap(mDummyAlbumArt);
+//										}
 										setListPlayer( creditArtistName, albumName, titolName, album_art);
 
 									}
@@ -6902,16 +6902,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 //				String album_art = intent.getStringExtra("album_art") +"";
 //				dbMsg +=",album_art=" + album_art;
-				if(! albumArt.equals("")){
-					OrgUtil ORGUT = new OrgUtil();				//自作関数集
-					WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
-					Display disp = wm.getDefaultDisplay();
-					ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-					int width = rc_Img.getWidth();
-					width = width*9/10;
-					Bitmap mDummyAlbumArt = ORGUT.retBitMap(albumArt , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-					rc_Img.setImageBitmap(mDummyAlbumArt);
-				}
+//				if(! albumArt.equals("")){
+//					OrgUtil ORGUT = new OrgUtil();				//自作関数集
+//					WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
+//					Display disp = wm.getDefaultDisplay();
+//					ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+//					int width = rc_Img.getWidth();
+//					width = width*9/10;
+//					Bitmap mDummyAlbumArt = ORGUT.retBitMap(albumArt , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
+//					rc_Img.setImageBitmap(mDummyAlbumArt);
+//				}
 				setListPlayer( creditArtistName, albumName, titolName, albumArt);
 
 			}
@@ -10083,67 +10083,67 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			b_saisei_fname = dataFN;
 			b_album = albumName;			//それまで参照していたアルバム名
 			dbMsg +=" , クリックされたのは" + v.getId();
-			if (v == lp_ppPButton) {
-				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {
-					IsPlaying = false;
-				}else{
-					IsPlaying = true;
-				}
-		//20220831		IsPlaying =	send2Service(dataFN , myPreferences.nowList , IsPlaying);
-//				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
-//				if(mFilter == null){
-//					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
-//					dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
-//					mFilter = new IntentFilter();
-//					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
-//					registerReceiver(mReceiver, mFilter);
-////					dbMsg +=">>" + psSarviceUri.toString();
+//			if (v == lp_ppPButton) {
+//				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {
+//					IsPlaying = false;
+//				}else{
+//					IsPlaying = true;
 //				}
-//				if( MPSIntent == null){
-//					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-//					dbMsg +=  ",MPSIntent=null";
-//					MPSIntent.putExtra("saiseiJikan",saiseiJikan);
-//					MPSIntent.putExtra("mIndex",mIndex);
-//					MPSIntent.putExtra("myPreferences.pref_lockscreen",myPreferences.pref_lockscreen);
-//					MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
+//		//20220831		IsPlaying =	send2Service(dataFN , myPreferences.nowList , IsPlaying);
+////				dbMsg +=" 、ppPBT;IsPlaying="+ IsPlaying;				// + ",MPSIntent=" + MPSIntent;
+////				if(mFilter == null){
+////					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
+////					dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
+////					mFilter = new IntentFilter();
+////					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+////					registerReceiver(mReceiver, mFilter);
+//////					dbMsg +=">>" + psSarviceUri.toString();
+////				}
+////				if( MPSIntent == null){
+////					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+////					dbMsg +=  ",MPSIntent=null";
+////					MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+////					MPSIntent.putExtra("mIndex",mIndex);
+////					MPSIntent.putExtra("myPreferences.pref_lockscreen",myPreferences.pref_lockscreen);
+////					MPSIntent.putExtra("pref_notifplayer",pref_notifplayer);
+////				}
+////				dbMsg +=")" +dataFN;
+////				MPSIntent.putExtra("dataFN",dataFN);
+////				dbMsg +=",mIndex" +mIndex;
+////				MPSIntent.putExtra("mIndex",mIndex);
+////				MPSIntent.putExtra("continu_status","toPlay");
+//				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
+//					dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
+//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+//					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
+//					dbMsg +=  ">>startService";
+//					MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+//					dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
+//					lp_ppPButton.setImageResource(R.drawable.play_notif);
+//					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
+//					lp_chronometer.stop();
+//				} else {
+//					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
+//					dbMsg +=  ">>startService";
+//					MPSName = startService(MPSIntent);	//
+//					dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
+//					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
+//					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
+//					lp_chronometer.start();
 //				}
-//				dbMsg +=")" +dataFN;
-//				MPSIntent.putExtra("dataFN",dataFN);
-//				dbMsg +=",mIndex" +mIndex;
-//				MPSIntent.putExtra("mIndex",mIndex);
-//				MPSIntent.putExtra("continu_status","toPlay");
-				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
-					dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
-					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
-					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
-					dbMsg +=  ">>startService";
-					MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-					dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
-					lp_ppPButton.setImageResource(R.drawable.play_notif);
-					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
-					lp_chronometer.stop();
-				} else {
-					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
-					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
-					dbMsg +=  ">>startService";
-					MPSName = startService(MPSIntent);	//
-					dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
-					lp_ppPButton.setImageResource(R.drawable.pouse_notif);
-					lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
-					lp_chronometer.start();
-				}
-			} else if (v == rc_fbace) {	//プレイヤーフィールド部の土台
-				dbMsg +=  "クリックされたのはrc_fbace";
-				send2Player(dataFN ,myPreferences.nowList,false );
-			} else if (v == lp_stop) {
-				dbMsg +=  "クリックされたのはlp_stop";
-			//	Intent intent = new Intent(getApplication(), MusicPlayerService.class);
-				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);
-//				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
-				dbMsg +=  ">>startService";
-				startService(MPSIntent) ;
-				quitBody();
-			}
+//			} else if (v == rc_fbace) {	//プレイヤーフィールド部の土台
+//				dbMsg +=  "クリックされたのはrc_fbace";
+//				send2Player(dataFN ,myPreferences.nowList,false );
+//			} else if (v == lp_stop) {
+//				dbMsg +=  "クリックされたのはlp_stop";
+//			//	Intent intent = new Intent(getApplication(), MusicPlayerService.class);
+//				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);
+////				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+//				dbMsg +=  ">>startService";
+//				startService(MPSIntent) ;
+//				quitBody();
+//			}
 			dbMsg +=  "(mIndex=" + mIndex  +")";			//+ sentakuCyuu ;/////////////////////////////////////
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -11484,33 +11484,33 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			lp_album.setText(albumName);									//プレイヤーのアルバム表示
 			lp_title.setText(titolName);										//プレイヤーのタイトル表示
 			dbMsg +=",albumArt= " + albumArt;
-			if( albumArt != null  ){
-				ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-				Drawable drawable = new BitmapDrawable(getResources(), albumArt);
-				Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
-				dbMsg +=",orgBitmap="+orgBitmap;
-				rc_Img.setImageBitmap(orgBitmap);
-//				int width = rc_Img.getWidth();
-////				width = width*9/10;
-//				dbMsg +=",width= " + width;
-////				Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, width, width, false);										//100x100の大きさにリサイズ
-////				dbMsg +=",resizedBitmap="+resizedBitmap;
-////				drawable = new BitmapDrawable(getResources(), resizedBitmap);
-////				rc_Img.setImageDrawable(drawable);
-			}
+//			if( albumArt != null  ){
+//				ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+//				Drawable drawable = new BitmapDrawable(getResources(), albumArt);
+//				Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
+//				dbMsg +=",orgBitmap="+orgBitmap;
+//				rc_Img.setImageBitmap(orgBitmap);
+////				int width = rc_Img.getWidth();
+//////				width = width*9/10;
+////				dbMsg +=",width= " + width;
+//////				Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, width, width, false);										//100x100の大きさにリサイズ
+//////				dbMsg +=",resizedBitmap="+resizedBitmap;
+//////				drawable = new BitmapDrawable(getResources(), resizedBitmap);
+//////				rc_Img.setImageDrawable(drawable);
+//			}
 			dbMsg +=",IsPlaying= " + IsPlaying;
 			if(!IsPlaying) {			//停止していれば
 				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
 				MPSName = startService(MPSIntent);
 				dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
-				lp_ppPButton.setImageResource(R.drawable.play_notif);
-				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
+//				lp_ppPButton.setImageResource(R.drawable.play_notif);
+//				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
 			} else {
 //							MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
 //							MPSName = startService(MPSIntent);
 //							dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
-				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
-				lp_ppPButton.setContentDescription(getResources().getText(R.string.play));			//pause
+//				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
+//				lp_ppPButton.setContentDescription(getResources().getText(R.string.play));			//pause
 			}
 
 			myLog(TAG, dbMsg);
@@ -11905,7 +11905,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			registerForContextMenu(lvID);							//コンテキストメニュー
 			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
 
-			lp_ppPButton = list_player.findViewById(R.id.ppPButton);			//プレイヤーの再生/停止ボタン
+//			lp_ppPButton = list_player.findViewById(R.id.ppPButton);			//プレイヤーの再生/停止ボタン
 			rc_fbace = list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
 			lp_stop = list_player.findViewById(R.id.stop);								//プレイヤーの終了ボタン
 			lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
@@ -11917,11 +11917,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
 			lp_chronometer.setText(dataFormat.format(0));
 
-			lp_ppPButton.setOnClickListener(this);
+//			lp_ppPButton.setOnClickListener(this);
 			lp_stop.setOnClickListener(this);
 			rc_fbace.setOnClickListener(this);
 
-			playerView = findViewById(R.id.player_view);
+			playerView = list_player.findViewById(R.id.player_view);
 //			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
 //		//	playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
 //			playerView.requestFocus();

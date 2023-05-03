@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="fill_parent"
     android:layout_height="56dp"
     android:orientation="horizontal" >
 
+	<androidx.media3.ui.PlayerView
+		android:id="@+id/player_view"
+		android:layout_width="56dp"
+		android:layout_height="56dp"
+		android:layout_gravity="left"
+		android:layout_marginLeft="0dp"
 
-    <ImageButton
-        android:id="@+id/ppPButton"
-        android:layout_width="56dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="0dp"
-        android:src="@drawable/play_notif" />
+		app:show_shuffle_button="true"
+		app:show_subtitle_button="true"
+		/>
+<!--    <ImageButton-->
+<!--        android:id="@+id/ppPButton"-->
+<!--        android:layout_width="56dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="left"-->
+<!--        android:layout_marginLeft="0dp"-->
+<!--        android:src="@drawable/play_notif" />-->
 
-    <ImageView
-        android:id="@+id/rc_Img"
-        android:layout_width="56dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/no_image" />
+<!--    <ImageView-->
+<!--        android:id="@+id/rc_Img"-->
+<!--        android:layout_width="56dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/no_image" />-->
 
     <LinearLayout
         android:id="@+id/rc_fbace"
