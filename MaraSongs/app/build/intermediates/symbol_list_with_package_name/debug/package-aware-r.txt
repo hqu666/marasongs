@@ -3718,6 +3718,7 @@ id pgd_val_tv
 id pin
 id playPanel
 id player_root_ll
+id player_view
 id pllist
 id position
 id postLayout

@@ -4175,11 +4175,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_artist);			//debugTextView
 				debugViewHelper.start();
 			}
-			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
-			if (haveStartPosition) {
-				exoPlayer.seekTo(startItemIndex, startPosition);
-			}
-			exoPlayer.setMediaItems(mediaItemList, /* resetPosition= */ !haveStartPosition);
+//			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
+//			if (haveStartPosition) {
+//				exoPlayer.seekTo(startItemIndex, startPosition);
+//			}
+//			exoPlayer.setMediaItems(mediaItemList, /* resetPosition= */ !haveStartPosition);
+			exoPlayer.setMediaItems(mediaItemList, true);
+		//	exoPlayer.playWhenReady = true;
+			exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
 			exoPlayer.prepare();
 			updateButtonVisibility();
 		} catch (Exception e) {
@@ -4188,6 +4191,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		return true;
 	}
 	///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
+///ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 
 
 

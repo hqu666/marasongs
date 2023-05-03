@@ -3717,6 +3717,7 @@ int id pgd_val_tv 0x7f0a01fd
 int id pin 0x7f0a01fe
 int id playPanel 0x7f0a01ff
 int id player_root_ll 0x7f0a0200
+int id player_view 0x7f0a032e
 int id pllist 0x7f0a0201
 int id position 0x7f0a0202
 int id postLayout 0x7f0a0203
