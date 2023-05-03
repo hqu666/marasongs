@@ -4172,8 +4172,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				exoPlayer.setPlayWhenReady(startAutoPlay);
 				playerView.setPlayer(exoPlayer);
 				configurePlayerWithServerSideAdsLoader();
-				debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_artist);			//debugTextView
-				debugViewHelper.start();
+		//		debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_artist);			//debugTextView
+		//		debugViewHelper.start();
 			}
 //			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
 //			if (haveStartPosition) {
@@ -4213,6 +4213,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			myEditor.putString ("nowList_id", myPreferences.nowList_id);
 			myEditor.putString ("nowList", listName);
+			dbMsg +="の[ " + mIndex+ "] ";
+			MediaItem mediaItem = mediaItemList.get(mIndex);
+			creditArtistName = (String) mediaItem.mediaMetadata.artist;
+			albumName = (String) mediaItem.mediaMetadata.albumTitle;
+			titolName = (String) mediaItem.mediaMetadata.title;
+			String album_art = String.valueOf(mediaItem.mediaMetadata.artworkUri);
+			setListPlayer( creditArtistName, albumName, titolName, album_art);
 
 //			mibrary = new MusicLibrary();
 //			int totalCount = mibrary.makeList(this, Long.parseLong(myPreferences.nowList_id),listName);
@@ -4700,7 +4707,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ">>プレイリスト一覧、v_play_list";
 				listOfListClick(parent, view, position, id);
 			} else if( reqCode == MENU_infoKaisou || reqCode == MyConstants.SELECT_SONG){					//539,1253
-				dbMsg +="【MENU_infoKaisouかSELECT_SONG】";
+				dbMsg +="【MENU_infoKaisouかSELECT_SONG】汎用プレイリストクリック";
 				dbMsg += ",plAL=" + plAL.get(position).toString();
 				titolName = String.valueOf(plAL.get(position).get("main"));				//= (String) plAL.get(position).get("main");
 				dbMsg += ",titolName=" + titolName;
@@ -4763,78 +4770,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //						}
 					}
 				}
-//				itemStr = treeEntry.getData().toString();
-//				dbMsg += ",表記=" + itemStr;
-
-//				int rLayerName = treeEntry.getLayerName();
-//				switch(rLayerName) {
-//					case lyer_artist:				// 10;アーティスト
-//						dbMsg +=",LayerName=アーティスト" ;
-//						break;
-//					case lyer_album:				// lyer_artist + 10;アルバム
-//						dbMsg +=",LayerName=アルバム" ;
-//						break;
-//					case lyer_titol:				// lyer_album + 10;タイトル
-//						dbMsg +=",LayerName=タイトル" ;
-////						play_order = treeEntry.getPlayOrder();
-////						dbMsg +="(play_order= " + play_order ;
-//////						dbMsg +=")myPreferences.pref_file_wr= " + myPreferences.pref_file_wr ;
-////						artistID = treeEntry.getArtistID();
-////						dbMsg +=" ,artistID= " + artistID ;
-////						albumID = treeEntry.getAlbumID();
-////						dbMsg +=" ,r_albumID= " + albumID ;
-////						audioID = treeEntry.getAudioID();
-////						dbMsg +=" ,audioID= " + audioID ;
-////						String dataFN = treeEntry.getDataURL();      //null?
-////						dbMsg +=")" + dataFN ;
-////						duration = treeEntry.getDuration();
-////						dbMsg +=",再生時間=" + duration ;
-////						Modified = treeEntry.getModified();
-////						setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
-////						setPrefInt("pref_position" ,  0 , MuList.this);
-////						dbMsg +=" ,Modified= " + Modified ;
-////						mIndex = play_order;
-////						dbMsg += ",yobidashiMoto=" + yobidashiMoto;	//yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
-////						if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-////							send2Player(dataFN,true );												//プレイヤーにuriを送る
-////						}
-//						break;
-//					case MENU_TAKAISOU:				//535 多階層リスト選択選択中
-//						dbMsg += ",parent=" + parent;
-//						dbMsg += ",view=" + view;
-//						treeEntry = (TreeEntry)parent.getItemAtPosition(position);
-//						depth = treeEntry.getDepth();
-//						dbMsg += ",depth=" + depth;
-//						if(treeEntry.isExpanded()) {
-//							expandMap.remove(depth);
-//							treeEntry.collapse();											//閉じる
-//						} else {
-//							if(treeEntry.hasChild()) {
-//								if(expandMap.containsKey(depth)) {
-//									expandMap.get(depth).collapse();			//expandMap.get(depth).collapse();ではメソッド collapse() は型 Object で未定義
-//								}
-//								treeEntry.expand();											//開く
-//								dbMsg += ",treeEntry=" + treeEntry;
-//								expandMap.put(depth, treeEntry);		//型の安全性: メソッド put(Object, Object) は raw 型 Map に属しています。総称型 Map<K,V> への参照はパラメーター化される必要があります
-//							}
-//						}
-//						itemStr = treeEntry.getData().toString();
-//						dbMsg += ",表記=" + itemStr;
-//						switch(depth) {
-//							case 0:													//アーティスト
-//								break;
-//							case 1:													//アルバム
-//								break;
-//							case 2:													//曲
-//								String dataFN = treeEntry.getDataURL();
-//								dbMsg +=")" + dataFN ;
-//								if ( yobidashiMoto == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-//									send2Player(dataFN ,true);												//プレイヤーにuriを送る
-//								}
-//								break;
-//						}
-//						break;
-//				}
 			}else if( sousalistName.equals(plNameSL.get(position)) &&
 						!sousalistName.equals(getResources().getString(R.string.playlist_namae_saikintuika))
 				){
@@ -11480,10 +11415,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",artistMei= " + artistMei;
 			dbMsg +=",albumMei= " + albumMei;
 			dbMsg +=",titolMei= " + titolMei;
-			lp_artist.setText(creditArtistName);									//プレイヤーのアーティスト表示
-			lp_album.setText(albumName);									//プレイヤーのアルバム表示
-			lp_title.setText(titolName);										//プレイヤーのタイトル表示
-			dbMsg +=",albumArt= " + albumArt;
+			lp_artist.setText(artistMei);									//プレイヤーのアーティスト表示
+			lp_album.setText(albumMei);									//プレイヤーのアルバム表示
+			lp_title.setText(titolMei);										//プレイヤーのタイトル表示
+		//	dbMsg +=",albumArt= " + albumArt;
 //			if( albumArt != null  ){
 //				ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
 //				Drawable drawable = new BitmapDrawable(getResources(), albumArt);
@@ -11501,7 +11436,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",IsPlaying= " + IsPlaying;
 			if(!IsPlaying) {			//停止していれば
 				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
-				MPSName = startService(MPSIntent);
+		//		MPSName = startService(MPSIntent);
 				dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
 //				lp_ppPButton.setImageResource(R.drawable.play_notif);
 //				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
