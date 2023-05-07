@@ -54,9 +54,14 @@
 <!--            android:value="@string/banner_ad_unit_id" />-->
         <service
             android:name=".MusicService"
+            android:foregroundServiceType="mediaPlayback"
             android:enabled="true"
             android:exported="true"
-            android:permission="TODO" />
+            android:permission="TODO" >
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService"/>
+            </intent-filter>
+        </service>
 <!--        <meta-data-->
 <!--            android:name="com.google.android.gms.ads.AD_MANAGER_APP"-->
 <!--            android:value="true" />-->
