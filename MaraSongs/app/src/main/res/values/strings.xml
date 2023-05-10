@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MaraSongs</string>
-    <string name="psSarviceUri">.MusicPlayerService</string> <!-- com.hijiyam_koubou.marasongs.PlayerService -->
+    <string name="psSarviceUri">.MusicService</string> <!-- com.hijiyam_koubou.marasongs.PlayerService -->
     <string name="content_str">com.hijiyam_koubou.marasongs</string>
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3146425308522831/2530772303</string>
     <string name="banner_ad_unit_id2" translatable="false">ca-app-pub-3146425308522831/9367015102</string>

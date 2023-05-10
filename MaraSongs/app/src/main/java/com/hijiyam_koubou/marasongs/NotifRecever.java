@@ -19,7 +19,7 @@ public class NotifRecever extends BroadcastReceiver {
 			String action = intent.getAction();
 			dbMsg +=",action= " + action;
 			dbMsg += " ,SDK_INT="+android.os.Build.VERSION.SDK_INT;
-			if( action.equals( MusicPlayerService.ACTION_SYUURYOU ) ){
+			if( action.equals( MusicService.ACTION_SYUURYOU ) ){
 				//			stopSelf();																	//これが最後だと他のActiviｙから操作が完了できない
 				MaraSonActivity MUP = new MaraSonActivity();								//音楽プレイヤー
 				MUP.quitMe();		//
@@ -28,7 +28,7 @@ public class NotifRecever extends BroadcastReceiver {
 				ML.receiverHaki();
 					ML.finish();
 			}else {
-				Intent MPSIntent = new Intent(context, MusicPlayerService.class);    //parsonalPBook.thisではメモリーリークが起こる
+				Intent MPSIntent = new Intent(context, MusicService.class);    //parsonalPBook.thisではメモリーリークが起こる
 				MPSIntent.setAction(action);                //	context.startService(new Intent(MusicPlayerService.ACTION_STOP));
 				dbMsg += " ,ノティフィケーションから" + MPSIntent.getAction();/////////////////////////////////////
 				ComponentName MPSName = context.startService(MPSIntent);

@@ -34,10 +34,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+//import android.support.v4.media.MediaBrowserCompat;
+//import android.support.v4.media.MediaMetadataCompat;
+//import android.support.v4.media.session.MediaControllerCompat;
+//import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
@@ -146,7 +146,7 @@ public class MaraSonActivity extends AppCompatActivity
 //implements OnClickListener, PlayerView.ControllerVisibilityListener
 	public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
 	private MediaSession mediaSession;            //MediaSessionCompat
-	private PlaybackStateCompat.Builder stateBuilder;
+//	private PlaybackStateCompat.Builder stateBuilder;
 	private List<MediaItem> mediaItems;
 
 	public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
@@ -367,7 +367,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public Intent MPSIntent;
 	public String psSarviceUri;
 	public ComponentName MPSName;
-//	public MusicPlayerService MPS;
+//	public MusicService MPS;
 	public MusicReceiver mReceiver;
 	public Handler mHandler = new Handler();
 	public IntentFilter mFilter;
@@ -416,15 +416,15 @@ public class MaraSonActivity extends AppCompatActivity
 			if( 0 < serviceList.size() ){
 				dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
 				for(String serviceName : serviceList){
-					if(serviceName.contains("MusicPlayerService")){
+					if(serviceName.contains("MusicService")){
 						dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
 						if( MPSIntent == null){
-//							MusicPlayerService MPS = new MusicPlayerService(MaraSonActivity.this);
-//							Class<? extends MusicPlayerService> mpsClass = MPS.getClass();
-							MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+//							MusicService MPS = new MusicService(MaraSonActivity.this);
+//							Class<? extends MusicService> mpsClass = MPS.getClass();
+							MPSIntent = new Intent(getApplication(), MusicService.class);
 							dbMsg +=">>" + MPSIntent;/////////////////////////////////////
 						}
-						MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);					//service内のquitMe
+						MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
 						startService(MPSIntent);
 //						stopService(MPSIntent);			//こっちで消える？
 					}else if(serviceName.contains("NotifRecever")){
@@ -751,7 +751,7 @@ public class MaraSonActivity extends AppCompatActivity
 
 	/**
 	 * 起動直後にonWindowFocusChangedが発生した時(フォーカスが当たった場合)
-	 * ノティフィケーションからの起動された場合はkeizoku2ServiceでMusicPlayerServiceのプロパティ取得
+	 * ノティフィケーションからの起動された場合はkeizoku2ServiceでMusicServiceのプロパティ取得
 	 * 通常起動時はmData2Serviceからサービスを起動
 	 * */
 	@SuppressLint("InlinedApi")
@@ -796,7 +796,7 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			dbMsg +=",起動="+kidou_jyoukyou;/////////////////////////////////////
 			if( kidou_jyoukyou == kidou_notif  ){				//ノティフィケーションからの起動
-				keizoku2Service();										//MusicPlayerServiceのプロパティ取得
+				keizoku2Service();										//MusicServiceのプロパティ取得
 			}else {
 				dbMsg +=",pref_mIndex="+ myPreferences.pref_mIndex + ">>mData2Service";
 //				mData2Service(myPreferences.pref_mIndex);										//サービスにプレイヤー画面のデータを送る
@@ -836,7 +836,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	private void keizoku2Service(){						//MusicPlayerServiceのプロパティ取得
+	private void keizoku2Service(){						//MusicServiceのプロパティ取得
 		final String TAG = "keizoku2Service";
 		String dbMsg= "";/////////////////////////////////////
 		try{
@@ -844,10 +844,10 @@ public class MaraSonActivity extends AppCompatActivity
 //			dbMsg +=dataFN;////////////////////////////////////this.data = data;
 //			dbMsg +="[" + ORGUT.sdf_mss.format(mcPosition) + "/" + ORGUT.sdf_mss.format(saiseiJikan) + "]"  ;/////////////////////////////////////
 			dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
-			MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+			MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
 			dbMsg +=">>" + MPSIntent;/////////////////////////////////////
-			MPSIntent.setAction(MusicPlayerService.ACTION_KEIZOKU);	//追加2	；
-			dbMsg +=" ,getAction=" + MPSIntent.getAction();/////////////////////////////////////
+//			MPSIntent.setAction(MusicService.ACTION_KEIZOKU);	//追加2	；
+//			dbMsg +=" ,getAction=" + MPSIntent.getAction();/////////////////////////////////////
 			dbMsg +=",プレイリストID=" + myPreferences.nowList_id;/////////////////////////////////////
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			dbMsg +=",再生中のプレイリスト名=" + myPreferences.nowList;/////////////////////////////////////
@@ -876,7 +876,7 @@ public class MaraSonActivity extends AppCompatActivity
 //		try{
 //			dbMsg += "MPSIntent=" + MPSIntent;/////////////////////////////////////
 //			if(MPSIntent == null){
-//				MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+//				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
 //				dbMsg +=">>" + MPSIntent;
 //			}
 //			String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
@@ -898,13 +898,13 @@ public class MaraSonActivity extends AppCompatActivity
 //				if(dataFN != null){          //        &&  pref_data_url.equals("")
 //					MPSIntent.putExtra("dataFN",dataFN);
 //				}
-//				MPSIntent.setAction(MusicPlayerService.ACTION_REQUEST_STATE);	//起動時の表示
+//				MPSIntent.setAction(MusicService.ACTION_REQUEST_STATE);	//起動時の表示
 //			}
 //
 ////			dbMsg += "[再生ポジション=" + mcPosition;/////////////////////////////////////
-////			//	MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);
+////			//	MPSIntent.setAction(MusicService.ACTION_LISTSEL);
 //////			if( rp_pp ){
-//////				MPSIntent.setAction(MusicPlayerService.ACTION_STOP);		//音が出てしまう
+//////				MPSIntent.setAction(MusicService.ACTION_STOP);		//音が出てしまう
 //////			}
 //////			dbMsg +="[再生ポジション=" + mcPosition;/////////////////////////////////////
 ////			MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
@@ -965,7 +965,7 @@ public class MaraSonActivity extends AppCompatActivity
 
 ///②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
 	/**
-	 * 送信元はMusicPlayerService.sendPlayerStateと	changeCount	および	onHandleIntent
+	 * 送信元はMusicService.sendPlayerStateと	changeCount	および	onHandleIntent
 	 *
 	 * ここでBuletoothなど他のブロードキャストは受け付けない
 	 * */
@@ -1013,11 +1013,11 @@ public class MaraSonActivity extends AppCompatActivity
 //							if( ! b_state.equals(state) ){
 //								dbMsg +=",b_state=" + b_state;
 //								b_state = state;
-//								if(state.equals( MusicPlayerService.State.Playing )){
+//								if(state.equals( MusicService.State.Playing )){
 //									ppPBT.setImageResource(R.drawable.pl_r_btn);
 //									ppPBT.setContentDescription(getResources().getText(R.string.pause));			//play
 //									IsPlaying = false;
-//								}else if(state.equals( MusicPlayerService.State.Paused ) || state.equals( MusicPlayerService.State.Stopped )){
+//								}else if(state.equals( MusicService.State.Paused ) || state.equals( MusicService.State.Stopped )){
 //									ppPBT.setImageResource(R.drawable.pousebtn);
 //									ppPBT.setContentDescription(getResources().getText(R.string.play));			//pause
 //									IsPlaying = true;
@@ -1310,7 +1310,7 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += ",mReceiver=" + mReceiver;////////////////////////
 			if( mReceiver== null ){
 				mFilter = new IntentFilter();
-				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				mReceiver = new MusicReceiver();
 				registerReceiver(mReceiver, mFilter);
 				dbMsg +=">生成>=" + mReceiver;////////////////////////
@@ -1334,7 +1334,7 @@ public class MaraSonActivity extends AppCompatActivity
 //				btFilter.addAction(Intent.ACTION_MEDIA_BUTTON);							//操作ボタン対応？
 //				dbMsg += ",btReceiver=" + btReceiver;////////////////////////
 //				btReceiver = new BuletoohtReceiver();				//BuletoohtReceiver();
-//		//		btReceiver.service = new MusicPlayerService();		//this
+//		//		btReceiver.service = new MusicService();		//this
 //				btReceiver.rContext = this;
 //				registerReceiver(btReceiver, btFilter);
 //				dbMsg +=">生成>=" + btReceiver;///////////////////////
@@ -3411,8 +3411,8 @@ public class MaraSonActivity extends AppCompatActivity
 								index2 = index2 * (-1);
 							}
 							dbMsg +=",index2=" + index2;
-							MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-							MPSIntent.setAction(MusicPlayerService.ACTION_EQUALIZER);
+							MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
+//							MPSIntent.setAction(MusicService.ACTION_EQUALIZER);
 							MPSIntent.putExtra("rdIndex",index2 );				//更新するインデックス
 							MPSIntent.putExtra("tone_Hz",freq );				//更新する周波数
 							MPSIntent.putExtra("tone_Lev",band );				//更新する調整レベル
@@ -3501,8 +3501,8 @@ public class MaraSonActivity extends AppCompatActivity
 						myEditor.putBoolean("bBoot",MaraSonActivity.this.bBoot);			//現在の設定
 						Boolean kakikomi = myEditor.commit();	// データの保存
 						dbMsg +=",書き込み成功="+kakikomi;
-						MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-						MPSIntent.setAction(MusicPlayerService.ACTION_BASS_BOOST);
+						MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
+						MPSIntent.setAction(MusicService.ACTION_BASS_BOOST);
 						MPSIntent.putExtra("bBoot",MaraSonActivity.this.bBoot );				//更新するインデックス
 						MPSName = startService(MPSIntent);
 						dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
@@ -3551,8 +3551,8 @@ public class MaraSonActivity extends AppCompatActivity
 								index2 = index2 * (-1);
 							}
 							dbMsg +=",index2=" + index2;
-							MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-							MPSIntent.setAction(MusicPlayerService.ACTION_EQUALIZER);
+							MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
+							MPSIntent.setAction(MusicService.ACTION_EQUALIZER);
 							MPSIntent.putExtra("rdIndex",index2 );				//更新するインデックス
 							MPSIntent.putExtra("tone_Hz",freq );				//更新する周波数
 							MPSIntent.putExtra("tone_Lev",band );				//更新する調整レベル
@@ -3641,8 +3641,8 @@ public class MaraSonActivity extends AppCompatActivity
 				index2 = index2 * (-1);
 			}
 			dbMsg +=",index2=" + index2;
-			MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-			MPSIntent.setAction(MusicPlayerService.ACTION_EQUALIZER);
+			MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
+			MPSIntent.setAction(MusicService.ACTION_EQUALIZER);
 			MPSIntent.putExtra("rdIndex",index2 );				//更新するインデックス
 			MPSIntent.putExtra("tone_Hz",freq );				//更新する周波数
 			MPSIntent.putExtra("tone_Lev",band );				//更新する調整レベル
@@ -3823,8 +3823,8 @@ public class MaraSonActivity extends AppCompatActivity
 						MaraSonActivity.this.reverbBangou = (short) which ;													//リバーブ効果番号
 						dbMsg +="、reverbBangou=" + MaraSonActivity.this.reverbBangou;
 
-						MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
-						MPSIntent.setAction(MusicPlayerService.ACTION_REVERB);
+						MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
+//						MPSIntent.setAction(MusicService.ACTION_REVERB);
 						MPSIntent.putExtra("reverbBangou",MaraSonActivity.this.reverbBangou );				//リバーブ効果番号
 						MPSName = startService(MPSIntent);
 						dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
@@ -3903,7 +3903,7 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
  /**
-  * MusicPlayerService ClassのMediaPlayerと紐づけられたVisualizerオブジェクトををSerializable経由で受け取り
+  * MusicService ClassのMediaPlayerと紐づけられたVisualizerオブジェクトををSerializable経由で受け取り
   * makeVisualizerで作成したVisualizerのViewに渡す
   * 呼出し元	MusicReceiverで
   * */
@@ -4134,7 +4134,7 @@ public class MaraSonActivity extends AppCompatActivity
 //			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
 			dbMsg +=  "MPSIntent=" + MPSIntent;
 			dbMsg +=".getAction=" + MPSIntent.getAction();
-			MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+			MPSIntent.setAction(MusicService.ACTION_PAUSE);
 			dbMsg +=">>" + MPSIntent.getAction();
 			MPSName = startService(MPSIntent);
 			dbMsg +=" ,ComponentName=" + MPSName;
@@ -4147,7 +4147,7 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	/**MusicPlayerServiceへ*/
+	/**MusicServiceへ*/
 	public void playing(int mcPosition) {
 		final String TAG = "playing";
 		String dbMsg= "";
@@ -4156,7 +4156,7 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=","+ mcPosition + "/" +saiseiJikan + "[ms]";
 			dbMsg +=  "MPSIntent=" + MPSIntent;
 			dbMsg +=".getAction=" + MPSIntent.getAction();
-			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+			MPSIntent.setAction(MusicService.ACTION_PLAY);
 			MPSIntent.putExtra("pref_position",mcPosition);	//再生ポジション
 			dbMsg +=">>" + MPSIntent.getAction();
 			MPSName = startService(MPSIntent);
@@ -4169,17 +4169,17 @@ public class MaraSonActivity extends AppCompatActivity
 //				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 //				dbMsg= ">>psSarviceUri=" + psSarviceUri;/////////////////////////////////////
 //				mFilter = new IntentFilter();
-//				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+//				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 //				dbMsg += ">>" + psSarviceUri;/////////////////////////////////////
 //			}
 //			dbMsg+= ",MPSIntent=" + MPSIntent;/////////////////////////////////////
 //			if( MPSIntent == null){
-//		//		MusicPlayerService MPS = new MusicPlayerService(MaraSonActivity.this);
-//		//		Class<? extends MusicPlayerService> mpsClass = MPS.getClass();
-//				MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+//		//		MusicService MPS = new MusicService(MaraSonActivity.this);
+//		//		Class<? extends MusicService> mpsClass = MPS.getClass();
+//				MPSIntent = new Intent(getApplication(), MusicService.class);
 //				dbMsg+= ">>" + MPSIntent;/////////////////////////////////////
 //			}
-//			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//			MPSIntent.setAction(MusicService.ACTION_PLAY);
 ////			dbMsg +=",2点間リピート中="+ rp_pp + ";" + pp_start + "～" + pp_end + "(mcPosition = " + mcPosition +")";/////////////////////////////////////
 ////			if( rp_pp ){				// || MaraSonActivity.this.requestCode ==rp_point          pp_start != 0 ||
 ////				mcPosition = pp_start;
@@ -4205,10 +4205,10 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg += ",MPSIntent=" + MPSIntent;/////////////////////////////////////
 			if( MPSIntent == null){
-				MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+				MPSIntent = new Intent(getApplication(), MusicService.class);
 				dbMsg= ">>" + MPSIntent;/////////////////////////////////////
 			}
-			MPSIntent.setAction(MusicPlayerService.ACTION_PLAY_READ);
+//			MPSIntent.setAction(MusicService.ACTION_PLAY_READ);
 			String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
 //			int myPreferences.pref_mIndex = getPrefInt("pref_myPreferences.pref_mIndex" , 0, MaraSonActivity.this);
 			sendPlaying( MPSIntent , dataFN , mcPosition , myPreferences.pref_mIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
@@ -4262,11 +4262,11 @@ public class MaraSonActivity extends AppCompatActivity
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
 				mFilter = new IntentFilter();
-				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				registerReceiver(mReceiver, mFilter);
 			}
 			if( MPSIntent == null){
-				MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
 				dbMsg +=  ",MPSIntent=null";
 			}else{
 				stopService(MPSIntent);
@@ -4279,13 +4279,13 @@ public class MaraSonActivity extends AppCompatActivity
 			MPSIntent.putExtra("callClass",this.getClass());
 
 //			if(! IsPlaying){
-//				//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+//				//		MPSIntent.setAction(MusicService.ACTION_PAUSE);
 //				IsPlaying = false;
 //			}else{
-//				//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//				//		MPSIntent.setAction(MusicService.ACTION_PLAY);
 //				IsPlaying = true;
 //			}
-			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
+			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 			dbMsg += ">action>" + MPSIntent.getAction();
 			dbMsg += " , IsPlaying=" + IsPlaying;
 			MPSIntent.putExtra("IsPlaying",IsPlaying);
@@ -4303,7 +4303,7 @@ public class MaraSonActivity extends AppCompatActivity
 		String dbMsg= "";
 		try{
 			dbMsg=  "MPSIntent=" + MPSIntent;/////////////////////////////////////
-			MPSIntent.setAction(MusicPlayerService.ACTION_STOP);
+			MPSIntent.setAction(MusicService.ACTION_STOP);
 			MPSName = startService(MPSIntent);
 			ppPBT.setImageResource(R.drawable.pl_r_btn);
 			ppPBT.setContentDescription(getResources().getText(R.string.pause));
@@ -4507,7 +4507,7 @@ public class MaraSonActivity extends AppCompatActivity
 				 saiseiSeekMP.setMax(saiseiJikan);
 			//	ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
-				MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);
+				MPSIntent.setAction(MusicService.ACTION_SKIP);
 				MPSName = startService(MPSIntent);		//onStartCommandへ
 				dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 			} else if (v == rewPBT) {				//mButtonRewind
@@ -4521,7 +4521,7 @@ public class MaraSonActivity extends AppCompatActivity
 				saiseiSeekMP.setMax(saiseiJikan);
 		//		ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
 				imanoJyoutai =  MuList.chyangeSong;
-				MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
+				MPSIntent.setAction(MusicService.ACTION_REWIND);
 				MPSName = startService(MPSIntent);
 				dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 			} else if (v == vol_btn) {								//ボリュームボタン
@@ -4944,10 +4944,10 @@ public class MaraSonActivity extends AppCompatActivity
 		//			audioManage.setStreamMute(AudioManager.STREAM_MUSIC, false);
 					dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
 					if( MPSIntent == null){
-						MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+						MPSIntent = new Intent(getApplication(), MusicService.class);
 						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
 					}
-					MPSIntent.setAction(MusicPlayerService.ACTION_ACT_CLOSE);			//アクティビティがクローズされた事の通達
+				//	MPSIntent.setAction(MusicService.ACTION_ACT_CLOSE);			//アクティビティがクローズされた事の通達
 		//			myLog(TAG,dbMsg);
 					if(event.getAction() == KeyEvent.ACTION_DOWN){					//リストから戻った時はUPになっている
 						String dataFN = getPrefStr( "pref_data_url" ,"" , MaraSonActivity.this);
@@ -5122,7 +5122,7 @@ public class MaraSonActivity extends AppCompatActivity
 				Intent broadcastIntent = new Intent();
 				dbMsg="message" + msg.toString() ;/////////////////////////////////////
 				broadcastIntent.putExtra("message", msg);
-				String actionName = MusicPlayerService.ACTION_BLUETOOTH_INFO;
+				String actionName = MusicService.ACTION_BLUETOOTH_INFO;
 				broadcastIntent.setAction(actionName);
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
@@ -5144,7 +5144,7 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=",dviceStyte=" +MaraSonActivity.this.dviceStyte;
 			dbMsg +=",Buletooth=" +stateBaseStr;
 			this.stateBaseStr = stateBaseStr;
-//			Intent intent = new Intent(MusicPlayerService.ACTION_STATE_CHANGED);
+//			Intent intent = new Intent(MusicService.ACTION_STATE_CHANGED);
 //			intent.putExtra("stateBaseStr", stateBaseStr);
 //			sendBroadcast(intent);					//APIL1
 //			if( dviceStyte != null ){
@@ -5291,7 +5291,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//								IsPlaying = bundle.getBoolean("IsPlaying");
 		//								dbMsg += ",再生中=" + IsPlaying;/////////////////////////////////////
 		////							if( IsPlaying ){
-		////								MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);				//ACTION_STOP?
+		////								MPSIntent.setAction(MusicService.ACTION_LISTSEL);				//ACTION_STOP?
 		////								MPSName = startService(MPSIntent);		//onStartCommandへ
 		////							}
 		////								dbMsg += ",mcPosition="+mcPosition;
@@ -5305,7 +5305,7 @@ public class MaraSonActivity extends AppCompatActivity
 		//								dbMsg +=zenkai_saiseijikann;/////////////////////////////////////
 		//								dataFN = n_dataFN;
 		////							if( IsPlaying ){
-		////								MPSIntent.setAction(MusicPlayerService.ACTION_LISTSEL);				//ACTION_STOP?
+		////								MPSIntent.setAction(MusicService.ACTION_LISTSEL);				//ACTION_STOP?
 		////								MPSName = startService(MPSIntent);		//onStartCommandへ
 		////							}
 		//							}
@@ -5456,7 +5456,7 @@ public class MaraSonActivity extends AppCompatActivity
 //							}
 //							break;
 //						case LyricWeb:												//192;歌詞のweb表示
-//							MPSIntent.setAction(MusicPlayerService.ACTION_DATA_OKURI);				//データ送りのみ
+//							MPSIntent.setAction(MusicService.ACTION_DATA_OKURI);				//データ送りのみ
 //							MPSName = startService(MPSIntent);		//onStartCommandへ
 //							dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 //							break;
@@ -5589,8 +5589,8 @@ public class MaraSonActivity extends AppCompatActivity
 	public int reqCode;
 
 	////イマドキなAndroid音楽プレーヤーの作り方  https://qiita.com/siy1121/items/f01167186a6677c22435 ///////
-	MediaBrowserCompat mBrowser;
-	MediaControllerCompat mController;
+//	MediaBrowserCompat mBrowser;
+//	MediaControllerCompat mController;
 
 	private void Play(String id) {
 		final String TAG = "onConnected";
@@ -5599,110 +5599,110 @@ public class MaraSonActivity extends AppCompatActivity
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
-		//MediaControllerからサービスへ操作を要求するためのTransportControlを取得する
-		//playFromMediaIdを呼び出すと、サービス側のMediaSessionのコールバック内のonPlayFromMediaIdが呼ばれる
-		mController.getTransportControls().playFromMediaId(id, null);
+//		//MediaControllerからサービスへ操作を要求するためのTransportControlを取得する
+//		//playFromMediaIdを呼び出すと、サービス側のMediaSessionのコールバック内のonPlayFromMediaIdが呼ばれる
+//		mController.getTransportControls().playFromMediaId(id, null);
 	}
 	//接続時に呼び出されるコールバック
-	private MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
-		@Override
-		public void onConnected() {
-			final String TAG = "onConnected";
-			String dbMsg="";
-			try {
-				//接続が完了するとSessionTokenが取得できるので
-				//それを利用してMediaControllerを作成
-				mController = new MediaControllerCompat(MaraSonActivity.this, mBrowser.getSessionToken());
-				//サービスから送られてくるプレイヤーの状態や曲の情報が変更された際のコールバックを設定
-				mController.registerCallback(controllerCallback);
+//	private MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+//		@Override
+//		public void onConnected() {
+//			final String TAG = "onConnected";
+//			String dbMsg="";
+//			try {
+//				//接続が完了するとSessionTokenが取得できるので
+//				//それを利用してMediaControllerを作成
+//				mController = new MediaControllerCompat(MaraSonActivity.this, mBrowser.getSessionToken());
+//				//サービスから送られてくるプレイヤーの状態や曲の情報が変更された際のコールバックを設定
+//				mController.registerCallback(controllerCallback);
+//
+//				//既に再生中だった場合コールバックを自ら呼び出してUIを更新
+//				if (mController.getPlaybackState() != null && mController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
+//					controllerCallback.onMetadataChanged(mController.getMetadata());
+//					controllerCallback.onPlaybackStateChanged(mController.getPlaybackState());
+//				}
+//				dbMsg +=",UIを更新";
+//			} catch (Exception e) {
+//				myErrorLog(TAG ,  dbMsg + "で" + e);
+//			}
+//			//サービスから再生可能な曲のリストを取得
+//			mBrowser.subscribe(mBrowser.getRoot(), subscriptionCallback);
+//		}
+//	};
 
-				//既に再生中だった場合コールバックを自ら呼び出してUIを更新
-				if (mController.getPlaybackState() != null && mController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
-					controllerCallback.onMetadataChanged(mController.getMetadata());
-					controllerCallback.onPlaybackStateChanged(mController.getPlaybackState());
-				}
-				dbMsg +=",UIを更新";
-			} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
-			//サービスから再生可能な曲のリストを取得
-			mBrowser.subscribe(mBrowser.getRoot(), subscriptionCallback);
-		}
-	};
-
-	//Subscribeした際に呼び出されるコールバック
-	private MediaBrowserCompat.SubscriptionCallback subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
-		@Override
-		public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
-			final String TAG = "onConnected";
-			String dbMsg="";
-			try {
-			} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
-
-			//既に再生中でなければ初めの曲を再生をリクエスト
-			if (mController.getPlaybackState() == null)
-				Play(children.get(0).getMediaId());
-		}
-	};
+//	//Subscribeした際に呼び出されるコールバック
+//	private MediaBrowserCompat.SubscriptionCallback subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
+//		@Override
+//		public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
+//			final String TAG = "onConnected";
+//			String dbMsg="";
+//			try {
+//			} catch (Exception e) {
+//				myErrorLog(TAG ,  dbMsg + "で" + e);
+//			}
+//
+//			//既に再生中でなければ初めの曲を再生をリクエスト
+//			if (mController.getPlaybackState() == null)
+//				Play(children.get(0).getMediaId());
+//		}
+//	};
 
 	//MediaControllerのコールバック
-	private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
-		//再生中の曲の情報が変更された際に呼び出される
-		@Override
-		public void onMetadataChanged(MediaMetadataCompat metadata) {
-			final String TAG = "onMetadataChanged";
-			String dbMsg="";
-			try {
-				titol_tv.setText(metadata.getDescription().getTitle());
-				mpJakeImg.setImageBitmap(metadata.getDescription().getIconBitmap());
-				String durationStr = ORGUT.sdf_mss.format(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
-				dbMsg += "[" + durationStr+ "]";
-				totalTimePTF.setText(durationStr);
-//org				totalTimePTF.setText(Long2TimeString(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)));
-				saiseiSeekMP.setMax((int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
-			} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
+//	private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
+//		//再生中の曲の情報が変更された際に呼び出される
+//		@Override
+//		public void onMetadataChanged(MediaMetadataCompat metadata) {
+//			final String TAG = "onMetadataChanged";
+//			String dbMsg="";
+//			try {
+//				titol_tv.setText(metadata.getDescription().getTitle());
+//				mpJakeImg.setImageBitmap(metadata.getDescription().getIconBitmap());
+//				String durationStr = ORGUT.sdf_mss.format(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+//				dbMsg += "[" + durationStr+ "]";
+//				totalTimePTF.setText(durationStr);
+////org				totalTimePTF.setText(Long2TimeString(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)));
+//				saiseiSeekMP.setMax((int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+//			} catch (Exception e) {
+//				myErrorLog(TAG ,  dbMsg + "で" + e);
+//			}
+//
+//		}
 
-		}
-
-		//プレイヤーの状態が変更された時に呼び出される
-		@Override
-		public void onPlaybackStateChanged(PlaybackStateCompat state) {
-			final String TAG = "onPlaybackStateChanged";
-			String dbMsg="";
-			try {
-				dbMsg += ",state= " + state;
-				//プレイヤーの状態によってボタンの挙動とアイコンを変更する
-				if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
-					ppPBT.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							mController.getTransportControls().pause();
-						}
-					});
-					ppPBT.setImageResource(R.drawable.pousebtn);
-				} else {
-					ppPBT.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							mController.getTransportControls().play();
-						}
-					});
-					ppPBT.setImageResource(R.drawable.pl_r_btn);
-				}
-				String mcPositionStr = ORGUT.sdf_mss.format(state.getPosition());
-				dbMsg += "[" + mcPositionStr+ "]";
-				//org	saiseiPositionPTF.setText(Long2TimeString(state.getPosition()));
-				saiseiPositionPTF.setText(mcPositionStr);	   		//再生画面の経過時間枠
-				saiseiSeekMP.setProgress((int) state.getPosition());
-			} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
-		}
-	};
+//		//プレイヤーの状態が変更された時に呼び出される
+//		@Override
+//		public void onPlaybackStateChanged(PlaybackStateCompat state) {
+//			final String TAG = "onPlaybackStateChanged";
+//			String dbMsg="";
+//			try {
+//				dbMsg += ",state= " + state;
+//				//プレイヤーの状態によってボタンの挙動とアイコンを変更する
+//				if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+//					ppPBT.setOnClickListener(new View.OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							mController.getTransportControls().pause();
+//						}
+//					});
+//					ppPBT.setImageResource(R.drawable.pousebtn);
+//				} else {
+//					ppPBT.setOnClickListener(new View.OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							mController.getTransportControls().play();
+//						}
+//					});
+//					ppPBT.setImageResource(R.drawable.pl_r_btn);
+//				}
+//				String mcPositionStr = ORGUT.sdf_mss.format(state.getPosition());
+//				dbMsg += "[" + mcPositionStr+ "]";
+//				//org	saiseiPositionPTF.setText(Long2TimeString(state.getPosition()));
+//				saiseiPositionPTF.setText(mcPositionStr);	   		//再生画面の経過時間枠
+//				saiseiSeekMP.setProgress((int) state.getPosition());
+//			} catch (Exception e) {
+//				myErrorLog(TAG ,  dbMsg + "で" + e);
+//			}
+//		}
+//	};
 	///////イマドキなAndroid音楽プレーヤーの作り方//
 /**
  * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
@@ -6426,8 +6426,8 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += ",listServiceInfo="+ listServiceInfo.size() + "件" ;
 			boolean found = false;
 			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	//起動中のサービス名を取得 クラス名を比較
-				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {		// 実行中のサービスと一致 = ノティフィケーションからの起動
-					dbMsg +="起動中のサービス=" + curr.service.getClassName();///////////	dbMsg=dbMsg +">>"+ MusicPlayerService.class.getName();/////////////////////////////////////
+				if (curr.service.getClassName().equals(MusicService.class.getName())) {		// 実行中のサービスと一致 = ノティフィケーションからの起動
+					dbMsg +="起動中のサービス=" + curr.service.getClassName();///////////	dbMsg=dbMsg +">>"+ MusicService.class.getName();/////////////////////////////////////
 					found = true;
 					kidou_jyoukyou = kidou_notif ;						//ノティフィケーションからの起動
 					imanoJyoutai = MuList.sonomama;
@@ -6438,12 +6438,12 @@ public class MaraSonActivity extends AppCompatActivity
 			if(!found){
 				//サービスは開始しておく
 				//Activity破棄と同時にServiceも停止して良いならこれは不要
-				startService(new Intent(this, MusicPlayerService.class));
+				startService(new Intent(this, MusicService.class));
 
 				//MediaBrowserを初期化
-				mBrowser = new MediaBrowserCompat(this, new ComponentName(this, MusicPlayerService.class), connectionCallback, null);
-				//接続(サービスをバインド)
-				mBrowser.connect();
+//				mBrowser = new MediaBrowserCompat(this, new ComponentName(this, MusicService.class), connectionCallback, null);
+//				//接続(サービスをバインド)
+//				mBrowser.connect();
 			}
 			////イマドキなAndroid音楽プレーヤーの作り方
 			//広告表示//////////////////////////////////////////////////
@@ -6507,7 +6507,7 @@ public class MaraSonActivity extends AppCompatActivity
 			if( MPSIntent == null ){
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg += ">>psSarviceUri=" + psSarviceUri;/////////////////////////////////////
-				MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+				MPSIntent = new Intent(getApplication(), MusicService.class);
 			}
 			int sMax = saiseiSeekMP.getMax();
 			dbMsg += ",sMax=" + sMax + "[ms]";
@@ -6620,8 +6620,8 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			dbMsg += ",IsPlaying="+ IsPlaying;
 //			if(! IsPlaying){
-//				Intent intent = new Intent(getApplication(), MusicPlayerService.class);
-//				intent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+//				Intent intent = new Intent(getApplication(), MusicService.class);
+//				intent.setAction(MusicService.ACTION_SYUURYOU_NOTIF);
 //				startService(intent) ;
 //			}
 			myLog(TAG, dbMsg);
@@ -6687,7 +6687,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
 		boolean retBool = false;
 		final String TAG = "setPrefInt";
-		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		String dbMsg="[MusicService]keyNmae=" + keyNmae;
 		MyUtil MyUtil = new MyUtil();
 		retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;

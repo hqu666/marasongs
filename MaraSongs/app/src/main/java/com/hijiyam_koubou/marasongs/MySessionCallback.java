@@ -1,6 +1,6 @@
 package com.hijiyam_koubou.marasongs;
 
-import android.support.v4.media.session.MediaSessionCompat;
+import android.media.session.MediaSession;
 
-public class MySessionCallback extends MediaSessionCompat.Callback {
+public class MySessionCallback extends MediaSession.Callback {
 }

@@ -116,14 +116,14 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 							dbMsg +=","+ "Device名=" + device.getName()+";";	////////////////
 							stateBaseStr  =  device.getName() +":";
 						}
-						Intent MPSIntent = new Intent(context, MusicPlayerService.class);
+						Intent MPSIntent = new Intent(context, MusicService.class);
 						if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {				//API level 11
 							dbMsg += "、action =BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED:state=" +state ;
 							switch(state) {
 							case BluetoothProfile.STATE_DISCONNECTED:																//0			getApplicationContext().
 								dbMsg += "、STATE_DISCONNECTED;切断された" ;
 								stateBaseStr = stateBaseStr+ context.getResources().getString(R.string.bt_discnnected);				//切断
-								MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+					//			MPSIntent.setAction(MusicService.ACTION_PAUSE);
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);
 								break;
@@ -133,7 +133,7 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 							case BluetoothProfile.STATE_CONNECTED:																	//2
 								dbMsg += "、接続された"  ;
 								stateBaseStr = stateBaseStr+  context.getResources().getString(R.string.bt_connected);				//接続済み
-								MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+						//		MPSIntent.setAction(MusicService.ACTION_PLAY);
 								dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
 								context.startService(MPSIntent);
 								break;
@@ -183,23 +183,23 @@ public class BuletoohtReceiver extends BroadcastReceiver{
 								switch(state) {
 								case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE :																//85
 									dbMsg += ")PLAY_PAUSEボタン";
-									MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);		
+									MPSIntent.setAction(MusicService.ACTION_PLAYPAUSE);
 									break;
 								case KeyEvent.KEYCODE_MEDIA_PLAY :																		//126
 									dbMsg += ")再生ボタン";
-									MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+									MPSIntent.setAction(MusicService.ACTION_PLAY);
 									break;
 								case KeyEvent.KEYCODE_MEDIA_PAUSE :																		//127
 									dbMsg += ")PAUSEボタン";
-									MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+									MPSIntent.setAction(MusicService.ACTION_PAUSE);
 									break;
 								case KeyEvent.KEYCODE_MEDIA_NEXT :																		//87
 									dbMsg += ")NEXTボタン";
-									MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);	
+									MPSIntent.setAction(MusicService.ACTION_SKIP);
 									break;
 								case KeyEvent.KEYCODE_MEDIA_PREVIOUS :																		//88
 									dbMsg += ")PREVIOUSボタン";
-									MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);	
+									MPSIntent.setAction(MusicService.ACTION_REWIND);
 									break;
 								default:
 									break;

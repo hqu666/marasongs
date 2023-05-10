@@ -130,11 +130,11 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 						myLog(TAG,dbMsg);
 //						mChronometer.setBase(SystemClock.elapsedRealtime() - mCurrentPosition);
 						if( state != null ){
-							if (state.equals(MusicPlayerService.State.Playing.toString())) {
+							if (state.equals(MusicService.State.Playing.toString())) {
 								playing();
-							} else if (state.equals(MusicPlayerService.State.Paused.toString())) {
+							} else if (state.equals(MusicService.State.Paused.toString())) {
 								paused();
-							} else if (state.equals(MusicPlayerService.State.Stopped.toString())) {
+							} else if (state.equals(MusicService.State.Stopped.toString())) {
 								stopped();
 							}
 						}
@@ -171,7 +171,7 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 ////			rewPBT.setOnClickListener(this);
 //
 //			mFilter = new IntentFilter();
-//			mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+//			mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 //			setContentView(R.layout.activity_mara_son);								//R.layout.music_player
 //			artist_tv = (TextView) findViewById(R.id.artist_tv);						//アルバムアーティスト
 //			creditArtistName_tf = (TextView) findViewById(R.id.creditArtistName_tf);	//クレジットされているアーティスト名
@@ -203,7 +203,7 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 //			rewPBT.setOnClickListener(this);
 
 			mFilter = new IntentFilter();
-			mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+			mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -217,7 +217,7 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 		String dbMsg= "開始;";/////////////////////////////////////
 		try{
 			registerReceiver(mReceiver, mFilter);
-			startService(new Intent(MusicPlayerService.ACTION_REQUEST_STATE));
+			startService(new Intent(MusicService.ACTION_REQUEST_STATE));
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -257,21 +257,21 @@ public class MusicPlayerRemoteControlActivity extends Activity implements OnClic
 			if (v == ppPBT) {
 				if (ppPBT.getContentDescription().equals(getResources().getText(R.string.play))) {
 		//		if (mButtonPlayPause.getContentDescription().equals(getResources().getText(R.string.play))) {
-					startService(new Intent(MusicPlayerService.ACTION_PLAY));
+					startService(new Intent(MusicService.ACTION_PLAY));
 					playing();
 				} else {
-					startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+					startService(new Intent(MusicService.ACTION_PAUSE));
 					paused();
 				}
 			} else if (v == ffPBT) {
-				startService(new Intent(MusicPlayerService.ACTION_SKIP));
+				startService(new Intent(MusicService.ACTION_SKIP));
 				mChronometer.stop();
 				mChronometer.setBase(SystemClock.elapsedRealtime());
 			} else if (v == rewPBT) {
-				startService(new Intent(MusicPlayerService.ACTION_REWIND));
+				startService(new Intent(MusicService.ACTION_REWIND));
 				mChronometer.setBase(SystemClock.elapsedRealtime());
 			} else if (v == stopPBT) {
-				Intent intent = new Intent(MusicPlayerService.ACTION_STOP);
+				Intent intent = new Intent(MusicService.ACTION_STOP);
 				intent.putExtra("cancel", true);
 				startService(intent);
 				stopped();

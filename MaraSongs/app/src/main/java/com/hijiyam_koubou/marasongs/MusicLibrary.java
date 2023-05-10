@@ -3,15 +3,14 @@ package com.hijiyam_koubou.marasongs;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadata;
+import android.media.browse.MediaBrowser;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaMetadataCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +25,10 @@ import java.util.concurrent.TimeUnit;
  * **/
 public class MusicLibrary {
 
-    private static final TreeMap<String, MediaMetadataCompat> music = new TreeMap<>();
+    private static final TreeMap<String, MediaMetadata> music = new TreeMap<>();
     private static final HashMap<String, Integer> albumRes = new HashMap<>();
     private static final HashMap<String, String> musicFileName = new HashMap<>();
-    private MediaMetadataCompat metadata;
+    private MediaMetadata metadata;
 
     /**
      * 指定されたプレイリストからmediasessionのリスト作成
@@ -84,7 +83,7 @@ public class MusicLibrary {
                         dbMsg += ",albumArtResId="+ albumArtResId;
                         String genreName = oUtil.retGenre(con,albumArtist,AlbumName);
 
-                        createMediaMetadataCompat(
+                        createMediaMetadata(
                                 audio_id + "",
                                 titolName,
                                 ArtistName,
@@ -255,7 +254,7 @@ public class MusicLibrary {
                             }
                         }
                         dbMsg += "\n[" + playOrder +"/" + rCursor.getCount() +"曲目]"+ dataVal;
-                        createMediaMetadataCompat(
+                        createMediaMetadata(
                                 audio_id + "",
                                 titolName,
                                 ArtistName,
@@ -385,7 +384,7 @@ public class MusicLibrary {
         return retInt;
     }
 
-    /**mediaIdで指定されたMediaMetadataCompatのBitmapを返す*/
+    /**mediaIdで指定されたMediaMetadataのBitmapを返す*/
     public Bitmap getAlbumBitmap(Context context, String mediaId) {         //static
         final String TAG = "getAlbumBitmap";
         String dbMsg = "";
@@ -402,15 +401,15 @@ public class MusicLibrary {
     }
 
     ///サービスのonCreatから呼ばれる
-    public static List<MediaBrowserCompat.MediaItem> getMediaItems() {
+    public static List<MediaBrowser.MediaItem> getMediaItems() {
         final String TAG = "getMediaItems";
         String dbMsg = "";
-        List<MediaBrowserCompat.MediaItem> result = new ArrayList<>();
+        List<MediaBrowser.MediaItem> result = new ArrayList<>();
         try {
-            for (MediaMetadataCompat metadata : music.values()) {
+            for (MediaMetadata metadata : music.values()) {
                 result.add(
-                        new MediaBrowserCompat.MediaItem(
-                                metadata.getDescription(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE));
+                        new MediaBrowser.MediaItem(
+                                metadata.getDescription(), MediaBrowser.MediaItem.FLAG_PLAYABLE));
                 dbMsg += "\n[" + result.size() +  "]" + result.toString();
             }
             myLog(TAG , dbMsg);
@@ -423,34 +422,34 @@ public class MusicLibrary {
 //    public AssetFileDescriptor getAssetsFile(Context context) {
 //        return context.resources.openRawResourceFd(R.raw.sample);
 //    }
-    /**mediaIdで指定されたMediaMetadataCompatを返す*/
-    public MediaMetadataCompat getMetadata(Context context, String mediaId) {
+    /**mediaIdで指定されたMediaMetadataを返す*/
+    public MediaMetadata getMetadata(Context context, String mediaId) {
         final String TAG = "getMetadata";
         String dbMsg = "";
-        MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+        MediaMetadata.Builder builder = new MediaMetadata.Builder();
         try {
             dbMsg +=  "mediaId[" + mediaId + "]";
-            MediaMetadataCompat metadataWithoutBitmap = music.get(mediaId);
+            MediaMetadata metadataWithoutBitmap = music.get(mediaId);
             Bitmap albumArt = getAlbumBitmap(context, mediaId);
             dbMsg +=  ",albumArt=" + albumArt.getWidth() + "×" + albumArt.getHeight();
 
-            // Since MediaMetadataCompat is immutable, we need to create a copy to set the album art.
+            // Since MediaMetadata is immutable, we need to create a copy to set the album art.
             // We don't set it initially on all queueItems so that they don't take unnecessary memory.
             for (String key :
                     new String[]{
-                            MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
-                            MediaMetadataCompat.METADATA_KEY_ALBUM,
-                            MediaMetadataCompat.METADATA_KEY_ARTIST,
-                            MediaMetadataCompat.METADATA_KEY_GENRE,
-                            MediaMetadataCompat.METADATA_KEY_TITLE
+                            MediaMetadata.METADATA_KEY_MEDIA_ID,
+                            MediaMetadata.METADATA_KEY_ALBUM,
+                            MediaMetadata.METADATA_KEY_ARTIST,
+                            MediaMetadata.METADATA_KEY_GENRE,
+                            MediaMetadata.METADATA_KEY_TITLE
                     }) {
                 builder.putString(key, metadataWithoutBitmap.getString(key));
             }
             builder.putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION,
-                    metadataWithoutBitmap.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt);
-            dbMsg +=  "," + builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI,"");
+                    MediaMetadata.METADATA_KEY_DURATION,
+                    metadataWithoutBitmap.getLong(MediaMetadata.METADATA_KEY_DURATION));
+            builder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, albumArt);
+            dbMsg +=  "," + builder.putString(MediaMetadata.METADATA_KEY_MEDIA_URI,"");
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -459,9 +458,9 @@ public class MusicLibrary {
     }
 
     /**
-     * 一曲分のeMediaMetadataCompatを作製する
+     * 一曲分のeMediaMetadataを作製する
      * */
-    private static void createMediaMetadataCompat(
+    private static void createMediaMetadata(
             String mediaId,
             String title,
             String artist,
@@ -472,27 +471,27 @@ public class MusicLibrary {
             String filename,
             int albumArtResId,
             String albumArtResName) {
-        final String TAG = "createMediaMetadataCompat";
+        final String TAG = "createMediaMetadata";
         String dbMsg = "";
         try {
             dbMsg +=  "mediaId=" + mediaId;
 
             music.put(
                     mediaId,
-                    new MediaMetadataCompat.Builder()
-                            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
-                            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
-                            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-                            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
+                    new MediaMetadata.Builder()
+                            .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, mediaId)
+                            .putString(MediaMetadata.METADATA_KEY_ALBUM, album)
+                            .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
+                            .putLong(MediaMetadata.METADATA_KEY_DURATION,
                                     TimeUnit.MILLISECONDS.convert(duration, durationUnit))
-                            .putString(MediaMetadataCompat.METADATA_KEY_GENRE, genre)
+                            .putString(MediaMetadata.METADATA_KEY_GENRE, genre)
                             .putString(
-                                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,
+                                    MediaMetadata.METADATA_KEY_ALBUM_ART_URI,
                                     getAlbumArtUri(albumArtResName))
                             .putString(
-                                    MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI,
+                                    MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
                                     getAlbumArtUri(albumArtResName))
-                            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                            .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                             .build());
             albumRes.put(mediaId, albumArtResId);
             musicFileName.put(mediaId, filename);

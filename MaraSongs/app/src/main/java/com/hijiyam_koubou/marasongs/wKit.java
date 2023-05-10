@@ -88,7 +88,7 @@ public class wKit extends Activity {
 	public Intent MPSIntent;
 	public String psSarviceUri;
 	public ComponentName MPSName;
-	public MusicPlayerService MPS;
+	public MusicService MPS;
 
 	public int reqCode;
 	public int backCode;
@@ -213,7 +213,7 @@ public class wKit extends Activity {
 				 dbMsg= dbMsg+",mReceiver=" + mReceiver;////////////////////////
 				if( mReceiver== null ){
 					mFilter = new IntentFilter();
-					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+					mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 					mReceiver = new MusicReceiver();
 					registerReceiver(mReceiver, mFilter);
 					dbMsg +=">生成>=" + mReceiver;////////////////////////
@@ -221,9 +221,9 @@ public class wKit extends Activity {
 				if( MPSIntent == null ){
 					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 					dbMsg= dbMsg +">>psSarviceUri=" + psSarviceUri + "";/////////////////////////////////////
-					MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+					MPSIntent = new Intent(getApplication(), MusicService.class);
 				}
-				MPSIntent.setAction(MusicPlayerService.ACTION_DATA_OKURI);				//データ送りのみ
+				MPSIntent.setAction(MusicService.ACTION_DATA_OKURI);				//データ送りのみ
 				MPSName = startService(MPSIntent);		//onStartCommandへ
 				dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				wk_rew_bt.setOnClickListener(new View.OnClickListener() {			//戻しボタン
@@ -232,7 +232,7 @@ public class wKit extends Activity {
 						String dbMsg= "開始;";/////////////////////////////////////
 						try{
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
-							MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
+							MPSIntent.setAction(MusicService.ACTION_REWIND);
 							MPSName = startService(MPSIntent);
 							dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				//			myLog(TAG,dbMsg);
@@ -258,7 +258,7 @@ public class wKit extends Activity {
 							dbMsg +=">>" +  btStre;
 							dbMsg=  "MPSIntent=" + MPSIntent;/////////////////////////////////////
 							dbMsg +=".getAction=" + MPSIntent.getAction();/////////////////////////////////////
-							MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);
+							MPSIntent.setAction(MusicService.ACTION_PLAYPAUSE);
 							dbMsg +=">>" + MPSIntent.getAction();/////////////////////////////////////
 							MPSName = startService(MPSIntent);
 							dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
@@ -274,7 +274,7 @@ public class wKit extends Activity {
 						String dbMsg= "開始;";/////////////////////////////////////
 						try{
 							wk_pp_bt.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
-							MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);
+							MPSIntent.setAction(MusicService.ACTION_SKIP);
 							MPSName = startService(MPSIntent);		//onStartCommandへ
 							dbMsg +=" ,ComponentName=" + MPSName + "";/////////////////////////////////////
 				//			myLog(TAG,dbMsg);

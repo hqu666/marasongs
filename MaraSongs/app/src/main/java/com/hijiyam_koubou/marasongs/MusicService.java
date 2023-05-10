@@ -1,7 +1,6 @@
 package com.hijiyam_koubou.marasongs;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,14 +11,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.service.media.MediaBrowserService;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
-import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
@@ -40,6 +37,7 @@ import androidx.media3.exoplayer.source.ads.AdsLoader;
 import androidx.media3.exoplayer.util.DebugTextViewHelper;
 import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.session.MediaSession;
+import androidx.media3.session.MediaStyleNotificationHelper;
 import androidx.media3.ui.PlayerView;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -53,7 +51,8 @@ public class MusicService extends MediaBrowserService {
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
     private MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
-    private MediaSessionCompat.Token sessionToken;
+    private androidx.media3.session.MediaStyleNotificationHelper.MediaStyle mediaStyle;
+    //    private MediaSessionCompat.Token sessionToken;
 //    private PlaybackStateCompat.Builder stateBuilder;
     public List<MediaItem> mediaItemList;
     public int mIndex = 0;
@@ -66,11 +65,41 @@ public class MusicService extends MediaBrowserService {
 
     public long saiseiJikan = 0;
     /**ノティフィケーションインスタンス*/
-	public Notification lpNotification;
+//	public Notification lpNotification;
     public MuList ML;
 
     private String channelId = "default";
     final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
+    public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
+    public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
+    //public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
+    public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
+    public static final String ACTION_PLAYPAUSE = "com.example.android.remotecontrol.ACTION_PLAYPAUSE";
+    public static final String ACTION_PLAY = "com.example.android.remotecontrol.ACTION_PLAY";
+    public static final String ACTION_PAUSE = "com.example.android.remotecontrol.ACTION_PAUSE";
+    public static final String ACTION_SKIP = "com.example.android.remotecontrol.ACTION_SKIP";
+    public static final String ACTION_REWIND = "com.example.android.remotecontrol.ACTION_REWIND";
+    public static final String ACTION_STOP = "com.example.android.remotecontrol.ACTION_STOP";
+    public static final String ACTION_REQUEST_STATE = "com.example.android.remotecontrol.ACTION_REQUEST_STATE";
+    public static final String ACTION_LISTSEL = "LISTSEL";					//追加3	；リストで選択された曲の処理
+    public static final String ACTION_SYUURYOU = "SYUURYOU";					//追加１	；
+    public static final String ACTION_SYUURYOU_NOTIF = "SYUURYOU_NOTIF";					//追加3	；
+    public static final String ACTION_ACT_CLOSE = "ACT_CLOSE";					//追加4	；
+    public static final String ACTION_KEIZOKU = "KEIZOKU";					//追加2	；
+    public static final String ACTION_REQUEST = "REQUEST";					//次はリクエスト開始
+    public static final String ACTION_PLAY_READ = "PLAY_READ";
+    public static final String ACTION_EQUALIZER = "EQUALIZER";
+    public static final String ACTION_BASS_BOOST = "BASS_BOOST";
+    public static final String ACTION_REVERB = "REVERB";
+    public static final String ACTION_DATA_OKURI = "DATA_OKURI";			//データ送りのみ
+    public static final String ACTION_UKETORI = "UKETORI";					//データ受け取りのみ
+    enum State {	// indicates the state our service:
+        Retrieving,	// the MediaRetriever is retrieving music
+        Stopped,	// media player is stopped and not prepared to play
+        Preparing,	// media player is preparing...
+        Playing, 	// playback active (media player ready!). (but the media player may actually be paused in this state if we don't have audio focus. But we stay in this state so that we know we have to resume playback once we get focus back) playback paused (media player ready!)
+        Paused		// playback paused (media player ready!)
+    }   //public static final String ACTION_ITEMSET = "ITEMSET";						//追加２	；dataReflesh()でアルバム一枚分のタイトル読み込み
 
 //    public MusicService(Context callContext) {
 //        final String TAG = "MusicService";
@@ -102,12 +131,12 @@ public class MusicService extends MediaBrowserService {
                     // be used to cancel the worker
                     .addAction(android.R.drawable.ic_delete, "cancel", intent)
                     .build();*/
-            NotificationCompat.Builder builder  = new NotificationCompat.Builder(getApplicationContext(),channelId);
-            builder.setSmallIcon(R.drawable.ic_launcher);
-            builder.setContentTitle(songTitol);
-            builder.setContentText(artistName + " - " + albumName);
-   //         builder.setLargeIcon(albumArtBitmap);
-            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0));
+//            NotificationCompat.Builder builder  = new NotificationCompat.Builder(getApplicationContext(),channelId);
+//            builder.setSmallIcon(R.drawable.ic_launcher);
+//            builder.setContentTitle(songTitol);
+//            builder.setContentText(artistName + " - " + albumName);
+//   //         builder.setLargeIcon(albumArtBitmap);
+//            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0));
     //        builder.setMediaSession(mediaSession);
 
 //            lpNotification = new Notification.Builder()
@@ -309,8 +338,8 @@ public class MusicService extends MediaBrowserService {
 //                    R.drawable.ffbtn, "next",
 //                    MediaButtonReceiver.buildMediaButtonPendingIntent(this,
 //                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
-            dbMsg +=" ,builder=" + builder.toString();
-            startForeground(NOTIFICATION_ID, builder.build());
+//            dbMsg +=" ,builder=" + builder.toString();
+//            startForeground(NOTIFICATION_ID, builder.build());
 ////android.app.RemoteServiceException$CannotPostForegroundServiceNotificationException: Bad notification for startForeground
 //            //再生中以外ではスワイプで通知を消せるようにする
 //            if (state != PlaybackStateCompat.STATE_PLAYING) {
@@ -337,7 +366,7 @@ public class MusicService extends MediaBrowserService {
         return null;				//サービスの実体を返します
     }
 
-    /**指定されたリストを内部配列に読み込む*/
+    /**指定されたプレイリストの楽曲を内部配列に読み込む*/
     @SuppressLint("Range")
     public List<MediaItem> readCalentList(int playlistId , String listName){
         final String TAG = "readCalentList";
@@ -1226,20 +1255,24 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "initializePlayer";
         String dbMsg="";
         try {
+            Context context = this;                       //getBaseContext();          //getApplicationContext();
             if (exoPlayer == null) {
        //         Intent intent = getIntent();
                 dbMsg="mediaItemList=" + mediaItemList.size() + "件";
+              //         exoPlayer = new ExoPlayer.Builder( context).build();
 
                 lastSeenTracks = Tracks.EMPTY;
-                exoPlayer = new ExoPlayer.Builder( MusicService.this).build();
+                exoPlayer = new ExoPlayer.Builder(context)                     //MusicService.this
+                        .setHandleAudioBecomingNoisy(true)
+                        .build();
 //                if(NowSavedInstanceState != null){
 //                    trackSelectionParameters =
 //                            TrackSelectionParameters.fromBundle(
 //                                    NowSavedInstanceState.getBundle("track_selection_parameters"));
 //                    exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
 //                }
-            //    exoPlayer.addListener(new PlayerEventListener());
-                ///https://www.jisei-firm.com/android_develop44/#toc2///////
+                exoPlayer.addListener(new PlayerEventListener());
+                // https://www.jisei-firm.com/android_develop44/#toc2///////
                 exoPlayer.addListener(new Player.Listener() {
                     @Override
                     public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
@@ -1269,25 +1302,26 @@ public class MusicService extends MediaBrowserService {
                 });
                 ////////https://www.jisei-firm.com/android_develop44/#toc2//
                 exoPlayer.addAnalyticsListener(new EventLogger());
-                exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);
+                exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT,  true);
                 exoPlayer.setPlayWhenReady(startAutoPlay);
-                playerView.setPlayer(exoPlayer);
+       //         playerView.setPlayer(exoPlayer);          //on a null object reference
                 configurePlayerWithServerSideAdsLoader();
-                //		debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_artist);			//debugTextView
-                //		debugViewHelper.start();
+
             }
-//			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
-//			if (haveStartPosition) {
-//				exoPlayer.seekTo(startItemIndex, startPosition);
-//			}
-            mediaSession = new MediaSession.Builder(getApplicationContext(), exoPlayer).build();
-            exoPlayer.setMediaItems(mediaItemList, true);
-            //	exoPlayer.playWhenReady = true;
             dbMsg += "[" +mIndex + "/" + mediaItemList.size() + "件]" + saiseiJikan + "から";
+
+            exoPlayer.setMediaItems(mediaItemList, true);
             exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
             exoPlayer.prepare();
             updateButtonVisibility();
-            CreateNotification();
+
+            mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
+            //Session ID must be unique. ID=
+            // java.lang.IllegalStateException: Expected 1 broadcast receiver that handles android.intent.action.MEDIA_BUTTON, found 3
+            //	exoPlayer.playWhenReady = true;
+//            mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);
+//            mediaStyle.setShowActionsInCompactView(0,1,2);
+            //      CreateNotification();         setMediaNotificationProvider
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1358,7 +1392,7 @@ public class MusicService extends MediaBrowserService {
 
 
     /**サービスが最初に作成されたときに 1 回限りのセットアップ処理を行う
-     *　onStartCommandより先
+     *　onStartCommandより先なのでパラメータは渡っていない
      * extends MediaBrowserServiceCompat だとActiviteyと同様のあつかいになる？
      *
      * */

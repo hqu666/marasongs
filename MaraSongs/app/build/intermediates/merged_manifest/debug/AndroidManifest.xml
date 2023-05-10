@@ -96,6 +96,18 @@
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
+
+        <!-- java.lang.IllegalStateException: Expected 1 broadcast receiver that handles android.intent.action.MEDIA_BUTTON, found 3 -->
+        <!-- <receiver -->
+        <!-- android:name=".MusicPlayerReceiver" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+
+
+        <!-- &lt;!&ndash; action android:name="android.media.AUDIO_BECOMING_NOISY" /> &ndash;&gt; -->
+        <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.ads.AD_MANAGER_APP" -->
         <!-- android:value="true" /> -->
@@ -152,39 +164,30 @@
             android:name="com.hijiyam_koubou.marasongs.wKit"
             android:screenOrientation="fullSensor" />
 
-        <receiver
-            android:name="com.hijiyam_koubou.marasongs.MusicPlayerReceiver"
-            android:exported="true" >
-            <intent-filter>
+        <!-- <service -->
+        <!-- android:name=".MusicPlayerService" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" /> -->
+        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" /> -->
+        <!-- <action android:name="android.media.browse.MediaBrowserService" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
 
-                <!-- action android:name="android.media.AUDIO_BECOMING_NOISY" /> -->
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
 
-        <service
-            android:name="com.hijiyam_koubou.marasongs.MusicPlayerService"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" />
-                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" />
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
-
-        <receiver
-            android:name="androidx.media.session.MediaButtonReceiver"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
+        <!-- <receiver -->
+        <!-- android:name="androidx.media.session.MediaButtonReceiver" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <receiver
             android:name="com.hijiyam_koubou.marasongs.NotifRecever"
             android:exported="true" >

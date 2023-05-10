@@ -52,11 +52,11 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.6.1'
  //   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.gms:play-services-ads:22.0.0'
     //play-servicesは配布されていない
-    implementation 'androidx.media:media:1.6.0'
+//    implementation 'androidx.media:media:1.6.0'
     //    appcompat-v7が通らなくなった場合
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.browser:browser:1.5.0'
@@ -65,8 +65,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
 // ExoPlayer
-    implementation 'androidx.media3:media3-ui:1.0.1'
     implementation 'androidx.media3:media3-exoplayer:1.0.1'
+    implementation 'androidx.media3:media3-ui:1.0.1'
     implementation 'androidx.media3:media3-session:1.0.1'
     implementation 'androidx.media3:media3-exoplayer-ima:1.0.1'
     implementation 'androidx.media3:media3-datasource-cronet:1.0.1'

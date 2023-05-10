@@ -1,6 +1,6 @@
 package com.hijiyam_koubou.marasongs;
 
-import static com.hijiyam_koubou.marasongs.MusicPlayerService.ACTION_STATE_CHANGED;
+import static com.hijiyam_koubou.marasongs.MusicService.ACTION_STATE_CHANGED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -27,21 +27,21 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 			if(rAction == null){
 				rAction = ACTION_STATE_CHANGED;
 			}
-			Intent MPSIntent = new Intent(context, MusicPlayerService.class);
+			Intent MPSIntent = new Intent(context, MusicService.class);
 			dbMsg +=":" + (
 					rAction == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY? "ACTION_AUDIO_BECOMING_NOISY" :
 							rAction== Intent.ACTION_MEDIA_BUTTON ? "ボタン" : "不明");
 				if (rAction.equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
 					dbMsg +=",Headphonesが外された" ;															//offしか発生しない
 					Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
-//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+//					MPSIntent.setAction(MusicService.ACTION_PAUSE);
 //					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
-//					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+//					context.startService(MPSIntent);	//startService(new Intent(MusicService.ACTION_PAUSE));
 				}else if (rAction.equals(android.media.AudioManager.ACTION_HEADSET_PLUG)) {
 					dbMsg +=",Headphonessoucy装着" ;
-//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+//					MPSIntent.setAction(MusicService.ACTION_PAUSE);
 //					dbMsg +=">指定するAction>" + MPSIntent.getAction();/////////////////////////////////////
-//					context.startService(MPSIntent);	//startService(new Intent(MusicPlayerService.ACTION_PAUSE));
+//					context.startService(MPSIntent);	//startService(new Intent(MusicService.ACTION_PAUSE));
 				} else if (rAction.equals(Intent.ACTION_MEDIA_BUTTON)) {
 					dbMsg= dbMsg +",getExtras=" + intent.getExtras();
 					if(  intent.getExtras() != null ){
@@ -69,22 +69,22 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 					case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 //						MPSIntent.putExtra("mIndex",mIndex);	//現リスト中の順番;
 //						registerReceiver(mReceiver, mFilter);
-						MPSIntent.setAction(MusicPlayerService.ACTION_PLAYPAUSE);
+						MPSIntent.setAction(MusicService.ACTION_PLAYPAUSE);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_PLAY:
-						MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+						MPSIntent.setAction(MusicService.ACTION_PLAY);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_PAUSE:
-						MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+						MPSIntent.setAction(MusicService.ACTION_PAUSE);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_STOP:
-						MPSIntent.setAction(MusicPlayerService.ACTION_STOP);
+						MPSIntent.setAction(MusicService.ACTION_STOP);
 						break;
 					case KeyEvent.KEYCODE_MEDIA_NEXT:
-						MPSIntent.setAction(MusicPlayerService.ACTION_SKIP);;
+						MPSIntent.setAction(MusicService.ACTION_SKIP);;
 						break;
 					case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-						MPSIntent.setAction(MusicPlayerService.ACTION_REWIND);
+						MPSIntent.setAction(MusicService.ACTION_REWIND);
 						break;
 					}
 					dbMsg +=" ,ロックスクリーンから" + MPSIntent.getAction();/////////////////////////////////////

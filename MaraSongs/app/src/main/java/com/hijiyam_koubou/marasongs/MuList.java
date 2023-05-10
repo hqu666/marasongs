@@ -37,7 +37,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.support.v4.media.session.PlaybackStateCompat;
+//import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
@@ -306,7 +306,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String pl_file_name = ""; 		//汎用プレイリストのファイル名
 	public String pStrlist = "";			//汎用プレイリストの内容
 	//サービス
-	/**MusicPlayerService*/
+	/**MusicService*/
 	public Intent MPSIntent;
 	public String psSarviceUri;
 	////メニューインデックス*******************************************************************/
@@ -405,7 +405,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public static String getPrefStr(String keyNmae , String defaultVal,Context context) {        //プリファレンスの読込み
 		String retStr = "";
 		final String TAG = "getPrefStr";
-		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		String dbMsg="[MusicService]keyNmae=" + keyNmae;
 		MyUtil MyUtil = new MyUtil();
 		retStr = MyUtil.getPrefStr(keyNmae , defaultVal,context);
 		return retStr;
@@ -414,7 +414,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public static boolean setPrefbool(String keyNmae , boolean wrightVal , Context context) {        //プリファレンスの読込み
 		boolean retBool = false;
 		final String TAG = "setPrefbool";
-		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		String dbMsg="[MusicService]keyNmae=" + keyNmae;
 		MyUtil MyUtil = new MyUtil();
 		retBool = MyUtil.setPrefBool(keyNmae , wrightVal,context);
 		return retBool;
@@ -423,7 +423,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
 		boolean retBool = false;
 		final String TAG = "setPrefInt";
-		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		String dbMsg="[MusicService]keyNmae=" + keyNmae;
 		MyUtil MyUtil = new MyUtil();
 		retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
 		return retBool;
@@ -432,7 +432,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
 		boolean retBool = false;
 		final String TAG = "setPrefStr";
-		String dbMsg="[MusicPlayerService]keyNmae=" + keyNmae;
+		String dbMsg="[MusicService]keyNmae=" + keyNmae;
 		MyUtil MyUtil = new MyUtil();
 		retBool = MyUtil.setPreStr(keyNmae , wrightVal,context);
 		return retBool;
@@ -651,8 +651,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //						.setPositiveButton(getResources().getString(R.string.quit_posi_bt) , new DialogInterface.OnClickListener() {
 //							@Override
 //							public void onClick(DialogInterface dialog , int which) {
-//							//	Intent intent = new Intent(getApplication(), MusicPlayerService.class);
-//								MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+//							//	Intent intent = new Intent(getApplication(), MusicService.class);
+//								MPSIntent.setAction(MusicService.ACTION_SYUURYOU_NOTIF);
 //								startService(MPSIntent) ;
 //								quitBody();
 //							}
@@ -4162,13 +4162,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 				dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
 				mFilter = new IntentFilter();
-		//		mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+		//		mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				registerReceiver(mReceiver, mFilter);
 			}
 	//		MusicService MS = new MusicService(this);
 			if( MPSIntent == null){
 				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-		//		MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+		//		MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
 				dbMsg +=  ",MPSIntent=null";
 			}else{
 				stopService(MPSIntent);
@@ -4182,13 +4182,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
 			MPSIntent.putExtra("continu_status","toPlay");
 			if(! IsPlaying){
-				//		MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+				//		MPSIntent.setAction(MusicService.ACTION_PAUSE);
 				IsPlaying = false;
 			}else{
-				//		MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+				//		MPSIntent.setAction(MusicService.ACTION_PLAY);
 				IsPlaying = true;
 			}
-//			MPSIntent.setAction(MusicPlayerService.ACTION_START_SERVICE);
+//			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 //			dbMsg += ">action>" + MPSIntent.getAction();
 			dbMsg += " , IsPlaying=" + IsPlaying;
 			MPSIntent.putExtra("IsPlaying",IsPlaying);
@@ -4332,7 +4332,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	//サービス
 	public ComponentName MPSName;
-	public MusicPlayerService MPS;
+	public MusicService MPS;
 	public MusicReceiver mReceiver;
 	Handler mHandler = new Handler();
 	public IntentFilter mFilter;
@@ -4423,7 +4423,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							String state = intent.getStringExtra("state");
 							dbMsg += ",state=" + state;
 							String action = intent.getStringExtra("action");
-							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicPlayerService]で取得、sendPlayerState[MusicPlayerService]で初期値取得
+							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicService]で取得、sendPlayerState[MusicService]で初期値取得
 							dbMsg += "[再生ポジション=" + mcPosition + "/";
 							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
 							dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
@@ -4511,7 +4511,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg= dbMsg +",mReceiver=" + mReceiver;////////////////////////
 			if( mReceiver== null ){
 				mFilter = new IntentFilter();
-				mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				mReceiver = new MusicReceiver();
 				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
 				//that was originally registered here. Are you missing a call to unregisterReceiver()?
@@ -6061,8 +6061,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			Uri imageUri = null;
 			if(imageUriStr != null){
 				imageUri = Uri.parse(imageUriStr);
+				MuList.this.objMap.put("img" , imageUri.toString() );			//アルバムアートUriだけを返す
 			}
-			MuList.this.objMap.put("img" , imageUri.toString() );			//アルバムアートUriだけを返す
 			MuList.this.plAL.add( objMap);
 
 			MediaMetadata metadata = new MediaMetadata.Builder()
@@ -9451,11 +9451,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				back2Player( sousaRecordUrl);												//プレイヤーにuriを送る
 			} else {
 				if(MPSIntent == null){
-					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+					MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
 					dbMsg += ">>" + MPSIntent;/////////////////////////////////////
 				}
 				dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
-				MPSIntent.setAction(MusicPlayerService.ACTION_REQUEST);
+//				MPSIntent.setAction(MusicService.ACTION_REQUEST);
 				dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
 				int tugiList_id = tuikaSakiListID;
 				dbMsg += "[" + tuikaSakiListID;/////////////////////////////////////
@@ -9517,11 +9517,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			boolean kakikomi = myEditor.commit();
 			dbMsg +=",書き込み=" + kakikomi;	////////////////
 			if(MPSIntent == null){
-				MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
 				dbMsg += ">>" + MPSIntent;/////////////////////////////////////
 			}
 			dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
-			MPSIntent.setAction(MusicPlayerService.ACTION_REQUEST);
+		//	MPSIntent.setAction(MusicService.ACTION_REQUEST);
 			dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
 			int tugiList_id = 0;
 			dbMsg += "[" + tuikaSakiListID;/////////////////////////////////////
@@ -10041,12 +10041,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 ////					psSarviceUri = getPackageName() + getResources().getString(R.string.psSarviceUri);		//プレイヤーサービス	"com.hijiyam_koubou.marasongs.PlayerService";
 ////					dbMsg +=  ">>psSarviceUri=" + psSarviceUri;
 ////					mFilter = new IntentFilter();
-////					mFilter.addAction(MusicPlayerService.ACTION_STATE_CHANGED);
+////					mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 ////					registerReceiver(mReceiver, mFilter);
 //////					dbMsg +=">>" + psSarviceUri.toString();
 ////				}
 ////				if( MPSIntent == null){
-////					MPSIntent = new Intent(getApplication(),MusicPlayerService.class);	//parsonalPBook.thisではメモリーリークが起こる
+////					MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
 ////					dbMsg +=  ",MPSIntent=null";
 ////					MPSIntent.putExtra("saiseiJikan",saiseiJikan);
 ////					MPSIntent.putExtra("mIndex",mIndex);
@@ -10060,7 +10060,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 ////				MPSIntent.putExtra("continu_status","toPlay");
 //				if (lp_ppPButton.getContentDescription().equals(getResources().getText(R.string.play)) ) {			//再生中か
 //					dbMsg += ".getAction=" + MPSIntent.getAction();/////////////////////////////////////
-//					MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+//					MPSIntent.setAction(MusicService.ACTION_PAUSE);
 //					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
 //					dbMsg +=  ">>startService";
 //					MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
@@ -10069,7 +10069,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
 //					lp_chronometer.stop();
 //				} else {
-//					MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//					MPSIntent.setAction(MusicService.ACTION_PLAY);
 //					dbMsg += ">>" + MPSIntent.getAction();/////////////////////////////////////
 //					dbMsg +=  ">>startService";
 //					MPSName = startService(MPSIntent);	//
@@ -10083,9 +10083,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				send2Player(dataFN ,myPreferences.nowList,false );
 //			} else if (v == lp_stop) {
 //				dbMsg +=  "クリックされたのはlp_stop";
-//			//	Intent intent = new Intent(getApplication(), MusicPlayerService.class);
-//				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);
-////				MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU_NOTIF);
+//			//	Intent intent = new Intent(getApplication(), MusicService.class);
+//				MPSIntent.setAction(MusicService.ACTION_SYUURYOU);
+////				MPSIntent.setAction(MusicService.ACTION_SYUURYOU_NOTIF);
 //				dbMsg +=  ">>startService";
 //				startService(MPSIntent) ;
 //				quitBody();
@@ -11446,13 +11446,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			}
 			dbMsg +=",IsPlaying= " + IsPlaying;
 			if(!IsPlaying) {			//停止していれば
-				MPSIntent.setAction(MusicPlayerService.ACTION_PAUSE);
+				MPSIntent.setAction(MusicService.ACTION_PAUSE);
 		//		MPSName = startService(MPSIntent);
 				dbMsg += " ,ComponentName=" + MPSName;/////////////////////////////////////
 //				lp_ppPButton.setImageResource(R.drawable.play_notif);
 //				lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));			//play
 			} else {
-//							MPSIntent.setAction(MusicPlayerService.ACTION_PLAY);
+//							MPSIntent.setAction(MusicService.ACTION_PLAY);
 //							MPSName = startService(MPSIntent);
 //							dbMsg += " ,MPSName=" + MPSName;/////////////////////////////////////
 //				lp_ppPButton.setImageResource(R.drawable.pouse_notif);
@@ -11772,13 +11772,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if( 0 < serviceList.size() ){
 					dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
 					for(String serviceName : serviceList){
-						if(serviceName.contains("MusicPlayerService")){
+						if(serviceName.contains("MusicService")){
 							dbMsg +=  ",MPSIntent=" + MPSIntent;/////////////////////////////////////
 							if( MPSIntent == null){
-								MPSIntent = new Intent(getApplication(), MusicPlayerService.class);
+								MPSIntent = new Intent(getApplication(), MusicService.class);
 								dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
 							}
-							MPSIntent.setAction(MusicPlayerService.ACTION_SYUURYOU);					//service内のquitMe
+				//			MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
 							startService(MPSIntent);
 							stopService(MPSIntent);
 						}else if(serviceName.contains("NotifRecever")){
@@ -11810,8 +11810,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			List<android.app.ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
 //			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	// クラス名を比較
 //				dbMsg += curr.getClass().getName();/////////////////////////////////////
-//				if (curr.service.getClassName().equals(MusicPlayerService.class.getName())) {
-//					dbMsg += ">>実行中のサービス="+ MusicPlayerService.class.getName() +"と一致";/////////////////////////////////////
+//				if (curr.service.getClassName().equals(MusicService.class.getName())) {
+//					dbMsg += ">>実行中のサービス="+ MusicService.class.getName() +"と一致";/////////////////////////////////////
 //					if( extras== null ){
 ////						MuList.this.finish();
 //						Intent intent = new Intent(getApplication(), MaraSonActivity.class);
