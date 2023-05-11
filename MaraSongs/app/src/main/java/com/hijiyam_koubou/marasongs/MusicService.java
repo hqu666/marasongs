@@ -1,6 +1,8 @@
 package com.hijiyam_koubou.marasongs;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
@@ -44,14 +47,14 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-@SuppressLint("InlinedApi")
+@UnstableApi @SuppressLint("InlinedApi")
 public class MusicService extends MediaBrowserService {
     public OrgUtil ORGUT;						//自作関数集
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
-    private MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
-    private androidx.media3.session.MediaStyleNotificationHelper.MediaStyle mediaStyle;
+    public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
+    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
     //    private MediaSessionCompat.Token sessionToken;
 //    private PlaybackStateCompat.Builder stateBuilder;
     public List<MediaItem> mediaItemList;
@@ -68,6 +71,7 @@ public class MusicService extends MediaBrowserService {
 //	public Notification lpNotification;
     public MuList ML;
 
+    public Notification notification;
     private String channelId = "default";
     final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
     public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
@@ -1314,13 +1318,38 @@ public class MusicService extends MediaBrowserService {
             exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
             exoPlayer.prepare();
             updateButtonVisibility();
-
+      //      	exoPlayer.playWhenReady = true;
             mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
-            //Session ID must be unique. ID=
-            // java.lang.IllegalStateException: Expected 1 broadcast receiver that handles android.intent.action.MEDIA_BUTTON, found 3
-            //	exoPlayer.playWhenReady = true;
-//            mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);
-//            mediaStyle.setShowActionsInCompactView(0,1,2);
+//            Notification noti = new NotificationCompat.Builder()
+//                    .setSmallIcon(R.drawable.ic_launcher)
+//                    .setContentTitle("Track title")
+//                    .setContentText("Artist - Album")
+//                    .setLargeIcon(albumArtBitmap))
+//                    .setStyle(new NotificationCompat.MediaStyle()
+//                    .setMediaSession(mediaSession))
+//                    .build();
+            mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
+            mediaStyle.setShowActionsInCompactView(0,1,2);
+            PendingIntent prevPendingIntent = null;
+            PendingIntent pausePendingIntent = null;
+            PendingIntent nextPendingIntent = null;
+            //  https://developer.android.com/training/notify-user/expanded?hl=ja
+            notification = new NotificationCompat.Builder(context, channelId)
+                    // Show controls on lock screen even when user hides sensitive content.
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                    .setSmallIcon(R.drawable.ic_launcher)
+//                    // setShowActionsInCompactView に該当するボタンが必要。アイコンは指定のリソースは無視される
+                    .addAction(R.drawable.rewbtn, "Previous", prevPendingIntent) // #0
+                    .addAction(R.drawable.pouse_notif, "Pause", pausePendingIntent)  // #1
+                    .addAction(R.drawable.ffbtn, "Next", nextPendingIntent)     // #2
+//                    // Apply the media style template
+                    .setStyle(mediaStyle)
+                    .setContentTitle(songTitol)
+                    .setContentText(artistName+" - "+ albumName)
+                    .setLargeIcon(albumArtBitmap)
+                    .build();
+            startForeground(NOTIFICATION_ID, notification);
+
             //      CreateNotification();         setMediaNotificationProvider
             myLog(TAG,dbMsg);
         } catch (Exception e) {

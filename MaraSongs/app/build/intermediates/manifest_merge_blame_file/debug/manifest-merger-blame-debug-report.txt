@@ -80,7 +80,7 @@
 36-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:30:5-32:38
 37        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
 37-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:31:9-65
-38        android:maxSdkVersion="29" />
+38        android:maxSdkVersion="31" />
 38-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:32:9-35
 39    <uses-permission
 39-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:33:5-35:38
