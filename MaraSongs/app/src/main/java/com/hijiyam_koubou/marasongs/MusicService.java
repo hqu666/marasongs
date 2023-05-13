@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 @UnstableApi @SuppressLint("InlinedApi")
 public class MusicService extends MediaBrowserService {
+    public Context context;
     public OrgUtil ORGUT;						//自作関数集
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
@@ -72,6 +73,7 @@ public class MusicService extends MediaBrowserService {
     public MuList ML;
 
     public Notification notification;
+    public NotificationCompat.Builder notificationBuilder;
     private String channelId = "default";
     final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
     public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
@@ -121,234 +123,27 @@ public class MusicService extends MediaBrowserService {
     ///通知の作成////////////////////
     //通知を作成、サービスをForegroundにする
     /// https://developer.android.com/guide/topics/media-apps/audio-app/building-a-mediabrowserservice?hl=ja
-    private void CreateNotification() {
-        final String TAG = "CreateNotification";
+    private void redrowNotification(MediaItem mediaItem) {
+        final String TAG = "redrowNotification";
         String dbMsg="";
         try{
-/*            PendingIntent intent = WorkManager.getInstance(getApplicationContext()).createCancelPendingIntent(getId());
-            lpNotification = new NotificationCompat.Builder(context, id)
-                    .setContentTitle(title)
-                    .setTicker(title)
-                    .setSmallIcon(R.drawable.ic_work_notification)
-                    .setOngoing(true)
-                    // Add the cancel action to the notification which can
-                    // be used to cancel the worker
-                    .addAction(android.R.drawable.ic_delete, "cancel", intent)
-                    .build();*/
-//            NotificationCompat.Builder builder  = new NotificationCompat.Builder(getApplicationContext(),channelId);
-//            builder.setSmallIcon(R.drawable.ic_launcher);
-//            builder.setContentTitle(songTitol);
-//            builder.setContentText(artistName + " - " + albumName);
-//   //         builder.setLargeIcon(albumArtBitmap);
-//            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0));
-    //        builder.setMediaSession(mediaSession);
+            dbMsg += "[" + exoPlayer.getCurrentMediaItemIndex()  + "/" + mediaItemList.size() + "]";
+            dbMsg += ",artist=" + artistName;
+            dbMsg += ",albumTitle=" + albumName;
+            dbMsg += ",title=" + songTitol;
+//            mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
+//            mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
+//            mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
+//            Uri imageUri = mediaItem.mediaMetadata.artworkUri;
+//            Bitmap albumArtBitmap = ORGUT.retBitMap(imageUri.toString() , 500 , 500 , getResources());
+//            dbMsg += ",albumArtBitmap=" + albumArtBitmap.getWidth() + "×" + albumArtBitmap.getHeight();
+            notificationBuilder.setStyle(mediaStyle);
+            notificationBuilder .setContentTitle(songTitol);
+            notificationBuilder.setContentText(artistName+" - "+ albumName);
+            notificationBuilder.setLargeIcon(albumArtBitmap);
 
-//            lpNotification = new Notification.Builder()
-//                    .setSmallIcon(R.drawable.ic_stat_player)
-//                    .setContentTitle("Track title")
-//                    .setContentText("Artist - Album")
-//                    .setLargeIcon(albumArtBitmap))
-//                    .setStyle(new Notification.MediaStyle()
-//                    .setMediaSession(mediaSession))
-//                    .build();
-
-//            Context context = getApplicationContext();
-//            MediaControllerCompat controller = mediaSession.getController();        //MediaControllerCompat.getMediaController(MuList.class);  //mediaSession.getController();
-//            MediaMetadataCompat mediaMetadata = controller.getMetadata();
-//            MediaDescriptionCompat description = mediaMetadata.getDescription();
-//
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
-//
-//            builder
-//                    // Add the metadata for the currently playing track
-//                    .setContentTitle(description.getTitle())
-//                    .setContentText(description.getSubtitle())
-//                    .setSubText(description.getDescription())
-//                    .setLargeIcon(description.getIconBitmap())
-//
-//                    // Enable launching the player by clicking the notification
-//                    .setContentIntent(controller.getSessionActivity())
-//
-//                    // Stop the service when the notification is swiped away
-//                    .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context,
-//                            PlaybackStateCompat.ACTION_STOP))
-//
-//                    // Make the transport controls visible on the lockscreen
-//                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//
-//                    // Add an app icon and set its accent color
-//                    // Be careful about the color
-//                    .setSmallIcon(R.drawable.notification_icon)
-//                    .setColor(ContextCompat.getColor(context, R.color.primaryDark))
-//
-//                    // Add a pause button
-//                    .addAction(new NotificationCompat.Action(
-//                            R.drawable.pause, getString(R.string.pause),
-//                            MediaButtonReceiver.buildMediaButtonPendingIntent(context,
-//                                    PlaybackStateCompat.ACTION_PLAY_PAUSE)))
-//
-//                    // Take advantage of MediaStyle features
-//                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-//                            .setMediaSession(mediaSession.getSessionToken())
-//                            .setShowActionsInCompactView(0)
-//
-//                            // Add a cancel button
-//                            .setShowCancelButton(true)
-//                            .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context,
-//                                    PlaybackStateCompat.ACTION_STOP)));
-//
-//            // Display the notification and place the service in the foreground
-//            startForeground(id, builder.build());
-////            dbMsg +=" ,mSession=" + mSession.toString();
-            /* V4
-            MediaControllerCompat controller = mediaSession.getController();
-            MediaMetadataCompat mediaMetadata = controller.getMetadata();
-            dbMsg +=" ,mediaMetadataのsize=" + mediaMetadata.size();
-
-            if (mediaMetadata == null && !mSession.isActive()) return;
-
-            MediaDescriptionCompat description = mediaMetadata.getDescription();
-            dbMsg +=" ,description=" + description.toString();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-            String mediaID = description.getMediaId();
-            dbMsg +=" ,[" + mediaID + "]";
-            CharSequence nowTitle = description.getTitle();
-            dbMsg +=" ,nowTitle=" + nowTitle;
-            CharSequence nowSubtitle = description.getSubtitle();
-            dbMsg +=" ,nowSubtitle=" + nowSubtitle;
-            CharSequence nowDescription = description.getDescription();
-            dbMsg +=" ,nowDescription=" + nowDescription;
-            Bitmap iconBitmap = description.getIconBitmap();
-            if(iconBitmap == null){
-                dbMsg +=" ,iconBitmap=null";
-                iconBitmap=mLibrary.getAlbumBitmap(this.rContext,mediaID);
-                dbMsg +=">>";
-            }
-            dbMsg +=" ,iconBitmap(" + iconBitmap.getWidth() + " × " + iconBitmap.getHeight() + ")";
-            */
-
-//            // Get the session's metadata
-//            List<MediaSession.ControllerInfo> controller = mediaSession.getConnectedControllers();
-
-//            MediaMetadataCompat mediaMetadata = controller.getMetadata();
-//            MediaDescriptionCompat description = mediaMetadata.getDescription();
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
-//
-//            builder
-//                    // Add the metadata for the currently playing track
-//                    .setContentTitle(description.getTitle())
-//                    .setContentText(description.getSubtitle())
-//                    .setSubText(description.getDescription())
-//                    .setLargeIcon(description.getIconBitmap())
-//
-//                    // Enable launching the player by clicking the notification
-//                    .setContentIntent(controller.getSessionActivity())
-//
-//                    // Stop the service when the notification is swiped away
-//                    .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(getApplicationContext(),
-//                            PlaybackStateCompat.ACTION_STOP))
-//
-//                    // Make the transport controls visible on the lockscreen
-//                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//
-//                    // Add an app icon and set its accent color
-//                    // Be careful about the color
-//                    .setSmallIcon(R.drawable.ic_launcher_notif)
-//                    .setColor(ContextCompat.getColor(getApplicationContext(), R.color.primaryDark))
-//
-//                    // Add a pause button
-//                    .addAction(new NotificationCompat.Action(
-//                            R.drawable.pouse_notif, getString(R.string.pause),
-//                            MediaButtonReceiver.buildMediaButtonPendingIntent(getApplicationContext(),
-//                                    PlaybackStateCompat.ACTION_PLAY_PAUSE)))
-//
-//                    // Take advantage of MediaStyle features
-//                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-//                            .setMediaSession(mediaSession.getSessionToken())
-//                            .setShowActionsInCompactView(0)
-//
-//                            // Add a cancel button
-//                            .setShowCancelButton(true)
-//                            .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(getApplicationContext(),
-//                                    PlaybackStateCompat.ACTION_STOP)));
-//
-//            // Display the notification and place the service in the foreground
-//            startForeground(NOTIFICATION_ID, builder.build());
-
-//
-//            builder
-//                    //現在の曲の情報を設定
-//                    .setContentTitle(nowTitle)
-//                    .setContentText(nowSubtitle)
-//                    .setSubText(nowDescription)
-//                    .setLargeIcon(iconBitmap)
-//
-//                    // 通知をクリックしたときのインテントを設定
-//                    .setContentIntent(pendingIntent)
-//
-//                    // 通知がスワイプして消された際のインテントを設定
-//                    .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-//                            PlaybackStateCompat.ACTION_STOP))
-//
-//                    // 通知の範囲をpublicにしてロック画面に表示されるようにする
-//                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//                    //exo_controls_play
-//                    .setSmallIcon(R.drawable.play_notif)
-//                    //通知の領域に使う色を設定
-//                    //Androidのバージョンによってスタイルが変わり、色が適用されない場合も多い
-//                    .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-//
-//                    // Media Styleを利用する
-//                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mSession.getSessionToken())
-//                            //.setMediaSession(MediaSessionCompat.Token.fromToken(mSession.getSessionToken()))
-//                            .setShowActionsInCompactView(1)			//0,1,3,4
-//                    );
-//
-////				.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-////						.setMediaSession(mSession.getSessionToken())
-////						//通知を小さくたたんだ時に表示されるコントロールのインデックスを設定
-////						.setShowActionsInCompactView(1));
-//
-//            // Android4.4以前は通知をスワイプで消せないので
-//            //キャンセルボタンを表示することで対処
-//            //今回はminSDKが21なので必要ない
-//            //.setShowCancelButton(true)
-//            //.setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-//            //        PlaybackStateCompat.ACTION_STOP)));
-//
-//            //通知のコントロールの設定
-//            //exo_controls_previous ?
-//            builder.addAction(new NotificationCompat.Action(
-//                    R.drawable.rewbtn, "prev",
-//                    MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-//                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)));
-//
-//            //プレイヤーの状態で再生、一時停止のボタンを設定
-//            PlaybackStateCompat stateObj = controller.getPlaybackState();
-//            final int state = stateObj == null ? PlaybackStateCompat.STATE_NONE : stateObj.getState();
-//            dbMsg +=" ,state=" + state;
-//            if (state == PlaybackStateCompat.STATE_PLAYING) {
-//                builder.addAction(new NotificationCompat.Action(
-//                        R.drawable.pouse_notif, "pause",
-//                        MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-//                                PlaybackStateCompat.ACTION_PAUSE)));
-//            } else {
-//                builder.addAction(new NotificationCompat.Action(
-//                        R.drawable.play_notif, "play",
-//                        MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-//                                PlaybackStateCompat.ACTION_PLAY)));
-//            }
-//            builder.addAction(new NotificationCompat.Action(
-//                    R.drawable.ffbtn, "next",
-//                    MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-//                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
-//            dbMsg +=" ,builder=" + builder.toString();
-//            startForeground(NOTIFICATION_ID, builder.build());
-////android.app.RemoteServiceException$CannotPostForegroundServiceNotificationException: Bad notification for startForeground
-//            //再生中以外ではスワイプで通知を消せるようにする
-//            if (state != PlaybackStateCompat.STATE_PLAYING) {
-//                stopForeground(false);
-//            }
+            notificationBuilder.build();
+            startForeground(NOTIFICATION_ID, notification);
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
@@ -873,6 +668,7 @@ public class MusicService extends MediaBrowserService {
         try {
 
             //	debugRootView.setVisibility(View.VISIBLE);
+            myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
@@ -885,11 +681,29 @@ public class MusicService extends MediaBrowserService {
             final String TAG = "onPlaybackStateChanged";
             String dbMsg="[PlayerEventListener]";
             try {
-
-                if (playbackState == Player.STATE_ENDED) {
+                dbMsg += ",playbackState=" + playbackState;
+                if (playbackState == Player.PLAYBACK_SUPPRESSION_REASON_NONE) {          //0
+                    dbMsg += "=PLAYBACK_SUPPRESSION_REASON_NONE";
+                }else if (playbackState == Player.STATE_IDLE) {          //1
+                    dbMsg += "=STATE_IDLE";
+                }else if (playbackState == Player.PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS) {          //1
+                    dbMsg += "=PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS";
+                }else if (playbackState == Player.STATE_BUFFERING) {          //2
+                    dbMsg += "=STATE_BUFFERING";
+                }else if (playbackState == Player.STATE_READY) {          //3
+                    dbMsg += "=STATE_READY";
+                }else if (playbackState == Player.STATE_ENDED) {          //4
+                    dbMsg += "=STATE_ENDED";
                     showControls();
-                }
+                }else if (playbackState == Player.EVENT_PLAY_WHEN_READY_CHANGED) {          //5
+                    dbMsg += "=EVENT_PLAY_WHEN_READY_CHANGED";
+                }else if (playbackState == Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM) {          //6
+                    dbMsg += "=COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM";
+                }else if (playbackState == Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED) {          //6
+                    dbMsg += "=EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED";
+                }   //2:選曲時、3
                 updateButtonVisibility();
+                myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
             }
@@ -901,14 +715,15 @@ public class MusicService extends MediaBrowserService {
             final String TAG = "onPlayerError";
             String dbMsg="[PlayerEventListener]";
             try {
-
-                if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
+                dbMsg += ",errorCode=" + error.errorCode;
+                if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {           //1002
                     exoPlayer.seekToDefaultPosition();
                     exoPlayer.prepare();
                 } else {
                     updateButtonVisibility();
                     showControls();
                 }
+                myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
             }
@@ -920,20 +735,25 @@ public class MusicService extends MediaBrowserService {
             final String TAG = "onTracksChanged";
             String dbMsg="[PlayerEventListener]";
             try {
-
                 updateButtonVisibility();
                 if (tracks == lastSeenTracks) {
+                    dbMsg += ",lastSeenTracks=" + lastSeenTracks;
+                    myLog(TAG,dbMsg);
                     return;
                 }
+                dbMsg += ",TRACK_TYPE_VIDEO=" + tracks.containsType(C.TRACK_TYPE_VIDEO);
                 if (tracks.containsType(C.TRACK_TYPE_VIDEO)
-                        && !tracks.isTypeSupported(C.TRACK_TYPE_VIDEO, /* allowExceedsCapabilities= */ true)) {
+                        && !tracks.isTypeSupported(C.TRACK_TYPE_VIDEO, /* allowExceedsCapabilities= */ true)) {         //TRACK_TYPE_VIDEO:2
                     showToast("Media includes video tracks, but none are playable by this device");
                 }
+                dbMsg += ",TRACK_TYPE_AUDIO=" + tracks.containsType(C.TRACK_TYPE_AUDIO);
                 if (tracks.containsType(C.TRACK_TYPE_AUDIO)
-                        && !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {
+                        && !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {        //TRACK_TYPE_VIDEO:1
                     showToast("Media includes audio tracks, but none are playable by this device");
                 }
-                lastSeenTracks = tracks;	} catch (Exception e) {
+                lastSeenTracks = tracks;
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
             }
 
@@ -947,6 +767,7 @@ public class MusicService extends MediaBrowserService {
         try {
 
             serverSideAdsLoader.setPlayer(exoPlayer);
+            myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
@@ -992,6 +813,7 @@ public class MusicService extends MediaBrowserService {
                 builder.setDrmConfiguration(
                         drmConfiguration.buildUpon().setKeySetId(downloadRequest.keySetId).build());
             }
+            myLog(TAG,dbMsg);
             return builder.build();
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1263,7 +1085,7 @@ public class MusicService extends MediaBrowserService {
             if (exoPlayer == null) {
        //         Intent intent = getIntent();
                 dbMsg="mediaItemList=" + mediaItemList.size() + "件";
-              //         exoPlayer = new ExoPlayer.Builder( context).build();
+        //        exoPlayer = new ExoPlayer.Builder( context).build();
 
                 lastSeenTracks = Tracks.EMPTY;
                 exoPlayer = new ExoPlayer.Builder(context)                     //MusicService.this
@@ -1276,32 +1098,60 @@ public class MusicService extends MediaBrowserService {
 //                    exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
 //                }
                 exoPlayer.addListener(new PlayerEventListener());
-                // https://www.jisei-firm.com/android_develop44/#toc2///////
                 exoPlayer.addListener(new Player.Listener() {
+                    /**曲変更などのイベント*/
                     @Override
                     public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
-                        List<Integer> eventList = new ArrayList<>();
-                        for (int i = 0 ; i < events.size(); i++)
-                            eventList.add(events.get(i));
-                        if (eventList.size() > 2) {
-                            if (eventList.get(0) == 4 && eventList.get(1) == 7 && eventList.get(2) == 11 && exoPlayer.getContentPosition() == 0) {
-                                // SEEK_TO_PREVIOUS
-                                Intent intent = new Intent("SEND_MESSAGE");
-                    //            intent.putExtra("MUSIC", RWD);
-                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        final String TAG = "onEvents[Player.Listener]";
+                        String dbMsg="";
+                        try {
+                            List<Integer> eventList = new ArrayList<>();
+                            dbMsg += "eventList=" + eventList.size() +"件";
+                            for (int i = 0 ; i < events.size(); i++)
+                                eventList.add(events.get(i));
+                            if (eventList.size() > 2) {
+                                dbMsg += "、(0)=" + eventList.get(0);
+                                dbMsg += "、(1)=" + eventList.get(1);
+                                dbMsg += "、(2)=" + eventList.get(2);
+                                dbMsg += "、ContentPosition=" + exoPlayer.getContentPosition();
+                                if (eventList.get(0) == 4 && eventList.get(1) == 7 && eventList.get(2) == 11 && exoPlayer.getContentPosition() == 0) {
+                                    // SEEK_TO_PREVIOUS
+                                    Intent intent = new Intent("SEND_MESSAGE");
+                                    //            intent.putExtra("MUSIC", RWD);
+                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                                }
                             }
+                            myLog(TAG,dbMsg);
+                        } catch (Exception e) {
+                            myErrorLog(TAG ,  dbMsg + "で" + e);
                         }
                         Player.Listener.super.onEvents(player, events);
                     }
                     @Override
                     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-                        if (exoPlayer.getCurrentMediaItemIndex() == 1) {
-                            // SEEK_TO_NEXT
-                            Intent intent = new Intent("SEND_MESSAGE");
-                     //       intent.putExtra("MUSIC", FWD);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        final String TAG = "onMediaItemTransition[Player.Listener]";
+                        String dbMsg="";
+                        try {
+                            dbMsg += "[" + exoPlayer.getCurrentMediaItemIndex() + "/" + mediaItemList.size() + "]";
+                            dbMsg += ",reason=" + reason;
+                            dbMsg += ",artist=" + mediaItem.mediaMetadata.artist;
+                            dbMsg += ",albumTitle=" + mediaItem.mediaMetadata.albumTitle;
+                            dbMsg += ",title=" + mediaItem.mediaMetadata.title;
+                            artistName= (String) mediaItem.mediaMetadata.artist;
+                            albumName= (String) mediaItem.mediaMetadata.albumTitle;
+                            songTitol= (String) mediaItem.mediaMetadata.title;
+                            if (exoPlayer.getCurrentMediaItemIndex() == 1) {
+                                // SEEK_TO_NEXT
+                                Intent intent = new Intent("SEND_MESSAGE");
+                                //       intent.putExtra("MUSIC", FWD);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                            }
+                            redrowNotification(mediaItem);
+                            Player.Listener.super.onMediaItemTransition(mediaItem, reason);
+                            myLog(TAG,dbMsg);
+                        } catch (Exception e) {
+                            myErrorLog(TAG ,  dbMsg + "で" + e);
                         }
-                        Player.Listener.super.onMediaItemTransition(mediaItem, reason);
                     }
                 });
                 ////////https://www.jisei-firm.com/android_develop44/#toc2//
@@ -1320,37 +1170,32 @@ public class MusicService extends MediaBrowserService {
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
             mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
-//            Notification noti = new NotificationCompat.Builder()
-//                    .setSmallIcon(R.drawable.ic_launcher)
-//                    .setContentTitle("Track title")
-//                    .setContentText("Artist - Album")
-//                    .setLargeIcon(albumArtBitmap))
-//                    .setStyle(new NotificationCompat.MediaStyle()
-//                    .setMediaSession(mediaSession))
-//                    .build();
             mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
-            mediaStyle.setShowActionsInCompactView(0,1,2);
+            mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
             PendingIntent prevPendingIntent = null;
             PendingIntent pausePendingIntent = null;
             PendingIntent nextPendingIntent = null;
             //  https://developer.android.com/training/notify-user/expanded?hl=ja
-            notification = new NotificationCompat.Builder(context, channelId)
-                    // Show controls on lock screen even when user hides sensitive content.
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                    .setSmallIcon(R.drawable.ic_launcher)
-//                    // setShowActionsInCompactView に該当するボタンが必要。アイコンは指定のリソースは無視される
-                    .addAction(R.drawable.rewbtn, "Previous", prevPendingIntent) // #0
-                    .addAction(R.drawable.pouse_notif, "Pause", pausePendingIntent)  // #1
-                    .addAction(R.drawable.ffbtn, "Next", nextPendingIntent)     // #2
-//                    // Apply the media style template
-                    .setStyle(mediaStyle)
-                    .setContentTitle(songTitol)
-                    .setContentText(artistName+" - "+ albumName)
-                    .setLargeIcon(albumArtBitmap)
-                    .build();
-            startForeground(NOTIFICATION_ID, notification);
+            PendingIntent quitPendingIntent = null;
+            PendingIntent repatPendingIntent = null;
 
-            //      CreateNotification();         setMediaNotificationProvider
+            notificationBuilder = new NotificationCompat.Builder(context, channelId);
+            notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            notificationBuilder.setSmallIcon(R.drawable.media_session_service_notification_ic_music_note);
+//                    // setShowActionsInCompactView に該当するボタンが必要。アイコンは指定のリソースは無視される
+            notificationBuilder.addAction(R.drawable.media3_notification_seek_back, "Previous", prevPendingIntent); // #0
+            notificationBuilder.addAction(R.drawable.media3_notification_pause, "Pause", pausePendingIntent);  // #1
+            notificationBuilder.addAction(R.drawable.media3_notification_seek_forward, "Next", nextPendingIntent);     // #2
+//                    .addAction(android.R.drawable.stat_notify_sync_noanim, "Repeat", repatPendingIntent)     // #3
+//                    .addAction(android.R.drawable.ic_lock_power_off, "Quity", quitPendingIntent)     // #4
+//                    // Apply the media style template
+            notificationBuilder.setStyle(mediaStyle);
+            notificationBuilder .setContentTitle(songTitol);
+            notificationBuilder.setContentText(artistName+" - "+ albumName);
+            notificationBuilder.setLargeIcon(albumArtBitmap);
+
+            notification = notificationBuilder.build();
+            startForeground(NOTIFICATION_ID, notification);
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
