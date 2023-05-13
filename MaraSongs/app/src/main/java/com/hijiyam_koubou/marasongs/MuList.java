@@ -11734,6 +11734,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=  ",start="+ start ;/////////////////////////////////////
 			NowSavedInstanceState = savedInstanceState;
 			MyConstants.PREFS_NAME = this.getResources().getString(R.string.pref_main_file);
+			ORGUT = new OrgUtil();		//自作関数集
+			MyUtil = new MyUtil();
+			myApp = (MyApp) MuList.this.getApplication();
 			myPreferences = new MyPreferences(this);
 			dbMsg +="、PREFS_NAME=" + MyConstants.PREFS_NAME;
 			if (31 <= android.os.Build.VERSION.SDK_INT ) {
@@ -11746,9 +11749,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			shigot_bangou = 0;
 			IsPlaying = false;
 		//	CONST = new MyConstants();
-			ORGUT = new OrgUtil();		//自作関数集
-			MyUtil = new MyUtil();
-			myApp = (MyApp) MuList.this.getApplication();
 
 			musicPlaylist = new MusicPlaylist(MuList.this);
 			//Permission確認

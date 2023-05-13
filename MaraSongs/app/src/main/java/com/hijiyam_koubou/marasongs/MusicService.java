@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.browse.MediaBrowser;
@@ -42,15 +43,21 @@ import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.session.MediaSession;
 import androidx.media3.session.MediaStyleNotificationHelper;
 import androidx.media3.ui.PlayerView;
+import androidx.preference.PreferenceManager;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @UnstableApi @SuppressLint("InlinedApi")
 public class MusicService extends MediaBrowserService {
     public Context context;
     public OrgUtil ORGUT;						//自作関数集
+    public MyUtil MyUtil;
+    public MyPreferences myPreferences;
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
@@ -66,16 +73,23 @@ public class MusicService extends MediaBrowserService {
     public String albumName;
     public String songTitol;
     public Bitmap albumArtBitmap;
-
+    public int repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
     public long saiseiJikan = 0;
-    /**ノティフィケーションインスタンス*/
-//	public Notification lpNotification;
-    public MuList ML;
+    //プリファレンス
+    public SharedPreferences sharedPref;
+    public SharedPreferences.Editor myEditor;
+
 
     public Notification notification;
     public NotificationCompat.Builder notificationBuilder;
     private String channelId = "default";
-    final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
+    public final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
+    public PendingIntent prevPendingIntent = null;
+    public PendingIntent pausePendingIntent = null;
+    public PendingIntent nextPendingIntent = null;
+    public PendingIntent quitPendingIntent = null;
+    public PendingIntent repatPendingIntent = null;
+
     public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
     public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
     //public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
@@ -106,6 +120,8 @@ public class MusicService extends MediaBrowserService {
         Playing, 	// playback active (media player ready!). (but the media player may actually be paused in this state if we don't have audio focus. But we stay in this state so that we know we have to resume playback once we get focus back) playback paused (media player ready!)
         Paused		// playback paused (media player ready!)
     }   //public static final String ACTION_ITEMSET = "ITEMSET";						//追加２	；dataReflesh()でアルバム一枚分のタイトル読み込み
+    public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    public SimpleDateFormat sdffiles = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 //    public MusicService(Context callContext) {
 //        final String TAG = "MusicService";
@@ -117,6 +133,92 @@ public class MusicService extends MediaBrowserService {
 //            myErrorLog(TAG,dbMsg+"で"+e);
 //        }
 //    }
+
+    //設定変更反映//////////////////////////////////////////////////////////////////////////////////////////////////////////////起動項目////
+
+    public static boolean setPrefbool(String keyNmae , boolean wrightVal , Context context) {        //プリファレンスの読込み
+        boolean retBool = false;
+        final String TAG = "setPrefbool";
+        String dbMsg="[MusicService]keyNmae=" + keyNmae;
+        MyUtil MyUtil = new MyUtil();
+        retBool = MyUtil.setPrefBool(keyNmae , wrightVal,context);
+        return retBool;
+    }
+
+    public static boolean setPrefInt(String keyNmae , int wrightVal , Context context) {        //プリファレンスの読込み
+        boolean retBool = false;
+        final String TAG = "setPrefInt";
+        String dbMsg="[MusicService]keyNmae=" + keyNmae;
+        MyUtil MyUtil = new MyUtil();
+        retBool = MyUtil.setPrefInt(keyNmae , wrightVal,context);
+        return retBool;
+    }
+
+    public static boolean setPrefStr(String keyNmae , String wrightVal , Context context) {        //プリファレンスの読込み
+        boolean retBool = false;
+        final String TAG = "setPrefStr";
+        String dbMsg="[MusicService]keyNmae=" + keyNmae;
+        MyUtil MyUtil = new MyUtil();
+        retBool = MyUtil.setPreStr(keyNmae , wrightVal,context);
+        return retBool;
+    }
+
+    /**プリファレンスの読込み*/
+    public void readPref() {
+        final String TAG = "readPref";
+        String dbMsg = "";
+        try {
+            myPreferences.readPref();
+            dbMsg += "MyPreferencesy読込み";
+////			myPreferences.sharedPref = myPreferences.sharedPref;
+////			myEditor =myPreferences.myEditor;
+//
+//            dbMsg += "、このアプリのバージョンコード=" + myPreferences.pref_sonota_vercord;
+//            dbMsg += "、クロスフェード時間=" + myPreferences.pref_gyapless;
+//            dbMsg += "、シンプルなリスト表示=" + myPreferences.pref_list_simple + "、プレイヤーの背景:黒=" + myPreferences.pref_pb_bgc;
+
+            dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
+            dbMsg += "]" + myPreferences.nowList;
+            dbMsg += "の" + myPreferences.pref_mIndex +"曲目";
+//            sousalistID=Integer.parseInt(myPreferences.nowList_id);
+            dbMsg += "、再生中のファイル名=" + myPreferences.saisei_fname;
+//            pl_file_name = myPreferences.pref_commmn_music + File.separator;//汎用プレイリストのファイル名のパスまで
+            dbMsg += "、汎用プレイリストのファイル名=" + myPreferences.pref_commmn_music + File.separator;
+            //            pref_zenkai_saiseKyoku = Integer.parseInt(myPreferences.pref_zenkai_saiseKyoku);			//前回の連続再生曲数
+//            pref_zenkai_saiseijikann =Integer.parseInt(myPreferences.pref_zenkai_saiseijikann);			//前回の連続再生時間
+            dbMsg += "、前回=" + myPreferences.pref_zenkai_saiseKyoku + "曲、" + myPreferences.pref_zenkai_saiseijikann + "時間";
+            dbMsg += "、最近追加リストのデフォルト枚数=" + myPreferences.pref_saikin_tuika;
+            dbMsg += "、最近再生加リストのデフォルト枚数=" + myPreferences.pref_saikin_sisei;
+            dbMsg += "、ランダム再生リストアップ曲数=" + myPreferences.pref_rundam_list_size;
+//            repeatType = myPreferences.repeatType;							//リピート再生の種類
+//			rp_pp = myPreferences.rp_pp;							//2点間リピート中
+            //		String pref_data_url =myPreferences.saisei_fname;				//
+
+            dbMsg += "、共通音楽フォルダ=" + myPreferences.pref_commmn_music;
+            dbMsg += "、内蔵メモリ=" + myPreferences.pref_file_in;
+            dbMsg += "、メモリーカード=" + myPreferences.pref_file_ex;
+            dbMsg += "、設定保存フォルダ=" + myPreferences.pref_file_wr;
+//            pref_file_kyoku= Integer.parseInt(myPreferences.pref_file_kyoku );		//総曲数
+            dbMsg += "、総曲数=" + myPreferences.pref_file_kyoku;
+            dbMsg += "、設定保存フォルダ=" + myPreferences.pref_file_wr;
+//			dbMsg += "、総アルバム数=" + myPreferences.pref_file_album);
+//			pref_file_album= Integer.parseInt(myPreferences.pref_file_album);		//
+            dbMsg += "、記録している最新更新日=" + myPreferences.pref_file_saisinn;
+            if(!myPreferences.pref_file_saisinn.equals("")){
+                String mod = sdffiles.format(new Date(Long.valueOf(myPreferences.pref_file_saisinn) * 1000));
+                dbMsg += ">>" + mod;
+            }
+            dbMsg += "、全曲リスト=" + myPreferences.pref_zenkyoku_list_id;
+            dbMsg += "、最近追加=" + myPreferences.saikintuika_list_id;
+            dbMsg += "、最近再生=" + myPreferences.saikinsisei_list_id;
+
+            myLog(TAG, dbMsg);
+    //        setteriYomikomi();            //状況に応じた分岐を行う
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }																	//設定読込・旧バージョン設定の消去
+
 
     private static final int[] REQUEST_CODE = { 0, 1, 2 };
     /////////////////////プレイヤーの状態をクライアントに通知する//
@@ -131,12 +233,6 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",artist=" + artistName;
             dbMsg += ",albumTitle=" + albumName;
             dbMsg += ",title=" + songTitol;
-//            mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
-//            mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
-//            mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
-//            Uri imageUri = mediaItem.mediaMetadata.artworkUri;
-//            Bitmap albumArtBitmap = ORGUT.retBitMap(imageUri.toString() , 500 , 500 , getResources());
-//            dbMsg += ",albumArtBitmap=" + albumArtBitmap.getWidth() + "×" + albumArtBitmap.getHeight();
             notificationBuilder.setStyle(mediaStyle);
             notificationBuilder .setContentTitle(songTitol);
             notificationBuilder.setContentText(artistName+" - "+ albumName);
@@ -1120,19 +1216,23 @@ public class MusicService extends MediaBrowserService {
                                     //            intent.putExtra("MUSIC", RWD);
                                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                                 }
+                                myLog(TAG,dbMsg);
                             }
-                            myLog(TAG,dbMsg);
                         } catch (Exception e) {
                             myErrorLog(TAG ,  dbMsg + "で" + e);
                         }
                         Player.Listener.super.onEvents(player, events);
                     }
+
                     @Override
                     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
                         final String TAG = "onMediaItemTransition[Player.Listener]";
                         String dbMsg="";
                         try {
-                            dbMsg += "[" + exoPlayer.getCurrentMediaItemIndex() + "/" + mediaItemList.size() + "]";
+                            mIndex=exoPlayer.getCurrentMediaItemIndex();
+                            int endIndex = exoPlayer.getMediaItemCount();
+                            setPrefInt("myPreferences.pref_mIndex" , mIndex ,  context);
+                            dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
                             dbMsg += ",reason=" + reason;
                             dbMsg += ",artist=" + mediaItem.mediaMetadata.artist;
                             dbMsg += ",albumTitle=" + mediaItem.mediaMetadata.albumTitle;
@@ -1166,18 +1266,14 @@ public class MusicService extends MediaBrowserService {
 
             exoPlayer.setMediaItems(mediaItemList, true);
             exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
+            exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
             exoPlayer.prepare();
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
             mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
             mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
             mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
-            PendingIntent prevPendingIntent = null;
-            PendingIntent pausePendingIntent = null;
-            PendingIntent nextPendingIntent = null;
             //  https://developer.android.com/training/notify-user/expanded?hl=ja
-            PendingIntent quitPendingIntent = null;
-            PendingIntent repatPendingIntent = null;
 
             notificationBuilder = new NotificationCompat.Builder(context, channelId);
             notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
@@ -1277,35 +1373,18 @@ public class MusicService extends MediaBrowserService {
         String dbMsg="";
         try{
             ORGUT = new OrgUtil();		//自作関数集
-
-    //        mediaSession = new MediaSession.Builder(getApplicationContext(), exoPlayer).build();
-      //      sessionToken = mediaSession.getSessionCompatToken();
-//            MediaSession.ControllerInfo controllerInfo;
-//            mediaSession=onGetSession(controllerInfo: MediaSession.ControllerInfo);
-       //       mediaSession.getSessionCompatToken();//  .getSessionToken()
-
-/****MediaSessionCompat
-            // Create a MediaSessionCompat
-            String LOG_TAG = getResources().getString(R.string.app_name);
-            mediaSession = new MediaSessionCompat(getApplicationContext(), LOG_TAG);
-            // Enable callbacks from MediaButtons and TransportControls
-            mediaSession.setFlags(
-                    MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |					//ヘッドフォン等のボタンを扱う
-                            MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);	//再生、停止、スキップ等のコントロールを提供
-
-            //このMediaSessionが提供する機能を設定
-            stateBuilder = new PlaybackStateCompat.Builder()
-                    .setActions(
-                            PlaybackStateCompat.ACTION_PLAY |
-                                    PlaybackStateCompat.ACTION_PLAY_PAUSE);
-            mediaSession.setPlaybackState(stateBuilder.build());
-
-            //クライアントからの操作に応じるコールバックを設定
-            mediaSession.setCallback(new MySessionCallback());
-
-            // Set the session's token so that client activities can communicate with it.
-            setSessionToken(mediaSession.getSessionToken());
- */
+            ORGUT = new OrgUtil();		//自作関数集
+            MyUtil = new MyUtil();
+            myPreferences = new MyPreferences(this);
+            dbMsg +="、PREFS_NAME=" + MyConstants.PREFS_NAME;
+            if (31 <= android.os.Build.VERSION.SDK_INT ) {
+                sharedPref = getSharedPreferences(MyConstants.PREFS_NAME, MODE_PRIVATE);
+                myEditor = sharedPref.edit();
+            }else{
+                sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());			//	this.getSharedPreferences(this, MODE_PRIVATE);		//
+                myEditor = sharedPref.edit();
+            }
+            readPref();
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
