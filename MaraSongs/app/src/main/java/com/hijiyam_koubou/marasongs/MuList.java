@@ -968,6 +968,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			startActivity(intentWV);
 				return true;
 			case R.id.menu_item_sonota_end:					//終了	MENU_END
+		//		MusicService.MS_QUIT
+				if( MPSIntent == null){
+				}else{
+					stopService(MPSIntent);
+				}
 				quitMe();		//このアプリを終了する
 				return true;
 			}
@@ -4168,7 +4173,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	//		MusicService MS = new MusicService(this);
 			if( MPSIntent == null){
 				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-		//		MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
 				dbMsg +=  ",MPSIntent=null";
 			}else{
 				stopService(MPSIntent);

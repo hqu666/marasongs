@@ -90,6 +90,22 @@ public class MusicService extends MediaBrowserService {
     public PendingIntent quitPendingIntent = null;
     public PendingIntent repatPendingIntent = null;
 
+    /**MusicServiceの開始
+     * List<MediaItem>の初期化
+     * */
+    public static final int MS_START_SERVICE= 1001;
+    /** ListにMediaItemを呼び込む */
+    public static final int MS_MAKE_LIST = MS_START_SERVICE + 1;
+    /** 選曲された楽曲を読み込ませたプレイヤーを作製 */
+    public static final int MS_SET_SONG = MS_MAKE_LIST + 1;
+    public static final int MS_PLAYPAUSE = MS_SET_SONG + 1;
+    public static final int MS_PLAY = MS_PLAYPAUSE + 1;
+    public static final int MS_PAUSE = MS_PLAY + 1;
+    public static final int MS_SKIP = MS_PAUSE + 1;
+    public static final int MS_REWIND = MS_SKIP + 1;
+    public static final int MS_REPEAT_MODE = MS_REWIND + 1;
+    public static final int MS_QUIT = MS_REPEAT_MODE + 1;
+
     public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
     public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
     //public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
@@ -1224,6 +1240,7 @@ public class MusicService extends MediaBrowserService {
                         Player.Listener.super.onEvents(player, events);
                     }
 
+                    /**再生が別のメディア項目に移行するときの検出:https://developer.android.com/guide/topics/media/exoplayer/playlists#detecting-when-playback-transitions-to-another-media-item*/
                     @Override
                     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
                         final String TAG = "onMediaItemTransition[Player.Listener]";
@@ -1397,11 +1414,23 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "onDestroy";
         String dbMsg="";
         try{
-            if(mediaSession != null){
+            dbMsg += "exoPlayer=" + exoPlayer;
+            if(exoPlayer != null){
                 exoPlayer.release();
+                dbMsg += ">>" + exoPlayer;
+            }
+            dbMsg += ",mediaSession=" + mediaSession;
+            if(mediaSession != null){
                 mediaSession.release();
                 mediaSession = null;
-           }
+                dbMsg += ">>" + mediaSession;
+            }
+            if(mediaItemList != null){
+                dbMsg += ",mediaItemList=" + mediaItemList.size() + "件";
+                mediaItemList.clear();
+                dbMsg += ">>" + mediaItemList.size() + "件";
+                mediaItemList=null;
+            }
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
