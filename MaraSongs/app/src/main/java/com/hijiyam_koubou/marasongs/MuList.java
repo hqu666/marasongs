@@ -4157,7 +4157,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 
 	/**サービスとレシーバに再生ファイルを指定*/
-	public boolean send2Service(String dataFN , String listName ,boolean IsPlaying) {																		//操作対応②ⅰ
+	public boolean send2Service(String dataFN , String listName , boolean IsPlaying) {																		//操作対応②ⅰ
 		final String TAG = "send2Service";
 		String dbMsg = "";
 		try{

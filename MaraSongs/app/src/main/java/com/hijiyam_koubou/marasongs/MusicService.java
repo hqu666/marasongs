@@ -52,7 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-@UnstableApi @SuppressLint("InlinedApi")
 public class MusicService extends MediaBrowserService {
     public Context context;
     public OrgUtil ORGUT;						//自作関数集
@@ -62,7 +61,7 @@ public class MusicService extends MediaBrowserService {
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
     public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
-    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
+//    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
     //    private MediaSessionCompat.Token sessionToken;
 //    private PlaybackStateCompat.Builder stateBuilder;
     public List<MediaItem> mediaItemList;
@@ -249,7 +248,7 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",artist=" + artistName;
             dbMsg += ",albumTitle=" + albumName;
             dbMsg += ",title=" + songTitol;
-            notificationBuilder.setStyle(mediaStyle);
+       //     notificationBuilder.setStyle(mediaStyle);
             notificationBuilder .setContentTitle(songTitol);
             notificationBuilder.setContentText(artistName+" - "+ albumName);
             notificationBuilder.setLargeIcon(albumArtBitmap);
@@ -1189,6 +1188,7 @@ public class MusicService extends MediaBrowserService {
      * @return Whether initialization was successful.
      * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
      */
+    @OptIn(markerClass = UnstableApi.class)
     protected boolean initializePlayer() {
         final String TAG = "initializePlayer";
         String dbMsg="";
@@ -1288,24 +1288,27 @@ public class MusicService extends MediaBrowserService {
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
             mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
-            mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
-            mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
+         //   NotificationCompat.Style mediaStyle = new NotificationCompat.
+                    //.Style(mediaSession);          //.setMediaSession(mySession);         //
+            MediaStyleNotificationHelper.MediaStyle mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
+//            mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
             //  https://developer.android.com/training/notify-user/expanded?hl=ja
 
             notificationBuilder = new NotificationCompat.Builder(context, channelId);
             notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
             notificationBuilder.setSmallIcon(R.drawable.media_session_service_notification_ic_music_note);
-//                    // setShowActionsInCompactView に該当するボタンが必要。アイコンは指定のリソースは無視される
-            notificationBuilder.addAction(R.drawable.media3_notification_seek_back, "Previous", prevPendingIntent); // #0
-            notificationBuilder.addAction(R.drawable.media3_notification_pause, "Pause", pausePendingIntent);  // #1
-            notificationBuilder.addAction(R.drawable.media3_notification_seek_forward, "Next", nextPendingIntent);     // #2
-//                    .addAction(android.R.drawable.stat_notify_sync_noanim, "Repeat", repatPendingIntent)     // #3
-//                    .addAction(android.R.drawable.ic_lock_power_off, "Quity", quitPendingIntent)     // #4
-//                    // Apply the media style template
-            notificationBuilder.setStyle(mediaStyle);
+////                    // setShowActionsInCompactView に該当するボタンが必要。アイコンは指定のリソースは無視される
+//            notificationBuilder.addAction(R.drawable.media3_notification_seek_back, "Previous", prevPendingIntent); // #0
+//            notificationBuilder.addAction(R.drawable.media3_notification_pause, "Pause", pausePendingIntent);  // #1
+//            notificationBuilder.addAction(R.drawable.media3_notification_seek_forward, "Next", nextPendingIntent);     // #2
+////                    .addAction(android.R.drawable.stat_notify_sync_noanim, "Repeat", repatPendingIntent)     // #3
+////                    .addAction(android.R.drawable.ic_lock_power_off, "Quity", quitPendingIntent)     // #4
+////                    // Apply the media style template
+
+            notificationBuilder.setStyle(mediaStyle);                   // NotificationCompat.Style
             notificationBuilder .setContentTitle(songTitol);
             notificationBuilder.setContentText(artistName+" - "+ albumName);
-            notificationBuilder.setLargeIcon(albumArtBitmap);
+    //        notificationBuilder.setLargeIcon(albumArtBitmap);
 
             notification = notificationBuilder.build();
             startForeground(NOTIFICATION_ID, notification);
