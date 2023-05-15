@@ -93,27 +93,31 @@ public class MusicService extends MediaBrowserService {
      * List<MediaItem>の初期化
      * */
     public static final int MS_START_SERVICE= 1001;
+    public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
     /** ListにMediaItemを呼び込む */
     public static final int MS_MAKE_LIST = MS_START_SERVICE + 1;
+    public static final String ACTION_MAKE_LIST= "MAKE_LIST";
     /** 選曲された楽曲を読み込ませたプレイヤーを作製 */
     public static final int MS_SET_SONG = MS_MAKE_LIST + 1;
+    public static final String ACTION_SET_SONG= "SET_SONG";
     public static final int MS_PLAYPAUSE = MS_SET_SONG + 1;
+    public static final String ACTION_PLAYPAUSE = "com.example.android.remotecontrol.ACTION_PLAYPAUSE";
     public static final int MS_PLAY = MS_PLAYPAUSE + 1;
+    public static final String ACTION_PLAY = "com.example.android.remotecontrol.ACTION_PLAY";
     public static final int MS_PAUSE = MS_PLAY + 1;
+    public static final String ACTION_PAUSE = "com.example.android.remotecontrol.ACTION_PAUSE";
     public static final int MS_SKIP = MS_PAUSE + 1;
+    public static final String ACTION_SKIP = "com.example.android.remotecontrol.ACTION_SKIP";
     public static final int MS_REWIND = MS_SKIP + 1;
+    public static final String ACTION_REWIND = "com.example.android.remotecontrol.ACTION_REWIND";
     public static final int MS_REPEAT_MODE = MS_REWIND + 1;
+    public static final String ACTION_REPEAT_MODE = "REPEAT_MODE";
     public static final int MS_QUIT = MS_REPEAT_MODE + 1;
+    public static final String ACTION_QUIT = "QUIT";
 
-    public static final String ACTION_START_SERVICE= "ACTION_START_SERVICE";
     public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
     //public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
     public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
-    public static final String ACTION_PLAYPAUSE = "com.example.android.remotecontrol.ACTION_PLAYPAUSE";
-    public static final String ACTION_PLAY = "com.example.android.remotecontrol.ACTION_PLAY";
-    public static final String ACTION_PAUSE = "com.example.android.remotecontrol.ACTION_PAUSE";
-    public static final String ACTION_SKIP = "com.example.android.remotecontrol.ACTION_SKIP";
-    public static final String ACTION_REWIND = "com.example.android.remotecontrol.ACTION_REWIND";
     public static final String ACTION_STOP = "com.example.android.remotecontrol.ACTION_STOP";
     public static final String ACTION_REQUEST_STATE = "com.example.android.remotecontrol.ACTION_REQUEST_STATE";
     public static final String ACTION_LISTSEL = "LISTSEL";					//追加3	；リストで選択された曲の処理
@@ -262,6 +266,7 @@ public class MusicService extends MediaBrowserService {
     }
 
 
+    /**バインドを許可する*/
     @Override
     public IBinder onBind(Intent intent) {
         final String TAG = "onBind";
@@ -278,209 +283,154 @@ public class MusicService extends MediaBrowserService {
 
     /**指定されたプレイリストの楽曲を内部配列に読み込む*/
     @SuppressLint("Range")
-    public List<MediaItem> readCalentList(int playlistId , String listName){
-        final String TAG = "readCalentList";
+    public void add2List(int playlistId ,String dataStr){
+        final String TAG = "add2List";
         String dbMsg= "";
-        List<MediaItem> mediaItemList = new ArrayList<MediaItem>();
         try{
-            dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + listName;
-            dbMsg += " の "+ pref_data_url;
-//            if(listName.equals(MusicPlayerService.this.getResources().getString(R.string.all_songs_file_name))){
-//                ZenkyokuHelper zenkyokuHelper = null;				//全曲リストヘルパー
-//                SQLiteDatabase Zenkyoku_db;		//全曲リストファイル
-//                zenkyokuHelper = new ZenkyokuHelper(this ,  getString(R.string.zenkyoku_file));		//全曲リストの定義ファイル		.
-//                Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
-//                dbMsg =  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-//                dbMsg =  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-//                String table = getResources().getString(R.string.zenkyoku_table);
-//                Zenkyoku_db = zenkyokuHelper.getReadableDatabase();			// データベースをオープン
-//                String[] columns =null;			//{  "ALBUM_ARTIST" , "ARTIST"};				//検索結果に含める列名を指定します。nullを指定すると全列の値が含まれます。
-//                String selections = null;	//"ALBUM_ARTIST = ? ";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
-//                String[] selectionArgs = null;	//new String[]{ comp };
-//                String groupBy = null;					//groupBy句を指定します。
-//                String having =null;					//having句を指定します。
-//                String orderBy = null;  //"ALBUM_ARTIST_INDEX";
-//                String limit = null;					//検索結果の上限レコードを数を指定します。
-//                Cursor zCursor = Zenkyoku_db.query( table ,columns, selections,  selectionArgs,  groupBy,  having,  orderBy,  limit) ;
-//                dbMsg = ",全曲=" + zCursor.getCount() + "件";
-//                if(zCursor.moveToFirst()){
-//                    do{
-//                        @SuppressLint("Range")  String cVal = zCursor.getString(zCursor.getColumnIndex("DATA"));
-//                        pSL.add(cVal);
-//                    }while( zCursor.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
-//                }
-//                zCursor.close();
-//
-//            }else{
-                final Uri cUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-                String[] columns = null;				//{ idKey, nameKey };
-                String c_selection = null;				//MediaStore.Audio.Playlists.NAME +" = ? ";
-                String[] c_selectionArgs = null;			//{listName};        //⑥引数groupByには、groupBy句を指定します。
-                String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-                Cursor playLists= this.getContentResolver().query(cUri, columns, c_selection, c_selectionArgs, c_orderBy );
+            dbMsg += "選択されたプレイリスト[ID="+playlistId + "]の" + dataStr;
+            final Uri cUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
+            String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
+            String c_selection = MediaStore.Audio.Playlists.Members.DATA +" = ? ";
+            String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
+            String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+            Cursor playLists= this.getContentResolver().query(cUri, columns, c_selection, c_selectionArgs, c_orderBy );
             dbMsg += "," + playLists.getCount() +"件";
             if(playLists.moveToFirst()){
-                    do{
-                        String uriStr =null;    // (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-                        String audioId = null;
-                        CharSequence albumArtistStr = null;
-                        CharSequence albumTitleStr = null;
-                        CharSequence titleStr = null;
-                        CharSequence artistStr = null;
-                        CharSequence genreStr = null;
-                        String duranationStr = null;
-                        String trackStr = null;
-                        for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){				//MuList.this.koumoku
-                            String cName = playLists.getColumnName(i);
-                            if(
-    //					cName.equals(MediaStore.Audio.Playlists.Members.INSTANCE_ID) ||	//[1/66]instance_id
-    //					cName.equals(MediaStore.Audio.Playlists.Members.TITLE_KEY) ||	//[13/37]title_key
-    //					cName.equals(MediaStore.Audio.Playlists.Members.SIZE) ||			//[7/37]_size=4071748
-    //					cName.equals(MediaStore.Audio.Playlists.Members.IS_RINGTONE) ||	//[20/37]is_ringtone=0
-    //					cName.equals(MediaStore.Audio.Playlists.Members.IS_MUSIC) ||			//[21/37]is_music=1
-    //					cName.equals(MediaStore.Audio.Playlists.Members.IS_ALARM) ||			//[22/37]is_alarm=0
-    //					cName.equals(MediaStore.Audio.Playlists.Members.IS_NOTIFICATION) ||	//[23/37]is_notification=0
-    //					cName.equals(MediaStore.Audio.Playlists.Members.IS_PODCAST) ||			//[24/37]is_podcast=
-    //				 	cName.equals(MediaStore.Audio.Playlists.Members.ARTIST_KEY) ||		//
-    //					cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_KEY) ||		//[35/37]album_key
-                                    cName.equals(MediaStore.Audio.Playlists.Members.XMP)){		//[31/66項目]xmp=【Blob】[32/37]artist_key
-                           //     dbMsg += "は読み込めない";
-                            }else{
-                                if( cName.equals(MediaStore.Audio.Playlists.Members.AUDIO_ID)){
-                                    String cVal = playLists.getString(i);
-                                    if(cVal != null){
-                                        cVal = cVal;
-                                    }
+                do{
+                    String uriStr =null;    // (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+                    String audioId = null;
+                    CharSequence albumArtistStr = null;
+                    CharSequence albumTitleStr = null;
+                    CharSequence titleStr = null;
+                    CharSequence artistStr = null;
+                    CharSequence genreStr = null;
+                    String duranationStr = null;
+                    String trackStr = null;
+                    for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){				//MuList.this.koumoku
+                        String cName = playLists.getColumnName(i);
+                        dbMsg += "[" + i +"/" + playLists.getColumnCount() +"項目]"+ cName;
+                        if(
+//					cName.equals(MediaStore.Audio.Playlists.Members.INSTANCE_ID) ||	//[1/66]instance_id
+//					cName.equals(MediaStore.Audio.Playlists.Members.TITLE_KEY) ||	//[13/37]title_key
+//					cName.equals(MediaStore.Audio.Playlists.Members.SIZE) ||			//[7/37]_size=4071748
+//					cName.equals(MediaStore.Audio.Playlists.Members.IS_RINGTONE) ||	//[20/37]is_ringtone=0
+//					cName.equals(MediaStore.Audio.Playlists.Members.IS_MUSIC) ||			//[21/37]is_music=1
+//					cName.equals(MediaStore.Audio.Playlists.Members.IS_ALARM) ||			//[22/37]is_alarm=0
+//					cName.equals(MediaStore.Audio.Playlists.Members.IS_NOTIFICATION) ||	//[23/37]is_notification=0
+//					cName.equals(MediaStore.Audio.Playlists.Members.IS_PODCAST) ||			//[24/37]is_podcast=
+//				 	cName.equals(MediaStore.Audio.Playlists.Members.ARTIST_KEY) ||		//
+//					cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_KEY) ||		//[35/37]album_key
+                                cName.equals(MediaStore.Audio.Playlists.Members.XMP)){		//[31/66項目]xmp=【Blob】[32/37]artist_key
+                       //     dbMsg += "は読み込めない";
+                        }else{
+                            if( cName.equals(MediaStore.Audio.Playlists.Members.AUDIO_ID)){
+                                audioId = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
+                                uriStr = playLists.getString(i);
+//                                if(uriStr != null){
+//                                }else{
+//                                   dbMsg +=  "Url取得できず";
+//                                }
+//                                dbMsg +=  "="+uriStr;
+                            }else if( cName.equals("album_artist")){		//[26/37]
+                                albumArtistStr = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.ARTIST)){		//[33/37]artist=Santana
+                                artistStr = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM)){		//[33/37]artist=Santana
+                                albumTitleStr = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.TITLE)){		//[12/37]title=Just Feel Better
+                                titleStr = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.DURATION)){	//[14/37]duration=252799>>04:12 799
+                                String cVal = playLists.getString(i);
 //                                    dbMsg +=  "="+cVal;
-                                    audioId = cVal;
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
-                                    uriStr = playLists.getString(i);
-                                    dbMsg += "[" + i +"/" + playLists.getColumnCount() +"項目]"+ cName;
-                                    if(uriStr != null){
-                                    }else{
-                                       dbMsg +=  "Url取得できず";
-                                    }
-                                    dbMsg +=  "="+uriStr;
-                                }else if( cName.equals("album_artist")){		//[26/37]
-                                    String cVal = playLists.getString(i);
-                                    if(cVal != null){
-                                        cVal = cVal;
-                                    }
-//                                    dbMsg +=  "="+cVal;
-                                    albumArtistStr = cVal;
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.ARTIST)){		//[33/37]artist=Santana
-                                    String cVal = playLists.getString(i);
-                                    if(cVal != null){
-                                        cVal = cVal;
-                                    }else{
-                                        cVal = getResources().getString(R.string.bt_unknown);			//不明
-                                    }
-//                                    dbMsg +=  "="+cVal;
-                                    artistStr = cVal;
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM)){		//[33/37]artist=Santana
-                                    String cVal = playLists.getString(i);
-                                    if(cVal != null){
-                                        cVal = cVal;
-                                    }else{
-                                        cVal = getResources().getString(R.string.bt_unknown);			//不明
-                                    }
-//                                    dbMsg +=  "="+cVal;
-                                    albumTitleStr = cVal;
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.TITLE)){		//[12/37]title=Just Feel Better
-                                    String cVal = playLists.getString(i);
-                                    if(cVal != null){
-                                        cVal = cVal;
-                                    }else{
-                                        cVal = getResources().getString(R.string.bt_unknown);			//不明
-                                    }
-                                    titleStr = cVal;
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.DURATION)){	//[14/37]duration=252799>>04:12 799
-                                    String cVal = playLists.getString(i);
-//                                    dbMsg +=  "="+cVal;
-                                    if(cVal != null){
-                                        cVal = cVal;
-                                    }
-                                    duranationStr = ",duranation=" + ORGUT.sdf_mss.format(Long.valueOf(cVal)) + "[s]";
-                                    dbMsg +=  ">>"+duranationStr;
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
-                                    trackStr = playLists.getString(i);
-                                }else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
-                                    String albunIdStr = String.valueOf(playLists.getInt(i));
-                                }else{
-                                    int cPosition = playLists.getColumnIndex(cName);
-                                  //  dbMsg += "『" + cPosition+"』";
-                                    String cVal ="";
-                                    if(0<cPosition){
-                                        int colType = playLists.getType(cPosition);
-                                        //		dbMsg += ",Type=" + colType + ",";
-                                        switch (colType){
-                                            case Cursor.FIELD_TYPE_NULL:          //0
-                                                cVal ="【null】" ;
-                                                break;
-                                            case Cursor.FIELD_TYPE_INTEGER:         //1
-                                                @SuppressLint("Range") int cInt = playLists.getInt(cPosition);
-//                                                dbMsg += cInt+"【int】";
-                                                cVal=String.valueOf(cInt);
-                                                break;
-                                            case Cursor.FIELD_TYPE_FLOAT:         //2
-                                                @SuppressLint("Range") float cFlo = playLists.getFloat(cPosition);
-                                                dbMsg += cFlo+"【float】";
-                                                cVal=String.valueOf(cFlo);
-                                                break;
-                                            case Cursor.FIELD_TYPE_STRING:          //3
-                                                cVal = playLists.getString(cPosition);
-//                                                dbMsg +=  cVal+"【String】";
-                                                break;
-                                            case Cursor.FIELD_TYPE_BLOB:         //4
-                                                //@SuppressLint("Range") String cBlob = String.valueOf(cursor.getBlob(cPosition));
-                                                cVal ="【Blob】";
-                                                break;
-                                            default:
-                                                cVal = String.valueOf(playLists.getString(cPosition));
-//                                                dbMsg +=  cVal;
-                                                break;
-                                        }
-                                    }
-//                                    dbMsg += "="+cVal;
+                                if(cVal != null){
+                                    cVal = cVal;
                                 }
+                                duranationStr = ",duranation=" + ORGUT.sdf_mss.format(Long.valueOf(cVal)) + "[s]";
+                                dbMsg +=  ">>"+duranationStr;
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
+                                trackStr = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
+                                String albunIdStr = String.valueOf(playLists.getInt(i));
+                            }else{
+                                int cPosition = playLists.getColumnIndex(cName);
+                              //  dbMsg += "『" + cPosition+"』";
+                                String cVal ="";
+                                if(0<cPosition){
+                                    int colType = playLists.getType(cPosition);
+                                    //		dbMsg += ",Type=" + colType + ",";
+                                    switch (colType){
+                                        case Cursor.FIELD_TYPE_NULL:          //0
+                                            cVal ="【null】" ;
+                                            break;
+                                        case Cursor.FIELD_TYPE_INTEGER:         //1
+                                            @SuppressLint("Range") int cInt = playLists.getInt(cPosition);
+//                                                dbMsg += cInt+"【int】";
+                                            cVal=String.valueOf(cInt);
+                                            break;
+                                        case Cursor.FIELD_TYPE_FLOAT:         //2
+                                            @SuppressLint("Range") float cFlo = playLists.getFloat(cPosition);
+                                            dbMsg += cFlo+"【float】";
+                                            cVal=String.valueOf(cFlo);
+                                            break;
+                                        case Cursor.FIELD_TYPE_STRING:          //3
+                                            cVal = playLists.getString(cPosition);
+//                                                dbMsg +=  cVal+"【String】";
+                                            break;
+                                        case Cursor.FIELD_TYPE_BLOB:         //4
+                                            //@SuppressLint("Range") String cBlob = String.valueOf(cursor.getBlob(cPosition));
+                                            cVal ="【Blob】";
+                                            break;
+                                        default:
+                                            cVal = String.valueOf(playLists.getString(cPosition));
+//                                                dbMsg +=  cVal;
+                                            break;
+                                    }
+                                }
+//                                    dbMsg += "="+cVal;
                             }
                         }
-                        dbMsg +=  ",\nuriStr="+ uriStr;
-                        if(uriStr != null){
-                            String imageUriStr = ORGUT.retAlbumArtUri(getApplicationContext(), (String) artistStr, (String) albumTitleStr);
+                    }
+                    dbMsg +=  ",\nuriStr="+ uriStr;
+                    if(uriStr != null){
+                        String imageUriStr = null;
+                        Uri imageUri = null;
+                        if( artistStr != null && albumTitleStr != null){
+          //                  if(! artistStr.equals(getResources().getString(R.string.bt_unknown)) && !albumTitleStr.equals(getResources().getString(R.string.bt_unknown))){
+                             imageUriStr = ORGUT.retAlbumArtUri(getApplicationContext(), (String) artistStr, (String) albumTitleStr);
                             dbMsg +=  ",imageUriStr="+ imageUriStr;
-                            Uri imageUri = null;
                             if(imageUriStr != null){
                                 imageUri = Uri.parse(imageUriStr);
                             }
-                            MediaMetadata metadata = new MediaMetadata.Builder()
-                                    .setAlbumTitle(albumTitleStr)
-                                    .setTitle(titleStr)
-                                    .setArtist(artistStr)
-                                    .setGenre(genreStr)
-                                    //		.setIsBrowsable(true)					//isBrowsable
-                                    .setIsPlayable(true)
-                                    .setArtworkUri(imageUri)
-                                    // 	.setMediaType(mediaType)			//int objMap.get(MediaStore.Audio.Playlists.Members.MIME_TYPE) ではない
-                                    .setAlbumArtist(albumArtistStr)
-                                    .build();
-                            Uri rUri = Uri.parse(uriStr);
-                            MediaItem mItem = new MediaItem.Builder()
-                                    .setMediaId((String) audioId)
-                                    //		.setSubtitleConfigurations(subtitleConfigurations)
-                                    .setMediaMetadata(metadata)
-                                    .setUri(rUri)
-                                    .build();
-                            mediaItemList.add(mItem);
-                            dbMsg += "\n取得["+ mediaItemList.size() + "]";
-                            dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
-                            dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
-                            dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
-                            dbMsg +=  "["+ mItem.mediaMetadata.trackNumber + "]";
-                            dbMsg +=  ",title="+ albumTitleStr;         //mItem.mediaMetadata.title;
-                //            dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
-                            dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
-                            //		dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
+                        }
+                        MediaMetadata metadata = new MediaMetadata.Builder()
+                                .setAlbumTitle(albumTitleStr)
+                                .setTitle(titleStr)
+                                .setArtist(artistStr)
+                                .setGenre(genreStr)
+                                //		.setIsBrowsable(true)					//isBrowsable
+                                .setIsPlayable(true)
+                                .setArtworkUri(imageUri)
+                                // 	.setMediaType(mediaType)			//int objMap.get(MediaStore.Audio.Playlists.Members.MIME_TYPE) ではない
+                                .setAlbumArtist(albumArtistStr)
+                                .build();
+                        Uri rUri = Uri.parse(uriStr);
+                        MediaItem mItem = new MediaItem.Builder()
+                                .setMediaId((String) audioId)
+                                //		.setSubtitleConfigurations(subtitleConfigurations)
+                                .setMediaMetadata(metadata)
+                                .setUri(rUri)
+                                .build();
+                        mediaItemList.add(mItem);
+                        dbMsg += "\n取得["+ mediaItemList.size() + "]";
+                        dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
+                        dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
+                        dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
+                        dbMsg +=  "["+ mItem.mediaMetadata.trackNumber + "]";
+                        dbMsg +=  ",title="+ albumTitleStr;         //mItem.mediaMetadata.title;
+            //            dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
+                        dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
+                        //		dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
 //                            if(uriStr.equals(pref_data_url)){
 //                                artistName = (String) artistStr;
 //                                albumName = (String) albumTitleStr;
@@ -488,8 +438,8 @@ public class MusicService extends MediaBrowserService {
 //                                //                   albumArtBitmap;
 //
 //                            }
-                        }
-                    }while( playLists.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
+                    }
+                }while( playLists.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
             }
             playLists.close();
 
@@ -499,10 +449,10 @@ public class MusicService extends MediaBrowserService {
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
-        return mediaItemList;
     }
 
-    /****/
+    /**
+     * コンポーネントにサービスの開始を許可する**/
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final String TAG = "onStartCommand";
@@ -512,6 +462,48 @@ public class MusicService extends MediaBrowserService {
             dbMsg +="、startId=" + startId;
             Class<?> callClass = intent.getClass();
             dbMsg +="、callClass=" + callClass.getName();
+            String action = intent.getAction();                    //ボタンなどで指定されたアクション
+            dbMsg +=",action=" + action;
+            if(action.equals(ACTION_START_SERVICE)) {
+                dbMsg += "、MusicServiceの開始,List<MediaItem>の初期化";
+                String nowList_id = intent.getStringExtra("nowList_id");
+                dbMsg += ",渡されたのは[ " + nowList_id+ "] ";
+                String nowList = intent.getStringExtra("nowList");				//extras.getString("nowList");
+                dbMsg += nowList;
+                mediaItemList = new ArrayList<MediaItem>();
+            }else if(action.equals(ACTION_MAKE_LIST)){
+                dbMsg +="、ListにMediaItemを呼び込む";
+                String nowList_id = intent.getStringExtra("nowList_id");
+                int playlistId = Integer.parseInt(nowList_id);
+                String uriStr = intent.getStringExtra("uriStr");
+                dbMsg +="[" + mediaItemList.size() + "]に" + "[" + playlistId + "]" + uriStr;
+                add2List( playlistId ,uriStr);
+                dbMsg +=">>" + mediaItemList.size() + "件";
+                //          mediaItemList = readCalentList(Integer.parseInt(nowList_id),nowList);
+            }else if(action.equals(ACTION_SET_SONG)){
+                dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
+                pref_data_url= intent.getStringExtra("pref_data_url");		//extras.getString("pref_data_url");
+                mIndex =intent.getIntExtra("mIndex", 0);
+                dbMsg += "で[mIndex：" + mIndex + "/"+ mediaItemList.size() + "件]";
+                saiseiJikan =intent.getLongExtra("saiseiJikan", 0);
+                dbMsg += ",saiseiJikan=" + saiseiJikan;
+                dbMsg += ",渡されたのは= " + pref_data_url;
+                initializePlayer(); // EXOPLAYER
+            }else if(action.equals(ACTION_PLAYPAUSE)){
+                dbMsg +="、プレイ/ポーズのトグル";
+            }else if(action.equals(ACTION_PLAY)){
+                dbMsg +="、プレイ";
+            }else if(action.equals(ACTION_PAUSE)){
+                dbMsg +="、ポーズ";
+            }else if(action.equals(ACTION_SKIP)){
+                dbMsg +="、送り";
+            }else if(action.equals(ACTION_REWIND)){
+                dbMsg +="、戻し";
+            }else if(action.equals(ACTION_REPEAT_MODE)){
+                dbMsg +="、リピート、シャフル切り替え";
+            }else if(action.equals(ACTION_QUIT)){
+                dbMsg +="、終了";
+            }
 //            rContext = this.getApplicationContext();			//com.hijiyam_koubou.marasongs.MyApp
 //            readPref();
 //            if(sharedPref ==null){
@@ -549,23 +541,11 @@ public class MusicService extends MediaBrowserService {
 ////				playerClass = (Class<? extends MaraSonActivity>) intent.getSerializableExtra("callClass");
 ////				dbMsg += ",playerClass=" + playerClass.getName();
 //                notifyIntent = new Intent(MusicPlayerService.this, MaraSonActivity.class);		//getApplication()
-            String nowList_id = intent.getStringExtra("nowList_id");
-            //extras.getString("nowList");
-             //   String nowList_id = String.valueOf(intent.getIntExtra("nowList_id", 0));				//extras.getInt("nowList_id");
-                dbMsg += ",渡されたのは[ " + nowList_id+ "] ";
-//                if(myPreferences.nowList_id != readID){
-//                    myPreferences.nowList_id = readID;
-//                    dbMsg += ">>[ " + myPreferences.nowList_id+ "] "  ;		// + "の" + saiseiJikan + "から";
-//                }
-                String nowList = intent.getStringExtra("nowList");				//extras.getString("nowList");
-                dbMsg += nowList;
 //                if(!myPreferences.nowList.equals(readList)){
 //                    myPreferences.nowList = readList;
 //                    dbMsg += ">>" + myPreferences.nowList ;		// + "の" + saiseiJikan + "から";
 //                }
 //                dbMsg += ",読み込み前= "+ myPreferences.pref_data_url;		// + "の" + saiseiJikan + "から";
-            pref_data_url= intent.getStringExtra("pref_data_url");		//extras.getString("pref_data_url");
-                dbMsg += ",渡されたのは= " + pref_data_url;
 //                if(myPreferences.pref_data_url != null || !readUrl.equals(myPreferences.pref_data_url)){
 //                    myPreferences.pref_data_url = readUrl;
 //                    dbMsg += ">>"+ myPreferences.pref_data_url;
@@ -576,7 +556,6 @@ public class MusicService extends MediaBrowserService {
 //                if(plSL == null || plSL.size()<1){
 //                    plSL =  new ArrayList<String>();				//プレイリスト用簡易リスト
 //                    plSL.clear();
-            mediaItemList = readCalentList(Integer.parseInt(nowList_id),nowList);
 //                    listEnd = plSL.size();
 //                    //			mPlayer2 = null;
 //                }
@@ -584,10 +563,6 @@ public class MusicService extends MediaBrowserService {
 //                if(-1 < rInt){
 //                    mIndex = rInt;
 //                }
-            mIndex =intent.getIntExtra("mIndex", 0);
-            dbMsg += "で[mIndex：" + mIndex + "/"+ mediaItemList.size() + "件]";
-            saiseiJikan =intent.getLongExtra("saiseiJikan", 0);
-            dbMsg += ",saiseiJikan=" + saiseiJikan;
 ////				boolean retBool = setPrefInt("pref_mIndex", mIndex, this);        //プリファレンスの読込み
 ////				dbMsg += "を書込み" + retBool;
 //                if(musicPlaylist == null){
@@ -708,7 +683,6 @@ public class MusicService extends MediaBrowserService {
 ////				dataUketori(intent);
 //                processPlayRequest();
 //            }
-            initializePlayer(); // EXOPLAYER
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
@@ -1203,6 +1177,10 @@ public class MusicService extends MediaBrowserService {
                 exoPlayer = new ExoPlayer.Builder(context)                     //MusicService.this
                         .setHandleAudioBecomingNoisy(true)
                         .build();
+                dbMsg += "[" +mIndex + "/" + mediaItemList.size() + "件]" + saiseiJikan + "から";
+                exoPlayer.setMediaItems(mediaItemList, true);
+                exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
+                exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
 //                if(NowSavedInstanceState != null){
 //                    trackSelectionParameters =
 //                            TrackSelectionParameters.fromBundle(
@@ -1279,11 +1257,7 @@ public class MusicService extends MediaBrowserService {
                 configurePlayerWithServerSideAdsLoader();
 
             }
-            dbMsg += "[" +mIndex + "/" + mediaItemList.size() + "件]" + saiseiJikan + "から";
 
-            exoPlayer.setMediaItems(mediaItemList, true);
-            exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
-            exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
             exoPlayer.prepare();
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
@@ -1379,8 +1353,6 @@ public class MusicService extends MediaBrowserService {
 
     }
 
-
-
     /**サービスが最初に作成されたときに 1 回限りのセットアップ処理を行う
      *　onStartCommandより先なのでパラメータは渡っていない
      * extends MediaBrowserServiceCompat だとActiviteyと同様のあつかいになる？
@@ -1392,7 +1364,6 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "onCreate";
         String dbMsg="";
         try{
-            ORGUT = new OrgUtil();		//自作関数集
             ORGUT = new OrgUtil();		//自作関数集
             MyUtil = new MyUtil();
             myPreferences = new MyPreferences(this);

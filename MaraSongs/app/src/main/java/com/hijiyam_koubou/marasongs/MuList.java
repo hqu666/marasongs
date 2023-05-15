@@ -4170,32 +4170,33 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		//		mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				registerReceiver(mReceiver, mFilter);
 			}
-	//		MusicService MS = new MusicService(this);
-			if( MPSIntent == null){
-				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-				dbMsg +=  ",MPSIntent=null";
-			}else{
-				stopService(MPSIntent);
-			}
-			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
-			MPSIntent.putExtra("nowList",listName);
-			MPSIntent.putExtra("pref_data_url",dataFN);
+//	//		MusicService MS = new MusicService(this);
+//			if( MPSIntent == null){
+//				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+//				dbMsg +=  ",MPSIntent=null";
+//			}else{
+//				stopService(MPSIntent);
+//			}
+			MPSIntent.setAction(MusicService.ACTION_SET_SONG);
+//			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+//			MPSIntent.putExtra("nowList",listName);
+//			MPSIntent.putExtra("pref_data_url",dataFN);
 	//		MPSIntent.putExtra("mediaItemList", (Parcelable) mediaItemList);
 			MPSIntent.putExtra("mIndex",mIndex);
 			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
-			MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
-			MPSIntent.putExtra("continu_status","toPlay");
-			if(! IsPlaying){
-				//		MPSIntent.setAction(MusicService.ACTION_PAUSE);
-				IsPlaying = false;
-			}else{
-				//		MPSIntent.setAction(MusicService.ACTION_PLAY);
-				IsPlaying = true;
-			}
-//			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
-//			dbMsg += ">action>" + MPSIntent.getAction();
-			dbMsg += " , IsPlaying=" + IsPlaying;
-			MPSIntent.putExtra("IsPlaying",IsPlaying);
+		//	MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
+//			MPSIntent.putExtra("continu_status","toPlay");
+//			if(! IsPlaying){
+//				//		MPSIntent.setAction(MusicService.ACTION_PAUSE);
+//				IsPlaying = false;
+//			}else{
+//				//		MPSIntent.setAction(MusicService.ACTION_PLAY);
+//				IsPlaying = true;
+//			}
+////			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
+////			dbMsg += ">action>" + MPSIntent.getAction();
+//			dbMsg += " , IsPlaying=" + IsPlaying;
+//			MPSIntent.putExtra("IsPlaying",IsPlaying);
 			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 			dbMsg += " ,MPSName=" + MPSName + "でstartService";
 			myLog(TAG, dbMsg);
@@ -4225,12 +4226,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			myEditor.putString ("nowList_id", myPreferences.nowList_id);
 			myEditor.putString ("nowList", listName);
 			dbMsg +="の[ " + mIndex+ "] ";
-			MediaItem mediaItem = mediaItemList.get(mIndex);
-			creditArtistName = (String) mediaItem.mediaMetadata.artist;
-			albumName = (String) mediaItem.mediaMetadata.albumTitle;
-			titolName = (String) mediaItem.mediaMetadata.title;
-			String album_art = String.valueOf(mediaItem.mediaMetadata.artworkUri);
-			setListPlayer( creditArtistName, albumName, titolName, album_art);
+//			MediaItem mediaItem = mediaItemList.get(mIndex);
+//			creditArtistName = (String) mediaItem.mediaMetadata.artist;
+//			albumName = (String) mediaItem.mediaMetadata.albumTitle;
+//			titolName = (String) mediaItem.mediaMetadata.title;
+//			String album_art = String.valueOf(mediaItem.mediaMetadata.artworkUri);
+//			setListPlayer( creditArtistName, albumName, titolName, album_art);
 
 //			mibrary = new MusicLibrary();
 //			int totalCount = mibrary.makeList(this, Long.parseLong(myPreferences.nowList_id),listName);
@@ -5866,6 +5867,20 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				}
 			dbMsg += ",rCursor=" + rCursor.getCount() + "件";
 			if( rCursor.moveToFirst() ){
+				dbMsg +=  ",MPSIntent=" + MPSIntent;
+				if( MPSIntent == null){
+				}else{
+					stopService(MPSIntent);
+				}
+				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+				dbMsg +=  ",MPSIntent=" + MPSIntent;
+				MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
+				MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+				MPSIntent.putExtra("nowList",myPreferences.nowList);
+//				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
+				MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+				dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+
 				reqCode = MyConstants.PUPRPOSE_lIST;
 				String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
 				MyUtil MyUtil = new MyUtil();
@@ -6069,47 +6084,57 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			MuList.this.plAL.add( objMap);
 
-			MediaMetadata metadata = new MediaMetadata.Builder()
-					.setAlbumTitle((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ALBUM))
-					.setTitle((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.TITLE))
-					.setArtist((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ARTIST))
-					.setGenre((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.GENRE))
-			//		.setIsBrowsable(true)					//isBrowsable
-					.setIsPlayable(true)
-					.setArtworkUri(imageUri)
-				//	.setMediaType(mediaType)			//int objMap.get(MediaStore.Audio.Playlists.Members.MIME_TYPE)
-					.setAlbumArtist((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ALBUM_ARTIST))
-					.build();
+			dbMsg +=  ",MPSIntent=" + MPSIntent;
+			MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
+			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			String uriStr = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
 			dbMsg +=  ",\nUri="+ uriStr;
-			Uri rUri = Uri.parse(uriStr);
-	//		List<MediaItem.SubtitleConfiguration> subtitleConfigurations = New List<MediaItem.SubtitleConfiguration>();
-			MediaItem mItem = new MediaItem.Builder()
-					.setMediaId((String) objMap.get(MediaStore.Audio.Playlists.Members.AUDIO_ID))
-			//		.setSubtitleConfigurations(subtitleConfigurations)
-					.setMediaMetadata(metadata)
-					.setUri(rUri)
-					.build();
+			MPSIntent.putExtra("uriStr",uriStr);
+//				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
+			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+			dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
 
-			//1
-//			MediaItem.RequestMetadata reqestMetadata = new MediaItem.RequestMetadata.Builder().setMediaUri(rUri).build();
-//			MediaItem.Builder builder = new MediaItem.Builder();
-//			MediaItem mItem =  builder.setRequestMetadata(reqestMetadata).build();
-			//2
-	//		MediaItem mItem =  MediaItem.fromUri(rUri);
-			//3
-	//		MediaItem mItem =  new MediaItem.Builder().setUri(rUri).build();	mItem.requestMetadata.mediaUri
-			//.mediaId= (String) objMap.get(MediaStore.Audio.Playlists.Members.AUDIO_ID);
-
-			dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
-			dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
-			dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
-			dbMsg +=  "["+ mItem.mediaMetadata.trackNumber + "]";
-			dbMsg +=  ",title="+ mItem.mediaMetadata.title;
-			dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
-			dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
-	//		dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
-			mediaItemList.add(mItem);
+//			MediaMetadata metadata = new MediaMetadata.Builder()
+//					.setAlbumTitle((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ALBUM))
+//					.setTitle((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.TITLE))
+//					.setArtist((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ARTIST))
+//					.setGenre((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.GENRE))
+//			//		.setIsBrowsable(true)					//isBrowsable
+//					.setIsPlayable(true)
+//					.setArtworkUri(imageUri)
+//				//	.setMediaType(mediaType)			//int objMap.get(MediaStore.Audio.Playlists.Members.MIME_TYPE)
+//					.setAlbumArtist((CharSequence) objMap.get(MediaStore.Audio.Playlists.Members.ALBUM_ARTIST))
+//					.build();
+//			String uriStr = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+//			dbMsg +=  ",\nUri="+ uriStr;
+//			Uri rUri = Uri.parse(uriStr);
+//	//		List<MediaItem.SubtitleConfiguration> subtitleConfigurations = New List<MediaItem.SubtitleConfiguration>();
+//			MediaItem mItem = new MediaItem.Builder()
+//					.setMediaId((String) objMap.get(MediaStore.Audio.Playlists.Members.AUDIO_ID))
+//			//		.setSubtitleConfigurations(subtitleConfigurations)
+//					.setMediaMetadata(metadata)
+//					.setUri(rUri)
+//					.build();
+//
+//			//1
+////			MediaItem.RequestMetadata reqestMetadata = new MediaItem.RequestMetadata.Builder().setMediaUri(rUri).build();
+////			MediaItem.Builder builder = new MediaItem.Builder();
+////			MediaItem mItem =  builder.setRequestMetadata(reqestMetadata).build();
+//			//2
+//	//		MediaItem mItem =  MediaItem.fromUri(rUri);
+//			//3
+//	//		MediaItem mItem =  new MediaItem.Builder().setUri(rUri).build();	mItem.requestMetadata.mediaUri
+//			//.mediaId= (String) objMap.get(MediaStore.Audio.Playlists.Members.AUDIO_ID);
+//
+//			dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
+//			dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
+//			dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
+//			dbMsg +=  "["+ mItem.mediaMetadata.trackNumber + "]";
+//			dbMsg +=  ",title="+ mItem.mediaMetadata.title;
+//			dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
+//			dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
+//	//		dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
+//			mediaItemList.add(mItem);
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg  + "で" + e);
