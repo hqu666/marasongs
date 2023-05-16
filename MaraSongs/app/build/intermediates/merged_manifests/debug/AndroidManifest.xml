@@ -188,6 +188,15 @@
         <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
         <!-- </intent-filter> -->
         <!-- </receiver> -->
+
+        <receiver
+            android:name="com.hijiyam_koubou.marasongs.MusicPlayerReceiver"
+            android:exported="false" >
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+            <!-- </intent-filter> -->
+        </receiver>
         <receiver
             android:name="com.hijiyam_koubou.marasongs.NotifRecever"
             android:exported="true" >

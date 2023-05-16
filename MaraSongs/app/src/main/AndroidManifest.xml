@@ -152,6 +152,14 @@
 <!--                <action android:name="android.intent.action.MEDIA_BUTTON" />-->
 <!--            </intent-filter>-->
 <!--        </receiver>-->
+
+        <receiver android:name=".MusicPlayerReceiver"
+                    android:exported="false">
+<!--                    <intent-filter>-->
+<!--                        <action android:name="android.intent.action.MEDIA_BUTTON" />-->
+<!--                    </intent-filter>-->
+                </receiver>
+
         <receiver
             android:name=".NotifRecever"
             android:exported="true">

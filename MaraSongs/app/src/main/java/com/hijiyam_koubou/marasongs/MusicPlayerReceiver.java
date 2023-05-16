@@ -22,6 +22,12 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 			dbMsg +=",intent= " + intent;
 				//ロックスクリーン； 	{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver (has extras) }:
 				//プレイヤー； 			{ act=android.intent.action.MEDIA_BUTTON flg=0x10 cmp=com.hijiyam_koubou.marasongs/.MusicPlayerReceiver }:
+			if (intent.getStringExtra("COMMAND") != null && intent.getStringExtra("COMMAND").equals("STOP")) {
+				// サービス停止
+				intent = new Intent(context, MusicService.class);
+				context.stopService(intent);
+			}
+
 			String rAction = intent.getAction();
 			dbMsg= dbMsg +",getAction=" + rAction;
 			if(rAction == null){
@@ -31,7 +37,10 @@ public class MusicPlayerReceiver extends BroadcastReceiver {
 			dbMsg +=":" + (
 					rAction == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY? "ACTION_AUDIO_BECOMING_NOISY" :
 							rAction== Intent.ACTION_MEDIA_BUTTON ? "ボタン" : "不明");
-				if (rAction.equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
+			if (rAction.equals(MusicService.ACTION_SET_SONG)) {
+				dbMsg= dbMsg +",選曲された楽曲を読み込ませたプレイヤーを作製" ;
+
+			}else if (rAction.equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {			//外部スピーカー経由の出力イベントが発生
 					dbMsg +=",Headphonesが外された" ;															//offしか発生しない
 					Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
 //					MPSIntent.setAction(MusicService.ACTION_PAUSE);

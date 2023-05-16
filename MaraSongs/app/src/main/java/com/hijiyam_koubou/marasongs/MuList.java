@@ -233,7 +233,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public List<String> plNameSL=null;					//プレイリスト名用簡易リスト
 	public List<Map<String, Object>> plNameAL;			//プレイリスト名用リスト
 	public List<String> plSL;					//プレイリスト用簡易リスト
-	public List<Map<String, Object>> plAL;		//プレイリスト用ArrayList
+	/**conntentProviderを読み込んだプレイリスト用ArrayList*/
+	public List<Map<String, Object>> plAL;
 	public Map<String, Object> objMap;				//汎用マップ
 	public List<String> artistSL =null;					//アーティストリスト用簡易リスト
 	public List<String> albumSL =null;					//アルバムリスト用簡易リスト
@@ -269,7 +270,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public List<String> subList = null;		//アルバム付加情報
 	public List<String> titoSubList = null;		//曲名付加情報
 	public String nowListSub;				//再生中のプレイリストの詳細
-	public List<MediaItem> mediaItemList;
+	//public List<MediaItem> mediaItemList;
 //	public String pref_file_wr;		//再生中のプレイリストの保存場所
 	public int reqestList_id = 0;			//アクティビテイ方戻されたのプレイリストID
 
@@ -4180,10 +4181,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSIntent.setAction(MusicService.ACTION_SET_SONG);
 //			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 //			MPSIntent.putExtra("nowList",listName);
-//			MPSIntent.putExtra("pref_data_url",dataFN);
+			MPSIntent.putExtra("pref_data_url",dataFN);
 	//		MPSIntent.putExtra("mediaItemList", (Parcelable) mediaItemList);
 			MPSIntent.putExtra("mIndex",mIndex);
 			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+	//		MPSIntent.putExtra("plAL", (Parcelable) MuList.this.plAL);		// Serializable ?
+
+
 		//	MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
 //			MPSIntent.putExtra("continu_status","toPlay");
 //			if(! IsPlaying){
@@ -4338,7 +4342,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	//サービス
 	public ComponentName MPSName;
 	public MusicService MPS;
-	public MusicReceiver mReceiver;
+	public MusicPlayerReceiver mReceiver;
+//	public MusicReceiver mReceiver;
 	Handler mHandler = new Handler();
 	public IntentFilter mFilter;
 
@@ -4415,6 +4420,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	//②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
+	/*
 	public class MusicReceiver extends BroadcastReceiver{
 			@Override
 			public void onReceive(Context context, final Intent intent) {
@@ -4502,7 +4508,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				});
 			}
 		}            //MusicPlayerReceiver
-
+*/
 	/**
 	 * レシーバーを生成
 	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 	onClick		keizoku2Service	onStopTrackingTouch	onKey
@@ -4517,7 +4523,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( mReceiver== null ){
 				mFilter = new IntentFilter();
 				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
-				mReceiver = new MusicReceiver();
+				mReceiver = new MusicPlayerReceiver();
 				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
 				//that was originally registered here. Are you missing a call to unregisterReceiver()?
 				dbMsg +=">生成>=" + mReceiver;////////////////////////
@@ -5852,7 +5858,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
 			long start = System.currentTimeMillis();		// 開始時刻の取得
-			mediaItemList = new ArrayList<MediaItem>();
+	//		mediaItemList = new ArrayList<MediaItem>();
 			dbMsg += "選択されたプレイリスト[ID="+playlistId + "]" + MuList.this.sousalistName ;
 			final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 			final String[] columns = null;			//{ idKey, nameKey };
@@ -6276,7 +6282,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}else{
 				reqCode = MyConstants.SELECT_SONG;
 			}
-			dbMsg += ",mediaItemList="+mediaItemList.size() + "件";
+		//	dbMsg += ",mediaItemList="+mediaItemList.size() + "件";
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
