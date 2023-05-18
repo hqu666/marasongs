@@ -23,7 +23,7 @@
 
     <!-- 未読時の背景色（白色） -->
     <color name="status_item_background_unread">#FFFFFF</color>
-  <color name="selected_list_item_color">#ffd33f</color>
+  <color name="selected_list_item_color">#818181</color>
   <color name="default_color">#000000</color>
   <color name="clear">#00000000</color>
 	<!--プリファレンス用-->

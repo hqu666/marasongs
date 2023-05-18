@@ -153,6 +153,13 @@
 <!--            </intent-filter>-->
 <!--        </receiver>-->
 
+<!--Android 12から   android:exported="false"　で外部アプリに公開するか　を明示的に宣言-->
+        <receiver android:name=".MuList$SongSelectReceiver"
+            android:exported="false">
+            <!--                    <intent-filter>-->
+            <!--                        <action android:name="android.intent.action.MEDIA_BUTTON" />-->
+            <!--                    </intent-filter>-->
+        </receiver>
         <receiver android:name=".MusicPlayerReceiver"
                     android:exported="false">
 <!--                    <intent-filter>-->

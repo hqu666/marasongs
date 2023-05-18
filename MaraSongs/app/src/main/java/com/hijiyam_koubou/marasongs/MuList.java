@@ -479,7 +479,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		return myPreferences.pref_zenkyoku_list_id;
 	}
 
-
 	//起動　/終了処理//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void checkMyPermission() {
 		final String TAG = "checkMyPermission";
@@ -1546,8 +1545,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ",exists=" + shyuFile.exists();
 				dbMsg += ",exists=" + shyuFile.exists();
 				if( ! shyuFile.exists()){
-					shyuusei_db =  SQLiteDatabase.openOrCreateDatabase(fn, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-//					shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, SQLiteDatabase.OPEN_READWRITE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+					shyuusei_db =  SQLiteDatabase.openOrCreateDatabase(fn, null);
 					shyuusei_db.close();
 				}
 				shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
@@ -1684,7 +1682,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			File shyuFile = new File(fn);
 			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 			if( ! shyuFile.exists()){
-				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);
 //				modeを SQLiteDatabase.OPEN_READWRITEから変更
 // アーティスト名のえリストファイルを読み書きモードで開く
 				shyuusei_db.close();
@@ -1842,9 +1840,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			File shyuFile = new File(fn);
 			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 			if( ! shyuFile.exists()){
-				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-				//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
-				   //  2019	SQLiteDatabase.OPEN_READWRITE
+				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);
 				shyuusei_db.close();
 			}
 			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
@@ -2005,7 +2001,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			shyuusei_Helper = new shyuuseiHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 			dbMsg += ">>" + getApplicationContext().getDatabasePath(fn).getPath() + ",exists=" + shyuFile.exists()+ ",exists=" + shyuFile.exists();
 			if( ! shyuFile.exists()){
-				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);	//String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
+				shyuusei_db =  getApplicationContext().openOrCreateDatabase(fn, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, null);
 				shyuusei_db.close();
 			}
 			shyuuseiTName = getResources().getString(R.string.shyuusei_table);			//	<string name="">shyuusei_table</string>
@@ -2538,7 +2534,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
 											artistList_yomikomi();
 										} else {
-											quitMe();        //このアプリを終了する
+									//		quitMe();        //このアプリを終了する
 										}
 									} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_list_t)) ) {            //プレイリストを選択して下さい。
 //									} else if ( dtitol.equals(getResources().getString(R.string.jyoukyouBunki_titol_t)) ) {        //選曲して下さい。
@@ -2630,7 +2626,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					new DialogInterface.OnClickListener() {			// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						quitMe();		//このアプリを終了する
+				//		quitMe();		//このアプリを終了する
 						}
 					});
 				alertDialogBuilder.setCancelable(true);			// アラートダイアログのキャンセルが可能かどうかを設定します
@@ -2898,7 +2894,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);				//全曲リスト
 							artistList_yomikomi();
 						}else{
-							quitMe();		//このアプリを終了する
+					//		quitMe();		//このアプリを終了する
 						}
 					}
 				});
@@ -4342,10 +4338,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	//サービス
 	public ComponentName MPSName;
 	public MusicService MPS;
-	public MusicPlayerReceiver mReceiver;
-//	public MusicReceiver mReceiver;
-	Handler mHandler = new Handler();
-	public IntentFilter mFilter;
 
 	public boolean isActionChange(String action ){			///リストからの戻り処理
 		final String TAG = "isActionChange";
@@ -4420,142 +4412,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	//②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
-	/*
-	public class MusicReceiver extends BroadcastReceiver{
-			@Override
-			public void onReceive(Context context, final Intent intent) {
-				mHandler.post(new Runnable() {
-					@SuppressLint("Range")
-					public void run() {
-						final String TAG = "onReceive";
-						String dbMsg = ".[MuList]";
-						try{
-							dbMsg += " , isFocusNow=" + isFocusNow;
-							String state = intent.getStringExtra("state");
-							dbMsg += ",state=" + state;
-							String action = intent.getStringExtra("action");
-							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicService]で取得、sendPlayerState[MusicService]で初期値取得
-							dbMsg += "[再生ポジション=" + mcPosition + "/";
-							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
-							dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
-							if(IsPlaying){
-								action =  "com.example.android.remotecontrol.ACTION_PLAY";
-								IsPlayingNow = true;		//既に再生中
-//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
-							}else{
-								action =  "com.example.android.remotecontrol.ACTION_PAUSE";
-								IsPlayingNow = false;
-//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
-							}
-							if(isActionChange(action)){
-								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-								String  mcPositionStr = dataFormat.format(mcPosition);
-								dbMsg += " , mcPosition:" + mcPositionStr;            //この文字では設定できない
-								MuList.this.setChronometer(mcPosition ,  IsPlaying );
-								b_action = action;
-							}
-							dbMsg += ",b_action=" + action + ">>" + action;
-							String saisei_fname =intent.getStringExtra("pref_data_url");
-							dbMsg += ",受信ファイル；" + myPreferences.saisei_fname + " を　";
-							if(myPreferences.saisei_fname == null || myPreferences.saisei_fname.equals("")) {
-							}else{
-								String pefName = context.getResources().getString(R.string.pref_main_file);
-								dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
-								if(! myPreferences.saisei_fname.equals(b_saisei_fname)){
-									dbMsg += myPreferences.saisei_fname + "に変更";
-									b_saisei_fname = myPreferences.saisei_fname;
-									mIndex = intent.getIntExtra("mIndex", 0);
-									dbMsg +="[mIndex=" + mIndex + "]";
-									Cursor playingItem = musicPlaylist.getPlaylistItems(Integer.parseInt(myPreferences.nowList_id), mIndex);
-									if (playingItem.moveToFirst()) {
-										creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));        //playingItem.artist;	//クレジットされているアーティスト名
-										dbMsg += " ,クレジット⁼ " + creditArtistName;
-										albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));        //playingItem.album;			//アルバム名
-										dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-										titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
-										dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-										int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
-										dbMsg += " ,audioId= " + audioId;
-										Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
-										String dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-//										dbMsg += ".再生時間=" + duration + "[ms]";/////////////////////////////////////
-										lp_artist.setText( creditArtistName);
-										lp_album.setText( albumName);
-										lp_title.setText( titolName);
-										String album_art =intent.getStringExtra("album_art") +"";
-										dbMsg +=",album_art=" + album_art;
-//										if(! album_art.equals("")){
-//											OrgUtil ORGUT = new OrgUtil();				//自作関数集
-//											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
-//											Display disp = wm.getDefaultDisplay();
-//											ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-//											int width = rc_Img.getWidth();
-//											width = width*9/10;
-//											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-//											rc_Img.setImageBitmap(mDummyAlbumArt);
-//										}
-										setListPlayer( creditArtistName, albumName, titolName, album_art);
-
-									}
-									playingItem.close();
-								}
-							}
-//							myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG,"で"+e);
-						}
-					}
-				});
-			}
-		}            //MusicPlayerReceiver
-*/
-	/**
-	 * レシーバーを生成
-	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 	onClick		keizoku2Service	onStopTrackingTouch	onKey
-	 * ☆サービスからサービスは呼び出せないのでこのアクティビティから呼び出す。
-	 * */
-	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service	onClick
-		final String TAG = "receiverSeisei";
-		String dbMsg= "";
-		try{
-			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			dbMsg= dbMsg +",mReceiver=" + mReceiver;////////////////////////
-			if( mReceiver== null ){
-				mFilter = new IntentFilter();
-				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
-				mReceiver = new MusicPlayerReceiver();
-				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
-				//that was originally registered here. Are you missing a call to unregisterReceiver()?
-				dbMsg +=">生成>=" + mReceiver;////////////////////////
-			} else{
-				dbMsg += "mReceiver = null";
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	public void receiverHaki(){		//レシーバーを破棄
-		final String TAG = "receiverHaki";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
-		try{
-			dbMsg += "mReceivert=" + mReceiver;
-			if( mReceiver != null ){
-				unregisterReceiver(mReceiver);
-				mReceiver = null;
-				dbMsg += ">>" + mReceiver;
-				list_player.setVisibility(View.GONE);
-			} else{
-				dbMsg += "mReceiver = null";
-			}
-//			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
 	//設定値管理////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void reWriteAllVal(){ //変数全設定	★wriAllPrifに続けてreadPrefを呼び出しても更新がされていない
 		final String TAG = "reWriteAllVal";
@@ -5277,10 +5133,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					view = (ItemLayout) mFactory.inflate(mItemLayoutResource, null);					//mFactory.inflate(mItemLayoutResource, null);
 				} else {
 					view = (ItemLayout) convertView;
+// https://akira-watson.com/android/listview-item-adjust.html#2
+//					view.setBackgroundColor(Color.rgb(241,241,241));
+//					view.mTitleView.setTextColor(Color.rgb(255, 0, 0));
+//					view.noView.setTextColor(Color.rgb(255, 0, 0));
 				}
 				dbMsg += ">view> "+ view ;///////////////////////////////////////////////////////////////////////////////////////////
 				view.bindView(getItem(position) , reqCode);			//view.bindView(getItem(position));		 bindView(MuList.eListItem) は引数 (CustomData) に適用できません
-//			myLog(TAG, dbMsg);
+		//	myLog(TAG, dbMsg);
 //		}catch (Exception e) {
 //			myErrorLog(TAG ,  dbMsg + "で" + e);
 //		}
@@ -10184,7 +10044,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //                }else{
 				zenkyokuHelper = new ZenkyokuHelper(getApplicationContext() , fn);		//全曲リストの定義ファイル		.this.cContext.
 				db = zenkyokuHelper.getWritableDatabase();			// データベースをオープン
-//                    db = cContext.openOrCreateDatabase(fn, MODE_PRIVATE , null);	// | Context.MODE_ENABLE_WRITE_AHEAD_LOGGING Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE, String path, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler				//アーティスト名のえリストファイルを読み書きモードで開く
 				dbMsg += ">作り直し>" + cContext.getDatabasePath(fn).getPath();	///data/data/com.hijiyam_koubou.marasongs/databases/artist.db
 //                }
 				dbMsg += ">>isOpen=" + db.isOpen()+",isReadOnly=" + db.isReadOnly();
@@ -12067,7 +11926,225 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
+	// サービスから値を受け取ったら動かしたい内容を書く
+	public SongSelectReceiver mReceiver;
+	//	public MusicReceiver mReceiver;
+	Handler mHandler = new Handler();
+	public IntentFilter mFilter;
 
+	/*
+	public class MusicReceiver extends BroadcastReceiver{
+			@Override
+			public void onReceive(Context context, final Intent intent) {
+				mHandler.post(new Runnable() {
+					@SuppressLint("Range")
+					public void run() {
+						final String TAG = "onReceive";
+						String dbMsg = ".[MuList]";
+						try{
+							dbMsg += " , isFocusNow=" + isFocusNow;
+							String state = intent.getStringExtra("state");
+							dbMsg += ",state=" + state;
+							String action = intent.getStringExtra("action");
+							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicService]で取得、sendPlayerState[MusicService]で初期値取得
+							dbMsg += "[再生ポジション=" + mcPosition + "/";
+							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
+							dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
+							if(IsPlaying){
+								action =  "com.example.android.remotecontrol.ACTION_PLAY";
+								IsPlayingNow = true;		//既に再生中
+//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
+							}else{
+								action =  "com.example.android.remotecontrol.ACTION_PAUSE";
+								IsPlayingNow = false;
+//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
+							}
+							if(isActionChange(action)){
+								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+								String  mcPositionStr = dataFormat.format(mcPosition);
+								dbMsg += " , mcPosition:" + mcPositionStr;            //この文字では設定できない
+								MuList.this.setChronometer(mcPosition ,  IsPlaying );
+								b_action = action;
+							}
+							dbMsg += ",b_action=" + action + ">>" + action;
+							String saisei_fname =intent.getStringExtra("pref_data_url");
+							dbMsg += ",受信ファイル；" + myPreferences.saisei_fname + " を　";
+							if(myPreferences.saisei_fname == null || myPreferences.saisei_fname.equals("")) {
+							}else{
+								String pefName = context.getResources().getString(R.string.pref_main_file);
+								dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
+								if(! myPreferences.saisei_fname.equals(b_saisei_fname)){
+									dbMsg += myPreferences.saisei_fname + "に変更";
+									b_saisei_fname = myPreferences.saisei_fname;
+									mIndex = intent.getIntExtra("mIndex", 0);
+									dbMsg +="[mIndex=" + mIndex + "]";
+									Cursor playingItem = musicPlaylist.getPlaylistItems(Integer.parseInt(myPreferences.nowList_id), mIndex);
+									if (playingItem.moveToFirst()) {
+										creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));        //playingItem.artist;	//クレジットされているアーティスト名
+										dbMsg += " ,クレジット⁼ " + creditArtistName;
+										albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));        //playingItem.album;			//アルバム名
+										dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+										titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
+										dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+										int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
+										dbMsg += " ,audioId= " + audioId;
+										Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
+										String dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+//										dbMsg += ".再生時間=" + duration + "[ms]";/////////////////////////////////////
+										lp_artist.setText( creditArtistName);
+										lp_album.setText( albumName);
+										lp_title.setText( titolName);
+										String album_art =intent.getStringExtra("album_art") +"";
+										dbMsg +=",album_art=" + album_art;
+//										if(! album_art.equals("")){
+//											OrgUtil ORGUT = new OrgUtil();				//自作関数集
+//											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
+//											Display disp = wm.getDefaultDisplay();
+//											ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+//											int width = rc_Img.getWidth();
+//											width = width*9/10;
+//											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
+//											rc_Img.setImageBitmap(mDummyAlbumArt);
+//										}
+										setListPlayer( creditArtistName, albumName, titolName, album_art);
+
+									}
+									playingItem.close();
+								}
+							}
+//							myLog(TAG, dbMsg);
+						} catch (Exception e) {
+							myErrorLog(TAG,"で"+e);
+						}
+					}
+				});
+			}
+		}            //MusicPlayerReceiver
+*/
+	/**
+	 * レシーバーを生成
+	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 	onClick		keizoku2Service	onStopTrackingTouch	onKey
+	 * ☆サービスからサービスは呼び出せないのでこのアクティビティから呼び出す。
+	 * */
+	public void receiverSeisei(){		//レシーバーを生成 <onResume , playing , mData2Service	onClick
+		final String TAG = "receiverSeisei";
+		String dbMsg= "";
+		try{
+			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			dbMsg= dbMsg +",mReceiver=" + mReceiver;////////////////////////
+			if( mReceiver== null ){
+				mFilter = new IntentFilter();
+				mFilter.addAction(MusicService.ACTION_SET_SONG);
+				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
+				mReceiver = new SongSelectReceiver();
+				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
+				//that was originally registered here. Are you missing a call to unregisterReceiver()?
+				dbMsg +=">生成>=" + mReceiver;////////////////////////
+			} else{
+				dbMsg += "mReceiver = null";
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	public void receiverHaki(){		//レシーバーを破棄
+		final String TAG = "receiverHaki";
+		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		try{
+			dbMsg += "mReceivert=" + mReceiver;
+			if( mReceiver != null ){
+				unregisterReceiver(mReceiver);
+				mReceiver = null;
+				dbMsg += ">>" + mReceiver;
+				list_player.setVisibility(View.GONE);
+			} else{
+				dbMsg += "mReceiver = null";
+			}
+//			dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	public class SongSelectReceiver extends BroadcastReceiver {
+		// ブロードキャスト受信時にこのメソッドが動く
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			final String TAG = "onReceive";
+			String dbMsg = "[SongSelectReceiver]";
+			try{		// ブロードキャスト受信時の処理（今回は適当）
+				dbMsg += "Action" + intent.getAction() ;
+				dbMsg += "Selected" + lvID.getSelectedItemPosition() ;
+				int sIndex =intent.getIntExtra("mIndex",0);
+				dbMsg += ",sIndex=" + sIndex ;
+				lvID.setSelection(sIndex);
+				lvID.setItemsCanFocus(true);
+				dbMsg += ">>" + lvID.getSelectedItemPosition() ;
+				String duranationStr =intent.getStringExtra("duranation");
+				dbMsg += "duranationStr" + duranationStr;
+				lp_title.setText( duranationStr);
+
+//				final PendingResult pendingResult = goAsync();
+//				SeleTask asyncTask = new SeleTask(pendingResult, intent);
+//				asyncTask.execute();
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		}
+
+			private class SeleTask extends AsyncTask<String, Integer, String> {
+
+				private final PendingResult pendingResult;
+				private final Intent intent;
+
+				private SeleTask(PendingResult pendingResult, Intent intent) {
+					this.pendingResult = pendingResult;
+					this.intent = intent;
+				}
+
+				@Override
+				protected String doInBackground(String... strings) {
+					final String TAG = "doInBackground";
+					String dbMsg = "[SeleTask]";
+					String log = null;
+					try{
+						dbMsg += "Selected" + lvID.getSelectedItemPosition() ;
+						int sIndex =intent.getIntExtra("mIndex",0);
+						dbMsg += ",sIndex=" + sIndex ;
+						lvID.setSelection(sIndex);
+						dbMsg += ">>" + lvID.getSelectedItemPosition() ;
+						log= "["  + sIndex +"]";
+						String duranationStr =intent.getStringExtra("duranation");
+				//		rStr += sdf.format(new Date(Long.valueOf((String) intent.getStringExtra("duranation"))*1000))  + getResources().getString(R.string.comon_kousinn);
+						dbMsg += "duranationStr" + duranationStr;
+						log += duranationStr +"ms";
+						lp_title.setText( duranationStr);
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+					return log;
+				}
+
+				@Override
+				protected void onPostExecute(String s) {
+					super.onPostExecute(s);
+					final String TAG = "receiverSeisei";
+					String dbMsg = "[SeleTask]";
+					try{
+						pendingResult.finish();
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						// Must call finish() so the BroadcastReceiver can be recycled.
+				}
+			}
+
+		}
+	}
 }
 
 /**2016/03/24	リストが重い

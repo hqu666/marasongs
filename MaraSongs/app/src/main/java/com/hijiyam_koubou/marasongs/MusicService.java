@@ -1304,8 +1304,9 @@ public class MusicService extends MediaBrowserService {
             notification = notificationBuilder.build();
             startForeground(NOTIFICATION_ID, notification);
             ////////////////////////////////////////////////////////////// Notification作成 //
+            Intent MRIintent = new Intent();
 
-            Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
+      //      Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
             MRIintent.setAction(ACTION_SET_SONG);
             dbMsg += ",送信するのは" + myPreferences.nowList_id;
             MRIintent.putExtra("nowList_id",myPreferences.nowList_id);
@@ -1317,7 +1318,7 @@ public class MusicService extends MediaBrowserService {
             MRIintent.putExtra("pref_data_url",dataFN);
             String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
             dbMsg += ",duranation=" + duranation;
-            MRIintent.putExtra("saiseiJikan",duranation);
+            MRIintent.putExtra("duranation",duranation);
             getBaseContext().sendBroadcast(MRIintent);
 //         //   PendingIntent pendingMRIintent = PendingIntent.getBroadcast(context, MS_SET_SONG, MRIintent, PendingIntent.FLAG_IMMUTABLE);
 
