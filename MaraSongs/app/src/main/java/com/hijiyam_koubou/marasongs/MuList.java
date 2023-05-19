@@ -23,7 +23,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.OnScanCompletedListener;
@@ -34,20 +33,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-//import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -75,41 +70,15 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
-import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.media3.common.AudioAttributes;
-import androidx.media3.common.C;
-import androidx.media3.common.MediaItem;
-import androidx.media3.common.MediaMetadata;
-import androidx.media3.common.PlaybackException;
-import androidx.media3.common.Player;
-import androidx.media3.common.TrackSelectionParameters;
-import androidx.media3.common.Tracks;
-import androidx.media3.common.util.UnstableApi;
-import androidx.media3.common.util.Util;
-import androidx.media3.datasource.DataSource;
-import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.RenderersFactory;
-import androidx.media3.exoplayer.drm.DefaultDrmSessionManagerProvider;
-import androidx.media3.exoplayer.drm.FrameworkMediaDrm;
-import androidx.media3.exoplayer.ima.ImaAdsLoader;
-import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource;
-import androidx.media3.exoplayer.offline.DownloadRequest;
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
-import androidx.media3.exoplayer.source.MediaSource;
-import androidx.media3.exoplayer.source.ads.AdsLoader;
-import androidx.media3.exoplayer.util.DebugTextViewHelper;
-import androidx.media3.exoplayer.util.EventLogger;
-import androidx.media3.session.MediaSession;
 import androidx.media3.ui.PlayerView;
 import androidx.preference.PreferenceManager;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
 
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -119,7 +88,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -224,7 +192,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //	public ImageButton lp_ppPButton;			//プレイヤーの再生/停止ボタン
 	public ImageButton lp_stop;					//プレイヤーの終了ボタン
 	public TextView lp_artist ;					//プレイヤーのアーティスト表示
-	public TextView lp_album ;					//プレイヤーのアルバム表示
+	public TextView lp_duranation ;					//プレイヤーのアルバム表示
 	public TextView lp_title ;						//プレイヤーのタイトル表示
 	public Chronometer lp_chronometer;		//プレイヤーの再生ポジション表示
 	public LinearLayout rc_fbace;			//プレイヤーフィールド部の土台;クリックの反応部
@@ -379,6 +347,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	static final int CONTEXT_REPET_CLEAN= CONTEXT_rumdam_wr+1;					//リピート再生リストの既存レコード消去
 	static final int CONTEXT_REPET_WR= CONTEXT_REPET_CLEAN+1;					//リピート再生リストレコード書込み
 	static final int CONTEXT_M3U2_PL= CONTEXT_REPET_WR+1;					//汎用プレイリストを１Androidのプレイリストに転記
+
+	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+	public SimpleDateFormat sdffiles = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public SimpleDateFormat sdf_time = new SimpleDateFormat("mm:ss:SS");
 
 
 //	static final int CONTEXT_saikintuika_read = CONTEXT_REPET_WR + 1;			//最近追加リストをデータベースから読み出す
@@ -4513,8 +4485,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-	public SimpleDateFormat sdffiles = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	int listId = 0;
 	public int selPosition;
 
@@ -4532,6 +4502,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",シンプルなリスト表示="+myPreferences.pref_list_simple+ ":position="+position+",[id="+id+"]";////////"リスト；parent="+parent+",view="+view+
 			dbMsg += ",artist="+sousa_artist+ ":album="+sousa_alubm + ",titol=" + sousa_titol;
 			dbMsg += ",プレイリスト:sousalistName="+sousalistName + ",myPreferences.nowList:"+myPreferences.nowList;
+			view.setSelected(true);
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku))) {        // 全曲リストのアーティスト選択　 && reqCode <=MyConstants.v_titol
 				dbMsg += ",全曲リストでreqCode=" + reqCode;
 				switch (reqCode) {
@@ -6734,7 +6705,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
 				String dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
 				lp_artist.setText( creditArtistName);
-				lp_album.setText( albumName);
 				lp_title.setText( titolName);
 				if ( albumArt ==null ) {
 					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
@@ -11321,7 +11291,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",albumMei= " + albumMei;
 			dbMsg +=",titolMei= " + titolMei;
 			lp_artist.setText(artistMei);									//プレイヤーのアーティスト表示
-			lp_album.setText(albumMei);									//プレイヤーのアルバム表示
+	//		lp_album.setText(albumMei);									//プレイヤーのアルバム表示
 			lp_title.setText(titolMei);										//プレイヤーのタイトル表示
 		//	dbMsg +=",albumArt= " + albumArt;
 //			if( albumArt != null  ){
@@ -11748,9 +11718,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			lp_ppPButton = list_player.findViewById(R.id.ppPButton);			//プレイヤーの再生/停止ボタン
 			rc_fbace = list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
 			lp_stop = list_player.findViewById(R.id.stop);								//プレイヤーの終了ボタン
-			lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
-			lp_album = list_player.findViewById(R.id.album);									//プレイヤーのアルバム表示
 			lp_title = list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
+			lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
+			lp_duranation = list_player.findViewById(R.id.duranation);									//プレイヤーのアルバム表示
 			lp_chronometer = list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
 
 //			lp_chronometer.setFormat("mm:ss");
@@ -12039,6 +12009,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				mReceiver = new SongSelectReceiver();
 				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
 				//that was originally registered here. Are you missing a call to unregisterReceiver()?
+		//		mReceiver.registerHandler(updateHandler);
 				dbMsg +=">生成>=" + mReceiver;////////////////////////
 			} else{
 				dbMsg += "mReceiver = null";
@@ -12069,6 +12040,64 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+//	private Handler updateHandler = new Handler() {
+//		@Override
+//		public void handleMessage(Message msg) {
+//			final String TAG = "handleMessage";
+//			String dbMsg = "[updateHandler]";
+//			try{
+//				Bundle bundle = msg.getData();
+//				dbMsg += ",Selected" + lvID.getSelectedItemId() ;
+//				int sIndex =bundle.getInt("mIndex",0);
+//				dbMsg += ",sIndex=" + sIndex ;
+//				lvID.setSelection(sIndex);
+//
+//				String duranationStr = bundle.getString("duranation");
+//				dbMsg += "duranationStr" + duranationStr;
+//				String dStr = sdf_time.format(new Date(Long.valueOf(duranationStr)*1000));
+//				lp_title.setText( dStr);;
+//				myLog(TAG, dbMsg);
+//			} catch (Exception e) {
+//				myErrorLog(TAG ,  dbMsg + "で" + e);
+//			}
+//
+//		}
+//	};
+	public String nowList_id;
+	public String dataStr;
+	public String artistName;
+	public String albumTitle;
+	public String titleStr;
+	public String duranationStr;
+	public long duranationLong;
+
+	private void selectSongInfo(){
+		final Handler songSelectHandler = new Handler(Looper.getMainLooper());
+			songSelectHandler.post(() -> {
+				final String TAG = "post";
+				String dbMsg = "[songSelectHandler]";
+				try{
+					dbMsg += ",nowList_id= " + nowList_id;
+					dbMsg += ",mIndex=" + mIndex ;
+					String wStr = "[" + mIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
+					lp_title.setText(wStr);
+					dbMsg += ",dataStr= " + dataStr;
+					lp_artist.setText(dataStr);
+					dbMsg += ",duranationStr" + duranationStr;
+					lp_duranation.setText( duranationStr);
+					lp_chronometer.setBase(duranationLong);
+
+					dbMsg += ",Selected" + lvID.getSelectedItemId();
+					lvID.setSelection(mIndex);
+					dbMsg += ">>" + lvID.getSelectedItemId();
+			//		playerView.set
+					myLog(TAG, dbMsg);
+				} catch (Exception e) {
+					myErrorLog(TAG ,  dbMsg + "で" + e);
+				}
+			});
+	}
+
 	public class SongSelectReceiver extends BroadcastReceiver {
 		// ブロードキャスト受信時にこのメソッドが動く
 		@Override
@@ -12076,74 +12105,89 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			final String TAG = "onReceive";
 			String dbMsg = "[SongSelectReceiver]";
 			try{		// ブロードキャスト受信時の処理（今回は適当）
-				dbMsg += "Action" + intent.getAction() ;
-				dbMsg += "Selected" + lvID.getSelectedItemPosition() ;
-				int sIndex =intent.getIntExtra("mIndex",0);
-				dbMsg += ",sIndex=" + sIndex ;
-				lvID.setSelection(sIndex);
-				lvID.setItemsCanFocus(true);
-				dbMsg += ">>" + lvID.getSelectedItemPosition() ;
-				String duranationStr =intent.getStringExtra("duranation");
-				dbMsg += "duranationStr" + duranationStr;
-				lp_title.setText( duranationStr);
+				dbMsg += ",Action= " + intent.getAction() ;
+				if(intent.getAction().equals(MusicService.ACTION_SET_SONG)){
+					nowList_id = intent.getStringExtra("nowList_id");
+					dbMsg += ",nowList_id= " + nowList_id;
+					dataStr =intent.getStringExtra("pref_data_url");
+					dbMsg += ",dataStr= " + dataStr;
 
-//				final PendingResult pendingResult = goAsync();
-//				SeleTask asyncTask = new SeleTask(pendingResult, intent);
-//				asyncTask.execute();
+					mIndex =intent.getIntExtra("mIndex",0);
+					dbMsg += ",mIndex=" + mIndex ;
+					String dStr =intent.getStringExtra("duranation");
+					dbMsg += ".dStr" + dStr;
+					duranationLong = Long.parseLong(dStr);
+					Date duranationdate = new Date(duranationLong);
+					duranationStr = sdf_time.format(duranationdate);			// sdf_time.format(new Date(Long.valueOf(dStr)*1000));
+					dbMsg += ",duranationStr" + duranationStr;
+					artistName = intent.getStringExtra("artist");
+					albumTitle =intent.getStringExtra("albumTitle");
+					titleStr =intent.getStringExtra("title");
+					selectSongInfo();
+				}
+//				SongSelectThread songSelectThread = new SongSelectThread();
+//				songSelectThread.start();
+////				final PendingResult pendingResult = goAsync();
+////				SeleTask asyncTask = new SeleTask(pendingResult, intent);
+////				asyncTask.execute();
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);
 			}
 		}
 
-			private class SeleTask extends AsyncTask<String, Integer, String> {
+//		public void registerHandler(Handler locationUpdateHandler) {
+//			handler = locationUpdateHandler;
+//		}
 
-				private final PendingResult pendingResult;
-				private final Intent intent;
-
-				private SeleTask(PendingResult pendingResult, Intent intent) {
-					this.pendingResult = pendingResult;
-					this.intent = intent;
-				}
-
-				@Override
-				protected String doInBackground(String... strings) {
-					final String TAG = "doInBackground";
-					String dbMsg = "[SeleTask]";
-					String log = null;
-					try{
-						dbMsg += "Selected" + lvID.getSelectedItemPosition() ;
-						int sIndex =intent.getIntExtra("mIndex",0);
-						dbMsg += ",sIndex=" + sIndex ;
-						lvID.setSelection(sIndex);
-						dbMsg += ">>" + lvID.getSelectedItemPosition() ;
-						log= "["  + sIndex +"]";
-						String duranationStr =intent.getStringExtra("duranation");
-				//		rStr += sdf.format(new Date(Long.valueOf((String) intent.getStringExtra("duranation"))*1000))  + getResources().getString(R.string.comon_kousinn);
-						dbMsg += "duranationStr" + duranationStr;
-						log += duranationStr +"ms";
-						lp_title.setText( duranationStr);
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-					return log;
-				}
-
-				@Override
-				protected void onPostExecute(String s) {
-					super.onPostExecute(s);
-					final String TAG = "receiverSeisei";
-					String dbMsg = "[SeleTask]";
-					try{
-						pendingResult.finish();
-						myLog(TAG, dbMsg);
-					} catch (Exception e) {
-						// Must call finish() so the BroadcastReceiver can be recycled.
-				}
-			}
-
-		}
+//			private class SeleTask extends AsyncTask<String, Integer, String> {
+//
+//				private final PendingResult pendingResult;
+//				private final Intent intent;
+//
+//				private SeleTask(PendingResult pendingResult, Intent intent) {
+//					this.pendingResult = pendingResult;
+//					this.intent = intent;
+//				}
+//
+//				@Override
+//				protected String doInBackground(String... strings) {
+//					final String TAG = "doInBackground";
+//					String dbMsg = "[SeleTask]";
+//					String log = null;
+//					try{
+//						dbMsg += "Selected" + lvID.getSelectedItemPosition() ;
+//						int sIndex =intent.getIntExtra("mIndex",0);
+//						dbMsg += ",sIndex=" + sIndex ;
+//						lvID.setSelection(sIndex);
+//						dbMsg += ">>" + lvID.getSelectedItemPosition() ;
+//						log= "["  + sIndex +"]";
+//						String duranationStr =intent.getStringExtra("duranation");
+//				//		rStr += sdf.format(new Date(Long.valueOf((String) intent.getStringExtra("duranation"))*1000))  + getResources().getString(R.string.comon_kousinn);
+//						dbMsg += "duranationStr" + duranationStr;
+//						log += duranationStr +"ms";
+//						lp_title.setText( duranationStr);
+//						myLog(TAG, dbMsg);
+//					} catch (Exception e) {
+//						myErrorLog(TAG ,  dbMsg + "で" + e);
+//					}
+//					return log;
+//				}
+//
+//				@Override
+//				protected void onPostExecute(String s) {
+//					super.onPostExecute(s);
+//					final String TAG = "receiverSeisei";
+//					String dbMsg = "[SeleTask]";
+//					try{
+//						pendingResult.finish();
+//						myLog(TAG, dbMsg);
+//					} catch (Exception e) {
+//						// Must call finish() so the BroadcastReceiver can be recycled.
+//				}
+//			}
+//
+//		}
 	}
 }
 
