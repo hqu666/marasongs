@@ -3493,7 +3493,6 @@ id add
 id adjust_height
 id adjust_width
 id advertisement_ll
-id album
 id albumCountLL
 id albumIDPTF
 id albumRow
@@ -3611,6 +3610,7 @@ id dragRight
 id dragStart
 id dragUp
 id dropdown_menu
+id duranation
 id dviceStyte
 id dviceStyteHSV
 id easeIn

@@ -3492,7 +3492,6 @@ int id add 0x7f0a0050
 int id adjust_height 0x7f0a0051
 int id adjust_width 0x7f0a0052
 int id advertisement_ll 0x7f0a0053
-int id album 0x7f0a0054
 int id albumCountLL 0x7f0a0055
 int id albumIDPTF 0x7f0a0056
 int id albumRow 0x7f0a0057
@@ -3610,6 +3609,7 @@ int id dragRight 0x7f0a00c6
 int id dragStart 0x7f0a00c7
 int id dragUp 0x7f0a00c8
 int id dropdown_menu 0x7f0a00c9
+int id duranation 0x7f0a032f
 int id dviceStyte 0x7f0a00ca
 int id dviceStyteHSV 0x7f0a00cb
 int id easeIn 0x7f0a00cc
