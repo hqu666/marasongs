@@ -13,6 +13,7 @@ import android.media.browse.MediaBrowser;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.service.media.MediaBrowserService;
 import android.text.TextUtils;
@@ -49,6 +50,7 @@ import androidx.preference.PreferenceManager;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -440,14 +442,6 @@ public class MusicService extends MediaBrowserService {
                         dbMsg +=  ",title="+ albumTitleStr;         //mItem.mediaMetadata.title;
             //            dbMsg +=  ",artworkUri="+ mItem.mediaMetadata.artworkUri;
                         dbMsg +=  ",genre="+ mItem.mediaMetadata.genre;
-                        //		dbMsg +=  ",release="+ mItem.mediaMetadata.releaseYear + "/"+ mItem.mediaMetadata.releaseMonth + "/"+ mItem.mediaMetadata.releaseYear;
-//                            if(uriStr.equals(pref_data_url)){
-//                                artistName = (String) artistStr;
-//                                albumName = (String) albumTitleStr;
-//                                songTitol = (String) titleStr;
-//                                //                   albumArtBitmap;
-//
-//                            }
                     }
                 }while( playLists.moveToNext() ) ;				//pdCoundtVal <  pdMaxVal
             }
@@ -1356,6 +1350,12 @@ public class MusicService extends MediaBrowserService {
             String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
             dbMsg += ",duranation=" + duranation;
             MRIintent.putExtra("duranation",duranation);
+            dbMsg += ",exoPlayer=" + exoPlayer;
+            if(exoPlayer != null){
+                MRIintent.putExtra("isPlaying",  exoPlayer.isPlaying());
+            }else{
+                MRIintent.putExtra("isPlaying",  false);
+            }
             getBaseContext().sendBroadcast(MRIintent);
             myLog(TAG,dbMsg);
         } catch (Exception e) {

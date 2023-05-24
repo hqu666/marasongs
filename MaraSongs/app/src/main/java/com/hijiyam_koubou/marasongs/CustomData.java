@@ -9,6 +9,9 @@ public class CustomData {
 	public String subData_;
 	public String dataUri;
 	public String no_;
+	public String album_name_;
+	public String album_id_;
+	public String album_key_;
 
 	public void setImagaData(Bitmap image) {
 		imageData_ = image;
@@ -57,6 +60,24 @@ public class CustomData {
 
 	public String getNom() {
 		return no_;
+	}
+
+	public void setAlbum_name(String text) {album_name_ = text;}
+
+	public String getAlbum_name() {
+		return album_name_;
+	}
+
+	public void setAlbum_id(String text) {album_id_ = text;}
+
+	public String getAlbum_id() {
+		return album_id_;
+	}
+
+	public void setAlbum_key(String text) {album_key_ = text;}
+
+	public String getAlbum_key() {
+		return album_key_;
 	}
 
 }

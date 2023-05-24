@@ -1495,6 +1495,7 @@ public class OrgUtil  extends Activity{				//
 		return retStr;
 	}
 
+	/**albumIdでアルバムアートurlを作成**/
 	private Uri getAlbumArtUri(long albumId) {
 		final String TAG = "getAlbumArtUri";
 		String dbMsg= "" ;

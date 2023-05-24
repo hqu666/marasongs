@@ -59,6 +59,7 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
@@ -73,12 +74,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.session.MediaSession;
 import androidx.media3.ui.PlayerView;
 import androidx.preference.PreferenceManager;
 
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
-
-import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -4873,7 +4874,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					Zenkyoku_db.close();
 				}
 			}
-			dbMsg += "reqCode" + reqCode + "：" + ItemAL.size() +"件";
+			dbMsg += ",reqCode=" + reqCode + "：" + ItemAL.size() +"件";
 			if(0<ItemAL.size()){
 				dbMsg +=ItemAL.get(0) +"～" +ItemAL.get(ItemAL.size()-1);
 			}
@@ -4958,6 +4959,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						myPreferences.nowList = getResources().getString(R.string.listmei_list_all);
 						break;
 					default:
+						dbMsg +="\n汎用リスト[" +i + "]" ;
 						rStr = (String) ItemAL.get(i).get("img");
 						dbMsg +=",img=" +rStr ;
 						item1.setimageUrl(rStr);
@@ -4969,18 +4971,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=")" + ItemAL.get(i).get("main") ;///////////////////////////////////////////////////////////////////////////////////////////
 
 						switch(reqCode) {
-						case MyConstants.v_artist:					//195	...334
+							case MyConstants.v_artist:					//195	...334
+									break;
+							case MyConstants.v_alubum:					//196	...340
+								MuList.this.albumName = titleStr;
 								break;
-						case MyConstants.v_alubum:					//196	...340
-							MuList.this.albumName = titleStr;
-							break;
-						case MyConstants.v_titol:					//197
-							if(i<9){
-								rStr = "0"+ ( i + 1 ) + ";" ;
-							}else{
-								rStr = ( i + 1 ) + ";";
-							}
-							item1.setNom(rStr);
+							case MyConstants.v_titol:					//197
+								if(i<9){
+									rStr = "0"+ ( i + 1 ) + ";" ;
+								}else{
+									rStr = ( i + 1 ) + ";";
+								}
+								item1.setNom(rStr);
 							default:
 								break;
 						}
@@ -4998,7 +5000,28 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								item1.setDataUri(rStr);
 							}
 						}
-					break;
+						rStr =  (String) ItemAL.get(i).get("album");
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setAlbum_name(rStr);
+							}
+						}
+						rStr =  (String) ItemAL.get(i).get("album_id");
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setAlbum_id(rStr);
+							}
+						}
+						rStr =  (String) ItemAL.get(i).get("album_key");
+						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						if(rStr != null){
+							if(! rStr.equals("") ){
+								item1.setAlbum_key(rStr);
+							}
+						}
+						break;
 				}
 				isList.add(item1);
 //				dbMsg +=">>" +isList.size() ;
@@ -5110,8 +5133,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					view.noView.setTextColor(Color.rgb(255, 0, 0));
 				}
 				dbMsg += ">view> "+ view ;///////////////////////////////////////////////////////////////////////////////////////////
-				view.bindView(getItem(position) , reqCode);			//view.bindView(getItem(position));		 bindView(MuList.eListItem) は引数 (CustomData) に適用できません
-		//	myLog(TAG, dbMsg);
+				view.bindView(getItem(position) , reqCode , getApplicationContext());			//view.bindView(getItem(position));		 bindView(MuList.eListItem) は引数 (CustomData) に適用できません
+			myLog(TAG, dbMsg);
 //		}catch (Exception e) {
 //			myErrorLog(TAG ,  dbMsg + "で" + e);
 //		}
@@ -12070,6 +12093,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String titleStr;
 	public String duranationStr;
 	public long duranationLong;
+	public boolean isPlaying;
+	public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
+	public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
 
 	private void selectSongInfo(){
 		final Handler songSelectHandler = new Handler(Looper.getMainLooper());
@@ -12087,10 +12113,40 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					lp_duranation.setText( duranationStr);
 					lp_chronometer.setBase(duranationLong);
 
-					dbMsg += ",Selected" + lvID.getSelectedItemId();
+////					dbMsg += ",Selected" + lvID.getSelectedItemId();
+////					lvID.setSelection(mIndex);
+
+//					LayoutInflater mLayoutInflater = LayoutInflater.from(getApplicationContext());
+//					View root = mLayoutInflater.inflate(R.layout.custom_item_layout, lvID);
+					//ListAdapter adapter = lvID.getAdapter();
+					//	Object rItem = adapter.getItem(mIndex);			//このクラスのcustumAdpterでセットした内容
+//					View cvonvaertView = findViewById(R.id.custom_item_view);
+//					ItemLayout listSelectRow = (ItemLayout)adapter.getView(mIndex,null,lvID);
+					//CustomData cannot be cast to com.hijiyam_koubou.marasongs.ItemLayout
+
+					dbMsg += "[" + mIndex +"/" + isList.size() + "]を選択";
+					for(int i =0 ; i < isList.size() ;i ++){
+						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(i);
+						if(i == mIndex) {
+							listSelectRow.mIconView.setVisibility(View.GONE);
+							if (isPlaying) {
+								listSelectRow.playBt.setVisibility(View.GONE);
+								listSelectRow.pouseBt.setVisibility(View.VISIBLE);
+							} else {
+								listSelectRow.playBt.setVisibility(View.VISIBLE);
+								listSelectRow.pouseBt.setVisibility(View.GONE);
+							}
+						}else{
+							listSelectRow.playBt.setVisibility(View.GONE);
+							listSelectRow.pouseBt.setVisibility(View.GONE);
+							listSelectRow.mIconView.setVisibility(View.VISIBLE);
+						}
+					}
 					lvID.setSelection(mIndex);
-					dbMsg += ">>" + lvID.getSelectedItemId();
-			//		playerView.set
+////					dbMsg += ">>" + lvID.getSelectedItemId();
+////					if(exoPlayer != null){
+////						playerView.setPlayer(exoPlayer);
+////					}
 					myLog(TAG, dbMsg);
 				} catch (Exception e) {
 					myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12123,71 +12179,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					artistName = intent.getStringExtra("artist");
 					albumTitle =intent.getStringExtra("albumTitle");
 					titleStr =intent.getStringExtra("title");
+					isPlaying =intent.getBooleanExtra("isPlaying",false);
+					dbMsg += ",isPlaying=" + isPlaying;
+//					exoPlayer = intent.getSerializableExtra("exoPlayer",Class<ExoPlayer>);
+//					dbMsg += ",exoPlayer=" + exoPlayer;
 					selectSongInfo();
 				}
-//				SongSelectThread songSelectThread = new SongSelectThread();
-//				songSelectThread.start();
-////				final PendingResult pendingResult = goAsync();
-////				SeleTask asyncTask = new SeleTask(pendingResult, intent);
-////				asyncTask.execute();
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);
 			}
 		}
 
-//		public void registerHandler(Handler locationUpdateHandler) {
-//			handler = locationUpdateHandler;
-//		}
-
-//			private class SeleTask extends AsyncTask<String, Integer, String> {
-//
-//				private final PendingResult pendingResult;
-//				private final Intent intent;
-//
-//				private SeleTask(PendingResult pendingResult, Intent intent) {
-//					this.pendingResult = pendingResult;
-//					this.intent = intent;
-//				}
-//
-//				@Override
-//				protected String doInBackground(String... strings) {
-//					final String TAG = "doInBackground";
-//					String dbMsg = "[SeleTask]";
-//					String log = null;
-//					try{
-//						dbMsg += "Selected" + lvID.getSelectedItemPosition() ;
-//						int sIndex =intent.getIntExtra("mIndex",0);
-//						dbMsg += ",sIndex=" + sIndex ;
-//						lvID.setSelection(sIndex);
-//						dbMsg += ">>" + lvID.getSelectedItemPosition() ;
-//						log= "["  + sIndex +"]";
-//						String duranationStr =intent.getStringExtra("duranation");
-//				//		rStr += sdf.format(new Date(Long.valueOf((String) intent.getStringExtra("duranation"))*1000))  + getResources().getString(R.string.comon_kousinn);
-//						dbMsg += "duranationStr" + duranationStr;
-//						log += duranationStr +"ms";
-//						lp_title.setText( duranationStr);
-//						myLog(TAG, dbMsg);
-//					} catch (Exception e) {
-//						myErrorLog(TAG ,  dbMsg + "で" + e);
-//					}
-//					return log;
-//				}
-//
-//				@Override
-//				protected void onPostExecute(String s) {
-//					super.onPostExecute(s);
-//					final String TAG = "receiverSeisei";
-//					String dbMsg = "[SeleTask]";
-//					try{
-//						pendingResult.finish();
-//						myLog(TAG, dbMsg);
-//					} catch (Exception e) {
-//						// Must call finish() so the BroadcastReceiver can be recycled.
-//				}
-//			}
-//
-//		}
 	}
 }
 

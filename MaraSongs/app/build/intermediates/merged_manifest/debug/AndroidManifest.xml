@@ -125,11 +125,12 @@
             android:name="NendDebuggable"
             android:value="false" />
 
+        <!-- android:screenOrientation="fullSensor" -->
         <activity
             android:name="com.hijiyam_koubou.marasongs.MuList"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/AppTheme" >
             <intent-filter>

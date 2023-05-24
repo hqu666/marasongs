@@ -3577,6 +3577,7 @@ int id cradle 0x7f0a00a6
 int id currentState 0x7f0a00a7
 int id custom 0x7f0a00a8
 int id customPanel 0x7f0a00a9
+int id custom_item_view 0x7f0a0332
 int id cut 0x7f0a00aa
 int id dark 0x7f0a00ab
 int id date_picker_actions 0x7f0a00ac
@@ -3920,12 +3921,14 @@ int id pgd_par_tv 0x7f0a01fc
 int id pgd_val2_tv 0x7f0a01fd
 int id pgd_val_tv 0x7f0a01fe
 int id pin 0x7f0a01ff
+int id playBt 0x7f0a0330
 int id playPanel 0x7f0a0200
 int id player_root_ll 0x7f0a0201
 int id player_view 0x7f0a0202
 int id pllist 0x7f0a0203
 int id position 0x7f0a0204
 int id postLayout 0x7f0a0205
+int id pouseBt 0x7f0a0331
 int id ppPButton 0x7f0a0206
 int id pp_bt_ll 0x7f0a0207
 int id pp_end_rd 0x7f0a0208

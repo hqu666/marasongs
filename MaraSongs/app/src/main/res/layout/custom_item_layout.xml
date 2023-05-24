@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/custom_item_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -16,6 +17,22 @@
             android:layout_height="48dp"
             android:background="@drawable/no_image"
             android:contentDescription="@null" />
+
+        <Button
+            android:id="@+id/pouseBt"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/pouse_notif"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/playBt"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/play_notif"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/noView"

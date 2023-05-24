@@ -3578,6 +3578,7 @@ id cradle
 id currentState
 id custom
 id customPanel
+id custom_item_view
 id cut
 id dark
 id date_picker_actions
@@ -3921,12 +3922,14 @@ id pgd_par_tv
 id pgd_val2_tv
 id pgd_val_tv
 id pin
+id playBt
 id playPanel
 id player_root_ll
 id player_view
 id pllist
 id position
 id postLayout
+id pouseBt
 id ppPButton
 id pp_bt_ll
 id pp_end_rd
