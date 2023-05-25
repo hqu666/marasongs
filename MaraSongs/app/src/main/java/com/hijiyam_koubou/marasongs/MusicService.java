@@ -846,9 +846,17 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ",TRACK_TYPE_AUDIO=" + tracks.containsType(C.TRACK_TYPE_AUDIO);
                 if (tracks.containsType(C.TRACK_TYPE_AUDIO)
                         && !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {        //TRACK_TYPE_VIDEO:1
-                    showToast("Media includes audio tracks, but none are playable by this device");
                 }
                 lastSeenTracks = tracks;
+//                mIndex=exoPlayer.getCurrentMediaItemIndex();
+//                int endIndex = exoPlayer.getMediaItemCount();
+//                objMap=plAL.get(mIndex);
+//                String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+//                dbMsg += ",dataFN=" + dataFN;
+//                String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+//                dbMsg += ",duranation=" + duranation;
+//                MediaItem mediaItem = mediaItemList.get(mIndex);
+//                sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1331,7 +1339,7 @@ public class MusicService extends MediaBrowserService {
 ///ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 
     /**再生曲情報をBroadcastする*/
-    public void sendSongInfo(String list_id,int index, String dataFN,MediaItem mediaItem,String duranatione) {
+    public void sendSongInfo(String list_id,int currentIndex, String dataFN,MediaItem mediaItem,String duranatione) {
         final String TAG = "sendSongInfo";
         String dbMsg="";
         try {
@@ -1340,8 +1348,8 @@ public class MusicService extends MediaBrowserService {
             MRIintent.setAction(ACTION_SET_SONG);
             dbMsg += ",送信するのは" + list_id;
             MRIintent.putExtra("nowList_id",list_id);
-            dbMsg += "の[" + index +"]";
-            MRIintent.putExtra("mIndex",index);
+            dbMsg += "の[" + currentIndex +"]";
+            MRIintent.putExtra("currentIndex",currentIndex);
             dbMsg += ",dataFN=" + dataFN;
             MRIintent.putExtra("pref_data_url",dataFN);
             MRIintent.putExtra("artist",mediaItem.mediaMetadata.artist);

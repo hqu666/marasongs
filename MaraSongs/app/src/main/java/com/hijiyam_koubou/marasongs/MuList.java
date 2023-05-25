@@ -220,6 +220,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public List<String> subItems=null;					//付加情報
 	public List<String> saisei_fnameList = null;		//uri配列
 	public List<CustomData> isList = null;			//ヘッドイメージとサブテキストを持ったリストアイテム
+	public List<ItemLayout> listChild = null;			//ヘッドイメージとサブテキストを持ったリストのレイアウト
+
 	public String senntakuItem=null;					//選択しておくアイテムアイテム
 	public int reqCode=0;								//何の処理か
 	public int b_reqCode=0;							//処理コードの保留
@@ -4882,6 +4884,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			int sPosition = 0;
 			isList = null;
 			isList = new ArrayList<CustomData>();		//ヘッドイメージとサブテキストを持ったリストアイテム
+			listChild = new ArrayList<ItemLayout>();
 			for(int i=0;i<ItemAL.size();i++){
 				dbMsg +=  "\n" + i +"/" + ItemAL.size() ;///////////////////////////////////////////////////////////////////////////////////////////
 				CustomData item1 = new CustomData();
@@ -5087,6 +5090,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					sousalistName.equals(getResources().getString(R.string.playlist_namae_randam)) 			//="">ランダム再生</string>
 					){			//R.id.plistDPTF
 			}
+			dbMsg += ",listChild= " + listChild.size()+"件";
+
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5132,8 +5137,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					view.mTitleView.setTextColor(Color.rgb(255, 0, 0));
 //					view.noView.setTextColor(Color.rgb(255, 0, 0));
 				}
-				dbMsg += ">view> "+ view ;///////////////////////////////////////////////////////////////////////////////////////////
+				dbMsg += ">view> "+ view ;
+				MuList.this.listChild.add(view);
+				dbMsg += "、listChild= "+ MuList.this.listChild.size() + "件" ;
 				view.bindView(getItem(position) , reqCode , getApplicationContext());			//view.bindView(getItem(position));		 bindView(MuList.eListItem) は引数 (CustomData) に適用できません
+			//	isList.get(position).setItemLayout(view);
 			myLog(TAG, dbMsg);
 //		}catch (Exception e) {
 //			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12086,7 +12094,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //
 //		}
 //	};
+	//再生曲情報
 	public String nowList_id;
+	public int currentIndex;
 	public String dataStr;
 	public String artistName;
 	public String albumTitle;
@@ -12104,8 +12114,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String dbMsg = "[songSelectHandler]";
 				try{
 					dbMsg += ",nowList_id= " + nowList_id;
-					dbMsg += ",mIndex=" + mIndex ;
-					String wStr = "[" + mIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
+					dbMsg += ",currentIndex=" + currentIndex ;
+					String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
 					lp_title.setText(wStr);
 					dbMsg += ",dataStr= " + dataStr;
 					lp_artist.setText(dataStr);
@@ -12123,27 +12133,70 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					View cvonvaertView = findViewById(R.id.custom_item_view);
 //					ItemLayout listSelectRow = (ItemLayout)adapter.getView(mIndex,null,lvID);
 					//CustomData cannot be cast to com.hijiyam_koubou.marasongs.ItemLayout
+				//	lvID.setFocusable(true);
+					dbMsg += ",listChild=" + MuList.this.listChild.size()  + "件" ;			//	表示範囲しか取得できない
 
-					dbMsg += "[" + mIndex +"/" + isList.size() + "]を選択";
-					for(int i =0 ; i < isList.size() ;i ++){
-						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(i);
-						if(i == mIndex) {
-							listSelectRow.mIconView.setVisibility(View.GONE);
-							if (isPlaying) {
-								listSelectRow.playBt.setVisibility(View.GONE);
-								listSelectRow.pouseBt.setVisibility(View.VISIBLE);
-							} else {
-								listSelectRow.playBt.setVisibility(View.VISIBLE);
-								listSelectRow.pouseBt.setVisibility(View.GONE);
-							}
-						}else{
+					ItemLayout currentItemLayout = null;
+					int itemEnd = lvID.getCount();					//.getCount();
+					//getChildCount();	は-2？
+					int iCount =0;					//forループカウンタは外に置かないと
+					dbMsg += "[" + currentIndex +"/" + itemEnd + "]を選択";
+					for(iCount =0; iCount < itemEnd; iCount++) {
+						dbMsg += "[" + iCount  + "]" ;			//			lvID.setSelection(i);
+		//				lvID.setSelection(iCount);
+						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(iCount);		// MuList.this.listChild.get(iCount);
+							//	lvID.getChildAt(iCount);			//※　lvID.getChildAt(iCount);は表示されていないと取得できない
+						//getSelectedView();は取得できない
+						if(listSelectRow != null) {
 							listSelectRow.playBt.setVisibility(View.GONE);
 							listSelectRow.pouseBt.setVisibility(View.GONE);
 							listSelectRow.mIconView.setVisibility(View.VISIBLE);
+							if(iCount == currentIndex) {
+								dbMsg += "ItemLayout=" + listSelectRow;
+								currentItemLayout=listSelectRow;
+								listSelectRow.mIconView.setVisibility(View.GONE);
+							}
+						}else{
+							dbMsg += "ItemLayout取得できず" ;
 						}
 					}
-					lvID.setSelection(mIndex);
-////					dbMsg += ">>" + lvID.getSelectedItemId();
+					if(currentItemLayout != null){
+						dbMsg += ">>currentItemLayout=" + currentItemLayout;
+						if (isPlaying) {
+							currentItemLayout.playBt.setVisibility(View.GONE);
+							currentItemLayout.pouseBt.setVisibility(View.VISIBLE);
+						} else {
+							currentItemLayout.playBt.setVisibility(View.VISIBLE);
+							currentItemLayout.pouseBt.setVisibility(View.GONE);
+						}
+					}
+		//			lvID.setSelection(currentIndex);で2回目以降誤動作
+
+////					for(int iCount =0 ; iCount < itemEnd; iCount++){
+////						dbMsg += "[" + 1 +"/" +itemEnd + "]" ;			//			lvID.setSelection(i);
+////						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(iCount);
+////				//		ItemLayout listSelectRow = isList.get(i).getItemLayout();						//(ItemLayout) lvID.getChildAt(i);
+////						if(listSelectRow != null){
+////							if(iCount == currentIndex) {
+////								listSelectRow.mIconView.setVisibility(View.GONE);
+////								if (isPlaying) {
+////									listSelectRow.playBt.setVisibility(View.GONE);
+////									listSelectRow.pouseBt.setVisibility(View.VISIBLE);
+////								} else {
+////									listSelectRow.playBt.setVisibility(View.VISIBLE);
+////									listSelectRow.pouseBt.setVisibility(View.GONE);
+////								}
+////							}else{
+////								listSelectRow.playBt.setVisibility(View.GONE);
+////								listSelectRow.pouseBt.setVisibility(View.GONE);
+////								listSelectRow.mIconView.setVisibility(View.VISIBLE);
+////							}
+////						}else{
+////							dbMsg += "ItemLayout取得できず" ;
+////						}
+////					}
+//					lvID.setSelection(currentIndex);
+// 					dbMsg += ">>" + lvID.getSelectedItemId();
 ////					if(exoPlayer != null){
 ////						playerView.setPlayer(exoPlayer);
 ////					}
@@ -12153,6 +12206,42 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			});
 	}
+
+//	public int listCount=0;
+//	private void selectListyInfo(){
+//		final Handler listHandler = new Handler(Looper.getMainLooper());
+//		listHandler.post(() -> {
+//			final String TAG = "post";
+//			String dbMsg = "[listHandler]";
+//			try{
+//				dbMsg += "[" +listCount+ "]";
+//				ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(listCount);
+//				//		ItemLayout listSelectRow = isList.get(i).getItemLayout();						//(ItemLayout) lvID.getChildAt(i);
+//				if(listSelectRow != null){
+//					dbMsg += "ItemLayout=" + listSelectRow.getId();
+//					if(listCount == currentIndex) {
+//						listSelectRow.mIconView.setVisibility(View.GONE);
+//						if (isPlaying) {
+//							listSelectRow.playBt.setVisibility(View.GONE);
+//							listSelectRow.pouseBt.setVisibility(View.VISIBLE);
+//						} else {
+//							listSelectRow.playBt.setVisibility(View.VISIBLE);
+//							listSelectRow.pouseBt.setVisibility(View.GONE);
+//						}
+//					}else{
+//						listSelectRow.playBt.setVisibility(View.GONE);
+//						listSelectRow.pouseBt.setVisibility(View.GONE);
+//						listSelectRow.mIconView.setVisibility(View.VISIBLE);
+//					}
+//				}else{
+//					dbMsg += "ItemLayout取得できず" ;
+//				}
+//				myLog(TAG, dbMsg);
+//			} catch (Exception e) {
+//				myErrorLog(TAG ,  dbMsg + "で" + e);
+//			}
+//		});
+//	}
 
 	public class SongSelectReceiver extends BroadcastReceiver {
 		// ブロードキャスト受信時にこのメソッドが動く
@@ -12168,8 +12257,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dataStr =intent.getStringExtra("pref_data_url");
 					dbMsg += ",dataStr= " + dataStr;
 
-					mIndex =intent.getIntExtra("mIndex",0);
-					dbMsg += ",mIndex=" + mIndex ;
+					currentIndex =intent.getIntExtra("currentIndex",0);
+					dbMsg += ",currentIndex=" + currentIndex ;
 					String dStr =intent.getStringExtra("duranation");
 					dbMsg += ".dStr" + dStr;
 					duranationLong = Long.parseLong(dStr);
@@ -12181,9 +12270,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					titleStr =intent.getStringExtra("title");
 					isPlaying =intent.getBooleanExtra("isPlaying",false);
 					dbMsg += ",isPlaying=" + isPlaying;
-//					exoPlayer = intent.getSerializableExtra("exoPlayer",Class<ExoPlayer>);
-//					dbMsg += ",exoPlayer=" + exoPlayer;
+					lvID.setSelection(currentIndex);
 					selectSongInfo();
+//					int itemEnd = lvID.getCount();
+//					dbMsg += "[" + currentIndex +"/" + itemEnd + "]を選択";
+//					for(int i =0; i <= itemEnd; i++) {
+//						dbMsg += "[" + 1 + "]";
+//						listCount=i;
+//						selectListyInfo();
+//					}
+
 				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
