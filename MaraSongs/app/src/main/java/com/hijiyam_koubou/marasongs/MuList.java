@@ -43,6 +43,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -59,7 +60,6 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
@@ -11743,6 +11743,60 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			lvID = findViewById(R.id.pllist);	//　作成したリストアダプターをリストビューにセットする	 Id	@id/android:list
 			lvID.setTextFilterEnabled(true);						//ListViewにフォーカスを移して「a」を入力すると、以下の図のように先頭に「a」の文字がある項目だけが表示されます。
 			lvID.setFocusableInTouchMode(true);
+			// スクロール検知 https://teratail.com/questions/96850
+			lvID.setOnScrollListener(new AbsListView.OnScrollListener() {
+				@Override
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+					final String TAG = "onScrollStateChanged";
+					String dbMsg = "[setOnScrollListener]";
+					try{
+				//		dbMsg += ORGUT.nowTime(true,true,true);
+				//		dbMsg +=",view="+view;//lvID
+						dbMsg +=",scrollState="+b_scrollState;
+						dbMsg +=">>scrollState="+scrollState;
+						switch (scrollState){
+							case SCROLL_STATE_IDLE:
+								dbMsg +="=IDLE";
+								if(b_scrollState == SCROLL_STATE_FLING){
+									dbMsg +="=IDLE：選択されているリストアイテムの操作へ";
+									selectListyInfo();
+								}
+								break;
+							case SCROLL_STATE_TOUCH_SCROLL:
+								dbMsg +="=TOUCH_SCROLL";
+								break;
+							case SCROLL_STATE_FLING:
+								dbMsg +="=FLING";
+								break;
+						}
+						b_scrollState = scrollState;
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+				@Override
+				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+					final String TAG = "onScroll";
+					String dbMsg = "[setOnScrollListener]";
+					try{
+				//		dbMsg += ORGUT.nowTime(true,true,true);
+						//		dbMsg +=",view="+view;//lvID
+						dbMsg +="[b_firstVisibleItem="+firstVisibleItem;
+						dbMsg +=">>firstVisibleItem="+firstVisibleItem;
+						dbMsg +="/totalItemCount="+totalItemCount;
+						dbMsg +="]visibleItemCount="+visibleItemCount;
+						if(0<firstVisibleItem && b_firstVisibleItem != firstVisibleItem){
+							dbMsg +="=IDLE：選択されているリストアイテムの操作へ";
+							selectListyInfo();
+							b_firstVisibleItem=firstVisibleItem;
+						}
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
 			registerForContextMenu(lvID);							//コンテキストメニュー
 			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
 
@@ -12096,7 +12150,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //	};
 	//再生曲情報
 	public String nowList_id;
-	public int currentIndex;
+	public int currentIndex = -1;
 	public String dataStr;
 	public String artistName;
 	public String albumTitle;
@@ -12134,42 +12188,44 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					ItemLayout listSelectRow = (ItemLayout)adapter.getView(mIndex,null,lvID);
 					//CustomData cannot be cast to com.hijiyam_koubou.marasongs.ItemLayout
 				//	lvID.setFocusable(true);
-					dbMsg += ",listChild=" + MuList.this.listChild.size()  + "件" ;			//	表示範囲しか取得できない
 
-					ItemLayout currentItemLayout = null;
-					int itemEnd = lvID.getCount();					//.getCount();
-					//getChildCount();	は-2？
-					int iCount =0;					//forループカウンタは外に置かないと
-					dbMsg += "[" + currentIndex +"/" + itemEnd + "]を選択";
-					for(iCount =0; iCount < itemEnd; iCount++) {
-						dbMsg += "[" + iCount  + "]" ;			//			lvID.setSelection(i);
-		//				lvID.setSelection(iCount);
-						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(iCount);		// MuList.this.listChild.get(iCount);
-							//	lvID.getChildAt(iCount);			//※　lvID.getChildAt(iCount);は表示されていないと取得できない
-						//getSelectedView();は取得できない
-						if(listSelectRow != null) {
-							listSelectRow.playBt.setVisibility(View.GONE);
-							listSelectRow.pouseBt.setVisibility(View.GONE);
-							listSelectRow.mIconView.setVisibility(View.VISIBLE);
-							if(iCount == currentIndex) {
-								dbMsg += "ItemLayout=" + listSelectRow;
-								currentItemLayout=listSelectRow;
-								listSelectRow.mIconView.setVisibility(View.GONE);
-							}
-						}else{
-							dbMsg += "ItemLayout取得できず" ;
-						}
-					}
-					if(currentItemLayout != null){
-						dbMsg += ">>currentItemLayout=" + currentItemLayout;
-						if (isPlaying) {
-							currentItemLayout.playBt.setVisibility(View.GONE);
-							currentItemLayout.pouseBt.setVisibility(View.VISIBLE);
-						} else {
-							currentItemLayout.playBt.setVisibility(View.VISIBLE);
-							currentItemLayout.pouseBt.setVisibility(View.GONE);
-						}
-					}
+//					dbMsg += ",listChild=" + MuList.this.listChild.size()  + "件" ;			//	表示範囲しか取得できない
+//
+//					ItemLayout currentItemLayout = null;
+//					int itemEnd = lvID.getCount();					//.getCount();
+//					//getChildCount();	は-2？
+//					int iCount =0;					//forループカウンタは外に置かないと
+//					dbMsg += "[" + currentIndex +"/" + itemEnd + "]を選択";
+//					for(iCount =0; iCount < itemEnd; iCount++) {
+//						dbMsg += "[" + iCount  + "]" ;			//			lvID.setSelection(i);
+//		//				lvID.setSelection(iCount);
+//						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(iCount);		// MuList.this.listChild.get(iCount);
+//							//	lvID.getChildAt(iCount);			//※　lvID.getChildAt(iCount);は表示されていないと取得できない
+//						//getSelectedView();は取得できない
+//						if(listSelectRow != null) {
+//							listSelectRow.playBt.setVisibility(View.GONE);
+//							listSelectRow.pouseBt.setVisibility(View.GONE);
+//							listSelectRow.mIconView.setVisibility(View.VISIBLE);
+//							if(iCount == currentIndex) {
+//								dbMsg += "ItemLayout=" + listSelectRow;
+//								currentItemLayout=listSelectRow;
+//								listSelectRow.mIconView.setVisibility(View.GONE);
+//							}
+//						}else{
+//							dbMsg += "ItemLayout取得できず" ;
+//						}
+//					}
+//					if(currentItemLayout != null){
+//						dbMsg += ">>currentItemLayout=" + currentItemLayout;
+//						if (isPlaying) {
+//							currentItemLayout.playBt.setVisibility(View.GONE);
+//							currentItemLayout.pouseBt.setVisibility(View.VISIBLE);
+//						} else {
+//							currentItemLayout.playBt.setVisibility(View.VISIBLE);
+//							currentItemLayout.pouseBt.setVisibility(View.GONE);
+//						}
+//					}
+
 		//			lvID.setSelection(currentIndex);で2回目以降誤動作
 
 ////					for(int iCount =0 ; iCount < itemEnd; iCount++){
@@ -12207,41 +12263,59 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			});
 	}
 
-//	public int listCount=0;
-//	private void selectListyInfo(){
-//		final Handler listHandler = new Handler(Looper.getMainLooper());
-//		listHandler.post(() -> {
-//			final String TAG = "post";
-//			String dbMsg = "[listHandler]";
-//			try{
-//				dbMsg += "[" +listCount+ "]";
-//				ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(listCount);
-//				//		ItemLayout listSelectRow = isList.get(i).getItemLayout();						//(ItemLayout) lvID.getChildAt(i);
-//				if(listSelectRow != null){
-//					dbMsg += "ItemLayout=" + listSelectRow.getId();
-//					if(listCount == currentIndex) {
-//						listSelectRow.mIconView.setVisibility(View.GONE);
-//						if (isPlaying) {
-//							listSelectRow.playBt.setVisibility(View.GONE);
-//							listSelectRow.pouseBt.setVisibility(View.VISIBLE);
-//						} else {
-//							listSelectRow.playBt.setVisibility(View.VISIBLE);
-//							listSelectRow.pouseBt.setVisibility(View.GONE);
-//						}
-//					}else{
-//						listSelectRow.playBt.setVisibility(View.GONE);
-//						listSelectRow.pouseBt.setVisibility(View.GONE);
-//						listSelectRow.mIconView.setVisibility(View.VISIBLE);
-//					}
-//				}else{
-//					dbMsg += "ItemLayout取得できず" ;
-//				}
-//				myLog(TAG, dbMsg);
-//			} catch (Exception e) {
-//				myErrorLog(TAG ,  dbMsg + "で" + e);
-//			}
-//		});
-//	}
+	public int b_firstVisibleItem=-1;
+	public int b_scrollState=-1;
+	/**選択されているリストアイテムの操作*/
+	private void selectListyInfo(){
+		final Handler listHandler = new Handler(Looper.getMainLooper());
+		listHandler.post(() -> {
+			final String TAG = "post";
+			String dbMsg = "[selectListyInfo]";
+			try{
+				int firstVisiblePosition = lvID.getFirstVisiblePosition();
+				dbMsg += ",firstVisiblePosition=" + firstVisiblePosition;
+				int itemEnd = lvID.getCount();					//.getCount();
+				dbMsg += "[" + currentIndex +"/" + itemEnd + "]を選択";
+				if(0 <= currentIndex){
+					ItemLayout currentItemLayout = null;
+					//getChildCount();	は-2？
+					int iCount =0;					//forループカウンタは外に置かないと
+					for(iCount =0; iCount < itemEnd; iCount++) {
+						dbMsg += "[" + iCount  + "]" ;			//			lvID.setSelection(i);
+						//				lvID.setSelection(iCount);
+						ItemLayout listSelectRow = (ItemLayout) lvID.getChildAt(iCount);		// MuList.this.listChild.get(iCount);
+						//	lvID.getChildAt(iCount);			//※　lvID.getChildAt(iCount);は表示されていないと取得できない
+						//getSelectedView();は取得できない
+						if(listSelectRow != null) {
+							listSelectRow.playBt.setVisibility(View.GONE);
+							listSelectRow.pouseBt.setVisibility(View.GONE);
+							listSelectRow.mIconView.setVisibility(View.VISIBLE);
+							if(iCount == (currentIndex-firstVisiblePosition)) {
+								dbMsg += "ItemLayout=" + listSelectRow;
+								currentItemLayout=listSelectRow;
+								listSelectRow.mIconView.setVisibility(View.GONE);
+							}
+						}else{
+							dbMsg += "ItemLayout取得できず" ;
+						}
+					}
+					if(currentItemLayout != null){
+						dbMsg += ">>currentItemLayout=" + currentItemLayout;
+						if (isPlaying) {
+							currentItemLayout.playBt.setVisibility(View.GONE);
+							currentItemLayout.pouseBt.setVisibility(View.VISIBLE);
+						} else {
+							currentItemLayout.playBt.setVisibility(View.VISIBLE);
+							currentItemLayout.pouseBt.setVisibility(View.GONE);
+						}
+					}
+				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		});
+	}
 
 	public class SongSelectReceiver extends BroadcastReceiver {
 		// ブロードキャスト受信時にこのメソッドが動く
@@ -12272,14 +12346,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",isPlaying=" + isPlaying;
 					lvID.setSelection(currentIndex);
 					selectSongInfo();
-//					int itemEnd = lvID.getCount();
-//					dbMsg += "[" + currentIndex +"/" + itemEnd + "]を選択";
-//					for(int i =0; i <= itemEnd; i++) {
-//						dbMsg += "[" + 1 + "]";
-//						listCount=i;
-//						selectListyInfo();
-//					}
-
+					selectListyInfo();
 				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
