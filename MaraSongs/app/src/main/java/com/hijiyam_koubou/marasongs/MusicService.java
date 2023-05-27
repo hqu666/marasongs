@@ -107,26 +107,35 @@ public class MusicService extends MediaBrowserService {
     public static final int MS_MAKE_LIST = MS_START_SERVICE + 1;
     public static final String ACTION_MAKE_LIST= "MAKE_LIST";
     /** 選曲された楽曲を読み込ませたプレイヤーを作製 */
-    public static final int MS_SET_SONG = MS_MAKE_LIST + 1;
     public static final String ACTION_SET_SONG= "SET_SONG";
-    public static final int MS_PLAYPAUSE = MS_SET_SONG + 1;
+    public static final int MS_SET_SONG = MS_MAKE_LIST + 1;
+    /**再生状況変化*/
+    public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
+    public static final int MS_STATE_CHANGED = MS_SET_SONG + 1;
+    /**再生停止トグル*/
     public static final String ACTION_PLAYPAUSE = "com.example.android.remotecontrol.ACTION_PLAYPAUSE";
-    public static final int MS_PLAY = MS_PLAYPAUSE + 1;
+    public static final int MS_PLAYPAUSE = MS_STATE_CHANGED + 1;
+    /**Play*/
     public static final String ACTION_PLAY = "com.example.android.remotecontrol.ACTION_PLAY";
-    public static final int MS_PAUSE = MS_PLAY + 1;
+    public static final int MS_PLAY = MS_PLAYPAUSE + 1;
+    /**PAUSE*/
     public static final String ACTION_PAUSE = "com.example.android.remotecontrol.ACTION_PAUSE";
-    public static final int MS_SKIP = MS_PAUSE + 1;
+    public static final int MS_PAUSE = MS_PLAY + 1;
+    /**FF*/
     public static final String ACTION_SKIP = "com.example.android.remotecontrol.ACTION_SKIP";
-    public static final int MS_REWIND = MS_SKIP + 1;
+    public static final int MS_SKIP = MS_PAUSE + 1;
+    /**Rew*/
     public static final String ACTION_REWIND = "com.example.android.remotecontrol.ACTION_REWIND";
-    public static final int MS_REPEAT_MODE = MS_REWIND + 1;
+    public static final int MS_REWIND = MS_SKIP + 1;
+    /**REPEAT**/
     public static final String ACTION_REPEAT_MODE = "REPEAT_MODE";
+    public static final int MS_REPEAT_MODE = MS_REWIND + 1;
+    /**Quit**/
     public static final int MS_QUIT = MS_REPEAT_MODE + 1;
     public static final String ACTION_QUIT = "QUIT";
 
     public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
     //public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
-    public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
     public static final String ACTION_STOP = "com.example.android.remotecontrol.ACTION_STOP";
     public static final String ACTION_REQUEST_STATE = "com.example.android.remotecontrol.ACTION_REQUEST_STATE";
     public static final String ACTION_LISTSEL = "LISTSEL";					//追加3	；リストで選択された曲の処理
@@ -505,10 +514,38 @@ public class MusicService extends MediaBrowserService {
                 dbMsg +="、プレイ/ポーズのトグル";
             }else if(action.equals(ACTION_PLAY)){
                 dbMsg +="、プレイ";
+                if(exoPlayer != null){
+                    if(! exoPlayer.isPlaying()){
+                        exoPlayer.play();
+                        sendStateChasngg();
+                    }else{
+                        dbMsg +="、既に再生中";
+                    }
+                }else{
+                    dbMsg +="、exoPlayer== null";
+                }
             }else if(action.equals(ACTION_PAUSE)){
                 dbMsg +="、ポーズ";
+                if(exoPlayer != null){
+                    if( exoPlayer.isPlaying()){
+                        exoPlayer.pause();
+                        sendStateChasngg();
+                    }else{
+                        dbMsg +="、既に停止中";
+                    }
+                }else{
+                    dbMsg +="、exoPlayer== null";
+                }
             }else if(action.equals(ACTION_SKIP)){
                 dbMsg +="、送り";
+                if(exoPlayer != null){
+                    if(! exoPlayer.isPlaying()){
+                    }else{
+                        dbMsg +="、既に再生中";
+                    }
+                }else{
+                    dbMsg +="、exoPlayer== null";
+                }
             }else if(action.equals(ACTION_REWIND)){
                 dbMsg +="、戻し";
             }else if(action.equals(ACTION_REPEAT_MODE)){
@@ -1361,6 +1398,29 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",exoPlayer=" + exoPlayer;
             if(exoPlayer != null){
                 MRIintent.putExtra("isPlaying",  exoPlayer.isPlaying());
+            }else{
+                MRIintent.putExtra("isPlaying",  false);
+            }
+            getBaseContext().sendBroadcast(MRIintent);
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    public void sendStateChasngg() {
+        final String TAG = "sendStateChasngg";
+        String dbMsg="";
+        try {
+            Intent MRIintent = new Intent();
+            dbMsg += ",exoPlayer=" + exoPlayer;
+            MRIintent.setAction(ACTION_STATE_CHANGED);
+            if(exoPlayer != null){
+                long contentPosition = exoPlayer.getContentPosition();
+                dbMsg += ",contentPosition=" + contentPosition;
+                MRIintent.putExtra("contentPosition",contentPosition);
+                MRIintent.putExtra("isPlaying", exoPlayer.isPlaying());
+                dbMsg += ",isPlaying=" +  exoPlayer.isPlaying();
             }else{
                 MRIintent.putExtra("isPlaying",  false);
             }
