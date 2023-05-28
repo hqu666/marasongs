@@ -11837,16 +11837,27 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	//		lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
 			lp_duranation = list_player.findViewById(R.id.duranation);									//プレイヤーのアルバム表示
 			lp_chronometer = list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
-			lp_chronometer.setFormat("mm:ss");
-			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-			lp_chronometer.setText(dataFormat.format(0));
+	//		lp_chronometer.setFormat("%s");
+		//	SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+//			lp_chronometer.setText(dataFormat.format(0));
 			lp_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
 				@Override
 				public void onChronometerTick(Chronometer chronometer) {
 					final String TAG = "onChronometerTick";
 					String dbMsg = "[lp_chronometer]";
 					try{
-						dbMsg +=",getText="+chronometer.getText();
+						dbMsg +=",開始時刻="+startLong;
+						dbMsg +=",getBase="+chronometer.getBase();
+						long offsetPlayTimer = SystemClock.elapsedRealtime() - startLong;
+						dbMsg +=",offsetPlayTimer="+offsetPlayTimer;
+						dbMsg +=",再開時刻="+reStartLong;
+						if(0 < pousePosition){
+							dbMsg +=",休止時のseekBar.progress="+pousePosition;
+							offsetPlayTimer = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+							dbMsg +=">>"+offsetPlayTimer;
+						}
+						lp_seekBar.setProgress((int) offsetPlayTimer);
+						dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -11908,8 +11919,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 				}
 			});
-//			lp_ppPButton.setOnClickListener(this);
-//			lp_stop.setOnClickListener(this);
 			rc_fbace.setOnClickListener(this);
 
 
@@ -12254,6 +12263,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String duranationStr;
 	public long duranationLong;
 	public long contentPositionLong;
+	public long startLong;				//開始時刻
+	public long reStartLong;				//再開時刻
+	public long pousePosition;				//休止時のseekBar.progress
 	public boolean isPlaying;
 	public boolean b_isPlaying;
 	public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
@@ -12271,17 +12283,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
 					lp_title.setText(wStr);
 					dbMsg += ",dataStr= " + dataStr;
-				//	lp_artist.setText(dataStr);
 					dbMsg += ",duranationStr" + duranationStr;
 					lp_duranation.setText( duranationStr);
-					lp_chronometer.setBase(0);
+					lp_seekBar.setMax((int) duranationLong);
+					lp_chronometer.setBase(0);				//”00:00″から開始
 					if(isPlaying){
 						lp_chronometer.start();
 					}else{
 						lp_chronometer.stop();
 					}
-					lp_seekBar.setMax((int) duranationLong);
-					lp_seekBar.setProgress(0);
+//					long offsetPlayTimer = SystemClock.elapsedRealtime() - lp_chronometer.getBase();
+					lp_seekBar.setProgress((int) 0);
+					reStartLong=0;
 					myLog(TAG, dbMsg);
 				} catch (Exception e) {
 					myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12297,13 +12310,23 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String dbMsg = "[staateChangedInfo]";
 			try{
 				dbMsg += "[" + contentPositionLong + "/" + duranationLong + "]";
-				lp_chronometer.setBase(contentPositionLong);
+				dbMsg += ",chronometer:Text=" + lp_chronometer.getText();
+				if(0<contentPositionLong){
+					lp_chronometer.setBase((int)contentPositionLong/1000);
+				}
+				dbMsg += ">>" + lp_chronometer.getBase();
 				lp_seekBar.setProgress((int) contentPositionLong);
-
+				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 				dbMsg += ",isPlaying=" + isPlaying;
 				if(isPlaying){
+					if(lp_seekBar.getProgress() == 0){
+						startLong = SystemClock.elapsedRealtime();
+					}else{
+						reStartLong = SystemClock.elapsedRealtime();
+					}
 					lp_chronometer.start();
 				}else{
+					pousePosition=lp_seekBar.getProgress();
 					lp_chronometer.stop();
 				}
 				myLog(TAG, dbMsg);

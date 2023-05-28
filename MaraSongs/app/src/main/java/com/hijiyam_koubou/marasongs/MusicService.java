@@ -517,7 +517,7 @@ public class MusicService extends MediaBrowserService {
                 if(exoPlayer != null){
                     if(! exoPlayer.isPlaying()){
                         exoPlayer.play();
-                        sendStateChasngg();
+                        sendStateChasng();
                     }else{
                         dbMsg +="、既に再生中";
                     }
@@ -529,7 +529,7 @@ public class MusicService extends MediaBrowserService {
                 if(exoPlayer != null){
                     if( exoPlayer.isPlaying()){
                         exoPlayer.pause();
-                        sendStateChasngg();
+                        sendStateChasng();
                     }else{
                         dbMsg +="、既に停止中";
                     }
@@ -1408,8 +1408,8 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
-    public void sendStateChasngg() {
-        final String TAG = "sendStateChasngg";
+    public void sendStateChasng() {
+        final String TAG = "sendStateChasng";
         String dbMsg="";
         try {
             Intent MRIintent = new Intent();

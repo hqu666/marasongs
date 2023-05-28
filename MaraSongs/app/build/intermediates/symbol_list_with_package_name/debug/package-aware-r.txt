@@ -3510,7 +3510,6 @@ id antiClockwise
 id anticipate
 id arc
 id artisr_row
-id artist
 id artistCountLL
 id artistHTF
 id artistIDPTF
@@ -3979,9 +3978,12 @@ id progress_max
 id progress_message
 id progress_titol
 id progress_val
+id quitBt
 id radio
 id ratio
 id rc_fbace
+id rc_ffButton
+id rc_rewButton
 id rd_album_rd
 id rd_artist_rd
 id rd_point_rb
@@ -4042,6 +4044,7 @@ id search_view_status_bar_spacer
 id search_view_toolbar
 id search_view_toolbar_container
 id search_voice_btn
+id seekBar
 id seekbar
 id seekbar_value
 id select_dialog_listview

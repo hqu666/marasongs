@@ -3509,7 +3509,6 @@ int id antiClockwise 0x7f0a0062
 int id anticipate 0x7f0a0063
 int id arc 0x7f0a0064
 int id artisr_row 0x7f0a0065
-int id artist 0x7f0a0066
 int id artistCountLL 0x7f0a0067
 int id artistHTF 0x7f0a0068
 int id artistIDPTF 0x7f0a0069
@@ -3978,9 +3977,12 @@ int id progress_max 0x7f0a0233
 int id progress_message 0x7f0a0234
 int id progress_titol 0x7f0a0235
 int id progress_val 0x7f0a0236
+int id quitBt 0x7f0a0333
 int id radio 0x7f0a0237
 int id ratio 0x7f0a0238
 int id rc_fbace 0x7f0a0239
+int id rc_ffButton 0x7f0a0334
+int id rc_rewButton 0x7f0a0335
 int id rd_album_rd 0x7f0a023a
 int id rd_artist_rd 0x7f0a023b
 int id rd_point_rb 0x7f0a023c
@@ -4041,6 +4043,7 @@ int id search_view_status_bar_spacer 0x7f0a0272
 int id search_view_toolbar 0x7f0a0273
 int id search_view_toolbar_container 0x7f0a0274
 int id search_voice_btn 0x7f0a0275
+int id seekBar 0x7f0a0336
 int id seekbar 0x7f0a0276
 int id seekbar_value 0x7f0a0277
 int id select_dialog_listview 0x7f0a0278
