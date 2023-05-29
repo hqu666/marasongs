@@ -1408,6 +1408,7 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
+    /**exoPlayerのContentPositionとisPlayingを送る*/
     public void sendStateChasng() {
         final String TAG = "sendStateChasng";
         String dbMsg="";

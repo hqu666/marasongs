@@ -87,7 +87,7 @@
 				android:layout_height="match_parent"
 				android:layout_weight="1"
 				android:format="%s"
-				android:textSize="12sp"  />
+				android:textSize="14sp" />
 			<TextView
 				android:id="@+id/duranation"
 				android:layout_width="match_parent"

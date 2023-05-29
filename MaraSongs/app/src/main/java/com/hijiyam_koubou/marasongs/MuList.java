@@ -4338,35 +4338,35 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		return retBool;
 	}
 
-	/**
-	 *  Chronometerの値を更新し、、再生中はカウントアップ
-	 *  Play/Pause が切り替わった時と、プレイヤーから戻って曲変更された時
-	* **/
-	public void setChronometer(int mcPosition , boolean IsPlaying ){			///リストからの戻り処理
-		final String TAG = "setChronometer";
-		String dbMsg = "";
-		try{
-			dbMsg += " , isFocusNow=" + isFocusNow;
-			backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
-			long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
-			dbMsg += " , current:" + current;
-			dbMsg += " , mcPosition:" + mcPosition;
-			lp_chronometer.setBase(current);             //long
-			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-			String  mcPositionStr = dataFormat.format(mcPosition);
-			dbMsg += " , mcPosition:" + mcPositionStr;
-
-			dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
-			if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
-				lp_chronometer.start();
-			}else{
-				lp_chronometer.stop();
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {		//汎用
-			myErrorLog(TAG,"で"+e.toString());
-		}
-	}
+//	/**
+//	 *  Chronometerの値を更新し、、再生中はカウントアップ
+//	 *  Play/Pause が切り替わった時と、プレイヤーから戻って曲変更された時
+//	* **/
+//	public void setChronometer(int mcPosition , boolean IsPlaying ){			///リストからの戻り処理
+//		final String TAG = "setChronometer";
+//		String dbMsg = "";
+//		try{
+//			dbMsg += " , isFocusNow=" + isFocusNow;
+//			backTime= backTime - System.currentTimeMillis();						//このActivtyに戻ってからの時間
+//			long current = SystemClock.elapsedRealtime() - mcPosition + backTime;																					//再生ポイントを取得
+//			dbMsg += " , current:" + current;
+//			dbMsg += " , mcPosition:" + mcPosition;
+//			lp_chronometer.setBase(current);             //long
+//			SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
+//			String  mcPositionStr = dataFormat.format(mcPosition);
+//			dbMsg += " , mcPosition:" + mcPositionStr;
+//
+//			dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
+//			if(IsPlaying){                                  				//再生状態で戻ってきた時点で表示
+//				lp_chronometer.start();
+//			}else{
+//				lp_chronometer.stop();
+//			}
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {		//汎用
+//			myErrorLog(TAG,"で"+e.toString());
+//		}
+//	}
 
 	//②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
 	//設定値管理////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -11509,7 +11509,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										titolName = names[names.length];
 										dbMsg += ",titolName = "+titolName;
 
-										setChronometer(mcPosition , IsPlaying ) ;
+							//			setChronometer(mcPosition , IsPlaying ) ;
 										IsSeisei = bundle.getBoolean("IsSeisei");			//再生中か
 										dbMsg += ",生成中= " + IsSeisei;//////////////////////////////////
 										dbMsg += ",/シンプルなリスト表示= " + myPreferences.pref_list_simple;
@@ -11847,16 +11847,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					String dbMsg = "[lp_chronometer]";
 					try{
 						dbMsg +=",開始時刻="+startLong;
-						dbMsg +=",getBase="+chronometer.getBase();
-						long offsetPlayTimer = SystemClock.elapsedRealtime() - startLong;
-						dbMsg +=",offsetPlayTimer="+offsetPlayTimer;
+						dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
+						long seekProgress = SystemClock.elapsedRealtime() - startLong;
+						dbMsg +=",seekProgress="+seekProgress;
 						dbMsg +=",再開時刻="+reStartLong;
 						if(0 < pousePosition){
 							dbMsg +=",休止時のseekBar.progress="+pousePosition;
-							offsetPlayTimer = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
-							dbMsg +=">>"+offsetPlayTimer;
+							seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+							dbMsg +=">>"+seekProgress;
 						}
-						lp_seekBar.setProgress((int) offsetPlayTimer);
+						lp_seekBar.setProgress((int) seekProgress);
 						dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
@@ -12266,6 +12266,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public long startLong;				//開始時刻
 	public long reStartLong;				//再開時刻
 	public long pousePosition;				//休止時のseekBar.progress
+	public long chronometerStopTime;			//pouseされた時刻
+
+
 	public boolean isPlaying;
 	public boolean b_isPlaying;
 	public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
@@ -12276,25 +12279,30 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final Handler songSelectHandler = new Handler(Looper.getMainLooper());
 			songSelectHandler.post(() -> {
 				final String TAG = "post";
-				String dbMsg = "[songSelectHandler]";
+				String dbMsg = "[selectSongInfo]";
 				try{
 					dbMsg += ",nowList_id= " + nowList_id;
 					dbMsg += ",currentIndex=" + currentIndex ;
 					String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
 					lp_title.setText(wStr);
-					dbMsg += ",dataStr= " + dataStr;
+				//	dbMsg += ",dataStr= " + dataStr;
 					dbMsg += ",duranationStr" + duranationStr;
 					lp_duranation.setText( duranationStr);
 					lp_seekBar.setMax((int) duranationLong);
-					lp_chronometer.setBase(0);				//”00:00″から開始
+					dbMsg += ",contentPositionLong= " + contentPositionLong;
+					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
+					lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″から開始
+					chronometerStopTime= lp_chronometer.getBase();
+					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
 					if(isPlaying){
 						lp_chronometer.start();
 					}else{
 						lp_chronometer.stop();
 					}
-//					long offsetPlayTimer = SystemClock.elapsedRealtime() - lp_chronometer.getBase();
-					lp_seekBar.setProgress((int) 0);
-					reStartLong=0;
+					startLong = 0L;		//開始時刻
+					reStartLong = 0L;			//再開時刻
+
+					lp_seekBar.setProgress((int) contentPositionLong);
 					myLog(TAG, dbMsg);
 				} catch (Exception e) {
 					myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12309,26 +12317,37 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			final String TAG = "post";
 			String dbMsg = "[staateChangedInfo]";
 			try{
+				dbMsg += ",isPlaying=" + isPlaying;
 				dbMsg += "[" + contentPositionLong + "/" + duranationLong + "]";
 				dbMsg += ",chronometer:Text=" + lp_chronometer.getText();
+				int chronometerInt =0;
 				if(0<contentPositionLong){
-					lp_chronometer.setBase((int)contentPositionLong/1000);
+					chronometerInt =(int)(contentPositionLong/1000L);
 				}
-				dbMsg += ">>" + lp_chronometer.getBase();
+//				long seekProgress =0l;
+//					seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+//					chronometerInt = (int) (seekProgress/1000);
+//				}
+//				dbMsg += ",seekProgress=" + seekProgress;
+				dbMsg += ",chronometerInt=" + chronometerInt;
+				dbMsg += ",contentPositionLong= " + contentPositionLong;
+				dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
 				lp_seekBar.setProgress((int) contentPositionLong);
 				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
-				dbMsg += ",isPlaying=" + isPlaying;
 				if(isPlaying){
 					if(lp_seekBar.getProgress() == 0){
 						startLong = SystemClock.elapsedRealtime();
 					}else{
 						reStartLong = SystemClock.elapsedRealtime();
 					}
+					lp_chronometer.setBase(SystemClock.elapsedRealtime() - chronometerStopTime);
 					lp_chronometer.start();
 				}else{
 					pousePosition=lp_seekBar.getProgress();
 					lp_chronometer.stop();
 				}
+				dbMsg += ">>" + lp_chronometer.getBase();
+				chronometerStopTime= lp_chronometer.getBase();
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12418,12 +12437,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					isPlaying = intent.getBooleanExtra("isPlaying", false);
 					dbMsg += ",isPlaying=" + isPlaying;
 					lvID.setSelection(currentIndex);
+					contentPositionLong = 0L;
 					selectSongInfo();
 					selectListyInfo();
 				}else if(intent.getAction().equals(MusicService.ACTION_STATE_CHANGED)) {
 					b_isPlaying = isPlaying;
 					isPlaying = intent.getBooleanExtra("isPlaying", false);
-					contentPositionLong = intent.getLongExtra("contentPosition",0);
+					contentPositionLong = intent.getLongExtra("contentPosition",0L);
 					dbMsg += ",contentPositionLong=" + contentPositionLong + "/" + duranationLong;
 					stateChangedInfo();
 					dbMsg += ",isPlaying=" + b_isPlaying + ">>" + isPlaying;
