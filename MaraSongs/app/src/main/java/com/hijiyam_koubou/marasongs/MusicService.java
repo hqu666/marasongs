@@ -1396,11 +1396,15 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",duranation=" + duranation;
             MRIintent.putExtra("duranation",duranation);
             dbMsg += ",exoPlayer=" + exoPlayer;
+            long contentPosition = 0l;
             if(exoPlayer != null){
+                contentPosition = exoPlayer.getContentPosition();
                 MRIintent.putExtra("isPlaying",  exoPlayer.isPlaying());
             }else{
                 MRIintent.putExtra("isPlaying",  false);
             }
+            MRIintent.putExtra("contentPosition",contentPosition);
+            dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",isPlaying=" +  contentPosition;
             getBaseContext().sendBroadcast(MRIintent);
             myLog(TAG,dbMsg);
         } catch (Exception e) {
@@ -1416,15 +1420,15 @@ public class MusicService extends MediaBrowserService {
             Intent MRIintent = new Intent();
             dbMsg += ",exoPlayer=" + exoPlayer;
             MRIintent.setAction(ACTION_STATE_CHANGED);
+            long contentPosition = 0l;
             if(exoPlayer != null){
-                long contentPosition = exoPlayer.getContentPosition();
-                dbMsg += ",contentPosition=" + contentPosition;
-                MRIintent.putExtra("contentPosition",contentPosition);
+                contentPosition = exoPlayer.getContentPosition();
                 MRIintent.putExtra("isPlaying", exoPlayer.isPlaying());
-                dbMsg += ",isPlaying=" +  exoPlayer.isPlaying();
             }else{
                 MRIintent.putExtra("isPlaying",  false);
             }
+            MRIintent.putExtra("contentPosition",contentPosition);
+            dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",isPlaying=" +  contentPosition;
             getBaseContext().sendBroadcast(MRIintent);
             myLog(TAG,dbMsg);
         } catch (Exception e) {
