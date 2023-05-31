@@ -4109,7 +4109,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 /////ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 //
 
-
 	/**サービスとレシーバに再生ファイルを指定*/
 	public boolean send2Service(String dataFN , String listName , boolean IsPlaying) {																		//操作対応②ⅰ
 		final String TAG = "send2Service";
@@ -4162,7 +4161,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 		return IsPlaying;
 	}
-
 
 	/**
 	 *  プレイヤーにuriを送る onClickが//プレイヤーフィールド部の土台
@@ -11804,7 +11802,62 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 			lp_title = list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
 			lp_seekBar = list_player.findViewById(R.id.seekBar);
-	//		lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
+			lp_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				/**ツマミのドラッグを開始*/
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					final String TAG = "onStartTrackingTouch";
+					String dbMsg = "[SeekBarChange]";
+					try{
+						seekProgress = seekBar.getProgress();
+						dbMsg +="[" + seekProgress +"/"+ seekBar.getMax() + "]";
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+
+				/**ツマミの位置が変化した*/
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					final String TAG = "onProgressChanged";
+					String dbMsg = "[SeekBarChange]";
+					try{
+						dbMsg +="[" +seekBar.getProgress() +"/"+ seekBar.getMax() + "]";
+						dbMsg +=">>" +progress +",fromUser="+ fromUser;
+						if(fromUser){
+							lp_chronometer.setBase(SystemClock.elapsedRealtime()-progress);
+						}
+//						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+
+
+				/**ツマミのドラッグを終了*/
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					final String TAG = "onStopTrackingTouch";
+					String dbMsg = "[SeekBarChange]";
+					try{
+						seekProgress = seekBar.getProgress();
+						dbMsg +="[" + seekProgress +"/"+ seekBar.getMax() + "]";
+						if(MPSIntent != null){
+							MPSIntent.setAction(MusicService.ACTION_SEEK);
+							MPSIntent.putExtra("saiseiJikan",seekProgress);
+							MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+							dbMsg += " ,MPSName=" + MPSName + "でstartService";
+						}else{
+							dbMsg += ",MPSIntent==null";
+						}
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
+			//		lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
 			lp_duranation = list_player.findViewById(R.id.duranation);									//プレイヤーのアルバム表示
 			lp_chronometer = list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
 	//		lp_chronometer.setFormat("%s");
@@ -11818,7 +11871,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					try{
 						dbMsg +=",開始時刻="+startLong;
 						dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
-						long seekProgress = SystemClock.elapsedRealtime() - startLong;
+						seekProgress = SystemClock.elapsedRealtime() - startLong;
 						dbMsg +=",seekProgress="+seekProgress;
 						dbMsg +=",再開時刻="+reStartLong;
 						if(0 < pousePosition){
@@ -11826,7 +11879,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
 							dbMsg +=">>"+seekProgress;
 						}
-						lp_seekBar.setProgress((int) seekProgress);
+						seekChangedInfo();
+					//	lp_seekBar.setProgress((int) seekProgress);
 						dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
@@ -12233,6 +12287,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String duranationStr;
 	public long duranationLong;
 	public long contentPositionLong;
+	public long seekProgress;				//シークバーの位置
 	public long startLong;				//開始時刻
 	public long reStartLong;				//再開時刻
 	public long pousePosition;				//休止時のseekBar.progress
@@ -12314,6 +12369,33 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					pousePosition=lp_seekBar.getProgress();
 					lp_chronometer.stop();
 				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		});
+	}
+
+	/**シーク位置変化*/
+	private void seekChangedInfo(){
+		final Handler seekChangedHandler = new Handler(Looper.getMainLooper());
+		seekChangedHandler.post(() -> {
+			final String TAG = "post";
+			String dbMsg = "[seekChangedInfo]";
+			try{
+//				dbMsg +=",開始時刻="+startLong;
+//				dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
+//				long seekProgress = SystemClock.elapsedRealtime() - startLong;
+//				dbMsg +=",seekProgress="+seekProgress;
+//				dbMsg +=",再開時刻="+reStartLong;
+//				if(0 < pousePosition){
+//					dbMsg +=",休止時のseekBar.progress="+pousePosition;
+//					seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+//					dbMsg +=">>"+seekProgress;
+//				}
+				lp_seekBar.setProgress((int) seekProgress);
+				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+				myLog(TAG, dbMsg);
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);

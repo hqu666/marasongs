@@ -121,9 +121,12 @@ public class MusicService extends MediaBrowserService {
     /**PAUSE*/
     public static final String ACTION_PAUSE = "com.example.android.remotecontrol.ACTION_PAUSE";
     public static final int MS_PAUSE = MS_PLAY + 1;
+    /**再生位置変更*/
+    public static final String ACTION_SEEK = "ACTION_SEEK";
+    public static final int MS_SEEK = MS_PAUSE + 1;
     /**FF*/
     public static final String ACTION_SKIP = "com.example.android.remotecontrol.ACTION_SKIP";
-    public static final int MS_SKIP = MS_PAUSE + 1;
+    public static final int MS_SKIP = MS_SEEK + 1;
     /**Rew*/
     public static final String ACTION_REWIND = "com.example.android.remotecontrol.ACTION_REWIND";
     public static final int MS_REWIND = MS_SKIP + 1;
@@ -504,7 +507,7 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ",渡されたのは= " + pref_data_url;
                 mIndex =intent.getIntExtra("mIndex", 0);
                 dbMsg += "で[mIndex：" + mIndex + "/"+ mediaItemList.size() + "件]";
-                saiseiJikan =intent.getLongExtra("saiseiJikan", 0);
+                saiseiJikan =intent.getLongExtra("saiseiJikan", 0L);
                 dbMsg += ",saiseiJikan=" + saiseiJikan;
          //       plAL=intent.getParcelableExtra("plAL");
                 dbMsg += ",plAL= " + plAL.size();
@@ -533,6 +536,27 @@ public class MusicService extends MediaBrowserService {
                     }else{
                         dbMsg +="、既に停止中";
                     }
+                }else{
+                    dbMsg +="、exoPlayer== null";
+                }
+            }else if(action.equals(ACTION_SEEK)){
+                dbMsg +="、再生ポジション変更";
+                dbMsg += ",saiseiJikan=" + saiseiJikan;
+                if(exoPlayer != null){
+                    if( exoPlayer.isPlaying()){
+                        exoPlayer.pause();
+                    }else{
+                        dbMsg +="、既に停止中";
+                    }
+                    saiseiJikan =intent.getLongExtra("saiseiJikan", 0L);
+                    dbMsg += ">>" + saiseiJikan;
+                    exoPlayer.seekTo(saiseiJikan);
+                    if( exoPlayer.isPlaying()){
+                        exoPlayer.play();
+                    }else{
+                        dbMsg +="、既に停止中";
+                    }
+                    sendStateChasng();
                 }else{
                     dbMsg +="、exoPlayer== null";
                 }
