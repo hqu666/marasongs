@@ -551,10 +551,10 @@ public class MusicService extends MediaBrowserService {
                     saiseiJikan =intent.getLongExtra("saiseiJikan", 0L);
                     dbMsg += ">>" + saiseiJikan;
                     exoPlayer.seekTo(saiseiJikan);
-                    if( exoPlayer.isPlaying()){
+                    if( ! exoPlayer.isPlaying()){
                         exoPlayer.play();
                     }else{
-                        dbMsg +="、既に停止中";
+                        dbMsg +="、既に再生中";
                     }
                     sendStateChasng();
                 }else{

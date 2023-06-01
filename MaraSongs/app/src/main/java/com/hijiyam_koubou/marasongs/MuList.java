@@ -11873,8 +11873,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					final String TAG = "onChronometerTick";
 					String dbMsg = "[lp_chronometer]";
 					try{
+						dbMsg +=",isPlaying="+isPlaying;
 						dbMsg +=",contentPositionLong="+contentPositionLong;
-						if(0<contentPositionLong){
+						if(isPlaying){				//0<contentPositionLong &&
 							dbMsg +=",開始時刻="+startLong;
 							dbMsg +=",pousePosition="+pousePosition;
 							dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
