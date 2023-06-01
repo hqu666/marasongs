@@ -166,6 +166,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	private int mIndex;
 	private Item playingItem;						//再生中の楽曲レコード
 	public long backTime=0;						//このActivtyに戻った時間
+	public boolean seekFromUser;				//ユーザーによるシーク操作中
 
 	public ZenkyokuHelper zenkyokuHelper = null;				//全曲リストヘルパー
 	public SQLiteDatabase Zenkyoku_db;		//全曲リストファイル
@@ -11801,6 +11802,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		//	lp_stop = list_player.findViewById(R.id.stop);								//プレイヤーの終了ボタン
 
 			lp_title = list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
+			seekFromUser = false;
 			lp_seekBar = list_player.findViewById(R.id.seekBar);
 			lp_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 				/**ツマミのドラッグを開始*/
@@ -11826,6 +11828,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +="[" +seekBar.getProgress() +"/"+ seekBar.getMax() + "]";
 						dbMsg +=">>" +progress +",fromUser="+ fromUser;
 						if(fromUser){
+							seekFromUser = true;
 							lp_chronometer.setBase(SystemClock.elapsedRealtime()-progress);
 						}
 //						myLog(TAG, dbMsg);
@@ -11833,7 +11836,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
 				}
-
 
 				/**ツマミのドラッグを終了*/
 				@Override
@@ -11851,6 +11853,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						}else{
 							dbMsg += ",MPSIntent==null";
 						}
+						seekFromUser = false;
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -11863,25 +11866,31 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	//		lp_chronometer.setFormat("%s");
 		//	SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
 //			lp_chronometer.setText(dataFormat.format(0));
+			pousePosition=0;
 			lp_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
 				@Override
 				public void onChronometerTick(Chronometer chronometer) {
 					final String TAG = "onChronometerTick";
 					String dbMsg = "[lp_chronometer]";
 					try{
-						dbMsg +=",開始時刻="+startLong;
-						dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
-						seekProgress = SystemClock.elapsedRealtime() - startLong;
-						dbMsg +=",seekProgress="+seekProgress;
-						dbMsg +=",再開時刻="+reStartLong;
-						if(0 < pousePosition){
-							dbMsg +=",休止時のseekBar.progress="+pousePosition;
-							seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+						dbMsg +=",contentPositionLong="+contentPositionLong;
+						if(0<contentPositionLong){
+							dbMsg +=",開始時刻="+startLong;
+							dbMsg +=",pousePosition="+pousePosition;
+							dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
+							dbMsg +=",再開時刻="+reStartLong;
+							dbMsg +=",seekProgress="+seekProgress;
+							if(0 < pousePosition){
+								dbMsg +=",休止時のseekBar.progress="+pousePosition;
+								seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+							}else{
+								seekProgress = SystemClock.elapsedRealtime() - startLong;
+							}
 							dbMsg +=">>"+seekProgress;
+							seekChangedInfo();
+							//	lp_seekBar.setProgress((int) seekProgress);
+							dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 						}
-						seekChangedInfo();
-					//	lp_seekBar.setProgress((int) seekProgress);
-						dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12310,22 +12319,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",currentIndex=" + currentIndex ;
 					String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
 					lp_title.setText(wStr);
-					dbMsg += ",duranationStr" + duranationStr;
+					dbMsg += ",duranationStr=" + duranationStr;
 					lp_duranation.setText( duranationStr);
-					lp_seekBar.setMax((int) duranationLong);
-					dbMsg += ",contentPositionLong= " + contentPositionLong;
+
 					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
 					lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″から開始
 					chronometerStopTime= lp_chronometer.getBase();
-					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
+					dbMsg += ">>"+lp_chronometer.getBase() + ",text="+lp_chronometer.getText();
 					if(isPlaying){
 						lp_chronometer.start();
 					}else{
 						lp_chronometer.stop();
 					}
-					startLong = 0L;		//開始時刻
-					reStartLong = 0L;			//再開時刻
+					
+					lp_seekBar.setMax((int) duranationLong);
+					dbMsg += ",contentPositionLong= " + contentPositionLong;
 					lp_seekBar.setProgress((int) contentPositionLong);
+					dbMsg += ">>[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+
+					startLong = 0L;		//開始時
+					reStartLong = 0L;			//再開時刻
 					//	dbMsg += ",dataStr= " + dataStr;
 					myLog(TAG, dbMsg);
 				} catch (Exception e) {
@@ -12507,12 +12520,3 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	}
 }
-
-/**2016/03/24	リストが重い
- * 03-24 13:55:04.125: W/ResourceType(11340): No package identifier when getting name for resource number 0x00000064
- * 	int com.hijiyam_koubou.marasongs.MuList.lv_id = 100 [0x64]　<<				lvID.setId(lv_id); 				//リストビューID;100としていた
- * 	マスクして警告は止まった
- * 03-24 14:51:53.421: I/Choreographer(20421): Skipped 73 frames!  The application may be doing too much work on its main thread.
- * 		UIのスレッド上の処理時間が長いと、途中で処理が中断されてしまう？
- * 	MediaStore.Audio.Playlists.Membersへのトランザクション書き込みは？	
- * */

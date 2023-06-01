@@ -12,7 +12,6 @@ public class CustomData {
 	public String album_name_;
 	public String album_id_;
 	public String album_key_;
-//	public ItemLayout itemLayout_;
 
 	public void setImagaData(Bitmap image) {
 		imageData_ = image;
@@ -81,11 +80,6 @@ public class CustomData {
 		return album_key_;
 	}
 
-//	public void setItemLayout(ItemLayout itemLayout) {itemLayout_ = itemLayout;}
-//
-//	public ItemLayout getItemLayout() {
-//		return itemLayout_;
-//	}
 
 }
 
