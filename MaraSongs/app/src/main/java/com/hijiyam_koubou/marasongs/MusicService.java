@@ -1274,8 +1274,8 @@ public class MusicService extends MediaBrowserService {
                     /**曲変更などのイベント*/
                     @Override
                     public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
-                        final String TAG = "onEvents[Player.Listener]";
-                        String dbMsg="";
+                        final String TAG = "onEvents";
+                        String dbMsg="[Player.Listener]";
                         try {
                             List<Integer> eventList = new ArrayList<>();
                             dbMsg += "eventList=" + eventList.size() +"件";
@@ -1287,10 +1287,10 @@ public class MusicService extends MediaBrowserService {
                                 dbMsg += "、(2)=" + eventList.get(2);
                                 dbMsg += "、ContentPosition=" + exoPlayer.getContentPosition();
                                 if (eventList.get(0) == 4 && eventList.get(1) == 7 && eventList.get(2) == 11 && exoPlayer.getContentPosition() == 0) {
-                                    // SEEK_TO_PREVIOUS
-                                    Intent intent = new Intent("SEND_MESSAGE");
-                                    //            intent.putExtra("MUSIC", RWD);
-                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+//                                    // SEEK_TO_PREVIOUS
+//                                    Intent intent = new Intent("SEND_MESSAGE");
+//                                    //            intent.putExtra("MUSIC", RWD);
+//                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                                 }
                                 myLog(TAG,dbMsg);
                             }
@@ -1303,8 +1303,8 @@ public class MusicService extends MediaBrowserService {
                     /**再生が別のメディア項目に移行するときの検出:https://developer.android.com/guide/topics/media/exoplayer/playlists#detecting-when-playback-transitions-to-another-media-item*/
                     @Override
                     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-                        final String TAG = "onMediaItemTransition[Player.Listener]";
-                        String dbMsg="";
+                        final String TAG = "onMediaItemTransition";
+                        String dbMsg="[Player.Listener]";
                         try {
                             mIndex=exoPlayer.getCurrentMediaItemIndex();
                             int endIndex = exoPlayer.getMediaItemCount();
@@ -1422,13 +1422,13 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",exoPlayer=" + exoPlayer;
             long contentPosition = 0l;
             if(exoPlayer != null){
-                contentPosition = exoPlayer.getContentPosition();
+         //       contentPosition = exoPlayer.getContentPosition();
                 MRIintent.putExtra("isPlaying",  exoPlayer.isPlaying());
             }else{
                 MRIintent.putExtra("isPlaying",  false);
             }
             MRIintent.putExtra("contentPosition",contentPosition);
-            dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",isPlaying=" +  contentPosition;
+            dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",contentPosition=" +  contentPosition;
             getBaseContext().sendBroadcast(MRIintent);
             myLog(TAG,dbMsg);
         } catch (Exception e) {

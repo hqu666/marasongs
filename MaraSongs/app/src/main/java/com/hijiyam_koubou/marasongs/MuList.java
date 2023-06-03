@@ -11797,10 +11797,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
 			playerView = list_player.findViewById(R.id.player_view);
 			playerView.setVisibility(View.GONE);
-//			lp_ppPButton = list_player.findViewById(R.id.ppPButton);			//プレイヤーの再生/停止ボタン
 			rc_fbace = list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
-		//	lp_stop = list_player.findViewById(R.id.stop);								//プレイヤーの終了ボタン
-
 			lp_title = list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
 			seekFromUser = false;
 			lp_seekBar = list_player.findViewById(R.id.seekBar);
@@ -11860,12 +11857,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 				}
 			});
-			//		lp_artist = list_player.findViewById(R.id.artist);									//プレイヤーのアーティスト表示
 			lp_duranation = list_player.findViewById(R.id.duranation);									//プレイヤーのアルバム表示
 			lp_chronometer = list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
-	//		lp_chronometer.setFormat("%s");
-		//	SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-//			lp_chronometer.setText(dataFormat.format(0));
 			pousePosition=0;
 			lp_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
 				@Override
@@ -11873,25 +11866,42 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					final String TAG = "onChronometerTick";
 					String dbMsg = "[lp_chronometer]";
 					try{
+						String chronometerStr = (String) chronometer.getText();
+						dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometerStr;
 						dbMsg +=",isPlaying="+isPlaying;
 						dbMsg +=",contentPositionLong="+contentPositionLong;
-						if(isPlaying){				//0<contentPositionLong &&
-							dbMsg +=",開始時刻="+startLong;
-							dbMsg +=",pousePosition="+pousePosition;
-							dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometer.getText();
-							dbMsg +=",再開時刻="+reStartLong;
-							dbMsg +=",seekProgress="+seekProgress;
-							if(0 < pousePosition){
-								dbMsg +=",休止時のseekBar.progress="+pousePosition;
-								seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
-							}else{
-								seekProgress = SystemClock.elapsedRealtime() - startLong;
-							}
-							dbMsg +=">>"+seekProgress;
-							seekChangedInfo();
-							//	lp_seekBar.setProgress((int) seekProgress);
-							dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+//						if( ! chronometer.getText().equals("00:00")){				//isPlaying &&  0<contentPositionLong &&
+//							dbMsg +=",開始時刻="+startLong;
+//							dbMsg +=",pousePosition="+pousePosition;
+//							dbMsg +=",再開時刻="+reStartLong;
+//							dbMsg +=",seekProgress="+seekProgress;
+//							if(0 < pousePosition){
+//								dbMsg +=",休止時のseekBar.progress="+pousePosition;
+//								seekProgress = SystemClock.elapsedRealtime() - reStartLong + pousePosition;
+//							}else{
+//								seekProgress = SystemClock.elapsedRealtime() - startLong;
+//							}
+//						}
+
+						SimpleDateFormat sdf = new SimpleDateFormat("mm:ss", Locale.JAPAN);			//yyyy-MM-dd HH:mm:ss
+						String[] chronometerStrs = chronometerStr.split(":");
+						int minitInt = 0;
+						if(!chronometerStrs[0].equals("00")){
+							minitInt = Integer.parseInt( chronometerStrs[0]) * 60;
 						}
+						dbMsg +=",minitInt="+minitInt;
+						int secInt =0;
+						if(!chronometerStrs[1].equals("00")){
+							secInt = Integer.parseInt( chronometerStrs[1]);
+						}
+						dbMsg +=",secInt="+secInt;
+//						Date date = sdf.parse(chronometerStr);
+//						dbMsg +=",date="+date;
+						seekProgress = (minitInt+secInt)*1000;
+						dbMsg +=">>"+seekProgress;
+						seekChangedInfo();
+						//	lp_seekBar.setProgress((int) seekProgress);
+						dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12332,10 +12342,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}else{
 						lp_chronometer.stop();
 					}
-					
+					lp_seekBar.setProgress(0);
 					lp_seekBar.setMax((int) duranationLong);
 					dbMsg += ",contentPositionLong= " + contentPositionLong;
-					lp_seekBar.setProgress((int) contentPositionLong);
+					if(0L < contentPositionLong){
+						lp_seekBar.setProgress((int) contentPositionLong);
+					}
 					dbMsg += ">>[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 
 					startLong = 0L;		//開始時
@@ -12373,6 +12385,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				lp_seekBar.setProgress((int) contentPositionLong);
 				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 				if(isPlaying){
+					if(contentPositionLong == 0L){
+						lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″を撮り直し
+					}
 					if(lp_seekBar.getProgress() == 0){
 						startLong = SystemClock.elapsedRealtime();
 					}else{
@@ -12489,24 +12504,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",currentIndex=" + currentIndex;
 					String dStr = intent.getStringExtra("duranation");
 					dbMsg += ".dStr" + dStr;
+					contentPositionLong = 0L;
 					duranationLong = Long.parseLong(dStr);
+					dbMsg += "[" + contentPositionLong + " / " + duranationLong;
 					Date duranationdate = new Date(duranationLong);
 					duranationStr = sdf_time.format(duranationdate);            // sdf_time.format(new Date(Long.valueOf(dStr)*1000));
-					dbMsg += ",duranationStr" + duranationStr;
+					dbMsg += "=" + duranationStr + "]";
+
 					artistName = intent.getStringExtra("artist");
 					albumTitle = intent.getStringExtra("albumTitle");
 					titleStr = intent.getStringExtra("title");
 					isPlaying = intent.getBooleanExtra("isPlaying", false);
 					dbMsg += ",isPlaying=" + isPlaying;
 					lvID.setSelection(currentIndex);
-					contentPositionLong = 0L;
 					selectSongInfo();
 					selectListyInfo();
 				}else if(intent.getAction().equals(MusicService.ACTION_STATE_CHANGED)) {
 					b_isPlaying = isPlaying;
 					isPlaying = intent.getBooleanExtra("isPlaying", false);
 					contentPositionLong = intent.getLongExtra("contentPosition",0L);
-					dbMsg += ",contentPositionLong=" + contentPositionLong + "/" + duranationLong;
+					dbMsg += "[contentPositionLong=" + contentPositionLong + "/" + duranationLong + "]";
 					stateChangedInfo();
 					dbMsg += ",isPlaying=" + b_isPlaying + ">>" + isPlaying;
 					if(b_isPlaying != isPlaying){
