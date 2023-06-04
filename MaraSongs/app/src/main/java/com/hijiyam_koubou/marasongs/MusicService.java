@@ -500,9 +500,9 @@ public class MusicService extends MediaBrowserService {
                 //          mediaItemList = readCalentList(Integer.parseInt(nowList_id),nowList);
             }else if(action.equals(ACTION_SET_SONG)){
                 dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
-                if(exoPlayer != null){
-                    destructionPlayer();
-                }
+//                if(exoPlayer != null){
+//                    destructionPlayer();
+//                }
                 pref_data_url= intent.getStringExtra("pref_data_url");		//extras.getString("pref_data_url");
                 dbMsg += ",渡されたのは= " + pref_data_url;
                 mIndex =intent.getIntExtra("mIndex", 0);
@@ -511,8 +511,22 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ",saiseiJikan=" + saiseiJikan;
          //       plAL=intent.getParcelableExtra("plAL");
                 dbMsg += ",plAL= " + plAL.size();
-
-                initializePlayer(); // EXOPLAYER
+                if(exoPlayer == null){
+                    initializePlayer(); // EXOPLAYER
+                }else{
+                    dbMsg += ",player生成済み";
+                    MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
+                    String mediaId = currentMediaItem.mediaId;
+                    dbMsg += ",現在:" + mediaId;
+                    MediaItem sarchItem = mediaItemList.get(mIndex);
+                    String sarchId = sarchItem.mediaId;
+                    dbMsg += ",指定:" + sarchId;
+                    if(! mediaId.equals(sarchId)){
+                        exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
+                        sendSongInfo(mIndex);
+                        sendStateChasng();
+                    }
+                }
             }else if(action.equals(ACTION_PLAYPAUSE)){
                 dbMsg +="、プレイ/ポーズのトグル";
             }else if(action.equals(ACTION_PLAY)){
@@ -520,10 +534,11 @@ public class MusicService extends MediaBrowserService {
                 if(exoPlayer != null){
                     if(! exoPlayer.isPlaying()){
                         exoPlayer.play();
-                        sendStateChasng();
                     }else{
                         dbMsg +="、既に再生中";
+                        exoPlayer.pause();
                     }
+                    sendStateChasng();
                 }else{
                     dbMsg +="、exoPlayer== null";
                 }
@@ -532,10 +547,11 @@ public class MusicService extends MediaBrowserService {
                 if(exoPlayer != null){
                     if( exoPlayer.isPlaying()){
                         exoPlayer.pause();
-                        sendStateChasng();
                     }else{
                         dbMsg +="、既に停止中";
+                        exoPlayer.play();
                     }
+                    sendStateChasng();
                 }else{
                     dbMsg +="、exoPlayer== null";
                 }
@@ -1249,12 +1265,8 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "initializePlayer";
         String dbMsg="";
         try {
-     //       Context context = this;                       //getBaseContext();          //getApplicationContext();
             if (exoPlayer == null) {
-       //         Intent intent = getIntent();
                 dbMsg="mediaItemList=" + mediaItemList.size() + "件";
-        //        exoPlayer = new ExoPlayer.Builder( context).build();
-
                 lastSeenTracks = Tracks.EMPTY;
                 exoPlayer = new ExoPlayer.Builder(context)                     //MusicService.this
                         .setHandleAudioBecomingNoisy(true)
@@ -1319,9 +1331,9 @@ public class MusicService extends MediaBrowserService {
                             songTitol= (String) mediaItem.mediaMetadata.title;
                             if (exoPlayer.getCurrentMediaItemIndex() == 1) {
                                 // SEEK_TO_NEXT
-                                Intent intent = new Intent("SEND_MESSAGE");
-                                //       intent.putExtra("MUSIC", FWD);
-                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+//                                Intent intent = new Intent("SEND_MESSAGE");
+//                                //       intent.putExtra("MUSIC", FWD);
+//                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                             }
                             redrowNotification(mediaItem);
 
@@ -1330,7 +1342,7 @@ public class MusicService extends MediaBrowserService {
                             dbMsg += ",dataFN=" + dataFN;
                             String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
                             dbMsg += ",duranation=" + duranation;
-                            sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
+                            sendSongInfo(mIndex);
 
                             Player.Listener.super.onMediaItemTransition(mediaItem, reason);
                             myLog(TAG,dbMsg);
@@ -1343,8 +1355,9 @@ public class MusicService extends MediaBrowserService {
                 exoPlayer.addAnalyticsListener(new EventLogger());
                 exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT,  true);
                 exoPlayer.setPlayWhenReady(startAutoPlay);
-       //         playerView.setPlayer(exoPlayer);          //on a null object reference
                 configurePlayerWithServerSideAdsLoader();
+            }else{
+                dbMsg += ",player生成済み";
             }
 
             exoPlayer.prepare();
@@ -1379,16 +1392,13 @@ public class MusicService extends MediaBrowserService {
             startForeground(NOTIFICATION_ID, notification);
             ////////////////////////////////////////////////////////////// Notification作成 //
 
-            objMap=plAL.get(mIndex);
-            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-            dbMsg += ",dataFN=" + dataFN;
-            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
-            dbMsg += ",duranation=" + duranation;
-            MediaItem mediaItem = mediaItemList.get(mIndex);
-            sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
-
-//         //   PendingIntent pendingMRIintent = PendingIntent.getBroadcast(context, MS_SET_SONG, MRIintent, PendingIntent.FLAG_IMMUTABLE);
-
+//            objMap=plAL.get(mIndex);
+//            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+//            dbMsg += ",dataFN=" + dataFN;
+//            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+//            dbMsg += ",duranation=" + duranation;
+//            MediaItem mediaItem = mediaItemList.get(mIndex);
+            sendSongInfo(mIndex);
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1400,24 +1410,28 @@ public class MusicService extends MediaBrowserService {
 ///ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 
     /**再生曲情報をBroadcastする*/
-    public void sendSongInfo(String list_id,int currentIndex, String dataFN,MediaItem mediaItem,String duranatione) {
+    public void sendSongInfo(int currentIndex) {       // String dataFN,,MediaItem mediaItem,String duranatione
         final String TAG = "sendSongInfo";
         String dbMsg="";
         try {
             Intent MRIintent = new Intent();
             //      Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
             MRIintent.setAction(ACTION_SET_SONG);
+            String list_id = myPreferences.nowList_id;
             dbMsg += ",送信するのは" + list_id;
             MRIintent.putExtra("nowList_id",list_id);
             dbMsg += "の[" + currentIndex +"]";
             MRIintent.putExtra("currentIndex",currentIndex);
+            objMap=plAL.get(mIndex);
+            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
             dbMsg += ",dataFN=" + dataFN;
+            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+            dbMsg += ",duranation=" + duranation;
+            MediaItem mediaItem = mediaItemList.get(mIndex);
             MRIintent.putExtra("pref_data_url",dataFN);
             MRIintent.putExtra("artist",mediaItem.mediaMetadata.artist);
             MRIintent.putExtra("albumTitle",mediaItem.mediaMetadata.albumTitle);
             MRIintent.putExtra("title",mediaItem.mediaMetadata.title);
-            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
-            dbMsg += ",duranation=" + duranation;
             MRIintent.putExtra("duranation",duranation);
             dbMsg += ",exoPlayer=" + exoPlayer;
             long contentPosition = 0l;
