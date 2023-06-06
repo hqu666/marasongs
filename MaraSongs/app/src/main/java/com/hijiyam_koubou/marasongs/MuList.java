@@ -2885,10 +2885,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ">>" + myPreferences.nowList_id;
 			}
 			dbMsg +=">>["+sousalistID + "]" + myPreferences.nowList;
-			boolean retBool = setPrefInt("myPreferences.nowList_id", Integer.parseInt(myPreferences.nowList_id), MuList.this);        //プリファレンスの読込み
+			boolean retBool = setPrefInt("nowList_id", Integer.parseInt(myPreferences.nowList_id), MuList.this);        //プリファレンスの読込み
 			dbMsg += "を書込み" + retBool;
 			dbMsg += "]" + sousalistName;/////////////////////////////////////
-			retBool = setPrefStr("myPreferences.nowList" , sousalistName , MuList.this);        //プリファレンスの読込み
+			retBool = setPrefStr("nowList" , sousalistName , MuList.this);        //プリファレンスの読込み
 			dbMsg += "を書込み" + retBool;
 
 			if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
@@ -4196,9 +4196,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			String[] infos = dataFN.split(File.separator);
 //			String albumID=oUtil.retAlbumID(this,infos[infos.length-3],infos[infos.length-2]);
 //			dbMsg += ",albumID=" + albumID;
-//			int mIndex = mibrary.getIndex(albumID);
-//			dbMsg += ",mIndex=" + mIndex;
-//			myEditor.putInt ("pref_mIndex", mIndex);
+
 			myEditor.apply();
 
 
@@ -4273,8 +4271,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			bundle.putString( "myPreferences.nowList_id", String.valueOf(myPreferences.nowList_id) );
 			dbMsg += ",プレイリストの保存場所= " + myPreferences.pref_file_wr;//////////////////////////////////
 			bundle.putString("myPreferences.pref_file_wr",myPreferences.pref_file_wr);
-			dbMsg += ",mIndex=" + mIndex;/////////////////////////////////////
-			bundle.putInt("pref_mIndex",mIndex);
+//			dbMsg += ",mIndex=" + mIndex;/////////////////////////////////////
+//			bundle.putInt("pref_mIndex",mIndex);
 			dbMsg += ",点間リピート中="+rp_pp;/////////////////////////////////////
 			bundle.putBoolean( "rp_pp",rp_pp);
 			dbMsg += ",リピート区間="+pp_start;/////////////////////////////////////
@@ -11850,7 +11848,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +="[" + seekProgress +"/"+ seekBar.getMax() + "]";
 						if(MPSIntent != null){
 							MPSIntent.setAction(MusicService.ACTION_SEEK);
-							MPSIntent.putExtra("saiseiJikan",seekProgress);
+							MPSIntent.putExtra("seekProgress",seekProgress);
 							MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 							dbMsg += " ,MPSName=" + MPSName + "でstartService";
 						}else{

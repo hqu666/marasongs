@@ -93,17 +93,44 @@ public class MyPreferences{
 	/**最新更新日*/
 	public String pref_file_saisinn="";	//
 
-	/**リストで設定**/
-	/**再生中のプレイリストID*/
+	/**レジュームに使用**/
+	/**
+	 * 再生中のプレイリストID
+	 * <ul>書込みは
+	 * 	<li>リスト選択時：MuList.listOfListClick
+	 * 	<li>アプリ終了時：MusicService.destructionPlayer
+	 * */
 	public String nowList_id;				//	playListID
-	/**再生中のプレイリスト名*/
+	/**
+	 *  再生中のプレイリスト名
+	 * <ul>書込みは
+	 * 	<li>リスト選択時：MuList.listOfListClick
+	 * 	<li>アプリ終了時：MusicService.destructionPlayer
+	 *  */
 	public String nowList;					//	playlistNAME
-	/**リスト中のインデックス*/
+	/**
+	 * リスト中のインデックス
+	 * <ul>書込みは
+	 * 	<li>選曲時：MuList.sousinnMaeSyori
+	 * 	<li>アプリ終了時：MusicService.destructionPlayer
+	 * */
 	public int pref_mIndex;
-	/**再生中のファイル名*/
-	public String saisei_fname =null;
+	/**
+	 * 再生中のファイル名
+	 * <ul>書込みは
+	 * 	<li>選曲時：MuList.sousinnMaeSyori
+	 * 	<li>再生曲変更時：MusicService.onMediaItemTransition
+	 * 	<li>アプリ終了時：MusicService.destructionPlayer
+	 * */
 	public String pref_data_url = "";
-	/**再開時間*/
+	public String saisei_fname =null;
+	/**
+	 * 再開時間
+	 * <ul>書込みは
+	 * 	<li>選曲時に0：MuList.sousinnMaeSyori
+	 * 	<li>アプリ終了時：MusicService.destructionPlayer
+	 * */
+	public String pref_position ="0";			//		Integer
 	public String pref_saisei_jikan ="0";			//		Integer
 	/**再生時間*/
 	public String pref_saisei_nagasa  ="0";		//
@@ -420,6 +447,11 @@ public class MyPreferences{
 								dbMsg += "　は再生中のファイル";
 								pref_data_url = saisei_fname;
 							} else if (key.equals("pref_position")) {
+								pref_position = String.valueOf(keys.get(key));
+								dbMsg += " = ";//////////////////
+								wrStr = ORGUT.sdf_mss.format(Long.valueOf(pref_position));
+								dbMsg += "；再生ポジション= " + pref_position + " =" + wrStr;                //+";"+pTF_saisei_jikan.getText();//////////////////
+							} else if (key.equals("pref_saisei_jikan")) {
 								pref_saisei_jikan = String.valueOf(keys.get(key));        //再開時間		Integer.valueOf(keys.get(key).toString());
 								dbMsg += " = ";//////////////////
 								wrStr = ORGUT.sdf_mss.format(Long.valueOf(pref_saisei_jikan));

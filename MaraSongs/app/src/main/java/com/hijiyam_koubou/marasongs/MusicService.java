@@ -577,7 +577,7 @@ public class MusicService extends MediaBrowserService {
                 dbMsg +="、再生ポジション変更";
                 dbMsg += ",saiseiJikan=" + saiseiJikan;
                 if(exoPlayer != null){
-                    saiseiJikan =intent.getLongExtra("saiseiJikan", 0L);
+                    saiseiJikan =intent.getLongExtra("seekProgress", 0L);
                     dbMsg += ">>" + saiseiJikan;
                     exoPlayer.seekTo(saiseiJikan);
                     sendStateChasng();
@@ -1170,7 +1170,7 @@ public class MusicService extends MediaBrowserService {
                         try {
                             mIndex=exoPlayer.getCurrentMediaItemIndex();
                             int endIndex = exoPlayer.getMediaItemCount();
-                            setPrefInt("myPreferences.pref_mIndex" , mIndex ,  context);
+                            setPrefInt("pref_mIndex" , mIndex ,  context);
                             dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
 //                            boolean nowPlaying = exoPlayer.isPlaying();
 //                            dbMsg += ",nowPlaying=" + nowPlaying;
@@ -1319,23 +1319,46 @@ public class MusicService extends MediaBrowserService {
     }
 
 
-   /** プレイヤー破棄 */
+   /**
+    *  プレイヤー破棄
+    *  <ul>破棄する前に
+    *   <li> 再生ポジションとリスト上の再生順などをプリファレンスに書き込む
+    *   <li> mediaSessionも破棄する
+    *  */
     protected void destructionPlayer() {
         final String TAG = "destructionPlayer";
         String dbMsg="";
         try {
+            dbMsg += "[" + myPreferences.nowList_id + "]" + myPreferences.nowList;
+            myEditor.putString( "nowList_id", String.valueOf(myPreferences.nowList_id));
+            myEditor.putString( "nowList", String.valueOf(myPreferences.nowList));
+            mIndex = exoPlayer.getCurrentMediaItemIndex();
+            String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
+            dbMsg += "[" + mIndex + "]" + data_url;
+            myEditor.putString( "pref_mIndex", String.valueOf(mIndex));
+            myEditor.putString( "pref_data_url", data_url);                 // myPreferences.pref_data_url
+
             dbMsg += "exoPlayer=" + exoPlayer;
+            long contentPosition = 0l;
             if(exoPlayer != null){
+                contentPosition = exoPlayer.getContentPosition();
                 exoPlayer.release();
                 dbMsg += ">>" + exoPlayer;
             }
+            dbMsg += "," + contentPosition ;
+            myEditor.putString( "pref_position", String.valueOf(contentPosition));
+            String duration = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DURATION);
+            dbMsg += "/" + duration + "[ms]";
+            myEditor.putString( "pref_duration", String.valueOf(duration));
+            boolean kakikomi = myEditor.commit();
+            dbMsg +=",Pref書き込み=" + kakikomi;
+
             dbMsg += ",mediaSession=" + mediaSession;
             if(mediaSession != null){
                 mediaSession.release();
                 mediaSession = null;
                 dbMsg += ">>" + mediaSession;
             }
-       //     stopForeground(notification);
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
