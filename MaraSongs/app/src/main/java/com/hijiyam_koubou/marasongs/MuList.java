@@ -632,7 +632,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	//設定変更反映//////////////////////////////////////////////////////////////////////////////////////////////////////////////起動項目////
-
+	/**
+	 * プリファレンスを読む
+	 * <ul>読み出しは
+	 * 	<li>onRequestPermissionsResultでREQUEST_PREFの場合
+	 * 	<li>registerForActivityResultregisterForActivityResultで設定表示の場合
+	 * 	<li>registerForActivityResultregisterForActivityResultで設定表示の場合
+	 * */
 	public void readPref() {        //プリファレンスの読込み
 		final String TAG = "readPref";
 		String dbMsg = "";
@@ -11006,19 +11012,21 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "oFR";
 		String dbMsg = "";
 		try{
-			dbMsg += ",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
-			dbMsg += ",reqCode;" + reqCode;/////////////////////////////////////
+			dbMsg += ",shigot_bangou=" + shigot_bangou;
+			dbMsg += ",reqCode=" + reqCode;
 			myLog(TAG,dbMsg);
 //			if(0 < shigot_bangou ){
 				switch(shigot_bangou) {
-					case 0:		//インストール時
+					case 0:
+						dbMsg +=",インストール時など何もしない";
 						break;
 					case jyoukyou_bunki:		//204；現在の状態に見合った分岐を行う
 						dbMsg +=",jyoukyouBunkiへ" ;
 						jyoukyouBunki();			//①ⅱ現在の状態に見合った分岐を行う；全曲リストが出来ているか
 						break;
 					case make_list_head:		//500；ヘッド作成
-					case shyou_Main:			//205 アーティストリスト作成後、作成するリストの振り分けに
+					case shyou_Main:			//205
+						dbMsg +=",アーティストリスト作成後、作成するリストの振り分けに" ;
 //					if(reqCode== MENU_MUSCK_PLIST || ! myPreferences.nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){			//536;プレイリスト選択中
 //						String pdMessage = myPreferences.nowList;
 //						if(plAL != null){
@@ -11037,15 +11045,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					}
 						break;
 					case MyConstants.CONTEXT_runum_sisei:			//184 ランダム再生
-						randumPlay();			//ランダム再生
+						dbMsg +=",ランダム再生" ;
+						randumPlay();
 						break;
 					case MyConstants.rp_artist:			//2131558547 アーティストリピート指定ボタン
 					case MyConstants.rp_album:			//2131558548 アーティストリピート指定ボタン
 					case MyConstants.rp_titol:			//2131558549 タイトルリピート指定ボタン
 					case MyConstants.rp_point:			//2131558550 二点間リピート指定ボタン
-						repeatPlay();			//リピート再生
+						dbMsg +=",リピート再生" ;
+						repeatPlay();			//
 						break;
-					case quite_me:										//99;終了
+					case quite_me:										//99;
+						dbMsg +=",終了" ;
 						MuList.this.finish();
 						break;
 				}
@@ -11577,8 +11588,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg +=",shigot_bangou;" + shigot_bangou;/////////////////////////////////////
 				dbMsg +=",reqCode;" + reqCode;
 				switch(shigot_bangou) {
-					case reTryMse:				//208　全曲リスト作成から戻ってメッセージ表示
-						dbMsg +=",reTryMse;";
+					case reTryMse:				//208　
+						dbMsg +=",reTryMse;全曲リスト作成から戻ってメッセージ表示";
 						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 						alertDialogBuilder.setTitle(dtitol);
 						alertDialogBuilder.setMessage(dMessege);
@@ -11600,6 +11611,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						alertDialog.show();				// アラートダイアログを表示します
 						break;
 					default:
+						dbMsg +=",rdefaultで何もしない";
 //						dbMsg +=",oFRへ" ;
 //						oFR();												 // onWindowFocusChanged , onResumeじの共通操作
 						break;
@@ -11648,8 +11660,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			musicPlaylist = new MusicPlaylist(MuList.this);
 			//Permission確認
 			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
-			dbMsg += "::readPrefへ";
-			readPref();
+//			dbMsg += "::readPrefへ";
+//			readPref();
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
 			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
 			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点

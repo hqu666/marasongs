@@ -9,12 +9,16 @@ package com.hijiyam_koubou.marasongs;
 import static android.os.Environment.DIRECTORY_MUSIC;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import androidx.preference.PreferenceManager;
 
@@ -200,6 +204,63 @@ public class MyPreferences{
 		try{
 			this.rContext = context;
 			readPref();
+			myLog(TAG,dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG,dbMsg + "で"+e.toString());
+		}
+	}
+
+	/**端末に保存されている音楽ファイルの確認**/
+	@SuppressLint({"DefaultLocale", "Range"})
+	public void checkMusicFile(){
+		final String TAG = "checkMusicFile";
+		String dbMsg="";
+		try {
+			int kyokuSuu = 0;
+			Cursor cursor = null;
+			String modifiedDate="";
+			dbMsg += "," + pref_file_kyoku + "曲";
+			dbMsg += ",最新更新日=" + pref_file_saisinn;
+			if(pref_file_kyoku.equals("0") || pref_file_saisinn.equals("") || pref_file_saisinn.equals("0")){
+				ContentResolver resolver = rContext.getContentResolver();
+				Uri cUri;
+				if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+					cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+					//content://media/external/audio/media
+				} else {
+					cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+					//     cUri =MediaStore.Audio.Media.INTERNAL_CONTENT_URI はビルドできない
+				}
+				dbMsg += ",cUri=" + cUri.toString();
+				String[] c_columns = null;
+				String c_selection = MediaStore.Audio.Media.IS_MUSIC + " <> ? ";			//2.projection   " = ?";
+				String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
+				String c_orderBy= MediaStore.Audio.Media.DATE_MODIFIED; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+				//全音楽ファイル抽出
+				cursor = resolver.query(
+						cUri,             // Uri of the table
+						c_columns,      // The columns to return for each row
+						c_selection,       // Selection criteria
+						c_selectionArgs,   // Selection criteria
+						c_orderBy);
+				kyokuSuu = cursor.getCount();
+				dbMsg += ">>" + kyokuSuu + "曲";
+				pref_file_kyoku = String.valueOf(kyokuSuu);
+				myEditor.putString("pref_file_kyoku",pref_file_kyoku).apply();
+				if(cursor.moveToLast()){
+					modifiedDate = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED));
+				}
+				cursor.close();
+			}else{
+				kyokuSuu = Integer.parseInt(pref_file_kyoku);
+			}
+			if(! modifiedDate.equals("")){
+				dbMsg += ",最新更新日=" + modifiedDate;
+				if(! modifiedDate.equals(pref_file_saisinn)){
+					myEditor.putString("pref_file_saisinn",modifiedDate).apply();
+					dbMsg += "に更新";
+				}
+			}
 			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
@@ -588,13 +649,13 @@ public class MyPreferences{
 								}
 							}
 						}
-
 					} catch (Exception e) {
 						myErrorLog(TAG, dbMsg + "；" + e);
 					}
 				}
 
 			}
+			checkMusicFile();
 			myLog(TAG,dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG,dbMsg+"で"+e);
