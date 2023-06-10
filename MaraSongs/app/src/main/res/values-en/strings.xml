@@ -520,5 +520,7 @@
 	<string name="common_nitibun">days</string>
 	<string name="common_reading">Reading</string>
     <string name="listmei_list_all">List of playlists</string>
+    <string name="file_not_registered_titol">No files to play</string>
+	<string name="file_not_registered_msg">Please register music files in a folder structure of \"music/artist name/album name\".</string>
 
 </resources>

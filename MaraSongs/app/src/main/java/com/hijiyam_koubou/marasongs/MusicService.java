@@ -1330,8 +1330,8 @@ public class MusicService extends MediaBrowserService {
         String dbMsg="";
         try {
             dbMsg += "[" + myPreferences.nowList_id + "]" + myPreferences.nowList;
-            myEditor.putString( "nowList_id", String.valueOf(myPreferences.nowList_id));
-            myEditor.putString( "nowList", String.valueOf(myPreferences.nowList));
+//            myEditor.putString( "nowList_id", String.valueOf(myPreferences.nowList_id));
+//            myEditor.putString( "nowList", String.valueOf(myPreferences.nowList));
             mIndex = exoPlayer.getCurrentMediaItemIndex();
             String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
             dbMsg += "[" + mIndex + "]" + data_url;

@@ -336,6 +336,8 @@
     <string name="menu_list_syousai">詳細表示に切替</string>
     <string name="syokairiyou_dt">全曲リストを作成作成させ下さい。</string>
     <string name="syokairiyou_dm">１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n今お時間が無ければ"しない"で作成を中断してこの端末にあるプレイリストを選択して下さい。</string>
+    <string name="file_not_registered_titol">再生できるファイルが有りません</string>
+    <string name="file_not_registered_msg">music/アーティスト名/アルバム名のフォルダ構成で音楽ファイルを登録してください</string>
 
     <string name="playlist_namae_randam">ランダム再生</string>
     <string name="menu_item_plist_randam_dm">ランダム再生準備</string>
