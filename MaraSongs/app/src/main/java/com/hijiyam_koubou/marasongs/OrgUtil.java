@@ -1176,8 +1176,8 @@ public class OrgUtil  extends Activity{				//
 				dbMsg += ">" + aName;/////////////////////////////////////
 			}else if(aName.contains("and")){
 				aName = aName.substring(0, aName.indexOf("and") - 1);    //aName = aName.substring(3, aName.length());
-//			}else if(aName.contains("&")){
-//				aName = aName.substring(0, aName.indexOf("&") - 1);    //aName = aName.substring(3, aName.length());
+			}else if(aName.contains(";")){
+				aName = aName.substring(0, aName.indexOf(";"));    //aName = aName.substring(3, aName.length());
 			}else if(aName.contains("with")){
 				aName = aName.substring(0, aName.indexOf("with") - 1);    //aName = aName.substring(3, aName.length());
 			}

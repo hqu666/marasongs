@@ -216,6 +216,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	public Map<String, Object> artistMap;				//アーティストリスト用
 	public List<Map<String, Object>> artistAL;		//アーティストリスト用ArrayList
+	public List<Map<String, Object>> suffixAL;		//アーティストリストに後付け
 	public Map<String, Object> albumMap;			//アルバムトリスト用
 	public List<Map<String, Object>> albumAL;		//アルバムリスト用ArrayList
 	public Map<String, Object> titolMap;				//タイトルリスト用
@@ -3050,6 +3051,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				} else {
 					artistAL.clear();
 				}
+				MuList.this.suffixAL = new ArrayList<Map<String, Object>>();
 				dbMsg += ",artistAL=" +  artistAL;
 				artintCo = 0;
 				albamCo = 0;
@@ -3190,15 +3192,21 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",ALBUM=" + cAlbum;
 			@SuppressLint("Range") String cGenre = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.GENRE));		//置換え前に戻す
 			dbMsg += ",GENRE=" + cGenre;
+			@SuppressLint("Range") String cCompilation = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPILATION));		//置換え前に戻す
+			dbMsg += ",COMPILATION=" + cCompilation;
+			if(cCompilation == null){
+				dbMsg += "null";
+				cCompilation ="";
+			}
 
 //			String wrArtist =cArtist;artistMap
 //			String ｃArtistUp = cArtist.toUpperCase();
-			cArtist =ORGUT.ArtistPreFix(cArtist);	//TheとFeat以下をカット
-			dbMsg += ">ArtistPreFix>" + cArtist ;
-			if(cArtist.equals(b_artistName)) {
+			String artistPreFix = ORGUT.ArtistPreFix(cArtist);    //TheとFeat以下をカット
+			dbMsg += ">ArtistPreFix>" + artistPreFix ;
+			if(artistPreFix.equals(b_artistName)) {
 //			}else if(cArtist.contains(b_artistName)){
-//				dbMsg += ">contains>"  ;
-//			}else if(-1 < ORGUT.mapIndex((List<Map<String, Object>>) artistMap,"main",cArtist)){
+//				dbMsg += ">contains>"  ;//containsdだとすべて
+			}else if(-1 < ORGUT.mapIndex(artistAL,"artistPreFix",artistPreFix)){
 			}else if(cArtist.equals(b_artistName) && cAlbum.equals(b_albumTitol)){
 			}else if(cArtist.equals(cGenre)){
 			}else{
@@ -3209,6 +3217,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				MuList.this.artistMap = new HashMap<String, Object>();		//アーティストリスト用
 				MuList.this.artistMap.put("index" ,cArtist );
 				MuList.this.artistMap.put("main" ,cArtist );					///wrArtist
+				MuList.this.artistMap.put("artistPreFix" ,artistPreFix );					///wrArtist
+				MuList.this.artistMap.put(MediaStore.Audio.Media.ALBUM_KEY ,MediaStore.Audio.Media.ALBUM_KEY );
+				MuList.this.artistMap.put(MediaStore.Audio.Media.GENRE ,MediaStore.Audio.Media.GENRE );
+				MuList.this.artistMap.put(MediaStore.Audio.Media.COMPILATION ,MediaStore.Audio.Media.COMPILATION );
 				if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 				} else {
 					dbMsg +=MuList.this.artistSL.size() + ")" + cArtist ;
@@ -3225,7 +3237,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						String[] c_selectionArgs= { "%" + cArtist+ "%" , };   			//⑥引数groupByには、groupBy句を指定します。
 						String c_orderBy= null;											//MediaStore.Audio.Albums.LAST_YEAR  ; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 						Cursor cursor2 =MuList.this .getContentResolver().query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);			//getApplicationContext()
-						dbMsg += "[" +cursor2.getCount() + "件]";///////////////////////////////////////////////////////////////////////////////////////////
+						dbMsg += ",[" +cursor2.getCount() + "件]";///////////////////////////////////////////////////////////////////////////////////////////
 						if( cursor2.moveToFirst() ){
 							do{
 								artURL = cursor2.getString(cursor2.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
@@ -3254,10 +3266,31 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg +=">>" + rStr;
 					MuList.this.artistMap.put("sub" ,rStr );
 				}
-				MuList.this.artistAL.add(artistMap);		//アーティストリスト用ArrayList
-				dbMsg +="["+ cursor.getPosition()   +">>" +MuList.this.artistAL.size() +"]";			//+ "/" + cursor.getCount()
+				if(cArtist.equals("<UNKNOWN>")
+						|| cArtist.equals("VARIOUS ARTISTS")
+						|| cArtist.equals("さまざまなアーティスト")
+//						|| cCompilation.equals("1")
+				) {
+					MuList.this.artistMap.put("main" ,getResources().getString(R.string.artist_tuika01));
+					if(ORGUT.mapIndex(suffixAL,"main",getResources().getString(R.string.artist_tuika01))<0){
+						MuList.this.suffixAL.add(artistMap);
+					}
+				}else if(cGenre.equals("Soundtrack")){
+					MuList.this.artistMap.put("main" ,getResources().getString(R.string.artist_tuika02));
+					if(ORGUT.mapIndex(suffixAL,"main",getResources().getString(R.string.artist_tuika02))<0){
+						MuList.this.suffixAL.add(artistMap);
+					}
+				}else if(cGenre.equals("Classic")){
+					MuList.this.artistMap.put("main" ,getResources().getString(R.string.artist_tuika03));
+					if(ORGUT.mapIndex(suffixAL,"main",getResources().getString(R.string.artist_tuika03))<0){
+						MuList.this.suffixAL.add(artistMap);
+					}
+				}else{
+					MuList.this.artistAL.add(artistMap);		//アーティストリスト用ArrayList
+				}
+				dbMsg +="["+ cursor.getPosition()   +"]artistAL=" +MuList.this.artistAL.size() +"/" + suffixAL.size();
 				myLog(TAG,dbMsg);
-				b_artistName=cArtist;
+				b_artistName=artistPreFix;
 			}
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3273,6 +3306,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "artistList_yomikomiEnd";
 		String dbMsg = "";
 		try{
+			dbMsg +="suffixAL=" + MuList.this.suffixAL.size() + "/" + MuList.this.artistAL.size();
+			for (Map<String, Object> stringObjectMap : MuList.this.suffixAL) {
+				MuList.this.artistAL.add(stringObjectMap);
+			}
+			dbMsg +=">>" + MuList.this.artistAL.size() + "件";
 	//		cursorA.close();
 //			dbMsg += "；artist_db isOpen=" + artist_db.isOpen();
 //			artist_db.close();
@@ -11388,7 +11426,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								break;
 						}
 						b_scrollState = scrollState;
-						myLog(TAG, dbMsg);
+			//			myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -11409,7 +11447,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							selectListyInfo();
 							b_firstVisibleItem=firstVisibleItem;
 						}
-						myLog(TAG, dbMsg);
+			//			myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
