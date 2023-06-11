@@ -1151,7 +1151,10 @@ public class OrgUtil  extends Activity{				//
 
 	/**
 	 * アーティスト名のThe や 動作不備につながる文字を削除
-	 * ゲスト参加も除去
+	 * <ul>
+	 *     <li>THE
+	 *     <li>ゲスト参加;FEAT.and,with
+	 * も除去
 	 * */
 	public String ArtistPreFix(String aName ){
 		final String TAG = "ArtistPreFix";
@@ -1167,16 +1170,21 @@ public class OrgUtil  extends Activity{				//
 			}else if(aName.startsWith("The ")){
 				aName = aName.replaceAll("The ", "");	//aName = aName.substring(3, aName.length());
 			}
-			if(aName.contains("FEAT")){
-				dbMsg +=">" + aName;/////////////////////////////////////
-				aName = aName.substring(0, aName.indexOf("FEAT")-1);	//aName = aName.substring(3, aName.length());
-				dbMsg +=">" + aName;/////////////////////////////////////
-//				 myLog(TAG,dbMsg);
+			if(aName.contains("FEAT")) {
+				dbMsg += ">" + aName;/////////////////////////////////////
+				aName = aName.substring(0, aName.indexOf("FEAT") - 1);    //aName = aName.substring(3, aName.length());
+				dbMsg += ">" + aName;/////////////////////////////////////
+			}else if(aName.contains("and")){
+				aName = aName.substring(0, aName.indexOf("and") - 1);    //aName = aName.substring(3, aName.length());
+//			}else if(aName.contains("&")){
+//				aName = aName.substring(0, aName.indexOf("&") - 1);    //aName = aName.substring(3, aName.length());
+			}else if(aName.contains("with")){
+				aName = aName.substring(0, aName.indexOf("with") - 1);    //aName = aName.substring(3, aName.length());
 			}
-			aName = aName.replace( "'", "%");				//	kensakuStr = ORGUT.checkRepChr( kensakuStr, "'", "%");			//誤動作する文字
-			aName = aName.replace(  ".", "%");
-			aName = aName.replace(  "(", "%");
-			aName = aName.replace(  ")", "%");
+//			aName = aName.replace( "'", "%");				//	kensakuStr = ORGUT.checkRepChr( kensakuStr, "'", "%");			//誤動作する文字
+//			aName = aName.replace(  ".", "%");
+//			aName = aName.replace(  "(", "%");
+//			aName = aName.replace(  ")", "%");
 			dbMsg += ">" + aName;
 			if(aName.startsWith("THE")){
 				dbMsg += ">The抜けず" ;

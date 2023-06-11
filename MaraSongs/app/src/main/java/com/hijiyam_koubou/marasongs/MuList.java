@@ -2980,6 +2980,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	}
 
 	public String b_artistName="";
+	public String b_albumTitol="";
 	/**
 	 * 全曲のアーティスト名だけを抽出する
 	 * **/
@@ -3006,17 +3007,17 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
 			String groupBy = MediaStore.Audio.Media.ARTIST;
 			String having = null;
-			String c_orderBy= MediaStore.Audio.Media.DATA; 				// + MediaStore.Audio.Media.YEAR  + " DESC , "	降順はDESC
+			String c_orderBy= MediaStore.Audio.Media.ARTIST; 				// MediaStore.Audio.Media.DATA + " DESC , "	降順はDESC
 			String limit = null;					//検索結果の上限レコードを数を指定します。
 			//全音楽ファイル抽出
 			Cursor cCursor = resolver.query(
-//					distinct,
-					cUri,             // Uri of the table
-					c_columns,      // The columns to return for each row
-					c_selection,       // Selection criteria
+//					distinct,			//ContentResolverで使えない
+					cUri,             	// Uri of the table
+					c_columns,      	// The columns to return for each row
+					c_selection,       	// Selection criteria
 					c_selectionArgs,
-//					groupBy,
-//					having,
+//					groupBy,			//ContentResolverで使えない
+//					having,				//ContentResolverで使えない
 					c_orderBy
 //					,
 //					limit
@@ -3058,15 +3059,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				albumMei = "";
 				artURL = null;
 				reqCode = MyConstants.v_artist ;
-				String pdTitol = getResources().getString(R.string.jyunbicyuu);					//準備中
+				String pdTitol = getResources().getString(R.string.medst_artist_make);
 				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 				//		myLog(TAG,dbMsg);
-				//	plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
-				do{
-					cCursor=artistList_yomikomiLoop(cCursor);
-				}while( cCursor.moveToNext() ) ;
-				dbMsg += ",artistAL=" +  artistAL.size() + "件";
-				artistList_yomikomiEnd();
+				plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
+//				do{
+//					cCursor=artistList_yomikomiLoop(cCursor);
+//				}while( cCursor.moveToNext() ) ;
+//				dbMsg += ",artistAL=" +  artistAL.size() + "件";
+//				artistList_yomikomiEnd();
 			} else {
 				zenkyokuAri = false;
 				String dlTitol = getResources().getString(R.string.syokairiyou_dt);			//全曲リストを作成作成させ下さい。
@@ -3152,12 +3153,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String pdTitol = getResources().getString(R.string.jyunbicyuu);					//準備中
 				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 		//		myLog(TAG,dbMsg);
-			//	plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
-				do{
-					cCursor=artistList_yomikomiLoop(cCursor);
-				}while( cCursor.moveToNext() ) ;
-				dbMsg += ",artistAL=" +  artistAL.size() + "件";
-				artistList_yomikomiEnd();
+				plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
+//				do{
+//					cCursor=artistList_yomikomiLoop(cCursor);
+//				}while( cCursor.moveToNext() ) ;
+//				dbMsg += ",artistAL=" +  artistAL.size() + "件";
+//				artistList_yomikomiEnd();
 			} else {
 				zenkyokuAri = false;
 				String dlTitol = getResources().getString(R.string.syokairiyou_dt);			//全曲リストを作成作成させ下さい。
@@ -3185,21 +3186,32 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "ALBUM_ARTIST=" + aArtist;
 			@SuppressLint("Range") String cArtist = cursor.getString(cursor.getColumnIndex("ARTIST"));		//置換え前に戻す
 			dbMsg += ",ARTIST=" + cArtist;
-			String wrArtist =cArtist;
-			String ｃArtistUp = cArtist.toUpperCase();
-			ｃArtistUp =ORGUT.ArtistPreFix(ｃArtistUp);	//TheとFeat以下をカット
-			dbMsg += ">ArtistPreFix>" + ｃArtistUp ;
-			if(! cArtist.equals(b_artistName)){
-				if(aArtist == null ){
-					aArtist = cArtist;
-				}
-				MuList.this.artistSL.add(aArtist);					//クレジットされたアーティストト	wrArtist
+			@SuppressLint("Range") String cAlbum = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));		//置換え前に戻す
+			dbMsg += ",ALBUM=" + cAlbum;
+			@SuppressLint("Range") String cGenre = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.GENRE));		//置換え前に戻す
+			dbMsg += ",GENRE=" + cGenre;
+
+//			String wrArtist =cArtist;artistMap
+//			String ｃArtistUp = cArtist.toUpperCase();
+			cArtist =ORGUT.ArtistPreFix(cArtist);	//TheとFeat以下をカット
+			dbMsg += ">ArtistPreFix>" + cArtist ;
+			if(cArtist.equals(b_artistName)) {
+//			}else if(cArtist.contains(b_artistName)){
+//				dbMsg += ">contains>"  ;
+//			}else if(-1 < ORGUT.mapIndex((List<Map<String, Object>>) artistMap,"main",cArtist)){
+			}else if(cArtist.equals(b_artistName) && cAlbum.equals(b_albumTitol)){
+			}else if(cArtist.equals(cGenre)){
+			}else{
+//				if(aArtist == null ){
+//					aArtist = cArtist;
+//				}
+				MuList.this.artistSL.add(cArtist);					//クレジットされたアーティストト	wrArtist
 				MuList.this.artistMap = new HashMap<String, Object>();		//アーティストリスト用
-				MuList.this.artistMap.put("index" ,aArtist );
-				MuList.this.artistMap.put("main" ,aArtist );					///wrArtist
+				MuList.this.artistMap.put("index" ,cArtist );
+				MuList.this.artistMap.put("main" ,cArtist );					///wrArtist
 				if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 				} else {
-					dbMsg +=MuList.this.artistSL.size() + ")" + aArtist ;
+					dbMsg +=MuList.this.artistSL.size() + ")" + cArtist ;
 					int tClo = cursor.getColumnIndex("ALBUM_ART");
 					dbMsg += ";" + tClo +"項目";
 					if( tClo > 0 ){
@@ -4864,11 +4876,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					sigotoFuriwake(reqCode , sousalistName , null  , null , null);		//表示するリストの振り分け		, albumAL
 					break;
 				case MyConstants.v_alubum:				//2131558442  アルバム
-					dbMsg +=",クリックしたのはalbumリストのヘッド" ;////////////////////////////////////
+					dbMsg +=",クリックしたのはalbumリストのヘッド" ;
 					reqCode = MyConstants.v_artist;
-					dbMsg +=",sousa_artist="+ sousa_artist  ;////////////////////////////////////
+					dbMsg +=",sousa_artist="+ sousa_artist  ;
+					dbMsg +=",artistAL="+ artistAL.size() + "件";
 					senntakuItem = sousa_artist;
-					sigotoFuriwake(reqCode , sousa_artist , null  , null , null);		//表示するリストの振り分け		, albumAL
+					if(0 < artistAL.size()){
+						artistList_yomikomiEnd();
+					}else{
+						sigotoFuriwake(reqCode , sousa_artist , null  , null , null);		//表示するリストの振り分け		, albumAL
+					}
 					break;
 				case MyConstants.v_titol:						//2131558448 	タイトル
 					dbMsg +=",クリックしたのはtitolリストのヘッド" ;////////////////////////////////////
@@ -10435,9 +10452,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		 * ploglessTaskの入口
 		 * */
 		void execute(int req_code , Cursor cursor, String plog_title ,String plog_message,int maxVal) {
-			final String TAG = "execute[ploglessTask]";
-			String dbMsg="";
+			final String TAG = "execute";
+			String dbMsg="[ploglessTask]";
 			try {
+				dbMsg += "[" + req_code + "]" + plog_title + " , " + plog_message + ": " + maxVal + "件";
 				onPreExecute(req_code , cursor, plog_title ,plog_message,maxVal);
 				executorService.submit(new MuList.ploglessTask.TaskRun());
 				myLog(TAG,dbMsg );
