@@ -3304,6 +3304,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						artistMap.put("sub", rStr);
 					}
 					dbMsg += "[" + cursor.getPosition() + "]";
+					//末尾のグループ化
 					if (cGenre.equals("Classic")
 							|| folderArtist.equals(getResources().getString(R.string.artist_tuika03))
 							|| folderArtist.equals("Classic")
@@ -3320,6 +3321,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",classicIndex=" + classicIndex;
 							MuList.this.suffixAL.remove(classicIndex);
 							artistMap.put("sub", classicAlbumAL.size() + getResources().getString(R.string.pp_mai));
+							classicIndex = suffixAL.size();
 							MuList.this.suffixAL.add(artistMap);
 						}
 						MuList.this.classicAlbumAL.add(albumMap);
@@ -3336,6 +3338,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",soundtrackIndex=" + soundtrackIndex;
 							MuList.this.suffixAL.remove(soundtrackIndex);
 							artistMap.put("sub", soundtrackAlbumAL.size() + getResources().getString(R.string.pp_mai));
+							soundtrackIndex = suffixAL.size();
 							MuList.this.suffixAL.add(artistMap);
 						}
 						MuList.this.soundtrackAlbumAL.add(albumMap);
@@ -3358,6 +3361,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",compilationIndex=" + compilationIndex;
 							MuList.this.suffixAL.remove(compilationIndex);
 							artistMap.put("sub", compilationAlbumAL.size() + getResources().getString(R.string.pp_mai));
+							compilationIndex = suffixAL.size();
 							MuList.this.suffixAL.add(artistMap);
 						}
 						MuList.this.compilationAlbumAL.add(albumMap);
