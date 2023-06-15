@@ -3170,7 +3170,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				}
 					if(! aArtist.equals(cArtist)){
 						cArtist = aArtist;
-						dbMsg += ">cArtist>" + cArtist;
 					}
 
 					//			String wrArtist =cArtist;artistMap
@@ -3180,10 +3179,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					if(artistPreFix.equals(b_artistName)) {
 						//			}else if(cArtist.contains(b_artistName)){
 						//				dbMsg += ">contains>"  ;//containsdだとすべて
-					}else if(-1 < ORGUT.mapIndex(artistAL,"artistPreFix",artistPreFix)){
+					}else if(ORGUT.mapIndex(artistAL,"artistPreFix",artistPreFix)<0){
 					}else if(cArtist.equals(b_artistName) && cAlbum.equals(MuList.this.b_albumTitol)){
 					}else if(cArtist.equals(cGenre)){
 					}else {
+						dbMsg += ">cArtist>" + cArtist;
 						MuList.this.artistSL.add(cArtist);                    //クレジットされたアーティストト	wrArtist
 						HashMap<String, Object> artistMap = new HashMap<String, Object>();        //アーティストリスト用
 						artistMap.put("index", artistPreFix);
