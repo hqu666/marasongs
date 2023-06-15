@@ -3164,22 +3164,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					HashMap<String, Object> albumMap = GetAlbumInfo(albumId,cArtist);
 					String aArtist = (String) albumMap.get(MediaStore.Audio.Albums.ARTIST);		//minyear
 					dbMsg += ",aArtist=" + aArtist;
-//				if(! albumsArtist.equals(aArtist)){
-//					aArtist = albumsArtist;
-//					dbMsg += ">aArtist>" + aArtist;
-//				}
-					if(! aArtist.equals(cArtist)){
-						cArtist = aArtist;
-					}
-
-					//			String wrArtist =cArtist;artistMap
-					//			String ｃArtistUp = cArtist.toUpperCase();
+//					if(! aArtist.equals(cArtist)){
+//						cArtist = aArtist;
+//					}
 					String artistPreFix = ORGUT.ArtistPreFix(cArtist);    //TheとFeat以下をカット
 					dbMsg += ">ArtistPreFix>" + artistPreFix ;
 					if(artistPreFix.equals(b_artistName)) {
 						//			}else if(cArtist.contains(b_artistName)){
 						//				dbMsg += ">contains>"  ;//containsdだとすべて
-					}else if(ORGUT.mapIndex(artistAL,"artistPreFix",artistPreFix)<0){
+					}else if(-1 < ORGUT.mapIndex(artistAL,"artistPreFix",artistPreFix)){
 					}else if(cArtist.equals(b_artistName) && cAlbum.equals(MuList.this.b_albumTitol)){
 					}else if(cArtist.equals(cGenre)){
 					}else {
