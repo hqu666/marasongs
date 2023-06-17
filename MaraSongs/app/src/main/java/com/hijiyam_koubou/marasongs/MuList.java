@@ -2938,6 +2938,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
 				reqCode = MyConstants.v_artist;
 				if(artistAL != null && 0 < artistAL.size()){
+					mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
+					String subText =getResources().getString(R.string.pp_artist) + " ; "  + artistAL.size() + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
+					subHTF.setText(subText );
 					setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 				}else{
 					makeArtistNameList();
@@ -3042,7 +3045,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			retInt = cCursor.getCount();
 			dbMsg = "；アーティスト=" + retInt + "人";
 			if(cCursor.moveToFirst()){
-				zenkyokuAri = true;
 				dbMsg += "；" +  cCursor.getString(cCursor.getColumnIndex("ARTIST"));
 				mainTStr = getResources().getString(R.string.listmei_zemkyoku);			//全曲リスト
 				subTStr =  getResources().getString(R.string.pp_artist)+retInt +  getResources().getString(R.string.comon_nin);			//アーティスト
@@ -5082,9 +5084,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg +=",artistAL="+ artistAL.size() + "件";
 					senntakuItem = sousa_artist;
 					if(0 < artistAL.size()){
-						artistList_yomikomiEnd();
+						mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
+						String subText =getResources().getString(R.string.pp_artist) + " ; "  + artistAL.size() + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
+						subHTF.setText(subText );
+						setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 					}else{
-						sigotoFuriwake(reqCode , sousa_artist , null  , null , null);		//表示するリストの振り分け		, albumAL
+						makeArtistNameList();
+//						sigotoFuriwake(reqCode , sousa_artist , null  , null , null);		//表示するリストの振り分け		, albumAL
 					}
 					break;
 				case MyConstants.v_titol:						//2131558448 	タイトル
