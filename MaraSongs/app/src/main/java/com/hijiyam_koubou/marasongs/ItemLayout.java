@@ -106,14 +106,14 @@ public class ItemLayout extends LinearLayout {							//Custom View
 							Uri imageUrl = ContentUris.withAppendedId(albumArtUri, albumId);
 					//		String imageUrl = item.imageUrl_;
 							dbMsg1 += ",imageUrl_= " + imageUrl;
-							String albumKey = item.getAlbum_key();
-							dbMsg1 += ",albumKey= " + albumKey;
+							String albumID = item.getAlbum_id();
+							dbMsg1 += ",albumID= " + albumID;
 
 							Cursor cursor = context.getContentResolver().query(
 									MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 									null,
-									MediaStore.Audio.Albums.ALBUM_KEY + "=?",
-									new String[]{ albumKey },
+									MediaStore.Audio.Albums.ALBUM_ID + "=?",
+									new String[]{ albumID },
 									null);
 			//				MediaStore.Audio.AlbumColumns.
 							dbMsg1 += ",cursor= " + cursor.getCount() +"件";
