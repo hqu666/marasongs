@@ -3514,38 +3514,48 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			);
 			dbMsg +=" >"+ aCursor.getCount() +"枚";
 			if(aCursor.moveToFirst()){
-					albumMap.put("albimArtistName" ,albimArtistName );
-					int cPosision = 0;
-					dbMsg +=" >"+ aCursor.getColumnCount() +"項目";
-					for(cPosision =0;cPosision <aCursor.getColumnCount();cPosision++){
-						dbMsg += "[" + cPosision + "/" + aCursor.getColumnCount() + "]";
-						String columnName = aCursor.getColumnName(cPosision);
-						dbMsg += columnName + "(" + aCursor.getType(cPosision);
-						String cVal = "";
-						switch (aCursor.getType(cPosision)) {
-							case Cursor.FIELD_TYPE_NULL:                                    //
-								dbMsg += " : NULL";
-								break;
-							case Cursor.FIELD_TYPE_INTEGER:                                    //0
-								dbMsg += " : INTEGER";
-								cVal = String.valueOf(aCursor.getInt(cPosision));
-								break;
-							case Cursor.FIELD_TYPE_FLOAT:                                    //
-								dbMsg += " : FLOAT";
-								cVal = String.valueOf(aCursor.getFloat(cPosision));
-								break;
-							case Cursor.FIELD_TYPE_STRING:                                    //
-								dbMsg += " : STRING";
-								cVal = String.valueOf(aCursor.getString(cPosision));
-								break;
-							case Cursor.FIELD_TYPE_BLOB:                                    //
-								dbMsg += " : BLOB";
-								cVal = String.valueOf(aCursor.getBlob(cPosision));
-								break;
-						}
-						dbMsg += ")" + cVal;
-						albumMap.put(columnName ,cVal );
+				albumMap.put("albimArtistName" ,albimArtistName );
+				int cPosision = 0;
+				dbMsg +=" >"+ aCursor.getColumnCount() +"項目";
+				for(cPosision =0;cPosision <aCursor.getColumnCount();cPosision++){
+					dbMsg += "[" + cPosision + "/" + aCursor.getColumnCount() + "]";
+					String columnName = aCursor.getColumnName(cPosision);
+					dbMsg += columnName + "(" + aCursor.getType(cPosision);
+					String cVal = "";
+					switch (aCursor.getType(cPosision)) {
+						case Cursor.FIELD_TYPE_NULL:                                    //
+							dbMsg += " : NULL";
+							break;
+						case Cursor.FIELD_TYPE_INTEGER:                                    //0
+							dbMsg += " : INTEGER";
+							cVal = String.valueOf(aCursor.getInt(cPosision));
+							break;
+						case Cursor.FIELD_TYPE_FLOAT:                                    //
+							dbMsg += " : FLOAT";
+							cVal = String.valueOf(aCursor.getFloat(cPosision));
+							break;
+						case Cursor.FIELD_TYPE_STRING:
+							dbMsg += " : STRING";
+							cVal = String.valueOf(aCursor.getString(cPosision));
+							break;
+						case Cursor.FIELD_TYPE_BLOB:
+							dbMsg += " : BLOB";
+							cVal = String.valueOf(aCursor.getBlob(cPosision));
+							break;
 					}
+					dbMsg += ")" + cVal;
+					albumMap.put(columnName ,cVal );
+				}
+				String albumTitol = (String) albumMap.get(MediaStore.Audio.Albums.ALBUM);
+				albumMap.put("main" ,albumTitol );
+				String subStr = (String) albumMap.get(MediaStore.Audio.Albums.FIRST_YEAR);
+				String lastYear = (String) albumMap.get(MediaStore.Audio.Albums.LAST_YEAR);
+				if(lastYear == null || ! lastYear.equals(subStr)){
+					subStr += "～" + lastYear;
+				}
+				String numOfSongs = (String) albumMap.get(MediaStore.Audio.Albums.NUMBER_OF_SONGS);
+				subStr += ":" + numOfSongs + getResources().getString(R.string.pp_kyoku);
+				albumMap.put("sub" ,subStr );
 			}													//if(cursor.moveToFirst()){
 			aCursor.close();
 			long end=System.currentTimeMillis();		// 終了時刻の取得
@@ -3558,6 +3568,45 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 		return albumMap;
 	}
+
+	/**	アルバムリストの描画*/
+	@SuppressLint("Range")
+	public void drowAlbumList(String albumArtist , List<Map<String, Object>> drowList,String albumMei) throws IOException {		//起動直後はCreateTitleListへ	//アルバムリスト作成
+		final String TAG = "drowAlbumList";
+		String dbMsg = "";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
+			long start = System.currentTimeMillis();		// 開始時刻の取得
+			if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
+				makePlainList( albumList);			//階層化しないシンプルなリスト
+			} else {
+				setHeadImgList(drowList );				//イメージとサブテキストを持ったリストを構成
+			}
+			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
+			headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+
+			dbMsg +="alubum_tv:artistMei= " + albumArtist +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+			mainHTF.setVisibility(View.VISIBLE);
+			mainHTF.setText( albumArtist);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);
+			dbMsg +=",drowList= " + drowList.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+			if( 0 < drowList.size()){
+				subTStr = drowList.size() + getResources().getString(R.string.pp_mai);
+			}
+			dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+			subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
+			long end=System.currentTimeMillis();		// 終了時刻の取得
+			String toastStr = drowList.size() +getResources().getString(R.string.pp_mai)+"["+getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]";		//	<string name="">所要時間</string>
+			dbMsg += "::" + toastStr ;
+			myLog(TAG, dbMsg);
+		}catch(IllegalArgumentException e){
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
 
 	/**	指定されたアーティストのアルバムをリストアップ*/
 	@SuppressLint("Range")
@@ -3645,24 +3694,25 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += " , imanoJyoutai= " + imanoJyoutai;/////////////////////////////////////
 			}													//if(cursor.moveToFirst()){
 			cursor.close();
-			if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
-				makePlainList( albumList);			//階層化しないシンプルなリスト
-			} else {
-				setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
-			}
-			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
-			headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
-			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
-
-			dbMsg +="alubum_tv:artistMei= " + albumArtist +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-			mainHTF.setVisibility(View.VISIBLE);
-			mainHTF.setText( albumArtist);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);
-			dbMsg +=",albumList= " + MuList.this.albumList.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-			if( 0 < MuList.this.albumList.size()){
-				subTStr = MuList.this.albumList.size() + getResources().getString(R.string.pp_mai);
-			}
-			dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-			subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
+			drowAlbumList(albumArtist,albumAL,albumMei);
+//			if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
+//				makePlainList( albumList);			//階層化しないシンプルなリスト
+//			} else {
+//				setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
+//			}
+//			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
+//			headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+//			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+//
+//			dbMsg +="alubum_tv:artistMei= " + albumArtist +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+//			mainHTF.setVisibility(View.VISIBLE);
+//			mainHTF.setText( albumArtist);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);
+//			dbMsg +=",albumList= " + MuList.this.albumList.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+//			if( 0 < MuList.this.albumList.size()){
+//				subTStr = MuList.this.albumList.size() + getResources().getString(R.string.pp_mai);
+//			}
+//			dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+//			subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			String toastStr = albumList.size() +getResources().getString(R.string.pp_mai)+"["+getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]";		//	<string name="">所要時間</string>
 			dbMsg += "::" + toastStr ;
@@ -4783,24 +4833,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",albumsArtist=" + albumsArtist;
 							String folderArtist = String.valueOf(artistMap.get("folderArtist"));
 							dbMsg += ",folderArtist=" + folderArtist;
-							if(itemStr.equals(getResources().getString(R.string.artist_tuika03))
-									|| itemStr.equals(getResources().getString(R.string.artist_tuika02))
-									|| itemStr.equals(getResources().getString(R.string.artist_tuika01))
-							){
+							sousa_artist = itemStr;
+							sousa_alubm = null;
+							sousa_titol = null;
+							reqCode = MyConstants.v_alubum;
+							dbMsg += ">reqCode>" + reqCode;/////////////////////////////////////
+							dbMsg += ",sousa_artist=" + sousa_artist + "のアルバムリスト作成";////////////////////////////////////
+							if(itemStr.equals(getResources().getString(R.string.artist_tuika01))){
+								drowAlbumList(itemStr,compilationAlbumAL,sousa_alubm);
+							}else if(itemStr.equals(getResources().getString(R.string.artist_tuika02))){
+								drowAlbumList(itemStr,soundtrackAlbumAL,sousa_alubm);
+							}else if(itemStr.equals(getResources().getString(R.string.artist_tuika03))){
+								drowAlbumList(itemStr,classicAlbumAL,sousa_alubm);
 							}else{
 								if(! itemStr.equals(albumsArtist)){
 									itemStr=albumsArtist;
 									dbMsg += ">itemStr>" + itemStr;
 								}
+								CreateAlbumList(itemStr,"");
 							}
 						}
-						sousa_artist = itemStr;
-						sousa_alubm = null;
-						sousa_titol = null;
-						reqCode = MyConstants.v_alubum;
-						dbMsg += ">reqCode>" + reqCode;/////////////////////////////////////
-						dbMsg += ",sousa_artist=" + sousa_artist + "のアルバムリスト作成";////////////////////////////////////
-						CreateAlbumList(itemStr,"");
 				//		sigotoFuriwake(reqCode, sousa_artist, sousa_alubm, sousa_titol, null);        //表示するリストの振り分け	, albumAL
 						break;
 					case MyConstants.v_alubum:                            //196;2131558442 アルバム
@@ -5260,6 +5312,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=",img=" +rStr ;
 						item1.setimageUrl(rStr);
 						String titleStr =  (String) ItemAL.get(i).get("main");
+						dbMsg +=",titleStr=" +titleStr ;
 						if( titleStr.equals(senntakuItem) ){
 							sPosition = i;
 						}
