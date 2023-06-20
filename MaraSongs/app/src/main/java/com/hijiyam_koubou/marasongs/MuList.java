@@ -3004,6 +3004,47 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public int soundtrackIndex = -1;
 	public String b_artistName="";
 	public String b_albumTitol="";
+	public String musicFolderName="";
+
+	/**アーティスト名より前を音楽ファイルの格納パス名として返す
+	 * <ul>
+	 *     <li>アーティスト名が含まれなければ空白文字を返す</li>
+	 * </ul>
+	 * */
+	public String getMusicFolder(String passName , String artistName){																				//①ⅵ；アーティストリストを読み込む(db未作成時は-)
+		String retStr = "";
+		final String TAG = "getMusicFolder";
+		String dbMsg = "";
+		try{
+			String[] passNames;
+			dbMsg += ",passName=" +passName + ",artistName=" + artistName;
+			if(passName.contains(artistName)) {
+				dbMsg += ",contains";
+				passNames = passName.split(artistName);
+				retStr = passNames[0];
+			}else if(artistName.equals("VARIOUS ARTISTS")){
+				dbMsg += ",コンピレーション";
+				retStr="";
+			}else{
+				passNames = passName.split("/");
+				int pCount=0;
+				for(pCount=0;pCount<passNames.length;pCount++){
+					retStr += "/" + passNames[pCount];
+				}
+				if(retStr.contains(".")){			//passName.equals(retStr)で検出できず
+					dbMsg += ",拡張子まで到達";
+					retStr="";
+				}
+			}
+			dbMsg += ",retStr=" + retStr;
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retStr;
+	}
+
+
 	/**
 	 * 全曲のアーティスト名だけを抽出する
 	 * **/
@@ -3127,12 +3168,27 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if(cGenre == null){
 					cGenre ="";
 				}
-				String[] dPaths = cDATA.split("/");			//File.pathSeparator
-				String folderArtist = dPaths[dPaths.length - 3];
+				String retStr = getMusicFolder(cDATA, cArtist);
+				if(retStr.length() != 0 && !retStr.equals(musicFolderName)) {
+					musicFolderName = retStr;
+					dbMsg += ",musicFolderName=" + musicFolderName;
+				}
+				String folderArtist = "";					//dPaths[dPaths.length - 3];
 				if(cArtist.contains("/")){
 					folderArtist = cArtist;			// AC/DC , DISH//
+				}else if(cDATA.contains(cArtist)){
+					dbMsg += ",contains";
+					folderArtist = cArtist;
+				}else {
+					if(0<musicFolderName.length()){
+						folderArtist = cDATA.replace(musicFolderName,"");
+						String[] dPaths = folderArtist.split("/");			//File.pathSeparator
+						folderArtist =dPaths[0];
+					}else{
+						folderArtist = cArtist;
+					}
 				}
-				dbMsg += ".folderArtist=" + folderArtist;
+				dbMsg += ",folderArtist=" + folderArtist;
 				boolean tofolderArtist = false;
 				String cArtisttoUp = cArtist.toUpperCase();
 				if(cDATA.contains(cArtist)){
