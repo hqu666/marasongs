@@ -3006,35 +3006,68 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String b_albumTitol="";
 	public String musicFolderName="";
 
-	/**アーティスト名より前を音楽ファイルの格納パス名として返す
+	/**アーティスト名のフォルダを返す
 	 * <ul>
+	 *     <li>アーティスト名が含まれなければ既存のフォルダ名を検索</li>
 	 *     <li>アーティスト名が含まれなければ空白文字を返す</li>
+	 *     <li>アーティスト名のフォルダをより前を音楽ファイルの格納パス名を格納する</li>
 	 * </ul>
 	 * */
-	public String getMusicFolder(String passName , String artistName){																				//①ⅵ；アーティストリストを読み込む(db未作成時は-)
+	public String getArtistFolder(String passName , String artistName,String ganleName){																				//①ⅵ；アーティストリストを読み込む(db未作成時は-)
 		String retStr = "";
-		final String TAG = "getMusicFolder";
+		final String TAG = "getArtistFolder";
 		String dbMsg = "";
 		try{
 			String[] passNames;
-			dbMsg += ",passName=" +passName + ",artistName=" + artistName;
-			if(passName.contains(artistName)) {
+			dbMsg += ",passName=" +passName + ",ganleName=" + ganleName + ",artistName=" + artistName;
+			String beforPass = "";
+			int musicFolderDepth = 0;
+			passNames = passName.split("/");
+			if(0 < musicFolderName.length()){
+				String[] musicFolderNames = musicFolderName.split("/");
+				musicFolderDepth = musicFolderNames.length;
+				dbMsg += ",musicFolderDepth=" + musicFolderDepth;
+			}
+			if(passName.contains(ganleName)) {
+				passNames = passName.split(ganleName);
+				beforPass = passNames[0];
+				retStr = ganleName;
+			}else if(passName.contains(artistName)) {
 				dbMsg += ",contains";
 				passNames = passName.split(artistName);
-				retStr = passNames[0];
-			}else if(artistName.equals("VARIOUS ARTISTS")){
+				beforPass = passNames[0];
+				retStr = artistName;
+			}else if(artistName.equals("UNKNOWN")
+					|| artistName.equals("<unknown>")
+					|| artistName.equals("VARIOUS ARTISTS")
+					|| artistName.equals("さまざまなアーティスト")
+			){
 				dbMsg += ",コンピレーション";
-				retStr="";
+				retStr=getResources().getString(R.string.artist_tuika01);
 			}else{
-				passNames = passName.split("/");
 				int pCount=0;
 				for(pCount=0;pCount<passNames.length;pCount++){
-					retStr += "/" + passNames[pCount];
+					beforPass += "/" + passNames[pCount];
+					if(artistName.contains(passNames[pCount])){
+						retStr = passNames[pCount];
+						break;
+					}else if (-1 < ORGUT.mapIndex(suffixAL, "main", passNames[pCount])) {
+						dbMsg += ",上層に該当名有り";
+						retStr = passNames[pCount];
+						break;
+					} if (0 < musicFolderDepth) {
+						dbMsg += ",音楽フォルダ直下";
+						retStr = passNames[musicFolderDepth];
+					}
 				}
-				if(retStr.contains(".")){			//passName.equals(retStr)で検出できず
-					dbMsg += ",拡張子まで到達";
-					retStr="";
-				}
+			}
+			dbMsg += ",beforPass=" + beforPass;
+			if(beforPass.contains(".")){			//passName.equals(retStr)で検出できず
+				dbMsg += ",拡張子まで到達";
+				retStr="";
+			}else if(musicFolderName.length() == 0){
+				musicFolderName = beforPass;
+				dbMsg += ",musicFolderName=" + musicFolderName;
 			}
 			dbMsg += ",retStr=" + retStr;
 			myLog(TAG, dbMsg);
@@ -3168,15 +3201,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if(cGenre == null){
 					cGenre ="";
 				}
-				String retStr = getMusicFolder(cDATA, cArtist);
-				if(retStr.length() != 0 && !retStr.equals(musicFolderName)) {
-					musicFolderName = retStr;
-					dbMsg += ",musicFolderName=" + musicFolderName;
-				}
-				String folderArtist = "";					//dPaths[dPaths.length - 3];
+				String folderArtist;
+//				if(retStr.length() != 0 && !retStr.equals(musicFolderName)) {
+//					musicFolderName = retStr;
+//					dbMsg += ",musicFolderName=" + musicFolderName;
+//				}
 				if(cArtist.contains("/")){
 					folderArtist = cArtist;			// AC/DC , DISH//
-				}else if(cDATA.contains(cArtist)){
+				}else{
+					folderArtist = getArtistFolder(cDATA, cArtist ,cGenre);
+				}
+
+				if(cDATA.contains(cArtist)){
 					dbMsg += ",contains";
 					folderArtist = cArtist;
 				}else {
@@ -3196,6 +3232,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						tofolderArtist = true;
 					}
 				}else if(cArtist.contains(folderArtist)){
+					dbMsg += ">ゲスト名カット>";
 					tofolderArtist = true;
 //				}else if(cDATA.contains(cGenre)){
 //					dbMsg += ">ジャンル別フォルダ>";
