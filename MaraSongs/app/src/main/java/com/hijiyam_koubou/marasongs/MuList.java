@@ -3336,31 +3336,28 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							|| (cGenre.equals("Classic"))
 							|| folderArtist.equals("Soundtrack")
 							|| folderArtist.equals("Classic")
-							|| folderArtist.equals("Bluse")
+							|| folderArtist.equals("Bluse")		//誤記
+							|| folderArtist.equals("Blues")
+							|| cDATA.contains("/Bluse/")		//誤記　
+							|| cDATA.contains("/Blues/")
+							|| cDATA.contains("/Soundtrack/")
 						){				//&& cCompilation.equals("1")
 							dbMsg += ">" + folderArtist + "グル-プへ";
-							albumMap.put(MediaStore.Audio.Albums.ARTIST ,cGenre);
+							albumMap.put(MediaStore.Audio.Albums.ARTIST ,folderArtist);
 							MuList.this.addGenreAlbumAL.add(albumMap);
-							artistMap.put("main" ,cGenre);
-							if(ORGUT.mapIndex(suffixAL,"main",cGenre)<0){
+							artistMap.put("main" ,folderArtist);
+							if(ORGUT.mapIndex(suffixAL,"main",folderArtist)<0){
 								MuList.this.suffixAL.add(artistMap);
 							}
 					//		addGenre.add(cGenre);
+							dbMsg += ",suffix=" + MuList.this.suffixAL.size() + ":addGenreAlbumAL=" + MuList.this.addGenreAlbumAL.size();
 						} else if (folderArtist.equals(getResources().getString(R.string.artist_tuika01))
 								|| folderArtist.equals("Compilations")
-
-//								|| cArtist.equals("<unknown>")
-//								|| cArtist.equals("<UNKNOWN>")
-//								|| cArtist.equals("VARIOUS ARTISTS")
-//								|| cArtist.equals("さまざまなアーティスト")
-//								|| folderArtist.equals(cGenre)
-//								|| cGenre.equals("Children's Music")
-//								|| cCompilation.equals("1")
 						) {
 							dbMsg += ">" + getResources().getString(R.string.artist_tuika01) + "グル-プへ";
 							artistMap.put("main", getResources().getString(R.string.artist_tuika01));
 							MuList.this.compilationAlbumAL.add(albumMap);
-							dbMsg += ",compilationAlbum=" + compilationAlbumAL.size();
+					//		dbMsg += ",compilationAlbum=" + compilationAlbumAL.size();
 							artistMap.put("sub", compilationAlbumAL.size() + getResources().getString(R.string.pp_mai));
 							if (ORGUT.mapIndex(suffixAL, "main", getResources().getString(R.string.artist_tuika01)) < 0) {
 								compilationIndex = suffixAL.size();
@@ -3371,11 +3368,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								compilationIndex = suffixAL.size();
 								MuList.this.suffixAL.add(artistMap);
 							}
+							dbMsg += ",suffix=" + MuList.this.suffixAL.size() + ":compilationAlbum=" + MuList.this.compilationAlbumAL.size();
 						} else {
 							dbMsg += ">" + folderArtist + "を格納";
 							MuList.this.artistAL.add(artistMap);        //アーティストリスト用ArrayList
+							dbMsg += ",artistAL=" + MuList.this.artistAL.size();
 						}
-						dbMsg += ",artistAL=" + MuList.this.artistAL.size() + "/suffix=" + suffixAL.size() + ":addGenreAlbumAL=" + addGenreAlbumAL.size();
 //					myLog(TAG, dbMsg);
 					}
 				}
