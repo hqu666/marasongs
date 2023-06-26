@@ -3246,34 +3246,38 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //					folderArtist = getArtistFolder(cDATA, cArtist ,cGenre);
 //				}
 				dbMsg += ",folderArtist=" + folderArtist;
-				String[] findArtist = null;	//new String[]{"%" + " + cArtist + " + "%"} ;
-
+				ArrayList<String> findArtist = new ArrayList<String>();	//new String[]{"%" + " + cArtist + " + "%"} ;
+				findArtist.add(folderArtist);
+				if(!folderArtist.equals(cArtist)){
+					findArtist.add(cArtist);
+				}
 				HashMap<String, Object> artistMap = new HashMap<String, Object>();        //アーティストリスト用
-				if(!folderArtist.equals(cArtist)
-					&& cDATA.contains(cArtist)
-				){
+				if(!folderArtist.equals(cArtist) && cDATA.contains(cArtist)){			//!
+					findArtist.add(cArtist);
 					dbMsg += ",アーティストフォルダ下のグループ名など";
 					int rIndex = ORGUT.mapIndex(MuList.this.artistAL, "main", folderArtist);
 					dbMsg += ",rIndex=" + rIndex;
-					findArtist = new String[]{folderArtist, cArtist};
 					if (-1 < rIndex) {
 						dbMsg += ">登録済みアーティスト>";
 						artistMap = (HashMap<String, Object>) MuList.this.artistAL.get(rIndex);        //アーティストリスト用
-						String rFindArtist = (String) artistMap.get("findArtist");
-						if(!rFindArtist.contains(cArtist)){
-							dbMsg += ">検索対象に追加>";
-							findArtist = new String[]{rFindArtist, cArtist};
-							artistMap.put("findArtist" ,findArtist);
-							MuList.this.artistAL.remove(rIndex);
-							MuList.this.artistAL.add(artistMap);
+						ArrayList<String> rFindArtist = (ArrayList<String>) artistMap.get("findArtist");
+						dbMsg += rFindArtist.toString();
+						int rFindArtistCount = rFindArtist.size();
+						dbMsg += rFindArtistCount + "件";
+						int fCount=0;
+						for(fCount=0;fCount<rFindArtistCount;fCount++){
+							String rName = rFindArtist.get(fCount);
+							if(!rName.equals(folderArtist) && !rName.equals(cArtist)){
+								dbMsg += ">" + rName + "　を検索対象に追加>";
+								findArtist.add(rName);
+							}
 						}
-//					}else{
-//						artistMap.put("findArtist" ,findArtist);
+						dbMsg += ">追加後>" + findArtist.toString();
+						artistMap.put("findArtist" ,findArtist);
+						MuList.this.artistAL.remove(rIndex);
+						MuList.this.artistAL.add(artistMap);
 					}
-//				}else{
-//					artistMap.put("findArtist" ,findArtist);				//一週目
 				}
-				dbMsg += ">findArtist=" + findArtist;
 				artistMap.put("findArtist" ,findArtist);				//一週目
 				String artistPreFix = ORGUT.ArtistPreFix(folderArtist);    //TheとFeat以下をカット
 				dbMsg += ">ArtistPreFix>" + artistPreFix ;
@@ -3308,6 +3312,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						artistMap.put("main", folderArtist);
 						artistMap.put("albumsArtist" ,albumMap.get(MediaStore.Audio.Albums.ARTIST));
 						artistMap.put("folderArtist" ,folderArtist );
+						artistMap.put("findArtist" ,findArtist );
 						artistMap.put(MediaStore.Audio.Media.ALBUM_ID, albumId);
 						artistMap.put(MediaStore.Audio.Media.GENRE, cGenre);
 						artistMap.put(MediaStore.Audio.Media.COMPILATION, cCompilation);
@@ -3762,12 +3767,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					cUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
 					//     cUri =MediaStore.Audio.Media.INTERNAL_CONTENT_URI はビルドできない
 				}
-				if(artists == null){
-					artists = new String[]{"%" + albumArtist + "%"};
-				}
 				dbMsg += ",cUri=" + cUri.toString();
 				String[] c_columns = null;
 				String c_selection = MediaStore.Audio.Albums.ARTIST  + " LIKE ?";
+				if(artists == null){
+					artists = new String[]{"%" + albumArtist + "%"};
+				}else if(0< artists.length){
+					int lCount = 0;
+					for(lCount = 0;lCount< artists.length;lCount++){
+						c_selection += " OR " + MediaStore.Audio.Albums.ARTIST  + " =?";
+					}
+					dbMsg += ">c_selection>" + c_selection;
+				}
 				String[] c_selectionArgs= artists;		//{albumArtist };   			//"%" + albumArtist + "%"
 				String c_orderBy= MediaStore.Audio.Albums.FIRST_YEAR; 				// MediaStore.Audio.Media.DATA + " DESC , "	降順はDESC
 				//全音楽ファイル抽出
@@ -4968,16 +4979,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								}
 							}else{
 								dbMsg += ">>アーティスト名から検索";
-								String[] findArtist = (String[]) artistMap.get("findArtist");
-								dbMsg += ",findArtist=" + findArtist;
-//								if(!itemStr.equals(findArtist)){
-//									itemStr = findArtist;
-//								}else if(! itemStr.equals(albumsArtist)){
-//									dbMsg += ",albumsArtist=" + albumsArtist;
-//									itemStr=albumsArtist;
-//									dbMsg += ">itemStr>" + itemStr;
-//								}
-								CreateAlbumList(itemStr,"",findArtist);
+								ArrayList<String> findArtist = (ArrayList<String>) artistMap.get("findArtist");
+								dbMsg += ",findArtist=" + findArtist.toString();
+								String[] selectionArgs = findArtist.toArray(new String[findArtist.size()]);
+								CreateAlbumList(itemStr,"",selectionArgs);
 							}
 						}
 				//		sigotoFuriwake(reqCode, sousa_artist, sousa_alubm, sousa_titol, null);        //表示するリストの振り分け	, albumAL
