@@ -70,9 +70,22 @@ public class MusicService extends MediaBrowserService {
 //    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
     //    private MediaSessionCompat.Token sessionToken;
 //    private PlaybackStateCompat.Builder stateBuilder;
+    /**プレイヤーに保持させるMediaItemのリスト*/
     public List<MediaItem> mediaItemList;
     /**conntentProviderを読み込んだプレイリスト用ArrayList*/
     public List<Map<String, Object>> plAL;
+
+    /**操作中のプレイリストのMediaItemのリスト
+     * <ul>
+     *     <li>
+     *        ListViewのレコードがクリックされた時点で切り替える
+     *     </li>
+     *  </ul>
+     * */
+    public List<MediaItem> mediaItemList2;
+    /**conntentProviderを読み込んだプレイリスト用ArrayList*/
+    public List<Map<String, Object>> plAL2;
+
     public Map<String, Object> objMap;				//汎用マップ
     public int mIndex = 0;
     /**
@@ -330,6 +343,7 @@ public class MusicService extends MediaBrowserService {
         String dbMsg= "";
         try{
             dbMsg += "選択されたプレイリスト[ID="+playlistId + "]の" + dataStr;
+            dbMsg += "現在のプレイリスト[ID="+playlistId + "]";
             final Uri cUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
             String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
             String c_selection = MediaStore.Audio.Playlists.Members.DATA +" = ? ";
@@ -515,6 +529,9 @@ public class MusicService extends MediaBrowserService {
                 mediaItemList = new ArrayList<MediaItem>();
                 plAL = new ArrayList<Map<String, Object>>();
                 plAL.clear();
+                mediaItemList2 = new ArrayList<MediaItem>();
+                plAL2 = new ArrayList<Map<String, Object>>();
+                plAL2.clear();
             }else if(action.equals(ACTION_MAKE_LIST)){
                 dbMsg +="、ListにMediaItemを呼び込む";
                 String nowList_id = intent.getStringExtra("nowList_id");
@@ -523,6 +540,7 @@ public class MusicService extends MediaBrowserService {
                 dbMsg +="[" + mediaItemList.size() + "]に" + "[" + playlistId + "]" + uriStr;
                 add2List( playlistId ,uriStr);
                 dbMsg +=">>" + mediaItemList.size() + "件";
+                dbMsg +=">予備リスト>" + mediaItemList2.size() + "件";
                 //          mediaItemList = readCalentList(Integer.parseInt(nowList_id),nowList);
             }else if(action.equals(ACTION_SET_SONG)){
                 dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
