@@ -219,7 +219,7 @@ public class ItemLayout extends LinearLayout {							//Custom View
 //					//		Bitmap bitmap = context.getContentResolver().loadThumbnail(uri, new Size(mIconView.getWidth(), mIconView.getHeight()), null);
 ////							Drawable drawable = Drawable.createFromPath(item.imageUrl_);
 ////							mIconView.setImageDrawable(drawable);
-							myLog(TAG1, dbMsg1);
+//							myLog(TAG1, dbMsg1);
 						} catch (Exception e) {
 							myErrorLog(TAG1 ,  dbMsg1 + "で" + e);
 						}
@@ -227,7 +227,7 @@ public class ItemLayout extends LinearLayout {							//Custom View
 				}
 				break;
 			}
-			myLog(TAG,dbMsg);
+	//		myLog(TAG,dbMsg);
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,"[ItemLayout]"+ dbMsg+"で"+e.toString());
 		}
