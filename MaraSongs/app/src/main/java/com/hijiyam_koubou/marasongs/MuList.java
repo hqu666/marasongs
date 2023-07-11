@@ -3931,6 +3931,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 				MPSIntent.putExtra("nowList_id","-1");
 				MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
+				String albumName = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Media.ALBUM ));				//"TRACK"
+				dbMsg +=  ",albumName=" + albumName;
+				MPSIntent.putExtra("nowAlbum",albumName);
 //				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
 				MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 				dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
@@ -5071,7 +5074,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-			/**リストクリック時の処理分岐*/
+	/**リストクリック時の処理分岐*/
 	public void listClick(AdapterView<?> parent, View view, int position, long id) {			//共有：クリックの処理
 		System.currentTimeMillis();
 		final String TAG = "listClick";
@@ -5129,7 +5132,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						b_album = albumMei;                //それまで参照していたアルバム名
 						titolName = itemStr;        //曲名	titolList.get(position)
 						String dataFN = String.valueOf(titolAL.get(position).get("DATA"));
-						dbMsg += ",再生するのは=" + dataFN;
+						mIndex=position;
+						dbMsg += ",再生するのは[" + mIndex + "]" + dataFN;
 						setPrefInt("pref_position", 0, MuList.this);
 						dbMsg += ",呼出し元=" + yobidashiMoto;    //yobidashiMoto = imanoJyoutai;//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
 						dbMsg += ">>プレイヤーへ";

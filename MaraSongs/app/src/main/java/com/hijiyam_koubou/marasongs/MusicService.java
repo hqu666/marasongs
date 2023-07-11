@@ -74,6 +74,8 @@ public class MusicService extends MediaBrowserService {
 
     public String currentListId = "";
     public String currentListName = "";
+    public String currentAlbumName = "";
+
     /**プレイヤーに保持させるMediaItemのリスト*/
     public List<MediaItem> mediaItemList;
     /**conntentProviderを読み込んだプレイリスト用ArrayList*/
@@ -725,7 +727,15 @@ public class MusicService extends MediaBrowserService {
                 String setListName = intent.getStringExtra("nowList");
                 String uriStr = intent.getStringExtra("uriStr");
                 dbMsg +="[" + playlistId + "]" + setListName + "の" + uriStr;
-                if(currentListName.equals(setListName)){
+                String setAlbumName = intent.getStringExtra("nowAlbum");
+                boolean isListChange = false;
+                if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+                    dbMsg += ",setAlbumName=" + setAlbumName;
+                    if(! setAlbumName.equals(currentAlbumName)){
+                        isListChange = true;
+                    }
+                }
+                if(currentListName.equals(setListName) || isListChange){
                     dbMsg +=",プライマリー" ;
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                         mediaItemList = add2List( playlistId ,uriStr,mediaItemList);
@@ -747,7 +757,17 @@ public class MusicService extends MediaBrowserService {
                 String setListId = intent.getStringExtra("nowList_id");
                 String setListName = intent.getStringExtra("nowList");
                 dbMsg += ",渡されたのは[" + setListId + "]" + setListName;
-                if(! setListName.equals(currentListName)){
+                String setAlbumName = intent.getStringExtra("nowAlbum");
+                boolean isListChange = false;
+                if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+                    dbMsg += ",setAlbumName=" + setAlbumName;
+                    if(! setAlbumName.equals(currentAlbumName)){
+                        currentAlbumName = setAlbumName;
+                        dbMsg += ">>" + currentAlbumName;
+                        isListChange = true;
+                    }
+                }
+                if(! setListName.equals(currentListName) || isListChange){
                     dbMsg += ">>プレイリスト変更";
                     currentListId = setListId;
                     currentListName = setListName;
