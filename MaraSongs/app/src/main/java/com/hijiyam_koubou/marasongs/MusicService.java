@@ -344,7 +344,7 @@ public class MusicService extends MediaBrowserService {
 
     /**指定されたプレイリストの楽曲を内部配列に読み込む*/
     @SuppressLint("Range")
-    public List<MediaItem> add2List(int playlistId ,String dataStr,List<MediaItem> targetMediaItemList){
+    public List<MediaItem> add2List(int playlistId ,String dataStr,List<MediaItem> targetMediaItemList,List<Map<String, Object>> targetAL){
         final String TAG = "add2List";
         String dbMsg= "";
         try{
@@ -454,7 +454,7 @@ public class MusicService extends MediaBrowserService {
                             objMap.put(cName ,cVal );
                         }
                     }
-                    plAL.add( objMap);
+                    targetAL.add( objMap);
                     dbMsg +=  ",\nuriStr="+ uriStr;
                     if(uriStr != null){
                         String imageUriStr = null;
@@ -510,7 +510,7 @@ public class MusicService extends MediaBrowserService {
 
     /**全曲からアルバム内の一曲をMediaItemのリストに加える*/
     @SuppressLint("Range")
-    public List<MediaItem> add2TitolList(int playlistId ,String dataStr,List<MediaItem> targetMediaItemList){
+    public List<MediaItem> add2TitolList(int playlistId ,String dataStr,List<MediaItem> targetMediaItemList,List<Map<String, Object>> targetAL){
         final String TAG = "add2TitolList";
         String dbMsg= "";
         try{
@@ -625,7 +625,7 @@ public class MusicService extends MediaBrowserService {
                             objMap.put(cName ,cVal );
                         }
                     }
-                    plAL.add( objMap);
+                    targetAL.add( objMap);
                     dbMsg +=  ",\nuriStr="+ uriStr;
                     if(uriStr != null){
                         String imageUriStr = null;
@@ -746,17 +746,17 @@ public class MusicService extends MediaBrowserService {
                 if(isListChange){
                     dbMsg += ",予備リスト ";
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        mediaItemList2 = add2List( playlistId ,uriStr,mediaItemList2);
+                        mediaItemList2 = add2List( playlistId ,uriStr,mediaItemList2,plAL2);
                     }else{
-                        mediaItemList2 = add2TitolList( playlistId ,uriStr,mediaItemList2);
+                        mediaItemList2 = add2TitolList( playlistId ,uriStr,mediaItemList2,plAL2);
                     }
                     dbMsg +=">>" + mediaItemList2.size() + "件:名称リスト" + plAL2.size() + "件";
                 }else{
                     dbMsg +=",プライマリー" ;
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        mediaItemList = add2List( playlistId ,uriStr,mediaItemList);
+                        mediaItemList = add2List( playlistId ,uriStr,mediaItemList,plAL);
                     }else{
-                        mediaItemList = add2TitolList( playlistId ,uriStr,mediaItemList);
+                        mediaItemList = add2TitolList( playlistId ,uriStr,mediaItemList,plAL);
                     }
                     dbMsg +=">>" + mediaItemList.size() + "件"+ "件:名称リスト" + plAL.size() + "件";
                 }
