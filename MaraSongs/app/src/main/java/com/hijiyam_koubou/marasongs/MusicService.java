@@ -348,15 +348,15 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "add2List";
         String dbMsg= "";
         try{
+            dbMsg += "、現在"+targetMediaItemList.size() + "件＞＞";
             dbMsg += "選択されたプレイリスト[ID="+playlistId + "]の" + dataStr;
-            dbMsg += "現在のプレイリスト[ID="+playlistId + "]";
             final Uri cUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
             String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
             String c_selection = MediaStore.Audio.Playlists.Members.DATA +" = ? ";
             String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
             String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
             Cursor playLists= this.getContentResolver().query(cUri, columns, c_selection, c_selectionArgs, c_orderBy );
-            dbMsg += "," + playLists.getCount() +"件";
+            dbMsg += ",該当" + playLists.getCount() +"件、";
             if(playLists.moveToFirst()){
                 do{
                     String uriStr =null;    // (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
@@ -449,8 +449,8 @@ public class MusicService extends MediaBrowserService {
                                             break;
                                     }
                                 }
-//                                    dbMsg += "="+cVal;
                             }
+                            dbMsg += "="+cVal;
                             objMap.put(cName ,cVal );
                         }
                     }
@@ -462,10 +462,10 @@ public class MusicService extends MediaBrowserService {
                         if( artistStr != null && albumTitleStr != null){
           //                  if(! artistStr.equals(getResources().getString(R.string.bt_unknown)) && !albumTitleStr.equals(getResources().getString(R.string.bt_unknown))){
                              imageUriStr = ORGUT.retAlbumArtUri(getApplicationContext(), (String) artistStr, (String) albumTitleStr);
-                            dbMsg +=  ",imageUriStr="+ imageUriStr;
-                            if(imageUriStr != null){
-                                imageUri = Uri.parse(imageUriStr);
-                            }
+//                            dbMsg +=  ",imageUriStr="+ imageUriStr;
+//                            if(imageUriStr != null){
+//                                imageUri = Uri.parse(imageUriStr);
+//                            }
                         }
                         MediaMetadata metadata = new MediaMetadata.Builder()
                                 .setAlbumTitle(albumTitleStr)
@@ -486,7 +486,7 @@ public class MusicService extends MediaBrowserService {
                                 .setUri(rUri)
                                 .build();
                         targetMediaItemList.add(mItem);
-                        dbMsg += "\n取得["+ targetMediaItemList.size() + "]";
+                        dbMsg += "\n取得["+ targetMediaItemList.size() + "件]";
                         dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
                         dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
                         dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
@@ -715,7 +715,8 @@ public class MusicService extends MediaBrowserService {
                     plAL = new ArrayList<Map<String, Object>>();
                     plAL.clear();
                 }else{              // if(nowPlay && mediaItemList != null)
-                    dbMsg += ",予備リスト： mediaItemList2";
+                    dbMsg += ",プライマリー" + mediaItemList.size() + "件";
+                    dbMsg += ",予備リスト： mediaItemList2へ";
                     mediaItemList2 = new ArrayList<MediaItem>();
                     plAL2 = new ArrayList<Map<String, Object>>();
                     plAL2.clear();
@@ -729,28 +730,35 @@ public class MusicService extends MediaBrowserService {
                 dbMsg +="[" + playlistId + "]" + setListName + "の" + uriStr;
                 String setAlbumName = intent.getStringExtra("nowAlbum");
                 boolean isListChange = false;
-                if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                    dbMsg += ",setAlbumName=" + setAlbumName;
-                    if(! setAlbumName.equals(currentAlbumName)){
-                        isListChange = true;
+                if(0<mediaItemList.size()) {
+                    if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+                        dbMsg += ",setAlbumName=" + setAlbumName;
+                        if(! setAlbumName.equals(currentAlbumName)){
+                            isListChange = true;
+                        }
+                    }else{
+                        if(! currentListName.equals(setListName)){
+                            isListChange = true;
+                        }
                     }
                 }
-                if(currentListName.equals(setListName) || isListChange){
-                    dbMsg +=",プライマリー" ;
-                    if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        mediaItemList = add2List( playlistId ,uriStr,mediaItemList);
-                    }else{
-                        mediaItemList = add2TitolList( playlistId ,uriStr,mediaItemList);
-                    }
-                    dbMsg +=">>" + mediaItemList.size() + "件";
-                }else{
+                dbMsg += ",isListChange=" + isListChange;
+                if(isListChange){
                     dbMsg += ",予備リスト ";
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                         mediaItemList2 = add2List( playlistId ,uriStr,mediaItemList2);
                     }else{
                         mediaItemList2 = add2TitolList( playlistId ,uriStr,mediaItemList2);
                     }
-                    dbMsg +=">>" + mediaItemList2.size() + "件:名称リスト" + mediaItemList2.size() + "件";
+                    dbMsg +=">>" + mediaItemList2.size() + "件:名称リスト" + plAL2.size() + "件";
+                }else{
+                    dbMsg +=",プライマリー" ;
+                    if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+                        mediaItemList = add2List( playlistId ,uriStr,mediaItemList);
+                    }else{
+                        mediaItemList = add2TitolList( playlistId ,uriStr,mediaItemList);
+                    }
+                    dbMsg +=">>" + mediaItemList.size() + "件"+ "件:名称リスト" + plAL.size() + "件";
                 }
             }else if(action.equals(ACTION_SET_SONG)){
                 dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
@@ -762,20 +770,34 @@ public class MusicService extends MediaBrowserService {
                 if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                     dbMsg += ",setAlbumName=" + setAlbumName;
                     if(! setAlbumName.equals(currentAlbumName)){
+                        isListChange = true;
                         currentAlbumName = setAlbumName;
-                        dbMsg += ">>" + currentAlbumName;
+                    }
+                }else{
+                    if(! currentListName.equals(setListName)){
                         isListChange = true;
                     }
                 }
-                if(! setListName.equals(currentListName) || isListChange){
+                dbMsg += ",isListChange=" + isListChange;
+                if(isListChange){
                     dbMsg += ">>プレイリスト変更";
                     currentListId = setListId;
                     currentListName = setListName;
                     if(mediaItemList2 != null){
-                        dbMsg += ">>予備リストへ（" + mediaItemList.size() + "件）";
-                        mediaItemList = mediaItemList2;
-                        dbMsg += ">>（" + mediaItemList.size() + "件）";
-                        plAL = new ArrayList<Map<String, Object>>(plAL2);;
+                        dbMsg += ">>予備リストへ（" + mediaItemList.size() + "件";
+                        mediaItemList = new ArrayList<MediaItem>();
+                        plAL = new ArrayList<Map<String, Object>>();
+                        int lCount =0;
+                        for(lCount =0;lCount<mediaItemList2.size();lCount++){
+                            MediaItem mItem = mediaItemList2.get(lCount);
+                            mediaItemList.add(mItem);
+                            Map<String, Object> pItem = plAL2.get(lCount);
+                            plAL.add(pItem);
+                        }
+                        dbMsg += ">>" + mediaItemList.size() + "件）";
+                        dbMsg += "、plAL（" + plAL.size() + "件）";
+                        mediaItemList2 = null;
+                        plAL2=null;
                     }
                     dbMsg += ",exoPlayer=" + exoPlayer;
                     if(exoPlayer != null){

@@ -3889,7 +3889,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 			headImgIV.setVisibility(View.VISIBLE);								 // 表示枠を消す
 			headImgIV.setImageResource(R.drawable.no_image);									//リサイズしたR.drawable.no_image
-
+// 40583330600723
 			int releaceYear = 0;			//制作年
 			titolAL = new ArrayList<Map<String, Object>>();		//タイトルムリスト用ArrayList
 			titolList = null;
@@ -3931,9 +3931,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 				MPSIntent.putExtra("nowList_id","-1");
 				MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
-				String albumName = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Media.ALBUM ));				//"TRACK"
-				dbMsg +=  ",albumName=" + albumName;
-				MPSIntent.putExtra("nowAlbum",albumName);
+				String albumId = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Media.ALBUM_ID ));				//"TRACK"
+				dbMsg +=  ",albumId=" + albumId;
+				MPSIntent.putExtra("nowAlbum",albumId);
 //				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
 				MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 				dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
