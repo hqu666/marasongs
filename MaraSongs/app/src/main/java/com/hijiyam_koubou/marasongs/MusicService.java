@@ -768,12 +768,14 @@ public class MusicService extends MediaBrowserService {
                 String setAlbumName = intent.getStringExtra("nowAlbum");
                 boolean isListChange = false;
                 if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+                    repeatMode = Player.REPEAT_MODE_OFF;                    //0:繰り返しなしの通常の再生を行う /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
                     dbMsg += ",setAlbumName=" + setAlbumName;
                     if(! setAlbumName.equals(currentAlbumName)){
                         isListChange = true;
                         currentAlbumName = setAlbumName;
                     }
                 }else{
+                    repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し
                     if(! currentListName.equals(setListName)){
                         isListChange = true;
                     }
@@ -1340,7 +1342,7 @@ public class MusicService extends MediaBrowserService {
                 exoPlayer = new ExoPlayer.Builder(context)                     //MusicService.this
                         .setHandleAudioBecomingNoisy(true)
                         .build();
-                dbMsg += "[" +mIndex + "/" + mediaItemList.size() + "件]" + saiseiJikan + "から";
+                dbMsg += "[" +mIndex + "/" + mediaItemList.size() + "件]" + saiseiJikan + "からrepeatMode=" + repeatMode;
                 exoPlayer.setMediaItems(mediaItemList, true);
                 exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
                 exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。

@@ -4,14 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class ArtistHelper extends SQLiteOpenHelper {
+public class AlbumHelper extends SQLiteOpenHelper {
 	final static private int DB_VERSION = 1;
 	private Context rContext;	//読出し元
 	public String dbName;		//第２引数は、データベースファイルの名前です。この引数にnullを指定すると、データベースはメモリー上に作られます。
 
-	public ArtistHelper(Context context , String dFn) {					//アーティスト名の置き換えリスト
+	public AlbumHelper(Context context , String dFn) {					//アーティスト名の置き換えリスト
 		super(context, dFn, null, DB_VERSION);
-		final String TAG = "ArtistHelper[ArtistHelper]";
+		final String TAG = "AlbumHelper[AlbumHelper]";
 		String dbMsg= "開始;";/////////////////////////////////////
 		try{
 			dbMsg="getPackageCodePath="+context.getPackageCodePath();/////////////////////////////////////
@@ -27,26 +27,26 @@ public class ArtistHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {		// table create
-		final String TAG = "onCreate[ArtistHelper]";
+		final String TAG = "onCreate[AlbumHelper]";
 		String dbMsg= "開始;";/////////////////////////////////////
 		try{
-			String tName = rContext.getResources().getString(R.string.artist_table);
+			String tName = "album_table";
 			dbMsg="テーブル名= "+ tName;/////////////////////////////////////
 			String tSet = "create table " + tName +" (" +			//テーブル名；artist_rw_table
-					"_id integer primary key autoincrement not null, "+
-					"ARTIST_ID text," +			//1.MediaStore.Audio.Media.ARTIST_ID
-					"SORT_NAME text," +			//2.the抜き大文字
-					"ARTIST text," +				//3,MediaStore.Audio.Albums.ARTIST
-					"ALBUM_ARTIST text," +			//4,ALBUM_ARTIST
-					"ALBUM_ID text," +			//5,artistMap.put(MediaStore.Audio.Media.ALBUM_ID, albumId);
-					"GENRE text," +			//6,MediaStore.Audio.Media.GENRE, cGenre);
-					"COMPILATION text," +			//7,MediaStore.Audio.Media.COMPILATION, cCompilation);
-					"NUMBER_OF_ALBUMS text," +				//8,MNUMBER_OF_ALBUMS
-					"NUMBER_OF_TRACKS text" +			//9,NUMBER_OF_TRACKS
-//					"ALBUM text, " +				//5,MediaStore.Audio.Albums.ALBUM
-//					"ALBUM_ART text, " +			//6,MediaStore.Audio.Albums.ALBUM_ART
-//					"SUB_TEXT text" +				//7.アーティストリスト生成用の集約情報:100001足して文字列でもソート可能にする5項目[0/5]number_of_tracks(1 : INTEGER)113[1/5]artist(3 : STRING)Led Zeppelin[2/5]_id(1 : INTEGER)-138840664[3/5]artist_key(3 : STRING)403230045c32484832403a44[4/5]number_of_albums(1 : INTEGER)12 >> 6項目
-					");"; 
+					"_id  integer primary key autoincrement not null, "+	//[3/12]_id(1 : INTEGER)1940210128
+					"ALBUM_ID text," +				//[11/12]album_id(1)>>[>>6295010392320328144]BBC Sessions [Disc 1] [Live] >> 15項目
+					"ALBUM text," +				//5,[4/12]album(3 : STRING)BBC Sessions [Disc 1] [Live]
+					"NUM_SONGS text," +									//[0/12]numsongs(1 : INTEGER)28
+					"ARTIST text," +										//[1/12]artist(3 : STRING)Led Zeppelin
+					"FIRST_YEAR text," +				//[9/12]maxyear(1 : INTEGER)1997[10/12]
+					"LAST_YEAR text" +				//[10/12]minyear(1 : INTEGER)1997				//integer
+//					"ARTIST_ID integer," +	//[7/12]artist_id(1 : INTEGER)-138840664
+//					"ARTIST_KEY text," +	//[8/12]artist_key(3 : STRING)403230045c32484832403a44
+//					"SORT_NAME text," +	//2.the抜き大文字
+//					"ALBUM_ARTIST text," +			//4,ALBUM_ARTIST
+//					"ALBUM_KEY text, " +			//[6/12]album_key(3 : STRING)2c2c2e044e324e4e3a46444e04303a4e2e041504403a5432
+//					"ALBUM_ART text, " +			//6,[5/12]album_art(0 : NULL)
+					");";
 			dbMsg="tSet= "+tSet;/////////////////////////////////////
 			db.execSQL(tSet);
 			myLog(TAG, dbMsg);
@@ -58,7 +58,7 @@ public class ArtistHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		final String TAG = "onUpgrade[ArtistHelper]";
+		final String TAG = "onUpgrade[AlbumHelper]";
 		String dbMsg= "開始;";/////////////////////////////////////
 		try{
 			myLog(TAG, dbMsg);
