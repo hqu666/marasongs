@@ -3164,7 +3164,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "makeArtistNameList";
 		String dbMsg = "";
 		try{
-			reqCode = MyConstants.v_artist;							//アーティスト
+			reqCode = MyConstants.make_kari_list;							//アーティスト
 			String kari_fn = getApplicationContext().getString(R.string.kari_artist_file);
 			dbMsg += ",db=" + kari_fn;
 			del_DB(kari_fn);
@@ -3245,7 +3245,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				aArtist = "";
 				albumMei = "";
 				artURL = null;
-				reqCode = MyConstants.v_artist ;
+				reqCode = MyConstants.make_kari_list ;
 				String pdTitol = getResources().getString(R.string.medst_artist_make);
 				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 				plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
@@ -10907,16 +10907,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							if(cCursor.moveToFirst()){
 						//		dbMsg +=  "；ループ前；"+ cCursor.getPosition() +"/ " + pdMaxVal;	/////////////////////////////////////////////////////////////
 								switch(reqCode) {
-									case MyConstants.v_artist:							//アーティスト
+									case MyConstants.make_kari_list:							//196 アーティスト
 										String kari_fn = getApplicationContext().getString(R.string.kari_artist_file);
-//										if(kari_db != null){
-//											dbMsg +="Kari_db.isOpen=" + kari_db.isOpen()+",isReadOnly=" + kari_db.isReadOnly();
-//											//                      del_DB(fn);		//SQLiteDatabaseを消去
-//										}else{
-//											dbMsg +=",Kari_db=null";
-//										}
-//										kari_db=MakeOrOpenDataBase( kari_fn ,  kari_db);
-
 										dbMsg += ",db=" + kari_fn;
 										del_DB(kari_fn);
 										artistHelper = new ArtistHelper(getApplicationContext() , kari_fn);		//アーティスト名のリストの定義ファイル		.
@@ -10939,6 +10931,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										stmt_album = album_db.compileStatement("insert into " + albumTName +
 												"(ALBUM_ID,ALBUM,NUM_SONGS,ARTIST,FIRST_YEAR,LAST_YEAR) values (?, ?, ?, ?, ?, ?);");
 										new ContentValues();
+										break;
+									case MyConstants.v_artist:							//196 アーティスト
 										break;
 									case MyConstants.v_alubum:							//アルバム
 										break;
@@ -10980,7 +10974,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 											delC = delOneLineBody(pUri , Integer.valueOf(delID));			//プレイリストから指定された行を削除する
 											dbMsg += ">削除>" + delC + "件" ;///////////////////////////////////
 											break;
-										case MyConstants.v_artist:							//196 アーティスト
+										case MyConstants.make_kari_list:							//196 アーティスト
 											cCursor = artistList_yomikomiLoop( cCursor,stmt,stmt_album );
 //											dbMsg += ".dbJob_kari=" + dbJob_kari;
 											if(dbJob_kari){
@@ -11012,6 +11006,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 									//				stmt_album.close();
 												}
 											}
+											break;
+										case MyConstants.v_artist:							//196 アーティスト
 											break;
 										case MyConstants.v_alubum:							//アルバム
 											break;
@@ -11082,7 +11078,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 					dbMsg += ",最終[" + id +"]に追加";
 					switch(reqCode) {
-						case MyConstants.v_artist:
+						case MyConstants.v_artist:							//196 アーティスト
+							break;
+						case MyConstants.make_kari_list:							//196 アーティスト
 							endTS(kari_db);
 							Thread.sleep(300);			//書ききる為の時間（100msでは不足）
 							endTS(album_db);
@@ -11240,16 +11238,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					case CONTEXT_dell_request:					//リクエスト解除
 						requestListResetEnd();
 						break;
-					case MyConstants.v_artist:			//アーティスト
-//					//	dbMsg+= "sql_db = " + MuList.this.kari_db;//////
-//						endTS(kari_db);
-//					//	MuList.this.kari_db.setTransactionSuccessful();
-//						dbMsg+= ",kari_db = " + MuList.this.kari_db.getPageSize() + "件";
-//					//	dbMsg+= "sql_db = " + MuList.this.album_db;//////
-//					//	MuList.this.album_db.setTransactionSuccessful();
-//						endTS(album_db);
-//						dbMsg+= ",album_db = " + MuList.this.album_db.getPageSize() + "件";
-						artistList_yomikomiEnd();					//アーティストリストの終了処理
+					case MyConstants.make_kari_list:
+						artistList_yomikomiEnd();
+						break;
+					case MyConstants.v_artist:							//196 アーティスト
 						break;
 					case MyConstants.v_alubum:							//アルバム
 						break;

@@ -61,7 +61,7 @@ public final class MyConstants {
     public static final int LyricWeb = LyricEnc+1;					//192;歌詞のweb表示
     /**プレイリスト表示?*/
     public static final int v_play_list = LyricWeb+1;
-    /**仮リストからアーティストリストへ転記*/
+    /**仮リスト作成*/
     public static final int make_kari_list = v_play_list+1;
     /**仮リストからアーティストリストへ転記*/
     public static final int kari2artist = make_kari_list+1;
