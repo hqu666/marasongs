@@ -3799,6 +3799,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				String pdTitol = getResources().getString(R.string.medst_artist_make);
 //				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 //				plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
+				//	boolean isArtistEnd =false;
+					MuList.this.suffixAL = new ArrayList<Map<String, Object>>();
 					do{
 						dbMsg += "\n" + cCursor.getPosition() + "件目;";
 						String artistPreFix = cCursor.getString(cCursor.getColumnIndex("SORT_NAME"));
@@ -3839,11 +3841,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							artistMap.put(MediaStore.Audio.Media.COMPILATION, cCompilation);
 							MuList.this.artistAL.add(artistMap);        						//アーティストリスト用ArrayList
 							dbMsg += ",artistAL=" + MuList.this.artistAL.size() + "件";
+							if(artistPreFix.contains(lastArtistName)){
+				//				isArtistEnd =true;
+								MuList.this.suffixAL.add(artistMap);
+								dbMsg += "；末尾グループのアーティスト=" + MuList.this.suffixAL.size() + "人";
+							}
 						}
 						b_artistName = artistPreFix;
 					}while (cCursor.moveToNext());
 				}
-				dbMsg +=">>" + MuList.this.artistAL.size() + "件";
+				dbMsg +=">artistAL>" + MuList.this.artistAL.size() + "件";
 				cCursor.close();
 				myPreferences.nowList_id = String.valueOf(myPreferences.pref_zenkyoku_list_id);
 				sousalistID = Integer.parseInt(myPreferences.nowList_id);
@@ -3865,9 +3872,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}else{
 					//			dbMsg += " artisMaptList= " + artistAL.size() + "件";/////////////////////////////////////
 					artintCo = artistAL.size();
-//				dbMsg +=artistList.get(0);
-//				dbMsg +="～" + artistList +")";
-//				dbMsg +=artistAL.get(artintCo-1);
 					setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 				}
 				String subText =getResources().getString(R.string.pp_artist) + " ; "  + artintCo + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
@@ -3900,7 +3904,24 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg +=">album_db>isOpen=" + album_db.isOpen()+",isReadOnly=" + album_db.isReadOnly();
 				albumTName="album_table";
 				dbMsg+= ",album_db = " + album_db.getPageSize() + "件";//////
+				MuList.this.compilationAlbumAL = new ArrayList<Map<String, Object>>();
+				String a_groupBy= null;
+				String a_having=null;
+				String a_orderBy=  "ARTIST";	//ALBUM , ALBUM_ARTISTで587、ALBUMで124,ALBUM_ARTISTで124,ARTISTで123
+				cCursor = album_db.query(albumTName, null, null, null, a_groupBy, a_having, a_orderBy);
+				retInt = cCursor.getCount();
+				dbMsg += "；末尾グループのアルバム=" + retInt + "枚";
+				if(cCursor.moveToFirst()){
+					do{
+						dbMsg += "\n" + cCursor.getPosition() + "件目;";
+						String albumId = cCursor.getString(cCursor.getColumnIndex("ALBUM_ID"));
+						String cArtist = cCursor.getString(cCursor.getColumnIndex("ARTIST"));
+						dbMsg += cArtist + "[" + albumId + "]";
+						HashMap<String, Object> albumMap = GetAlbumInfo(albumId,cArtist);
+						MuList.this.compilationAlbumAL.add(albumMap);
+					}while (cCursor.moveToNext());
 
+				}
 
 				reqCode = MyConstants.v_artist;
 			}
