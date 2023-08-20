@@ -83,13 +83,10 @@ import androidx.preference.PreferenceManager;
 import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -99,8 +96,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -3820,17 +3817,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								findArtist.add(cArtist);
 								mainDispArtist = folderArtist;
 							}
+							dbMsg += ",findArtist=" + findArtist.toString();
 
 							MuList.this.artistSL.add(artistPreFix);                    //クレジットされたアーティストト	wrArtist
 							HashMap<String, Object> artistMap = new HashMap<String, Object>();        //アーティストリスト用
 
 							artistMap.put("index", artistPreFix);
 							artistMap.put("main", mainDispArtist);			//folderArtist
-//							if(artistPreFix.contains(lastArtistName)){
-//								artistMap.put("main", folderArtist);
-//							}else{
-//								artistMap.put("main", cArtist);
-//							}
 							String rStr = "";
 							if (nummerOfAlbims != null) {
 								rStr += nummerOfAlbims + getResources().getString(R.string.pp_mai);
@@ -5479,11 +5472,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 				} else {
 					dbMsg += ">>アーティスト名から検索";
-					String findArtist = (String) artistMap.get("findArtist");
-					String[] selectionArgs = null;				//new String[]{ findArtist };		//			ArrayList<String> findArtist = (ArrayList<String>) artistMap.get("findArtist");
-			//		ArrayList<String> findArtist = new ArrayList<String>((Integer) artistMap.get("findArtist"));			//java.lang.ClassCastException: java.lang.String cannot be cast to java.util.ArrayList
-				//	dbMsg += ",findArtist=" + findArtist.toString();
-			//		String[] selectionArgs = findArtist.toArray(new String[findArtist.size()]);
+					List<?> findArtist = new ArrayList<>();
+					if (artistMap.get("findArtist").getClass().isArray()) {
+						findArtist = Arrays.asList((Object[])artistMap.get("findArtist"));
+					} else if (artistMap.get("findArtist") instanceof Collection) {
+						findArtist = new ArrayList<>((Collection<?>)artistMap.get("findArtist"));
+					}
+					dbMsg += ",findArtist=" + findArtist.toString();
+					String[] selectionArgs = findArtist.toArray(new String[findArtist.size()]);
 					dbMsg += ",selectionArgs=" + selectionArgs.toString();
 					CreateAlbumList(itemStr, "", selectionArgs);
 				}
