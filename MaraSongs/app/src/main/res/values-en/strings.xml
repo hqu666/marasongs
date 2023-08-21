@@ -12,6 +12,8 @@
 	<string name="saveMQName">muQue.db</string>
 	<string name="artist_file">artist.db</string>
 	<string name="artist_table">artist_table</string>
+	<string name="album_file">album.db</string>
+	<string name="album_table">album_table</string>
 	<string name="kari_artist_file">kari_artist.db</string>
 	<string name="kari_file">kari.db</string>
 	<string name="zenkyoku_file">zenkyoku.db</string>
