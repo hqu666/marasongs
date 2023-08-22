@@ -5429,87 +5429,64 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			album_db = albumHelper.getReadableDatabase();			// データベースをオープン
 			dbMsg +=">>"  + album_db.isOpen()+",isReadOnly=" + album_db.isReadOnly() + "," + album_db.getPageSize() + "件";
 			String numSongs="";
-//			if(artist_db.getPageSize() < 1){
-//				makeArtistNameList();
-//			}else {
-				albumTName = getResources().getString(R.string.album_table);
-				String c_selection = "ARTIST = ? ";			//2.projection   " = ?";
-				String[] c_selectionArgs= {artistFolderName};   			//音楽と分類されるファイルだけを抽出する
-				String c_groupBy = null;
-				String c_having = null;
-				String c_orderBy = "FIRST_YEAR";
-				Cursor cCursor = album_db.query(albumTName, null, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy);
-//				int retInt = cCursor.getCount();
-				dbMsg += "；アルバム=" + cCursor.getCount() + "枚";
-				if (cCursor.moveToFirst()) {
-		//			dbMsg += "；" + cCursor.getString(cCursor.getColumnIndex("ARTIST"));
-					albumList = new ArrayList<String>();		//アルバム名
-					albumAL = new ArrayList<Map<String, Object>>();		//アルバムリスト用ArrayList
-					do {
-						dbMsg += "\n" + cCursor.getPosition() + "件目;";
-						String albumId = cCursor.getString(cCursor.getColumnIndex("ALBUM_ID"));
-						String albumName = cCursor.getString(cCursor.getColumnIndex("ALBUM"));
-						dbMsg += "[" + albumId + "]" + albumName;
-						numSongs = cCursor.getString(cCursor.getColumnIndex("NUM_SONGS"));
-						String artistName = cCursor.getString(cCursor.getColumnIndex("ARTIST"));
-						String firstYear = cCursor.getString(cCursor.getColumnIndex("FIRST_YEAR"));
-						String lastYear = cCursor.getString(cCursor.getColumnIndex("LAST_YEAR"));
-						dbMsg += "," + numSongs + "曲" + firstYear + "～" + lastYear;
+			albumTName = getResources().getString(R.string.album_table);
+			String c_selection = "ARTIST = ? ";			//2.projection   " = ?";
+			String[] c_selectionArgs= {artistFolderName};   			//音楽と分類されるファイルだけを抽出する
+			String c_groupBy = null;
+			String c_having = null;
+			String c_orderBy = "FIRST_YEAR";
+			Cursor cCursor = album_db.query(albumTName, null, c_selection, c_selectionArgs, c_groupBy, c_having, c_orderBy);
+			dbMsg += "；アルバム=" + cCursor.getCount() + "枚";
+			if (cCursor.moveToFirst()) {
+				albumList = new ArrayList<String>();		//アルバム名
+				albumAL = new ArrayList<Map<String, Object>>();		//アルバムリスト用ArrayList
+				do {
+					dbMsg += "\n" + cCursor.getPosition() + "件目;";
+					String albumId = cCursor.getString(cCursor.getColumnIndex("ALBUM_ID"));
+					String albumName = cCursor.getString(cCursor.getColumnIndex("ALBUM"));
+					dbMsg += "[" + albumId + "]" + albumName;
+					numSongs = cCursor.getString(cCursor.getColumnIndex("NUM_SONGS"));
+					String artistName = cCursor.getString(cCursor.getColumnIndex("ARTIST"));
+					String firstYear = cCursor.getString(cCursor.getColumnIndex("FIRST_YEAR"));
+					String lastYear = cCursor.getString(cCursor.getColumnIndex("LAST_YEAR"));
+					dbMsg += "," + numSongs + "曲" + firstYear + "～" + lastYear;
 //						String artistId = cCursor.getString(cCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST_ID));
 //						String artistKey = cCursor.getString(cCursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS_FOR_ARTIST));
 //						String albumArt = cCursor.getString(cCursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
 //						String numsongsByArtist = cCursor.getString(cCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST_KEY));
 //						String albumKey = cCursor.getString(cCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY));
-
-						//					if (!artistPreFix.equals(b_artistName)) {
-							MuList.this.albumList.add(albumName);                    //クレジットされたアーティストト	wrArtist
-							HashMap<String, Object> albumMap = new HashMap<String, Object>();        //アーティストリスト用
-						String subStr = firstYear;
-						if(!firstYear.equals(lastYear)){
-							subStr += " to " + lastYear;
-						}
-						subStr += " : " + numSongs + getResources().getString(R.string.pp_kyoku);
-						albumMap.put("main", albumName);
-						albumMap.put("sub", subStr);
-						albumMap.put("album_id", albumId);
-						albumMap.put("album_id", albumId);
-						albumMap.put("album", albumName);
-						albumMap.put("numsongs", numSongs);
-						albumMap.put("artist", artistName);
-						albumMap.put("minyear", firstYear);
-						albumMap.put("maxyear", lastYear);
+					MuList.this.albumList.add(albumName);                    //クレジットされたアーティストト	wrArtist
+					HashMap<String, Object> albumMap = new HashMap<String, Object>();        //アーティストリスト用
+					String subStr = firstYear;
+					if(!firstYear.equals(lastYear)){
+						subStr += " to " + lastYear;
+					}
+					subStr += " : " + numSongs + getResources().getString(R.string.pp_kyoku);
+					albumMap.put("main", albumName);
+					albumMap.put("sub", subStr);
+					albumMap.put("album_id", albumId);
+					albumMap.put("album_id", albumId);
+					albumMap.put("album", albumName);
+					albumMap.put("numsongs", numSongs);
+					albumMap.put("artist", artistName);
+					albumMap.put("minyear", firstYear);
+					albumMap.put("maxyear", lastYear);
 //						albumMap.put("artist_id", artistId);
 //						albumMap.put("numsongs_by_artist", numsongsByArtist);
 //						albumMap.put("artist_key", artistKey);
 //						albumMap.put("album_key", albumKey);
 //						albumMap.put("album_art", albumArt);
-
-						MuList.this.artistAL.add(albumMap);                                //アーティストリスト用ArrayList
-						albumAL.add(albumMap);
-					} while (cCursor.moveToNext());
-				}
-				dbMsg += ">artistAL>" + MuList.this.artistAL.size() + "件";
-				cCursor.close();
-		//	}
+					albumAL.add(albumMap);
+				} while (cCursor.moveToNext());
+			}
+			dbMsg += ">artistAL>" + MuList.this.artistAL.size() + "件";
+			cCursor.close();
 
 			if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 				makePlainList( albumList);			//階層化しないシンプルなリスト
 			} else {
 				setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
 			}
-//			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
-//			headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
-//			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
-//
-//			dbMsg +="alubum_tv:artistFolderName= " + artistFolderName +",albumName= " + albumName;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//			mainHTF.setVisibility(View.VISIBLE);
-//			mainHTF.setText( albumName);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);
-//			dbMsg +=",albumAL= " + albumAL.size() + "件";	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-////			if( 0 < albumAL.size()){
-//				subTStr = numSongs + getResources().getString(R.string.pp_kyoku);
-////			}
-//			dbMsg +=",subTStr= " + subTStr;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//			subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			String toastStr = albumAL.size() + getResources().getString(R.string.pp_kyoku)+"["+getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]";		//	<string name="">所要時間</string>
 			dbMsg += "::" + toastStr ;
@@ -5823,43 +5800,43 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 				dbMsg += ",album=" + MuList.this.albumName;////////////////////////////////////
 				switch(reqCode) {			//backCode
-				case MyConstants.v_artist:				//<<quitMe();<<MuList.this.finish();
-					dbMsg +=",クリックしたのはartistリストのヘッド" ;
-					reqCode = MyConstants.v_play_list;
-					dbMsg +=",現在[" + sousalistID + "]" + sousalistName +"次はプレイリスト一覧：" + reqCode ;
-					senntakuItem = sousalistName;
-					sigotoFuriwake(reqCode , sousalistName , null  , null , null);		//表示するリストの振り分け		, albumAL
-					break;
-				case MyConstants.v_alubum:				//2131558442  アルバム
-					dbMsg +=",クリックしたのはalbumリストのヘッド" ;
-					reqCode = MyConstants.v_artist;
-					dbMsg +=",sousa_artist="+ sousa_artist  ;
-					dbMsg +=",artistAL="+ artistAL.size() + "件";
-					senntakuItem = sousa_artist;
-					if(0 < artistAL.size()){
-						mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
-						String subText =getResources().getString(R.string.pp_artist) + " ; "  + artistAL.size() + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
-						subHTF.setText(subText );
-						setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
-					}else{
-					//	makeArtistNameList();
-						readArtistDB();
-					}
-					break;
-				case MyConstants.v_titol:						//2131558448 	タイトル
-					dbMsg +=",クリックしたのはtitolリストのヘッド" ;////////////////////////////////////
-					reqCode = MyConstants.v_alubum;
-					dbMsg +="["+ artistListIndex +"]" ;
-					dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm ;
-					senntakuItem = sousa_alubm ;
-					Artist2AlbumList(artistListIndex);
-					break;
-				default:
-					dbMsg +=",reqCode = MyConstants.v_play_listに変更" ;////////////////////////////////////
-					reqCode = MyConstants.v_play_list;
-					sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
-					//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
-					break;
+					case MyConstants.v_artist:				//198
+						dbMsg +=",クリックしたのはartistリストのヘッド" ;
+						reqCode = MyConstants.v_play_list;
+						dbMsg +=",現在[" + sousalistID + "]" + sousalistName +"次はプレイリスト一覧：" + reqCode ;
+						senntakuItem = sousalistName;
+						sigotoFuriwake(reqCode , sousalistName , null  , null , null);		//表示するリストの振り分け		, albumAL
+						break;
+					case MyConstants.v_alubum:				//199
+						dbMsg +=",クリックしたのはalbumリストのヘッド" ;
+						reqCode = MyConstants.v_artist;
+						dbMsg +=",sousa_artist="+ sousa_artist  ;
+						dbMsg +=",artistAL="+ artistAL.size() + "件";
+						senntakuItem = sousa_artist;
+						if(0 < artistAL.size()){
+							mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
+							String subText =getResources().getString(R.string.pp_artist) + " ; "  + artistAL.size() + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
+							subHTF.setText(subText );
+							setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
+						}else{
+						//	makeArtistNameList();
+							readArtistDB();
+						}
+						break;
+					case MyConstants.v_titol:						//2131558448 	タイトル
+						dbMsg +=",クリックしたのはtitolリストのヘッド" ;////////////////////////////////////
+						reqCode = MyConstants.v_alubum;
+						dbMsg +="["+ artistListIndex +"]" ;
+						dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm ;
+						senntakuItem = sousa_alubm ;
+						Artist2AlbumList(artistListIndex);
+						break;
+					default:
+						dbMsg +=",reqCode = MyConstants.v_play_listに変更" ;////////////////////////////////////
+						reqCode = MyConstants.v_play_list;
+						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+						//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
+						break;
 				}
 				dbMsg +=",次は;reqCode=" + reqCode ;////////////////////////////////////
 			}else{
