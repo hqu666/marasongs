@@ -3322,6 +3322,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String artistPreFix = ORGUT.ArtistPreFix(folderArtist);    //TheとFeat以下をカット
 				dbMsg += ">ArtistPreFix>" + artistPreFix ;
 
+				@SuppressLint("Range") String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+				dbMsg += ",albumId=" + albumId;
+				HashMap<String, Object> albumMap = GetAlbumInfo(albumId,cArtist);
+				String aArtist = (String) albumMap.get(MediaStore.Audio.Albums.ARTIST);		//minyear
+				dbMsg += ",AlbumsArtist=" + aArtist;
+				String albumID = (String) albumMap.get(MediaStore.Audio.Albums.ALBUM_ID);
+				String albumTitol = (String) albumMap.get(MediaStore.Audio.Albums.ALBUM);
+				dbMsg += "[" + albumID + "]" + albumTitol;
+
 				if(-1 < ORGUT.mapIndex(artistAL, "main", folderArtist)
 					|| -1 < ORGUT.mapIndex(artistAL, "index", artistPreFix)
 				){
@@ -3332,14 +3341,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					if(cCompilation == null){
 						cCompilation ="";
 					}
-					@SuppressLint("Range") String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-					dbMsg += ",albumId=" + albumId;
-					HashMap<String, Object> albumMap = GetAlbumInfo(albumId,cArtist);
-					String aArtist = (String) albumMap.get(MediaStore.Audio.Albums.ARTIST);		//minyear
-					dbMsg += ",AlbumsArtist=" + aArtist;
-					String albumID = (String) albumMap.get(MediaStore.Audio.Albums.ALBUM_ID);
-					String albumTitol = (String) albumMap.get(MediaStore.Audio.Albums.ALBUM);
-					dbMsg += "[" + albumID + "]" + albumTitol;
 //					String artistPreFix = ORGUT.ArtistPreFix(cArtist);    //TheとFeat以下をカット
 //					dbMsg += ">ArtistPreFix>" + artistPreFix ;
 					if(-1 < ORGUT.mapIndex(artistAL,"artistPreFix",artistPreFix)){
@@ -3414,23 +3415,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",sortName=" + sortName;
 							albumMap.put(MediaStore.Audio.Albums.ARTIST ,sortName);
 							MuList.this.suffixAlbumList.add(albumMap);				//addGenreAlbumAL
-//							stmt_album.bindString(1, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM_ID)));	//"ALBUM_ID text" +				//[11/12]album_id(1)>>[>>6295010392320328144]BBC Sessions [Disc 1] [Live] >> 15項目
-//							stmt_album.bindString(2, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM)));	//"ALBUM text,
-//							stmt_album.bindString(3, String.valueOf(albumMap.get(MediaStore.Audio.Albums.NUMBER_OF_SONGS)));	//"NUM_SONGS integer"
-//							stmt_album.bindString(4, String.valueOf(folderArtist));	//"ARTIST text,
-//							stmt_album.bindString(5, String.valueOf(albumMap.get(MediaStore.Audio.Albums.FIRST_YEAR)));	//"MAX_YEAR integer
-//							stmt_album.bindString(6, String.valueOf(albumMap.get(MediaStore.Audio.Albums.LAST_YEAR)));	//"MAX_YEAR integer
-//							dbJob_album= true;
-
 							artistMap.put("main" ,folderArtist);
 							if(ORGUT.mapIndex(suffixAL,"main",folderArtist)<0){
 								stmt.bindString(2, sortName);								//SORT_NAME 最終アーティストの後ろへ
 								stmt.bindString(3, folderArtist);								//3,MediaStore.Audio.Albums.ARTIST
-
 								MuList.this.suffixAL.add(artistMap);
-
 							}
-					//		addGenre.add(cGenre);
 							dbMsg += ",suffix=" + MuList.this.suffixAL.size() + ":suffixAlbumList=" + MuList.this.suffixAlbumList.size() + "件";
 						} else if (folderArtist.equals(getResources().getString(R.string.artist_tuika01))
 								|| folderArtist.equals("Compilations")
@@ -3438,7 +3428,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ">" + getResources().getString(R.string.artist_tuika01) + "グル-プへ";
 							artistMap.put("main", getResources().getString(R.string.artist_tuika01));
 							MuList.this.suffixAlbumList.add(albumMap);
-					//		dbMsg += ",compilationAlbum=" + suffixAlbumList.size();
 							artistMap.put("sub", suffixAlbumList.size() + getResources().getString(R.string.pp_mai));
 							if (ORGUT.mapIndex(suffixAL, "main", getResources().getString(R.string.artist_tuika01)) < 0) {
 								compilationIndex = suffixAL.size();
@@ -3460,14 +3449,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							albumTitol = (String) albumMap.get(MediaStore.Audio.Albums.ALBUM);
 							dbMsg += "[" + albumID + "]" + albumTitol;
 							dbMsg += ",suffix=" + MuList.this.suffixAL.size() + ":suffixAlbumList=" + MuList.this.suffixAlbumList.size() + "件";
-
-//							stmt_album.bindString(1, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM_ID)));	//"ALBUM_ID text" +				//[11/12]album_id(1)>>[>>6295010392320328144]BBC Sessions [Disc 1] [Live] >> 15項目
-//							stmt_album.bindString(2, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM)));	//"ALBUM text,
-//							stmt_album.bindString(3, String.valueOf(albumMap.get(MediaStore.Audio.Albums.NUMBER_OF_SONGS)));	//"NUM_SONGS integer"
-//							stmt_album.bindString(4, sortName);	//"ARTIST text,
-//							stmt_album.bindString(5, String.valueOf(albumMap.get(MediaStore.Audio.Albums.FIRST_YEAR)));	//"MAX_YEAR integer
-//							stmt_album.bindString(6, String.valueOf(albumMap.get(MediaStore.Audio.Albums.LAST_YEAR)));	//"MAX_YEAR integer
-//							dbJob_album= true;
 						} else {
 							dbMsg += ">" + folderArtist + "を格納";
 							MuList.this.artistAL.add(artistMap);        //アーティストリスト用ArrayList
@@ -3475,15 +3456,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 						}
 					}
-					stmt_album.bindString(1, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM_ID)));	//"ALBUM_ID text" +				//[11/12]album_id(1)>>[>>6295010392320328144]BBC Sessions [Disc 1] [Live] >> 15項目
-					stmt_album.bindString(2, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM)));	//"ALBUM text,
-					stmt_album.bindString(3, String.valueOf(albumMap.get(MediaStore.Audio.Albums.NUMBER_OF_SONGS)));	//"NUM_SONGS integer"
-					stmt_album.bindString(4, String.valueOf(folderArtist));	//"ARTIST text,
-					stmt_album.bindString(5, String.valueOf(albumMap.get(MediaStore.Audio.Albums.FIRST_YEAR)));	//"MAX_YEAR integer
-					stmt_album.bindString(6, String.valueOf(albumMap.get(MediaStore.Audio.Albums.LAST_YEAR)));	//"MAX_YEAR integer
-					dbJob_album= true;
+					b_artistName = folderArtist;
 				}
-				b_artistName = folderArtist;
+				stmt_album.bindString(1, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM_ID)));	//"ALBUM_ID text" +				//[11/12]album_id(1)>>[>>6295010392320328144]BBC Sessions [Disc 1] [Live] >> 15項目
+				stmt_album.bindString(2, String.valueOf(albumMap.get(MediaStore.Audio.Albums.ALBUM)));	//"ALBUM text,
+				stmt_album.bindString(3, String.valueOf(albumMap.get(MediaStore.Audio.Albums.NUMBER_OF_SONGS)));	//"NUM_SONGS integer"
+				stmt_album.bindString(4, String.valueOf(folderArtist));	//"ARTIST text,
+				stmt_album.bindString(5, String.valueOf(albumMap.get(MediaStore.Audio.Albums.FIRST_YEAR)));	//"MAX_YEAR integer
+				stmt_album.bindString(6, String.valueOf(albumMap.get(MediaStore.Audio.Albums.LAST_YEAR)));	//"MAX_YEAR integer
+				dbJob_album= true;
 			}
 			MuList.this.b_albumTitol=cAlbum;
 			myLog(TAG, dbMsg);
