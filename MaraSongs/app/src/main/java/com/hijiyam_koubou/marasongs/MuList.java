@@ -3210,18 +3210,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				mainHTF.setText(mainTStr);					//ヘッダーのメインテキスト表示枠
 				subHTF.setText(subTStr);					//ヘッダーのサブテキスト表示枠
 				//		dbMsg += ",artistSL=" +  artistSL;
-				if( artistSL == null){
-					artistSL =  new ArrayList<String>();				//アーティストリスト用簡易リスト
-				}else {
-					artistSL.clear();
-				}
-				dbMsg += ">>" +  artistSL;
-				if( artistAL == null ){
-					artistAL = new ArrayList<Map<String, Object>>();
-				} else {
-					artistAL.clear();
-				}
-				dbMsg += ",artistAL=" +  artistAL;
+//				if( artistSL == null){
+//					artistSL =  new ArrayList<String>();				//アーティストリスト用簡易リスト
+//				}else {
+//					artistSL.clear();
+//				}
+//				dbMsg += ">>" +  artistSL;
+//				if( artistAL == null ){
+//					artistAL = new ArrayList<Map<String, Object>>();
+//				} else {
+//					artistAL.clear();
+//				}
+//				dbMsg += ",artistAL=" +  artistAL;
 		//		MuList.this.addGenre =  new ArrayList<String>();
 				MuList.this.suffixAL = new ArrayList<Map<String, Object>>();
 				MuList.this.suffixAlbumList = new ArrayList<Map<String, Object>>();
@@ -3246,7 +3246,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				String dlMessege = getResources().getString(R.string.syokairiyou_dm);					// 			//１～２分かかりますが、ゲスト参加などで分離されたアルバムを統合して自然な連続再生を可能にします。\n
 //				preReadJunbi(dlTitol , dlMessege);										//全曲再生リスト作成を促すダイアログ表示
 			}
-			dbMsg += ">レコード>" + artistAL.size() + "件";
+//			dbMsg += ">レコード>" + artistAL.size() + "件";
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3332,9 +3332,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 				if( folderArtist.equals(b_artistName)
 				){
-					/*-1 < ORGUT.mapIndex(artistAL, "main", folderArtist)
-					|| -1 < ORGUT.mapIndex(artistAL, "index", artistPreFix)
-						||*/
 					dbMsg += ">>アーティストリストに格納済み" ;
 				}else{
 					@SuppressLint("Range") String cCompilation = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPILATION));
@@ -3433,8 +3430,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += ",suffix=" + MuList.this.suffixAL.size() + ":suffixAlbumList=" + MuList.this.suffixAlbumList.size() + "件";
 						} else {
 							dbMsg += ">" + folderArtist + "を格納";
-							MuList.this.artistAL.add(artistMap);        //アーティストリスト用ArrayList
-							dbMsg += ",artistAL=" + MuList.this.artistAL.size();
+//							MuList.this.artistAL.add(artistMap);        //アーティストリスト用ArrayList
+//							dbMsg += ",artistAL=" + MuList.this.artistAL.size();
 
 						}
 						dbMsg += ">書込み>[" + artistID + "]" + mainDispArtist + ">>" + artistPreFix;
@@ -3518,7 +3515,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				String pdMessage = getResources().getString(R.string.data_lad);				//データ読み込み中</string>
 				plTask.execute(reqCode,cCursor,pdTitol,pdMessage,cCursor.getCount());
 			}
-			dbMsg += ">レコード>" + artistAL.size() + "件";
+//			dbMsg += ">レコード>" + artistAL.size() + "件";
 			String fn = getApplicationContext().getString(R.string.artist_file);
 			dbMsg += ",db=" + fn;
 			del_DB(fn);
