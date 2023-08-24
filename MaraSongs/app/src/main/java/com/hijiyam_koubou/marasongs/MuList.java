@@ -3049,7 +3049,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					|| artistName.equals("<unknown>")
 					|| artistName.equals("VARIOUS ARTISTS")
 					|| artistName.equals("さまざまなアーティスト")
-					|| ganleName.equals("Children's Music")
+//					|| ganleName.equals("Children's Music")
 					|| retStr.equals("Compilations")
 					|| retStr.equals(getResources().getString(R.string.artist_tuika01))
 			){
