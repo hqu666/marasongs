@@ -3515,7 +3515,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				playingItem.close();
 //			}
 //			dbMsg += " , retInt=⁼" + retInt;
-//			reqCode = MyConstants.v_artist;
+			reqCode = MyConstants.v_artist;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3991,16 +3991,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //						b_artistName = artistPreFix;
 //					}while (cCursor.moveToNext());
 //				}
-//				dbMsg +=">artistAL>" + MuList.this.artistAL.size() + "件";
-//				cCursor.close();
-//				myPreferences.nowList_id = String.valueOf(myPreferences.pref_zenkyoku_list_id);
-//				sousalistID = Integer.parseInt(myPreferences.nowList_id);
-//				myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);
-//				sousalistName = myPreferences.nowList;
-//				dbMsg +=  "myPreferences.nowList[" + myPreferences.nowList_id + "]" + myPreferences.nowList +"→操作中のリスト[" + sousalistID + "]" + sousalistName ;	////////////////
+			//	cCursor.close();
+				dbMsg +=">artistAL>" + MuList.this.artistAL.size() + "件";
+				myPreferences.nowList_id = String.valueOf(myPreferences.pref_zenkyoku_list_id);
+		//		sousalistID = Integer.parseInt(myPreferences.nowList_id);
+				myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);
+				sousalistName = myPreferences.nowList;
+				dbMsg +=  "myPreferences.nowList[" + myPreferences.nowList_id + "]" + myPreferences.nowList +"→操作中のリスト[" + sousalistID + "]" + sousalistName ;	////////////////
 				dbMsg += "シンプル表示か" + myPreferences.pref_list_simple;/////////////////////////////////////
 //				myPreferences.pref_zenkyoku_list_id = getAllSongItems();
-//				dbMsg += " [全曲リスト； " + myPreferences.pref_zenkyoku_list_id + "]";/////////////////////////////////////
+				dbMsg += " [全曲リスト； " + myPreferences.pref_zenkyoku_list_id + "]";/////////////////////////////////////
 				if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
 					dbMsg += " artistSL= " + artistSL.size() + "件" +artistList.get(0) + "～"  +artistSL.get(artistSL.size()-1) ;/////////////////////////////////////
 					artintCo = artistSL.size();
