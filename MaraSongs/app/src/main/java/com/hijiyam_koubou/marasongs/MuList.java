@@ -4490,22 +4490,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			);
 			dbMsg += ">>"+ cursor.getCount() +"曲";
 			if(cursor.moveToFirst()){
-//				if(MPSIntent ==null){
-//					MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-//				}
-//				dbMsg +=  ",MPSIntent=" + MPSIntent;
-//				MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
-//				MPSIntent.putExtra("nowList_id","-1");
-//				MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
 				String albumId = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Media.ALBUM_ID ));				//"TRACK"
 				dbMsg +=  ",albumId=" + albumId;
-//				MPSIntent.putExtra("nowAlbum",albumId);
-////				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
-//				MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-//				dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
-//				dbMsg +=  ",MPSIntent=" + MPSIntent;
-//				MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
-////				MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 				do{
 					String dMsg = cursor.getPosition() +"/"+ cursor.getCount() + "曲;";/////////////////////////////////////////////////////////////////////////////////////////////
 					try{
@@ -4546,10 +4532,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						if(uriStr.contains(titolMei)){
 							sPosition=cursor.getPosition();
 						}
-//						MPSIntent.putExtra("uriStr",uriStr);
-//						MPSName = startService(MPSIntent);
-//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
-
 					}catch(IllegalArgumentException e){
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}catch (Exception e) {
@@ -4566,16 +4548,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			Bitmap mDummyAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
 			albumArt =ORGUT.retAlbumArtUri(getApplicationContext() ,MuList.this.creditArtistName , albumMei );			//アルバムアートUriだけを返す			MuList.this ,
 			dbMsg +=",albumArt= " + albumArt;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//					if( albumArt != null  ){
-//						Drawable drawable = new BitmapDrawable(getResources(), albumArt);
-//						Bitmap orgBitmap = ((BitmapDrawable)drawable).getBitmap();					//DrawableからBitmapインスタンスを取得//				http://android-note.open-memo.net/sub/image__resize_drawable.html
-//						dbMsg +=",orgBitmap="+orgBitmap;
-//						Bitmap resizedBitmap = Bitmap.createScaledBitmap(orgBitmap, 144, 144, false);										//100x100の大きさにリサイズ
-//						dbMsg +=",resizedBitmap="+resizedBitmap;
-//						drawable = new BitmapDrawable(getResources(), resizedBitmap);
-//						headImgIV.setImageDrawable(drawable);
-//					}
-//					dbMsg +=",headImgIV[" + headImgIV.getX() +", " + headImgIV.getY() +"] " + headImgIV.getHeight();		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 			mainHTF.setVisibility(View.VISIBLE);		//		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			dbMsg +=",albumMei=" + albumMei;
 			mainHTF.setText(albumMei);					//ヘッダーのメインテキスト表示枠		//		getSupportActionBar().setTitle(albumMei);
@@ -5280,7 +5252,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("pref_data_url",dataFN);
-	//		MPSIntent.putExtra("mediaItemList", (Parcelable) mediaItemList);
+			MPSIntent.putExtra("nowAlbum",sousa_alubm);
 			MPSIntent.putExtra("mIndex",mIndex);
 			MPSIntent.putExtra("saiseiJikan",saiseiJikan);
 	//		MPSIntent.putExtra("plAL", (Parcelable) MuList.this.plAL);		// Serializable ?
