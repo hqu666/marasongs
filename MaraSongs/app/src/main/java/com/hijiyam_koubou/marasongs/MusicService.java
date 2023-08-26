@@ -133,9 +133,12 @@ public class MusicService extends MediaBrowserService {
     /** ListにMediaItemを呼び込む */
     public static final int MS_MAKE_LIST = MS_START_SERVICE + 1;
     public static final String ACTION_MAKE_LIST= "MAKE_LIST";
+    /** ListにuriListからMediaItemを呼び込む */
+    public static final int MS_MAKE_ALBUM_LIST = MS_MAKE_LIST + 1;
+    public static final String ACTION_MAKE_ALBUM_LIST= "MAKE_LIST";
     /** 選曲された楽曲を読み込ませたプレイヤーを作製 */
     public static final String ACTION_SET_SONG= "SET_SONG";
-    public static final int MS_SET_SONG = MS_MAKE_LIST + 1;
+    public static final int MS_SET_SONG = MS_MAKE_ALBUM_LIST + 1;
     /**再生状況変化*/
     public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
     public static final int MS_STATE_CHANGED = MS_SET_SONG + 1;
@@ -510,21 +513,24 @@ public class MusicService extends MediaBrowserService {
 
     /**全曲からアルバム内の一曲をMediaItemのリストに加える*/
     @SuppressLint("Range")
-    public List<MediaItem> add2TitolList(int playlistId ,String dataStr,List<MediaItem> targetMediaItemList,List<Map<String, Object>> targetAL){
+    public List<MediaItem> add2TitolList(String artistMei ,String albumMei,List<MediaItem> targetMediaItemList,List<Map<String, Object>> targetAL){
         final String TAG = "add2TitolList";
         String dbMsg= "";
         try{
-            dbMsg += "選択されたプレイリスト[ID="+playlistId + "]の" + dataStr;
-            dbMsg += "現在のプレイリスト[ID="+playlistId + "]";
+            dbMsg += "artist="+artistMei + "の" + albumMei;
             Uri cUri;
             if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
                 cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
             } else {
                 cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
             }
-            dbMsg += ",cUri=" + cUri.toString();            String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
-            String c_selection = MediaStore.Audio.Media.DATA +" = ? ";
-            String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
+            dbMsg += ",cUri=" + cUri.toString();
+
+            String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
+            String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
+            String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
+//            String c_selection = MediaStore.Audio.Media.DATA +" = ? ";
+//            String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
             String c_orderBy = MediaStore.Audio.Media.TRACK;
             Cursor playLists= this.getContentResolver().query(cUri, columns, c_selection, c_selectionArgs, c_orderBy );
             dbMsg += "," + playLists.getCount() +"件";
@@ -583,6 +589,8 @@ public class MusicService extends MediaBrowserService {
                             }else if( cName.equals(MediaStore.Audio.Media.TRACK)){
                                 cVal = playLists.getString(i);
                                 trackStr = playLists.getString(i);
+                            }else if( cName.equals(MediaStore.Audio.Media.GENRE)){
+                                genreStr = playLists.getString(i);
                             }else if( cName.equals(MediaStore.Audio.Media.ALBUM_ID)){
                                 cVal = playLists.getString(i);
                                 String albunIdStr = String.valueOf(playLists.getInt(i));
@@ -728,6 +736,9 @@ public class MusicService extends MediaBrowserService {
                 String setListName = intent.getStringExtra("nowList");
                 String uriStr = intent.getStringExtra("uriStr");
                 dbMsg +="[" + playlistId + "]" + setListName + "の" + uriStr;
+                String sousa_artist = intent.getStringExtra("sousa_artist");
+                String sousa_alubm = intent.getStringExtra("sousa_alubm");
+                dbMsg +=",uriから読み取ったartist＝" + sousa_artist + "、alubm＝" + sousa_alubm;
                 String setAlbumName = intent.getStringExtra("nowAlbum");
                 boolean isListChange = false;
                 if(0<mediaItemList.size()) {
@@ -748,7 +759,7 @@ public class MusicService extends MediaBrowserService {
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                         mediaItemList2 = add2List( playlistId ,uriStr,mediaItemList2,plAL2);
                     }else{
-                        mediaItemList2 = add2TitolList( playlistId ,uriStr,mediaItemList2,plAL2);
+                        mediaItemList2 = add2TitolList( sousa_artist ,sousa_alubm,mediaItemList2,plAL2);
                     }
                     dbMsg +=">>" + mediaItemList2.size() + "件:名称リスト" + plAL2.size() + "件";
                 }else{
@@ -756,9 +767,9 @@ public class MusicService extends MediaBrowserService {
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                         mediaItemList = add2List( playlistId ,uriStr,mediaItemList,plAL);
                     }else{
-                        mediaItemList = add2TitolList( playlistId ,uriStr,mediaItemList,plAL);
+                        mediaItemList = add2TitolList( sousa_artist ,sousa_alubm,mediaItemList,plAL);
                     }
-                    dbMsg +=">>" + mediaItemList.size() + "件"+ "件:名称リスト" + plAL.size() + "件";
+                    dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
                 }
             }else if(action.equals(ACTION_SET_SONG)){
                 dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
