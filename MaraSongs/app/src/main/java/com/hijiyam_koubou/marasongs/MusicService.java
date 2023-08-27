@@ -528,8 +528,6 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",cUri=" + cUri.toString();
 
             String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
-//            String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
-//            String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
             String c_selection = MediaStore.Audio.Media.DATA +" Like ?";
             String dataStr ="%/"+ artistMei + "/"+ albumMei +"/%";
             dbMsg +="," + dataStr + "を含む楽曲";
@@ -787,11 +785,50 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ",渡されたのは[" + setListId + "]" + setListName;
                 String setArtistName = intent.getStringExtra("nowArtist");
                 String setAlbumName = intent.getStringExtra("nowAlbum");
+                dbMsg += "の" + setArtistName + " - " + setAlbumName;
+                String setIndex = intent.getStringExtra("mIndex");
+                if(setIndex == null){
+                    mIndex=0;
+                }else{
+                    mIndex = Integer.parseInt(setIndex);
+                }
+                dbMsg += "で" + mIndex + "曲目の" + saiseiJikan;
+                String setPosition = intent.getStringExtra("saiseiJikan");
+                if(setPosition == null){
+                    saiseiJikan=0;
+                }else{
+                    saiseiJikan = Long.parseLong(setPosition);
+                }
+                dbMsg += saiseiJikan;
                 boolean isListChange = false;
                 if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                     repeatMode = Player.REPEAT_MODE_OFF;                    //0:繰り返しなしの通常の再生を行う /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
                     dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
                     if(setArtistName.equals(currentArtistName) && setAlbumName.equals(currentAlbumName)){
+                        dbMsg +=",同アルバムで別タイトルの再生" ;
+                        dbMsg += ",exoPlayer=" + exoPlayer;
+                        if(exoPlayer != null){
+                            if(exoPlayer.isPlaying()){
+                                exoPlayer.pause();
+                                dbMsg +=",一時停止して" ;
+                                MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
+                                String mediaId = currentMediaItem.mediaId;
+                                dbMsg += ",現在:" + mediaId;
+                                MediaItem sarchItem = mediaItemList.get(mIndex);
+                                String sarchId = sarchItem.mediaId;
+                                dbMsg += ",指定:" + sarchId;
+                                if(! mediaId.equals(sarchId)){
+                                    songChange(mIndex, saiseiJikan);
+                                }else{
+                                    dbMsg += ",同じ曲を指定指定:";
+                                }
+                                dbMsg +=",曲変更" ;
+                                exoPlayer.play();
+                                nowPlay = true;
+                                sendStateChasng();
+                            }
+                        }
+
                     }else{
                         isListChange = true;
                         mediaItemList = new ArrayList<MediaItem>();

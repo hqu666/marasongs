@@ -4447,11 +4447,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			long start = System.currentTimeMillis();		// 開始時刻の取得
 			dbMsg += "["+ albumID + "]"+artistMei+",albumMei="+albumMei + ",titolMei="+titolMei;
-			int sPosition = 0;
+	//		int sPosition = 0;
 			backCode = MyConstants.v_alubum;		//上のリスト
 			dbMsg +=",アルバムをタップ；backCode=" + backCode;
-//			dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//			dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 			headImgIV.setVisibility(View.VISIBLE);								 // 表示枠を消す
 			headImgIV.setImageResource(R.drawable.no_image);									//リサイズしたR.drawable.no_image
@@ -4474,8 +4472,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String dataStr ="%/"+ artistMei + "/"+ albumMei +"/%";
 			dbMsg +="," + dataStr + "を含む楽曲";
 			String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
-//			String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
-//			String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
 			if(albumID != null){
 				c_selection = MediaStore.Audio.Media.ALBUM_ID + " =? " ;
 				c_selectionArgs= new String[]{albumID};   			//音楽と分類されるファイルだけを抽出する
@@ -4534,7 +4530,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						MuList.this.titolMap.put("DATA" ,uriStr);		//アルバム付加情報 "DATA"
 						MuList.this.titolAL.add( titolMap);			//アルバムリスト用ArrayList
 						if(uriStr.contains(titolMei)){
-							sPosition=cursor.getPosition();
+							mIndex=cursor.getPosition();
 						}
 					}catch(IllegalArgumentException e){
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4567,12 +4563,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg +=",イメージとサブテキストを持ったタイトルリストを構成";
 				setHeadImgList(titolAL );
 			}
-			dbMsg +=",選択=" + sPosition;
-			lvID.setSelection(sPosition);
+			dbMsg +=",選択=" + mIndex;
+			lvID.setSelection(mIndex);
+			//再生ボタン表示
+			selectListyInfo();
 			reqCode=MyConstants.v_titol;
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			String toastStr = titolAL.size() +getResources().getString(R.string.pp_kyoku)+"["+getResources().getString(R.string.comon_syoyoujikan)+";"+ (int)((end - start)) + "mS]";		//	<string name="">所要時間</string>
-			dbMsg += toastStr ;
+			dbMsg += "," + toastStr ;
 			dbMsg += (int)((end - start)) + "m秒で表示終了";
 			myLog(TAG, dbMsg);
 		}catch(IllegalArgumentException e){
@@ -5243,13 +5241,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		//		mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				registerReceiver(mReceiver, mFilter);
 			}
-//	//		MusicService MS = new MusicService(this);
-//			if( MPSIntent == null){
-//				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-//				dbMsg +=  ",MPSIntent=null";
-//			}else{
-//				stopService(MPSIntent);
-//			}
+			String[] passNames = dataFN.split("/");
+			sousa_artist = passNames[passNames.length - 3];
+			sousa_alubm = passNames[passNames.length - 2];
+			String titleFileName = passNames[passNames.length - 1];
+			dbMsg += ",artist=" + sousa_artist+ ",album=" + sousa_alubm+ ",title=" + titleFileName;
+
 			MPSIntent.setAction(MusicService.ACTION_SET_SONG);
 //			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 //			MPSIntent.putExtra("nowList",listName);
