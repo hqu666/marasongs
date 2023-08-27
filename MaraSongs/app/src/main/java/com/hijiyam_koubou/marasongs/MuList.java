@@ -4433,7 +4433,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		return MuList.this.albumAL;
 	}
 
-	/**	指定されたアルバムの楽曲をリストアップし、切り替え前のmediaItemListを仮作成
+	/**	指定されたアルバムの楽曲をリストアップ
 	 * <ul>
 	 *     <li>再生中の場合は仮のmediaItemリストを作成</li>
 	 *     <li>表示されたリストアイテムをタップした時点で再生対象のmediaItemリストに切り替える</li>
@@ -4449,9 +4449,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "["+ albumID + "]"+artistMei+",albumMei="+albumMei + ",titolMei="+titolMei;
 			int sPosition = 0;
 			backCode = MyConstants.v_alubum;		//上のリスト
-			dbMsg +=",アルバムをタップ；backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-			dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-			dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+			dbMsg +=",アルバムをタップ；backCode=" + backCode;
+//			dbMsg +=",titol_tv;albumMei; = " +creditArtistName +"の"+ albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
+//			dbMsg +=",titol_tv <backCode< " + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 			pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 			headImgIV.setVisibility(View.VISIBLE);								 // 表示枠を消す
 			headImgIV.setImageResource(R.drawable.no_image);									//リサイズしたR.drawable.no_image
@@ -4470,8 +4470,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",cUri=" + cUri.toString();
 			boolean distinct = true;
 			String[] c_columns = null;
-			String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
-			String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
+			String c_selection = MediaStore.Audio.Media.DATA +" Like ?";
+			String dataStr ="%/"+ artistMei + "/"+ albumMei +"/%";
+			dbMsg +="," + dataStr + "を含む楽曲";
+			String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
+//			String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
+//			String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
 			if(albumID != null){
 				c_selection = MediaStore.Audio.Media.ALBUM_ID + " =? " ;
 				c_selectionArgs= new String[]{albumID};   			//音楽と分類されるファイルだけを抽出する
@@ -5252,6 +5256,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("pref_data_url",dataFN);
+			MPSIntent.putExtra("nowArtist",sousa_artist);
 			MPSIntent.putExtra("nowAlbum",sousa_alubm);
 			MPSIntent.putExtra("mIndex",mIndex);
 			MPSIntent.putExtra("saiseiJikan",saiseiJikan);

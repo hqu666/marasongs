@@ -74,6 +74,7 @@ public class MusicService extends MediaBrowserService {
 
     public String currentListId = "";
     public String currentListName = "";
+    public String currentArtistName = "";
     public String currentAlbumName = "";
 
     /**プレイヤーに保持させるMediaItemのリスト*/
@@ -527,10 +528,12 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",cUri=" + cUri.toString();
 
             String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
-            String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
-            String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
-//            String c_selection = MediaStore.Audio.Media.DATA +" = ? ";
-//            String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
+//            String c_selection = MediaStore.Audio.Media.ARTIST + " Like ? AND " + MediaStore.Audio.Media.ALBUM + " =?";			//2.projection   " = ?";
+//            String[] c_selectionArgs= new String[]{"%" + artistMei + "%", albumMei};   			//音楽と分類されるファイルだけを抽出する
+            String c_selection = MediaStore.Audio.Media.DATA +" Like ?";
+            String dataStr ="%/"+ artistMei + "/"+ albumMei +"/%";
+            dbMsg +="," + dataStr + "を含む楽曲";
+            String[] c_selectionArgs = {dataStr};        //⑥引数groupByには、groupBy句を指定します。
             String c_orderBy = MediaStore.Audio.Media.TRACK;
             Cursor playLists= this.getContentResolver().query(cUri, columns, c_selection, c_selectionArgs, c_orderBy );
             dbMsg += "," + playLists.getCount() +"件";
@@ -739,14 +742,20 @@ public class MusicService extends MediaBrowserService {
                 String sousa_artist = intent.getStringExtra("sousa_artist");
                 String sousa_alubm = intent.getStringExtra("sousa_alubm");
                 dbMsg +=",uriから読み取ったartist＝" + sousa_artist + "、alubm＝" + sousa_alubm;
+                String setArtistName = intent.getStringExtra("nowArtist");
                 String setAlbumName = intent.getStringExtra("nowAlbum");
                 boolean isListChange = false;
                 if(0<mediaItemList.size()) {
                     if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        dbMsg += ",setAlbumName=" + setAlbumName;
-                        if(! setAlbumName.equals(currentAlbumName)){
+                        dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
+                        if(sousa_artist.equals(currentArtistName) && sousa_alubm.equals(currentAlbumName)){
+                        }else{
                             isListChange = true;
                         }
+//                        dbMsg += ",setAlbumName=" + setAlbumName;
+//                        if(! setAlbumName.equals(currentAlbumName)){
+//                            isListChange = true;
+//                        }
                     }else{
                         if(! currentListName.equals(setListName)){
                             isListChange = true;
@@ -776,14 +785,28 @@ public class MusicService extends MediaBrowserService {
                 String setListId = intent.getStringExtra("nowList_id");
                 String setListName = intent.getStringExtra("nowList");
                 dbMsg += ",渡されたのは[" + setListId + "]" + setListName;
+                String setArtistName = intent.getStringExtra("nowArtist");
                 String setAlbumName = intent.getStringExtra("nowAlbum");
                 boolean isListChange = false;
                 if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                     repeatMode = Player.REPEAT_MODE_OFF;                    //0:繰り返しなしの通常の再生を行う /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
-                    dbMsg += ",setAlbumName=" + setAlbumName;
-                    if(! setAlbumName.equals(currentAlbumName)){
+                    dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
+                    if(setArtistName.equals(currentArtistName) && setAlbumName.equals(currentAlbumName)){
+                    }else{
                         isListChange = true;
-                        currentAlbumName = setAlbumName;
+                        mediaItemList = new ArrayList<MediaItem>();
+                        plAL = new ArrayList<Map<String, Object>>();
+                        plAL.clear();
+                        mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
+                        dbMsg += ">>";
+                        if(! setArtistName.equals(currentArtistName)){
+                            dbMsg += setArtistName;
+                            currentArtistName = setArtistName;
+                        }
+                        if(! setAlbumName.equals(currentAlbumName)){
+                            dbMsg += "の" + currentAlbumName;
+                            currentAlbumName = setAlbumName;
+                        }
                     }
                 }else{
                     repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し
