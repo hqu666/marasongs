@@ -6186,11 +6186,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					cursor.close();
 				}
 			}
-			if(Zenkyoku_db != null){
-				if(Zenkyoku_db.isOpen()){
-					Zenkyoku_db.close();
-				}
-			}
+//			if(Zenkyoku_db != null){
+//				if(Zenkyoku_db.isOpen()){
+//					Zenkyoku_db.close();
+//				}
+//			}
 			dbMsg += ",reqCode=" + reqCode + "：" + ItemAL.size() +"件";
 			if(0<ItemAL.size()){
 				dbMsg +=ItemAL.get(0) +"～" +ItemAL.get(ItemAL.size()-1);
@@ -6241,19 +6241,19 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=",_data=" +(String) ItemAL.get(i).get("_data") ;
 						long lineCount =0;
 						if( title.equals(getResources().getString(R.string.listmei_zemkyoku))) {        // ;		// 全曲リスト</string>
-							if(Zenkyoku_db != null){
-								if( Zenkyoku_db.isOpen()){
-									Zenkyoku_db.close();
-									dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-								}
-							}
-							String fn = getString(R.string.zenkyoku_file);			//全曲リスト名
-							dbMsg +=  ",fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-							zenkyokuHelper = new ZenkyokuHelper(MuList.this , fn);		//全曲リストの定義ファイル		.
-							Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
-							dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
-							dbMsg +=  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
-							lineCount = Zenkyoku_db.getPageSize();
+//							if(Zenkyoku_db != null){
+//								if( Zenkyoku_db.isOpen()){
+//									Zenkyoku_db.close();
+//									dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//								}
+//							}
+//							String fn = getString(R.string.zenkyoku_file);			//全曲リスト名
+//							dbMsg +=  ",fn=" + fn;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+//							zenkyokuHelper = new ZenkyokuHelper(MuList.this , fn);		//全曲リストの定義ファイル		.
+//							Zenkyoku_db = zenkyokuHelper.getReadableDatabase();		//アーティスト名のえリストファイルを読み書きモードで開く
+//							dbMsg +=  ">isOpen>" + Zenkyoku_db.isOpen();		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//							dbMsg +=  ",getPageSize=" + Zenkyoku_db.getPageSize() + "件、" ;			//Kari_db = SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/zenkyoku.db
+//							lineCount = Zenkyoku_db.getPageSize();
 						}else{
 							// ファイルパス
 							Path path = Paths.get((String) ItemAL.get(i).get("_data"));
@@ -13353,6 +13353,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += "ItemLayout取得できず" ;
 						}
 					}
+					dbMsg +="[" + myPreferences.nowList_id + "]" + sousalistName;
+					//	reqCode = MyConstants.v_titol;
+					if(sousalistID<0 || myPreferences.nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){
+						dbMsg +=",reqCode=" + reqCode;
+						if(reqCode == MyConstants.v_titol ){
+						}else{
+							currentItemLayout = null;
+						}
+					}
+
 					if(currentItemLayout != null){
 						dbMsg += ">>currentItemLayout=" + currentItemLayout;
 						if (isPlaying) {
