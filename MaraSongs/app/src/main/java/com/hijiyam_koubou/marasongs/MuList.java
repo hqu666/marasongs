@@ -4077,6 +4077,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);
 			sousalistName = myPreferences.nowList;
 			dbMsg +="[" + myPreferences.nowList_id + "]" + sousalistName;
+			send2Player(readFile ,  sousalistName , false);
 		//	reqCode = MyConstants.v_titol;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -5244,12 +5245,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String[] passNames = dataFN.split("/");
 			sousa_artist = passNames[passNames.length - 3];
 			sousa_alubm = passNames[passNames.length - 2];
-			String titleFileName = passNames[passNames.length - 1];
-			dbMsg += ",artist=" + sousa_artist+ ",album=" + sousa_alubm+ ",title=" + titleFileName;
-
+			dbMsg += ",artist=" + sousa_artist+ ",album=" + sousa_alubm;
+//			String titleFileName = passNames[passNames.length - 1];
+//			dbMsg += ",title=" + titleFileName;
+			if( MPSIntent == null){
+				MPSIntent = new Intent(getApplication(), MusicService.class);
+				dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+			}
 			MPSIntent.setAction(MusicService.ACTION_SET_SONG);
-//			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
-//			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			MPSIntent.putExtra("nowList",listName);
 			MPSIntent.putExtra("pref_data_url",dataFN);
