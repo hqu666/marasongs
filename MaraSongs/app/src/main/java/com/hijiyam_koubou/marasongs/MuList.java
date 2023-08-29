@@ -4078,7 +4078,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			sousalistName = myPreferences.nowList;
 			dbMsg +="[" + myPreferences.nowList_id + "]" + sousalistName;
 			send2Player(readFile ,  sousalistName , false);
-		//	reqCode = MyConstants.v_titol;
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4493,6 +4492,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if(cursor.moveToFirst()){
 				String albumId = cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Media.ALBUM_ID ));				//"TRACK"
 				dbMsg +=  ",albumId=" + albumId;
+				mIndex=-1;
 				do{
 					String dMsg = cursor.getPosition() +"/"+ cursor.getCount() + "曲;";/////////////////////////////////////////////////////////////////////////////////////////////
 					try{
@@ -4564,8 +4564,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg +=",イメージとサブテキストを持ったタイトルリストを構成";
 				setHeadImgList(titolAL );
 			}
-			dbMsg +=",選択=" + mIndex;
-			lvID.setSelection(mIndex);
+			if(titolMei != null){
+				dbMsg +=",選択=" + mIndex;
+				lvID.setSelection(mIndex);
+			}else{
+			}
 			//再生ボタン表示
 			selectListyInfo();
 			reqCode=MyConstants.v_titol;
@@ -5814,7 +5817,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg += albumName ;
 						reqCode = MyConstants.v_titol;
 						dbMsg += ",sousa_artist=" + sousa_artist + ",sousa_alubm=" + sousa_alubm + "のタイトルリスト作成";
-						titolAL = CreateTitleList(sousa_artist , sousa_alubm , sousa_titol,albumID);
+						titolAL = CreateTitleList(sousa_artist , sousa_alubm , null,albumID);
 						break;
 					case MyConstants.v_titol:                        // ; 2131558448 タイトル
 						dbMsg += ",タイトルから";
@@ -13360,9 +13363,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					//	reqCode = MyConstants.v_titol;
 					if(sousalistID<0 || myPreferences.nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){
 						dbMsg +=",reqCode=" + reqCode;
-						if(reqCode == MyConstants.v_titol ){
+						if(reqCode == MyConstants.v_titol && -1< mIndex){
+							dbMsg +=",mIndex=" + mIndex;
 						}else{
-							currentItemLayout = null;
+							if(currentItemLayout !=null){
+								currentItemLayout.playBt.setVisibility(View.GONE);
+								currentItemLayout.pouseBt.setVisibility(View.GONE);
+								currentItemLayout.mIconView.setVisibility(View.VISIBLE);
+								currentItemLayout = null;
+							}
 						}
 					}
 
