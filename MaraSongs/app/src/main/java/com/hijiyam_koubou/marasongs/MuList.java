@@ -75,6 +75,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.media3.common.MediaItem;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.session.MediaSession;
 import androidx.media3.ui.PlayerView;
@@ -4085,7 +4086,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		return retInt;
 	}
 
-
 	/**アーティスト一人分の情報**/
 	@SuppressLint("Range")
 	public HashMap<String, Object> GetArtistInfo(String artistId , String albimArtistName) throws IOException {		//起動直後はCreateTitleListへ	//アルバムリスト作成
@@ -5648,7 +5648,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					albumMap.put("main", albumName);
 					albumMap.put("sub", subStr);
 					albumMap.put("album_id", albumId);
-					albumMap.put("album_id", albumId);
+//					albumMap.put("album_id", albumId);
 					albumMap.put("album", albumName);
 					albumMap.put("numsongs", numSongs);
 					albumMap.put("artist", artistName);
@@ -13144,6 +13144,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				mFilter = new IntentFilter();
 				mFilter.addAction(MusicService.ACTION_SET_SONG);
 				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
+				mFilter.addAction(MusicService.ACTION_FORWARD_ALBUM);
 				mReceiver = new SongSelectReceiver();
 				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
 				//that was originally registered here. Are you missing a call to unregisterReceiver()?
@@ -13393,8 +13394,67 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		});
 	}
 
+	/**次のアルバムに進む*/
+	private void forwardNextAlbum(String bData) {
+		final String TAG = "forwardNextAlbum";
+		String dbMsg="";
+		try {
+			dbMsg += bData + "終了";
+			String[] passNames = bData.split("/");
+			String artistFolder = passNames[passNames.length - 3];
+			String artistPreFix = ORGUT.ArtistPreFix(artistFolder);    //TheとFeat以下をカット
+			int artistIndex = artistSL.lastIndexOf(artistPreFix);
+			dbMsg += ",[" + artistIndex + "/" + artistSL.size() + "]" + artistFolder;
+			String alubmFolder = passNames[passNames.length - 2];
+			int albumIndex = albumList.lastIndexOf(alubmFolder);
+			dbMsg += ",[" + albumIndex + "/" + albumList.size() + "]" + alubmFolder;
+			String titleFileName = passNames[passNames.length - 1];
+			dbMsg += "の" + titleFileName;
+//			String nextAlbum = albumList.get(0);
+			Map<String, Object> nextAlbumObj = null;
+			if(albumIndex<albumList.size()){
+				albumIndex = albumIndex + 1;
+				dbMsg += ",次のアルバム[" + albumIndex + "/" + albumList.size() + "]>>";
+//				nextAlbum = albumList.get(albumIndex);
+//				dbMsg += ",[" + albumIndex + "/" + albumList.size() + "]" + nextAlbum;
+//				titolAL = CreateTitleList(artistFolder , nextAlbum , titleFileName,null);
+				nextAlbumObj =albumAL.get(albumIndex);
+			}else{
+				artistIndex = artistIndex + 1;
+				dbMsg +=">次のアーティスト[" + artistIndex+"]";
+				Map<String, Object> nextArtist = artistAL.get(artistIndex++);
+				artistFolder = (String) nextArtist.get("folderArtist");
+				dbMsg +=artistFolder;
+				int retInt = albumDB2ListBody(artistFolder);
+				dbMsg +=">albumAL>" + retInt + "件";
+				nextAlbumObj =albumAL.get(0);
+//				String albumId = (String) nextAlbumObj.get("album_id");
+//				String albumName = (String) nextAlbumObj.get("album");
+//				dbMsg +="[" + albumId + "]"+albumName;
+//				titolAL = CreateTitleList(artistFolder , albumName , null,albumId);
+			}
+			String albumId = (String) nextAlbumObj.get("album_id");
+			String albumName = (String) nextAlbumObj.get("album");
+			dbMsg +="[" + albumId + "]"+albumName;
+			titolAL = CreateTitleList(artistFolder , albumName , null,albumId);
+			dbMsg +=">titolAL>" + titolAL.size() + "件";
+			Map<String, Object> nextTitol = titolAL.get(0);
+			String readFile = (String) nextTitol.get("DATA");
+			myPreferences.nowList_id = String.valueOf(myPreferences.pref_zenkyoku_list_id);
+			myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);
+			sousalistName = myPreferences.nowList;
+			dbMsg +="[" + myPreferences.nowList_id + "]" + sousalistName + "の" + readFile;
+			send2Player(readFile ,  sousalistName , true);
+
+			myLog(TAG,dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+	/**ブロードキャスト受信*/
 	public class SongSelectReceiver extends BroadcastReceiver {
-		// ブロードキャスト受信時にこのメソッドが動く
+		// 時にこのメソッドが動く
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String TAG = "onReceive";
@@ -13436,6 +13496,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						selectListyInfo();
 					}
 					b_isPlaying = isPlaying;
+				}else if(intent.getAction().equals(MusicService.ACTION_FORWARD_ALBUM)) {
+					String bData = intent.getStringExtra("dataFN");
+					dbMsg += bData + "終了";
+					isPlaying = intent.getBooleanExtra("isPlaying", false);
+					dbMsg += ",isPlaying=" + b_isPlaying + ">>" + isPlaying;
+					forwardNextAlbum(bData);
 				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {

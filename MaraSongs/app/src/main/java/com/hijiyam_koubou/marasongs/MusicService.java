@@ -161,9 +161,14 @@ public class MusicService extends MediaBrowserService {
     /**Rew*/
     public static final String ACTION_REWIND = "com.example.android.remotecontrol.ACTION_REWIND";
     public static final int MS_REWIND = MS_SKIP + 1;
+
+    /**次のアルバムへ*/
+    public static final String ACTION_FORWARD_ALBUM = "ACTION_FORWARD_ALBUM";
+    public static final int MS_FORWARD_ALBUM = MS_REWIND + 1;
+
     /**REPEAT**/
     public static final String ACTION_REPEAT_MODE = "REPEAT_MODE";
-    public static final int MS_REPEAT_MODE = MS_REWIND + 1;
+    public static final int MS_REPEAT_MODE = MS_FORWARD_ALBUM + 1;
     /**Quit**/
     public static final int MS_QUIT = MS_REPEAT_MODE + 1;
     public static final String ACTION_QUIT = "QUIT";
@@ -373,7 +378,7 @@ public class MusicService extends MediaBrowserService {
                     String duranationStr = null;
                     String trackStr = null;
                     objMap = new HashMap<String, Object>();
-                    for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){				//MuList.this.koumoku
+                    for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){
                         String cName = playLists.getColumnName(i);
                         String cVal = null;
                         dbMsg += "[" + i +"/" + playLists.getColumnCount() +"項目]"+ cName;
@@ -547,7 +552,7 @@ public class MusicService extends MediaBrowserService {
                     String duranationStr = null;
                     String trackStr = null;
                     objMap = new HashMap<String, Object>();
-                    for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){				//MuList.this.koumoku
+                    for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){
                         String cName = playLists.getColumnName(i);
                         String cVal = null;
                         dbMsg += "[" + i +"/" + playLists.getColumnCount() +"項目]"+ cName;
@@ -1188,6 +1193,40 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
+    /**次のアルバムに進む*/
+    private void forwardNextAlbum() {
+        final String TAG = "forwardNextAlbum";
+        String dbMsg="";
+        try {
+            int nIndex = exoPlayer.getCurrentMediaItemIndex();
+            int endIndex = exoPlayer.getMediaItemCount();
+            dbMsg += "[" + nIndex + "/" + endIndex + "]";
+            MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
+            dbMsg += currentMediaItem.mediaId;
+            MediaItem nowMediaItem = mediaItemList.get(nIndex);
+            Map<String, Object> cPLItem = plAL.get(nIndex);
+            String dataFN = (String) cPLItem.get(MediaStore.Audio.Playlists.Members.DATA);
+            dbMsg += ",dataFN=" + dataFN;          //  nowMediaItem.mediaMetadata.
+
+            Intent MRIintent = new Intent();
+            dbMsg += ",exoPlayer=" + exoPlayer;
+            MRIintent.setAction(ACTION_FORWARD_ALBUM);
+//            long contentPosition = 0l;
+//            if(exoPlayer != null){
+//                contentPosition = exoPlayer.getContentPosition();
+//            }
+//            dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",isPlaying=" +  contentPosition;
+            MRIintent.putExtra("isPlaying",  nowPlay);
+            MRIintent.putExtra("dataFN",dataFN);
+            getBaseContext().sendBroadcast(MRIintent);
+
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+
     private class PlayerEventListener implements Player.Listener {
 
         @Override
@@ -1207,8 +1246,9 @@ public class MusicService extends MediaBrowserService {
                 }else if (playbackState == Player.STATE_READY) {          //3
                     dbMsg += "=STATE_READY";
                 }else if (playbackState == Player.STATE_ENDED) {          //4
-                    dbMsg += "=STATE_ENDED";
-                    showControls();
+                    dbMsg += "=STATE_ENDED;MediaItemのすべてが終了";
+                    forwardNextAlbum();
+//                    showControls();
                 }else if (playbackState == Player.EVENT_PLAY_WHEN_READY_CHANGED) {          //5
                     dbMsg += "=EVENT_PLAY_WHEN_READY_CHANGED";
                 }else if (playbackState == Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM) {          //6
@@ -1243,6 +1283,9 @@ public class MusicService extends MediaBrowserService {
             }
         }
 
+        /**
+         * トラックの戻る・進むを検知
+         * */
         @Override
         @SuppressWarnings("ReferenceEquality")
         public void onTracksChanged(Tracks tracks) {
@@ -1250,8 +1293,9 @@ public class MusicService extends MediaBrowserService {
             String dbMsg="[PlayerEventListener]";
             try {
                 updateButtonVisibility();
+                dbMsg += ",トラック変更[" + tracks ;
                 if (tracks == lastSeenTracks) {
-                    dbMsg += ",lastSeenTracks=" + lastSeenTracks;
+                    dbMsg += "/" + lastSeenTracks + "]";
                     myLog(TAG,dbMsg);
                     return;
                 }
@@ -1425,7 +1469,9 @@ public class MusicService extends MediaBrowserService {
 //                }
                 exoPlayer.addListener(new PlayerEventListener());
                 exoPlayer.addListener(new Player.Listener() {
-                    /**曲変更などのイベント*/
+                    /**曲変更などのイベント
+                     *https://www.jisei-firm.com/android_develop44/
+                     * */
                     @Override
                     public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
                         final String TAG = "onEvents";
@@ -1433,8 +1479,9 @@ public class MusicService extends MediaBrowserService {
                         try {
                             List<Integer> eventList = new ArrayList<>();
                             dbMsg += "eventList=" + eventList.size() +"件";
-                            for (int i = 0 ; i < events.size(); i++)
+                            for (int i = 0 ; i < events.size(); i++){
                                 eventList.add(events.get(i));
+                            }
                             if (eventList.size() > 2) {
                                 dbMsg += "、(0)=" + eventList.get(0);
                                 dbMsg += "、(1)=" + eventList.get(1);
@@ -1446,8 +1493,12 @@ public class MusicService extends MediaBrowserService {
 //                                    //            intent.putExtra("MUSIC", RWD);
 //                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                                 }
-                                myLog(TAG,dbMsg);
                             }
+//                            if (player.playbackState == Player.STATE_ENDED){
+//                                https://qiita.com/monhiromu/items/315bde9b1a40b41427fb　:
+//                                playbackStateが参照できない
+//                            }
+                            myLog(TAG,dbMsg);
                         } catch (Exception e) {
                             myErrorLog(TAG ,  dbMsg + "で" + e);
                         }
@@ -1473,12 +1524,12 @@ public class MusicService extends MediaBrowserService {
                             artistName= (String) mediaItem.mediaMetadata.artist;
                             albumName= (String) mediaItem.mediaMetadata.albumTitle;
                             songTitol= (String) mediaItem.mediaMetadata.title;
-//                            if (exoPlayer.getCurrentMediaItemIndex() == 1) {
-//                                // SEEK_TO_NEXT
-////                                Intent intent = new Intent("SEND_MESSAGE");
-////                                //       intent.putExtra("MUSIC", FWD);
-////                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-//                            }
+                            dbMsg += ",getCurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex();
+                            if (exoPlayer.getCurrentMediaItemIndex() == 1) {
+//                                Intent intent = new Intent("SEND_MESSAGE");
+//                                //       intent.putExtra("MUSIC", FWD);
+//                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                            }
                             redrowNotification(mediaItem);
 
                             objMap=plAL.get(mIndex);
