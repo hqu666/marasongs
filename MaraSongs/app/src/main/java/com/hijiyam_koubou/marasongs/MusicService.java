@@ -524,6 +524,10 @@ public class MusicService extends MediaBrowserService {
         String dbMsg= "";
         try{
             dbMsg += "artist="+artistMei + "の" + albumMei;
+            dbMsg += "、前のmediaItemList" + targetMediaItemList.size() + "件" +  "、前のPlAL" + targetAL.size() + "件";
+            targetMediaItemList.clear();
+            targetAL.clear();
+            dbMsg += ">>mediaItemList" + targetMediaItemList.size() + "件" +  "、前のPlAL" + targetAL.size() + "件";
             Uri cUri;
             if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
                 cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
@@ -638,7 +642,7 @@ public class MusicService extends MediaBrowserService {
                             }
                             objMap.put(cName ,cVal );
                         }
-                    }
+                    }           //for(int i = 0 ; i < playLists.getColumnCount() ; i++ ){
                     targetAL.add( objMap);
                     dbMsg +=  ",\nuriStr="+ uriStr;
                     if(uriStr != null){
@@ -671,7 +675,7 @@ public class MusicService extends MediaBrowserService {
                                 .setUri(rUri)
                                 .build();
                         targetMediaItemList.add(mItem);
-                        dbMsg += "\n取得["+ targetMediaItemList.size() + "]";
+                        dbMsg += "\n取得"+ targetMediaItemList.size() + "件]";
                         dbMsg +=  ",albumArtist="+ mItem.mediaMetadata.albumArtist;
                         dbMsg +=  ",artist="+ mItem.mediaMetadata.artist;
                         dbMsg +=  ",albumTitle="+ mItem.mediaMetadata.albumTitle;
@@ -691,6 +695,51 @@ public class MusicService extends MediaBrowserService {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
         return targetMediaItemList;
+    }
+
+    /**プレイヤーに読み込ませる全曲リストの更新*/
+    private void reNewAllSong(String setArtistName,String setAlbumName) {
+        final String TAG = "reNewAllSong";
+        String dbMsg="";
+        try {
+            dbMsg += "の" + setArtistName + " - " + setAlbumName;
+            dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
+            if(setArtistName.equals(currentArtistName) && setAlbumName.equals(currentAlbumName)) {
+                dbMsg += ">>同一アルバムを読み込み済み";
+            }else{
+                repeatMode =Player.REPEAT_MODE_OFF;                     //繰り返しをOFF
+                mediaItemList = new ArrayList<MediaItem>();
+                dbMsg += "mediaItemList" + mediaItemList.size() + "件";
+                plAL = new ArrayList<Map<String, Object>>();
+                plAL.clear();
+                mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
+                dbMsg += "＞＞" + mediaItemList.size() + "件";
+                if(exoPlayer != null){
+                    exoPlayer.pause();
+                    exoPlayer.release();
+                    exoPlayer = null;
+                    dbMsg += ">>" + exoPlayer;
+                }
+                dbMsg += ",mediaSession=" + mediaSession;
+                if(mediaSession != null){
+                    mediaSession.release();
+                    mediaSession = null;
+                    dbMsg += ">>" + mediaSession;
+                }
+                dbMsg += ">変更>";
+                if(! setArtistName.equals(currentArtistName)){
+                    dbMsg += setArtistName;
+                    currentArtistName = setArtistName;
+                }
+                if(! setAlbumName.equals(currentAlbumName)){
+                    dbMsg += "の" + setAlbumName;
+                    currentAlbumName = setAlbumName;
+                }
+            }
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
     }
 
     /**
@@ -755,10 +804,6 @@ public class MusicService extends MediaBrowserService {
                         }else{
                             isListChange = true;
                         }
-//                        dbMsg += ",setAlbumName=" + setAlbumName;
-//                        if(! setAlbumName.equals(currentAlbumName)){
-//                            isListChange = true;
-//                        }
                     }else{
                         if(! currentListName.equals(setListName)){
                             isListChange = true;
@@ -779,16 +824,7 @@ public class MusicService extends MediaBrowserService {
                     if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                         mediaItemList = add2List( playlistId ,uriStr,mediaItemList,plAL);
                     }else{
-                        mediaItemList = add2TitolList( sousa_artist ,sousa_alubm,mediaItemList,plAL);
-                        if(exoPlayer != null){
-                            exoPlayer.setMediaItems(mediaItemList, true);
-                            mIndex=0;
-                            saiseiJikan=0;
-                            repeatMode =Player.REPEAT_MODE_OFF;                     //繰り返しをOFF
-                            exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
-                            exoPlayer.setRepeatMode(repeatMode);
-                            dbMsg +=">album>" + exoPlayer.getCurrentMediaItem().mediaMetadata.albumTitle+" の " + exoPlayer.getCurrentMediaItem().mediaMetadata.title;
-                        }
+                        reNewAllSong(sousa_artist,sousa_alubm);
                     }
                     dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
                 }
@@ -801,20 +837,10 @@ public class MusicService extends MediaBrowserService {
                 String setAlbumName = intent.getStringExtra("nowAlbum");
                 dbMsg += "の" + setArtistName + " - " + setAlbumName;
                 mIndex= intent.getIntExtra("mIndex",0);
-//                if(setIndex == null){
-//                    mIndex=0;
-//                }else{
-//                    mIndex = Integer.parseInt(setIndex);
-//                }
                 dbMsg += "で" + mIndex + "曲目の" + saiseiJikan;
                 pref_data_url= intent.getStringExtra("pref_data_url");		//extras.getString("pref_data_url");
                 dbMsg += "で " + pref_data_url;
                 saiseiJikan= intent.getIntExtra("saiseiJikan",0);
-//                if(setPosition == null){
-//                    saiseiJikan=0;
-//                }else{
-//                    saiseiJikan = Long.parseLong(setPosition);
-//                }
                 dbMsg += "の"+ saiseiJikan+ "から";
                 boolean isListChange = false;
                 if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
@@ -850,33 +876,7 @@ public class MusicService extends MediaBrowserService {
                     }else{
                         dbMsg +=",全曲中でアルバム＝リスト変更" ;
                         isListChange = true;
-//                        if(mediaItemList == null || plAL==null){
-                            mediaItemList = new ArrayList<MediaItem>();
-                            plAL = new ArrayList<Map<String, Object>>();
-                            plAL.clear();
-                            mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
-//                        }
-                        if(exoPlayer != null){
-                            exoPlayer.pause();
-                            exoPlayer.release();
-                            exoPlayer = null;
-                            dbMsg += ">>" + exoPlayer;
-                        }
-                        dbMsg += ",mediaSession=" + mediaSession;
-                        if(mediaSession != null){
-                            mediaSession.release();
-                            mediaSession = null;
-                            dbMsg += ">>" + mediaSession;
-                        }
-                        dbMsg += ">変更>";
-                        if(! setArtistName.equals(currentArtistName)){
-                            dbMsg += setArtistName;
-                            currentArtistName = setArtistName;
-                        }
-                        if(! setAlbumName.equals(currentAlbumName)){
-                            dbMsg += "の" + currentAlbumName;
-                            currentAlbumName = setAlbumName;
-                        }
+                        reNewAllSong(setArtistName,setAlbumName);
                     }
                 }else{
                     repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し
@@ -887,34 +887,6 @@ public class MusicService extends MediaBrowserService {
                         mediaItemList = add2List(Integer.parseInt(currentListId),pref_data_url,mediaItemList,plAL);
                     }
                 }
-//                dbMsg += ",isListChange=" + isListChange;
-//                if(isListChange){
-//                    dbMsg += ">>プレイリスト変更";
-//                    currentListId = setListId;
-//                    currentListName = setListName;
-//                    if(mediaItemList2 != null){
-//                        dbMsg += ">>予備リストへ（" + mediaItemList.size() + "件";
-//                        mediaItemList = new ArrayList<MediaItem>();
-//                        plAL = new ArrayList<Map<String, Object>>();
-//                        int lCount =0;
-//                        for(lCount =0;lCount<mediaItemList2.size();lCount++){
-//                            MediaItem mItem = mediaItemList2.get(lCount);
-//                            mediaItemList.add(mItem);
-//                            Map<String, Object> pItem = plAL2.get(lCount);
-//                            plAL.add(pItem);
-//                        }
-//                        dbMsg += ">>" + mediaItemList.size() + "件）";
-//                        dbMsg += "、plAL（" + plAL.size() + "件）";
-//                        mediaItemList2 = null;
-//                        plAL2=null;
-//                    }
-//                }
-//                mIndex =intent.getIntExtra("mIndex", 0);
-//                dbMsg += "で[mIndex：" + mIndex + "/"+ mediaItemList.size() + "件]";
-//                saiseiJikan =intent.getLongExtra("saiseiJikan", 0L);
-//                dbMsg += ",saiseiJikan=" + saiseiJikan;
-//         //       plAL=intent.getParcelableExtra("plAL");
-                dbMsg += ",plAL= " + plAL.size();
                 if(exoPlayer == null){
                     initializePlayer(); // EXOPLAYER
                 }else{
@@ -974,7 +946,6 @@ public class MusicService extends MediaBrowserService {
                 dbMsg +="、送り";                  //onMediaItemTransition
                 if(exoPlayer != null){
                     dbMsg +="[" + mIndex + " / " + mediaItemList.size() + "]";
-              //      exoPlayer.seekToNextMediaItem();
                     mIndex++;
                     if(mediaItemList.size()<mIndex){
                         mIndex=0;
@@ -1489,6 +1460,7 @@ public class MusicService extends MediaBrowserService {
                 }else{
                     repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し
                 }
+                dbMsg += ">>" + repeatMode;
                 exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
 //                if(NowSavedInstanceState != null){
 //                    trackSelectionParameters =
