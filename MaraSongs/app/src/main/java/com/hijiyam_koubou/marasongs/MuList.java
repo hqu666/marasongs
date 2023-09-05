@@ -2549,7 +2549,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 									) {
 										if ( zenkyokuAri ) {
 											myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);                //全曲リスト
-											//	makeArtistNameList();
 											readArtistDB();
 										} else {
 									//		quitMe();        //このアプリを終了する
@@ -3660,7 +3659,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	@SuppressLint("Range")
 	public int readArtistDBBody(){
 		int retInt = -1;
-		final String TAG = "readArtistDB";
+		final String TAG = "readArtistDBBody";
 		String dbMsg = "";
 		try{
 			ContentResolver resolver = getApplicationContext().getContentResolver();
@@ -3700,7 +3699,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			}else{
 				String fn = getString(R.string.artist_file);			//アーティストリスト	artist_db.getPath();
-				dbMsg += "db=" + fn;
+				dbMsg += "、db=" + fn;
 				artistHelper = new ArtistHelper(MuList.this , fn);		//アーティスト名のリストの定義ファイル		.
 				dbMsg += " , artistHelper =" + artistHelper+ " , artist_db =" + artist_db;				//SQLiteDatabase: /data/data/com.hijiyam_koubou.marasongs/databases/artist.db；
 				artistTName = getString(R.string.artist_table);			//artist_table
@@ -3729,6 +3728,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						artistAL = new ArrayList<Map<String, Object>>();
 					} else {
 						artistAL.clear();
+					}
+					if( suffixAL == null ){
+						suffixAL = new ArrayList<Map<String, Object>>();
+					} else {
+						suffixAL.clear();
 					}
 //				b_artistName="";
 //				artintCo = 0;
@@ -3765,8 +3769,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								mainDispArtist = folderArtist;
 							}
 							dbMsg += ",findArtist=" + findArtist.toString();
-
-							MuList.this.artistSL.add(artistPreFix);                    //クレジットされたアーティストト	wrArtist
+							String collationArtistName =artistPreFix;
+							if(artistPreFix.contains(lastArtistName)){
+								dbMsg += ",collationArtistName=" + collationArtistName;
+								String[] collations = artistPreFix.split("_");
+								collationArtistName = collations[collations.length - 1];
+								dbMsg += ">>" + collationArtistName;
+							}
+							MuList.this.artistSL.add(collationArtistName);                    //クレジットされたアーティストト	wrArtist
 							HashMap<String, Object> artistMap = new HashMap<String, Object>();        //アーティストリスト用
 
 							artistMap.put("index", artistPreFix);
@@ -13241,6 +13251,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String artistFolder = passNames[passNames.length - 3];
 			String artistPreFix = ORGUT.ArtistPreFix(artistFolder);    //TheとFeat以下をカット
 			int artistIndex = artistSL.lastIndexOf(artistPreFix);
+			if(artistIndex<0){
+				dbMsg += ",artistIndex=" + artistIndex;
+				artistIndex = artistSL.lastIndexOf(artistFolder);
+				dbMsg += ">>" + artistIndex;
+			}
 			dbMsg += ",[" + artistIndex + "/" + artistSL.size() + "]" + artistFolder;
 			String alubmFolder = passNames[passNames.length - 2];
 			int albumIndex = albumList.lastIndexOf(alubmFolder);
@@ -13250,28 +13265,24 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ",アルバム[" + albumIndex + "/" + albumList.size() + "]" + alubmFolder;
 			String titleFileName = passNames[passNames.length - 1];
 			dbMsg += "の" + titleFileName;
-//			String nextAlbum = albumList.get(0);
 			Map<String, Object> nextAlbumObj = null;
 			albumIndex = albumIndex + 1;
 			if(albumIndex<albumList.size()){
 				dbMsg += ",次のアルバム[" + albumIndex + "/" + albumList.size() + "]>>";
-//				nextAlbum = albumList.get(albumIndex);
-//				dbMsg += ",[" + albumIndex + "/" + albumList.size() + "]" + nextAlbum;
-//				titolAL = CreateTitleList(artistFolder , nextAlbum , titleFileName,null);
 				nextAlbumObj =albumAL.get(albumIndex);
 			}else{
 				artistIndex = artistIndex + 1;
 				dbMsg +=">次のアーティスト[" + artistIndex+"]";
-				Map<String, Object> nextArtist = artistAL.get(artistIndex++);
+				if(artistAL.size()<= artistIndex){
+					artistIndex = 0;
+					dbMsg +=">先頭に戻す";
+				}
+				Map<String, Object> nextArtist = artistAL.get(artistIndex);
 				artistFolder = (String) nextArtist.get("folderArtist");
 				dbMsg +=artistFolder;
 				int retInt = albumDB2ListBody(artistFolder);
 				dbMsg +=">albumAL>" + retInt + "件";
 				nextAlbumObj =albumAL.get(0);
-//				String albumId = (String) nextAlbumObj.get("album_id");
-//				String albumName = (String) nextAlbumObj.get("album");
-//				dbMsg +="[" + albumId + "]"+albumName;
-//				titolAL = CreateTitleList(artistFolder , albumName , null,albumId);
 			}
 			String albumId = (String) nextAlbumObj.get("album_id");
 			String albumName = (String) nextAlbumObj.get("album");
