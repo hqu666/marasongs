@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -32,6 +33,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -75,7 +77,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.media3.common.MediaItem;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.session.MediaSession;
 import androidx.media3.ui.PlayerView;
@@ -95,9 +96,7 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -129,6 +128,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public static final String ACTION_INIT = "com.example.android.notification.action.INIT";
 	public OrgUtil ORGUT;						//自作関数集
 	public MyUtil MyUtil;
+//	public MusicService MService;
 	public MyApp myApp;
 	public MyPreferences myPreferences;
 	public MusicPlaylist musicPlaylist ;
@@ -159,9 +159,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public int pref_zenkai_saiseKyoku = 0;		//前回の連続再生曲数
 	public long pref_zenkai_saiseijikann = 0;		//前回の連続再生時間
 	public int pref_file_kyoku;					//曲累計
-//	public String pref_file_ex ;						//メモリーカードの音楽ファイルフォルダ
-//	public String pref_file_wr;						//設定保存フォルダ
-	
+
 	private int mIndex;
 	private Item playingItem;						//再生中の楽曲レコード
 	public long backTime=0;						//このActivtyに戻った時間
@@ -394,6 +392,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	static final int REQUEST_PREF = 100;                          //Prefarensからの戻り
 	private Object selItem;
+	private ComponentName mpsName;
 	///////////////////////////////////////////////////////////////////////////////////
 //	public static void  messageShow(String titolStr , String mggStr) {
 //		final String TAG = "messageShow";
@@ -5093,10 +5092,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //                            isListChange = true;
 //                        }
 			}
-
 			if( MPSIntent == null){
 				MPSIntent = new Intent(getApplication(), MusicService.class);
-				dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+				dbMsg +=  ">>" + MPSIntent;
 			}
 			MPSIntent.setAction(MusicService.ACTION_SET_SONG);
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
@@ -11822,6 +11820,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public TextView progress_titol_tv ;
 	public TextView progress_val_tv ;
 	public TextView progress_max_tv ;
+
+
 	/**プログレスダイアログ表示*/
 	public void createPrgressDlog(String pdTitol,String pdMessage , int pdMaxVal) {																		//操作対応②ⅰ
 		final String TAG = "createPrgressDlog";
@@ -12120,6 +12120,80 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+	/**ExoPlayer生成*/
+	protected boolean initializePlayer() {
+		final String TAG = "initializePlayer";
+		String dbMsg = "";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+//			if (exoPlayer == null) {
+//				Intent intent = getIntent();
+
+//			mediaItems = createMediaItems(intent);
+//			if (mediaItems.isEmpty()) {
+//				return false;
+//			}
+//
+//			lastSeenTracks = Tracks.EMPTY;
+//			ExoPlayer.Builder playerBuilder =
+//					new ExoPlayer.Builder(/* context= */ this)
+//							.setMediaSourceFactory(createMediaSourceFactory());
+//			setRenderersFactory(
+//					playerBuilder, intent.getBooleanExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, false));
+//			exoPlayer = playerBuilder.build();
+//			exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
+//			exoPlayer.addListener(new PlayerEventListener());
+//			exoPlayer.addAnalyticsListener(new EventLogger());
+//			exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);
+//			exoPlayer.setPlayWhenReady(startAutoPlay);
+		//		playerView.setPlayer(exoPlayer);
+//			configurePlayerWithServerSideAdsLoader();
+//			debugViewHelper = new DebugTextViewHelper(exoPlayer, debugTextView);
+//			debugViewHelper.start();
+//			}
+//		boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
+//		if (haveStartPosition) {
+//			exoPlayer.seekTo(startItemIndex, startPosition);
+//		}
+//		exoPlayer.setMediaItems(mediaItems, /* resetPosition= */ !haveStartPosition);
+//			exoPlayer.prepare();
+//		updateButtonVisibility();
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+
+		return true;
+	}
+
+	/**ExoPlayer破棄*/
+	protected void releasePlayer() {
+		final String TAG = "releasePlayer";
+		String dbMsg = "";
+		try{
+			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+//			if (exoPlayer != null) {
+////			updateTrackSelectorParameters();
+////			updateStartPosition();
+////			releaseServerSideAdsLoader();
+////			debugViewHelper.stop();
+////			debugViewHelper = null;
+//				exoPlayer.release();
+//				exoPlayer = null;
+//				playerView.setPlayer(/* player= */ null);
+////			mediaItems = Collections.emptyList();
+//			}
+////		if (clientSideAdsLoader != null) {
+////			clientSideAdsLoader.setPlayer(null);
+////		} else {
+////			playerView.getAdViewGroup().removeAllViews();
+////		}
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
 	/**遷移先からの戻り*/
 	ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
 			new ActivityResultContracts.StartActivityForResult(),
@@ -12379,6 +12453,53 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			"MusicPlayer (RemoteControl)", MusicPlayerRemoteControlActivity.class,
 	};
 
+	private MusicService mServiceBinder;
+	private ServiceConnection myConnection = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder binder) {
+			final String TAG = "onServiceConnected";
+			String dbMsg = "";
+			try{
+				mServiceBinder = ((MusicService.MyBinder) binder).getService();
+				dbMsg += mServiceBinder.getClass().getName();
+				exoPlayer =mServiceBinder.exoPlayer;
+				dbMsg += ",exoPlayer="+ exoPlayer;
+				myLog(TAG, dbMsg);
+			}catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+
+		}
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			final String TAG = "onServiceDisconnected";
+			String dbMsg = "";
+			try{
+				dbMsg += "exoPlayer="+ mServiceBinder.exoPlayer;
+				mServiceBinder = null;
+				dbMsg += ">>"+ mServiceBinder.exoPlayer;
+				myLog(TAG, dbMsg);
+			}catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+		}
+	};
+
+	/**MusicServiceをbindする*/
+	public void doBindService(){
+		final String TAG = "doBindService";
+		String dbMsg = "";
+		try{
+			Intent intent = new Intent(this, MusicService.class);
+			dbMsg += "、intent="+ intent;
+			boolean isBibd = bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
+			dbMsg += ">>isBibd="+ isBibd;
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
 //Permission確認、レシーバー破棄、起動中のサービス確認、スレッド起動確認、リスト画面の構成物読み込み、getPList()	へ
 	@Override
 	public void onCreate(Bundle savedInstanceState) {									//①起動
@@ -12560,8 +12681,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			});
 			registerForContextMenu(lvID);							//コンテキストメニュー
 			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
-			playerView = list_player.findViewById(R.id.player_view);
-			playerView.setVisibility(View.GONE);
+			playerView = findViewById(R.id.player_view);
+
+//			playerView = list_player.findViewById(R.id.player_view);
+//			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
+////			playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+//			playerView.requestFocus();
+////			playerView.setVisibility(View.GONE);
 			rc_fbace = list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
 			lp_title = list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
 			seekFromUser = false;
@@ -12694,7 +12820,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 				}
 			});
-			lp_quitButton = list_player.findViewById(R.id.quitBt);
+
+			lp_quitButton = findViewById(R.id.quitBt);
 			lp_quitButton.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
 				public void onClick(View v) {	// クリックされた時の処理を記述
 					final String TAG = "onClick";
@@ -12712,12 +12839,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			});
 			rc_fbace.setOnClickListener(this);
-
-
-//			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
-//		//	playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
-//			playerView.requestFocus();
-
 
 //			list_player.setVisibility(View.GONE);  //再生したまま戻って来るまで非表示
 			mainHTF.setOnKeyListener( this);
@@ -12769,7 +12890,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( myPreferences.nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){
 				reqCode = MyConstants.v_artist;
 			}
-
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg += ":"+ ORGUT.sdf_mss.format(end - start) +"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;
 			jyoukyouBunki();
@@ -12801,6 +12921,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
+			if (Build.VERSION.SDK_INT > 23) {
+				initializePlayer();
+				if (playerView != null) {
+					playerView.onResume();
+				}
+			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12826,10 +12952,20 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +="shigot_bangou="+shigot_bangou;
 			receiverSeisei();		//
 			dbMsg +=":レシーバーを生成";
+			if (Build.VERSION.SDK_INT <= 23 || exoPlayer == null) {
+				initializePlayer();
+				if (playerView != null) {
+					playerView.onResume();
+				}
+			}
 			dbMsg +=",NowSavedInstanceState=" + NowSavedInstanceState;
 			if(NowSavedInstanceState == null){
 		//		oFR();
 			}
+			if(mServiceBinder==null){
+				doBindService();
+			}
+
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12845,9 +12981,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
 			dbMsg +="shigot_bangou="+shigot_bangou;/////////////////////////////////////
-//			if( shigot_bangou == quite_me ){					//リスト選択してプレイヤーで終了ボタンをタップするとここに来る
-//				MuList.this.finish();
-//			}
+			if (Build.VERSION.SDK_INT <= 23) {
+				if (playerView != null) {
+					playerView.onPause();
+				}
+				releasePlayer();
+			}
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12862,7 +13001,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
-			myLog(TAG, dbMsg);
+			if (Build.VERSION.SDK_INT > 23) {
+				if (playerView != null) {
+					playerView.onPause();
+				}
+				releasePlayer();
+			}			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -13101,7 +13245,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					if(0L < contentPositionLong){
 						lp_seekBar.setProgress((int) contentPositionLong);
 					}
-					dbMsg += ">>[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+					dbMsg += ">>seek[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+
+					if(mServiceBinder!=null){
+						exoPlayer = mServiceBinder.exoPlayer;
+					}
+					dbMsg += ",exoPlayer=" + exoPlayer;
+					if(exoPlayer != null){
+						playerView.setPlayer(exoPlayer);
+					}
+
 					myLog(TAG, dbMsg);
 				} catch (Exception e) {
 					myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -13312,6 +13465,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			final String TAG = "onReceive";
 			String dbMsg = "[SongSelectReceiver]";
 			try{		// ブロードキャスト受信時の処理（今回は適当）
+		//		dbMsg += ",Class= " + intent.getClass().getName() ;	//android.content.Intentとしか出ない
 				dbMsg += ",Action= " + intent.getAction() ;
 				isPlaying = intent.getBooleanExtra("isPlaying", false);
 				dbMsg += ",isPlaying=" + isPlaying;
@@ -13352,6 +13506,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg +=">アルバム>" + currentAlbumName;
 						}
 					}
+
+
 				}else if(intent.getAction().equals(MusicService.ACTION_STATE_CHANGED)) {
 					isPlaying = intent.getBooleanExtra("isPlaying", false);
 					contentPositionLong = intent.getLongExtra("contentPosition",0L);

@@ -5,16 +5,16 @@
     android:layout_height="56dp"
     android:orientation="horizontal" >
 
-	<androidx.media3.ui.PlayerView
-		android:id="@+id/player_view"
-		android:layout_width="56dp"
-		android:layout_height="56dp"
-		android:layout_gravity="left"
-		android:layout_marginLeft="0dp"
+<!--	<androidx.media3.ui.PlayerView-->
+<!--		android:id="@+id/player_view"-->
+<!--		android:layout_width="56dp"-->
+<!--		android:layout_height="56dp"-->
+<!--		android:layout_gravity="left"-->
+<!--		android:layout_marginLeft="0dp"-->
 
-		app:show_shuffle_button="true"
-		app:show_subtitle_button="true"
-		/>
+<!--		app:show_shuffle_button="true"-->
+<!--		app:show_subtitle_button="true"-->
+<!--		/>-->
 
 	<ImageButton
 		android:id="@+id/rc_rewButton"
@@ -114,17 +114,17 @@
 		android:src="@drawable/ffbtn" />
 
 
-	<LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+<!--	<LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical" >-->
 
-        <ImageButton
-            android:id="@+id/quitBt"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:src="@android:drawable/ic_lock_power_off" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/quitBt"-->
+<!--            android:layout_width="38dp"-->
+<!--            android:layout_height="38dp"-->
+<!--            android:src="@android:drawable/ic_lock_power_off" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 </LinearLayout>

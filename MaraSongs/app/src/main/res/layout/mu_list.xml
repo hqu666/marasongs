@@ -91,14 +91,35 @@
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		tools:listitem="@android:layout/simple_list_item_1"/>
 
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		>
 
-<!--	<androidx.media3.ui.PlayerView-->
-<!--		android:id="@+id/player_view"-->
-<!--		android:layout_width="match_parent"-->
-<!--		android:layout_height="112dp"-->
-<!--		app:show_shuffle_button="true"-->
-<!--		app:show_subtitle_button="true" />-->
+		<androidx.media3.ui.PlayerView
+			android:id="@+id/player_view"
+			android:layout_width="356dp"
+			android:layout_height="112dp"
+			app:show_subtitle_button="true"
+			app:show_vr_button="true" />
 
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+
+			<ImageButton
+				android:id="@+id/quitBt"
+				android:layout_width="38dp"
+				android:layout_height="38dp"
+
+				android:layout_marginTop="74dp"
+				android:accessibilityHeading="false"
+				android:src="@android:drawable/ic_lock_power_off" />
+
+		</LinearLayout>
+	</LinearLayout>
 
 	<include
         android:id="@+id/list_player"

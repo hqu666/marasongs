@@ -2,7 +2,6 @@ package com.hijiyam_koubou.marasongs;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +10,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.browse.MediaBrowser;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.service.media.MediaBrowserService;
 import android.text.TextUtils;
@@ -24,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
@@ -45,13 +43,11 @@ import androidx.media3.exoplayer.util.DebugTextViewHelper;
 import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.session.MediaSession;
 import androidx.media3.session.MediaStyleNotificationHelper;
-import androidx.media3.ui.PlayerView;
 import androidx.preference.PreferenceManager;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.File;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1106,20 +1102,38 @@ public class MusicService extends MediaBrowserService {
          */
     }
 
-    /**バインドを許可する;現在未使用*/
+    private final IBinder mBinder = new MyBinder();
+    /**バインドを許可する*/
     @Override
     public IBinder onBind(Intent intent) {
         final String TAG = "onBind";
         String dbMsg="";
         try{
+            dbMsg="mBinder=" + mBinder;
             myLog(TAG,dbMsg);
             // TODO: Return the communication channel to the service.
             throw new UnsupportedOperationException("Not yet implemented");
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
         }
-        return null;				//サービスの実体を返します
+        return mBinder;				//サービスの実体を返します
     }
+
+    /**このクラスを返す**/
+    public class MyBinder extends Binder {
+        MusicService getService() {
+            final String TAG = "getService";
+            String dbMsg="[MyBinder]";
+            try{
+                dbMsg += ",exoPlayer=" + MusicService.this.exoPlayer;
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG,dbMsg+"で"+e);
+            }
+            return MusicService.this;
+        }
+    }
+
 
     //   @Override
     public MediaSession onGetSession(MediaSession.ControllerInfo info) {
@@ -1137,7 +1151,7 @@ public class MusicService extends MediaBrowserService {
     /**
      * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
      * */
-    protected PlayerView playerView;					//project.PlayerView
+//    protected PlayerView playerView;					//project.PlayerView
     private Tracks lastSeenTracks;
     //  private List<MediaItem> mediaItems = mediaItemList;
 
