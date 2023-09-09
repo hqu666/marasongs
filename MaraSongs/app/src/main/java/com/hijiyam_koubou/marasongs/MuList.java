@@ -12682,7 +12682,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			registerForContextMenu(lvID);							//コンテキストメニュー
 			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
 			playerView = findViewById(R.id.player_view);
-
 //			playerView = list_player.findViewById(R.id.player_view);
 //			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
 ////			playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
@@ -13031,95 +13030,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	Handler mHandler = new Handler();
 	public IntentFilter mFilter;
 
-	/*
-	public class MusicReceiver extends BroadcastReceiver{
-			@Override
-			public void onReceive(Context context, final Intent intent) {
-				mHandler.post(new Runnable() {
-					@SuppressLint("Range")
-					public void run() {
-						final String TAG = "onReceive";
-						String dbMsg = ".[MuList]";
-						try{
-							dbMsg += " , isFocusNow=" + isFocusNow;
-							String state = intent.getStringExtra("state");
-							dbMsg += ",state=" + state;
-							String action = intent.getStringExtra("action");
-							int mcPosition = intent.getIntExtra("mcPosition", 0);		////run[changeCount.MusicService]で取得、sendPlayerState[MusicService]で初期値取得
-							dbMsg += "[再生ポジション=" + mcPosition + "/";
-							IsPlaying = intent.getBooleanExtra("IsPlaying", false);			//再生中か
-							dbMsg +=",IsPlaying= "+ IsPlaying;//ボタンフェイスの変更はクリック時
-							if(IsPlaying){
-								action =  "com.example.android.remotecontrol.ACTION_PLAY";
-								IsPlayingNow = true;		//既に再生中
-//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.play));
-							}else{
-								action =  "com.example.android.remotecontrol.ACTION_PAUSE";
-								IsPlayingNow = false;
-//								MuList.this.lp_ppPButton.setContentDescription(getResources().getText(R.string.pause));
-							}
-							if(isActionChange(action)){
-								SimpleDateFormat dataFormat = new SimpleDateFormat("mm:ss", Locale.JAPAN);
-								String  mcPositionStr = dataFormat.format(mcPosition);
-								dbMsg += " , mcPosition:" + mcPositionStr;            //この文字では設定できない
-								MuList.this.setChronometer(mcPosition ,  IsPlaying );
-								b_action = action;
-							}
-							dbMsg += ",b_action=" + action + ">>" + action;
-							String saisei_fname =intent.getStringExtra("pref_data_url");
-							dbMsg += ",受信ファイル；" + myPreferences.saisei_fname + " を　";
-							if(myPreferences.saisei_fname == null || myPreferences.saisei_fname.equals("")) {
-							}else{
-								String pefName = context.getResources().getString(R.string.pref_main_file);
-								dbMsg += ",前のファイル；" + b_saisei_fname + " を　";
-								if(! myPreferences.saisei_fname.equals(b_saisei_fname)){
-									dbMsg += myPreferences.saisei_fname + "に変更";
-									b_saisei_fname = myPreferences.saisei_fname;
-									mIndex = intent.getIntExtra("mIndex", 0);
-									dbMsg +="[mIndex=" + mIndex + "]";
-									Cursor playingItem = musicPlaylist.getPlaylistItems(Integer.parseInt(myPreferences.nowList_id), mIndex);
-									if (playingItem.moveToFirst()) {
-										creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));        //playingItem.artist;	//クレジットされているアーティスト名
-										dbMsg += " ,クレジット⁼ " + creditArtistName;
-										albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));        //playingItem.album;			//アルバム名
-										dbMsg += " , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-										titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));        //playingItem.title;		//曲名
-										dbMsg += " ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-										int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
-										dbMsg += " ,audioId= " + audioId;
-										Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
-										String dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-//										dbMsg += ".再生時間=" + duration + "[ms]";/////////////////////////////////////
-										lp_artist.setText( creditArtistName);
-										lp_album.setText( albumName);
-										lp_title.setText( titolName);
-										String album_art =intent.getStringExtra("album_art") +"";
-										dbMsg +=",album_art=" + album_art;
-//										if(! album_art.equals("")){
-//											OrgUtil ORGUT = new OrgUtil();				//自作関数集
-//											WindowManager wm = (WindowManager)MuList.this.getSystemService(Context.WINDOW_SERVICE);
-//											Display disp = wm.getDefaultDisplay();
-//											ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
-//											int width = rc_Img.getWidth();
-//											width = width*9/10;
-//											Bitmap mDummyAlbumArt = ORGUT.retBitMap(album_art , width , width , getResources());        //指定したURiのBitmapを返す	 , dHighet , dWith ,
-//											rc_Img.setImageBitmap(mDummyAlbumArt);
-//										}
-										setListPlayer( creditArtistName, albumName, titolName, album_art);
-
-									}
-									playingItem.close();
-								}
-							}
-//							myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG,"で"+e);
-						}
-					}
-				});
-			}
-		}            //MusicPlayerReceiver
-*/
 	/**
 	 * レシーバーを生成
 	 * 呼出し元は	onCreate , mData2Service	rusekiKousin	//onResume , playing 	onClick		keizoku2Service	onStopTrackingTouch	onKey
@@ -13170,29 +13080,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-//	private Handler updateHandler = new Handler() {
-//		@Override
-//		public void handleMessage(Message msg) {
-//			final String TAG = "handleMessage";
-//			String dbMsg = "[updateHandler]";
-//			try{
-//				Bundle bundle = msg.getData();
-//				dbMsg += ",Selected" + lvID.getSelectedItemId() ;
-//				int sIndex =bundle.getInt("mIndex",0);
-//				dbMsg += ",sIndex=" + sIndex ;
-//				lvID.setSelection(sIndex);
-//
-//				String duranationStr = bundle.getString("duranation");
-//				dbMsg += "duranationStr" + duranationStr;
-//				String dStr = sdf_time.format(new Date(Long.valueOf(duranationStr)*1000));
-//				lp_title.setText( dStr);;
-//				myLog(TAG, dbMsg);
-//			} catch (Exception e) {
-//				myErrorLog(TAG ,  dbMsg + "で" + e);
-//			}
-//
-//		}
-//	};
 	//再生曲情報
 	public String nowList_id;
 	public int currentIndex = -1;
@@ -13253,6 +13140,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",exoPlayer=" + exoPlayer;
 					if(exoPlayer != null){
 						playerView.setPlayer(exoPlayer);
+
 					}
 
 					myLog(TAG, dbMsg);

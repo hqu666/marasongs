@@ -25,12 +25,6 @@
 		android:layout_marginLeft="0dp"
 		android:src="@drawable/rewbtn" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/rc_Img"-->
-<!--        android:layout_width="56dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/no_image" />-->
-
     <LinearLayout
         android:id="@+id/rc_fbace"
         android:layout_width="match_parent"
@@ -52,20 +46,6 @@
 			android:marqueeRepeatLimit="marquee_forever"
 			android:scrollHorizontally="true"
 			android:singleLine="true" />
-
-<!--		<TextView-->
-<!--            android:id="@+id/artist"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--			android:layout_weight="1"-->
-<!--			android:ellipsize="marquee"-->
-<!--			android:fadingEdge="horizontal"-->
-<!--			android:marqueeRepeatLimit="marquee_forever"-->
-<!--			android:scrollHorizontally="true" -->
-<!--			android:focusable="true"-->
-<!--			android:focusableInTouchMode="true" -->
-<!--			android:singleLine="true" />-->
-
 
 		<SeekBar
 			android:id="@+id/seekBar"

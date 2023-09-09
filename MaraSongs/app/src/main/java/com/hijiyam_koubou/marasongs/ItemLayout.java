@@ -227,7 +227,7 @@ public class ItemLayout extends LinearLayout {							//Custom View
 				}
 				break;
 			}
-	//		myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		} catch (Exception e) {		//汎用
 			myErrorLog(TAG,"[ItemLayout]"+ dbMsg+"で"+e.toString());
 		}
