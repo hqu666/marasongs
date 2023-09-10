@@ -6,74 +6,92 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
-<!--    <TextView-->
-<!--        android:id="@+id/exo_titol"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_weight="1"-->
-<!--        android:text="exo_titol"-->
-<!--        android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
-<!--        tools:ignore="MissingConstraints" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="27dp"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/exo_rew"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@null"
-            android:contentDescription="no"
-            android:src="@drawable/media3_notification_seek_to_previous" />
-        <LinearLayout
+        <TextView
+            android:id="@+id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
-<!--            <SeekBar-->
-<!--                android:id="@+id/exo_progress"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                tools:ignore="MissingConstraints"-->
-<!--                tools:layout_editor_absoluteX="60dp"-->
-<!--                tools:layout_editor_absoluteY="441dp" />-->
-            <LinearLayout
-                android:layout_width="294dp"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            android:lines="1"
+            android:text="position"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:ignore="MissingConstraints" />
 
-                <TextView
-                    android:id="@+id/exo_position"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="position"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    tools:ignore="MissingConstraints" />
+        <androidx.media3.ui.DefaultTimeBar
+            android:id="@+id/exo_progress_placeholder"
+            android:layout_width="220dp"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
 
-                <TextView
-                    android:id="@+id/exo_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="duration" />
+        <TextView
+            android:id="@+id/exo_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:gravity="right"
+            android:text="duration" />
 
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/exo_ffwd"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@null"
-            android:contentDescription="no"
-            android:src="@drawable/media3_notification_seek_to_next" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="no"
+                android:src="@drawable/media3_notification_seek_to_previous" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/exo_play"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:background="@null"-->
+<!--                android:contentDescription="no"-->
+<!--                android:src="@drawable/media3_notification_play" />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/exo_titol"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="exo_titol"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+<!--                <TextView-->
+<!--                    android:id="@+id/exo_subtitle"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="exo_subtitle" />-->
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/exo_next"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="no"
+                android:src="@drawable/media3_notification_seek_to_next" />
+        </LinearLayout>
+    </LinearLayout>
 
 
     <!--    <ImageButton-->
@@ -85,12 +103,6 @@
     <!--        tools:layout_editor_absoluteX="1dp"-->
     <!--        tools:layout_editor_absoluteY="471dp" />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/exo_subtitle"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_weight="1"-->
-<!--        android:text="exo_subtitle" />-->
 
 
     <!--    <ImageButton-->
