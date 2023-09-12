@@ -201,16 +201,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public LinearLayout list_player;		//プレイヤーのインクルード
 //	public ImageButton lp_ppPButton;			//プレイヤーの再生/停止ボタン
 	public ImageButton lp_quitButton;					//プレイヤーの終了ボタン
-	public TextView lp_artist ;					//プレイヤーのアーティスト表示
-	public TextView lp_duranation ;					//プレイヤーのアルバム表示
-	public TextView lp_title ;						//プレイヤーのタイトル表示
-	public SeekBar lp_seekBar;
-	public Chronometer lp_chronometer;		//プレイヤーの再生ポジション表示
-	public ImageButton lp_rewButton;
-	public ImageButton lp_ffButton;
-	public LinearLayout rc_fbace;			//プレイヤーフィールド部の土台;クリックの反応部
 	protected PlayerView playerView;					//project.PlayerView
-
+	protected PlayerView pv_bt;					//アートワーク、再生ボタン専用
+	public TextView lp_title ;						//プレイヤーのタイトル表示
+	public TextView lp_subtitol ;					//プレイヤーのアーティスト表示
+//	public LinearLayout rc_fbace;			//プレイヤーフィールド部の土台;クリックの反応部
+	
 	public List<String> plNameSL=null;					//プレイリスト名用簡易リスト
 	public List<Map<String, Object>> plNameAL;			//プレイリスト名用リスト
 	public List<String> plSL;					//プレイリスト用簡易リスト
@@ -5038,7 +5034,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				exoPlayer.setPlayWhenReady(startAutoPlay);
 //				playerView.setPlayer(exoPlayer);
 //				configurePlayerWithServerSideAdsLoader();
-//		//		debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_artist);			//debugTextView
+//		//		debugViewHelper = new DebugTextViewHelper(exoPlayer, lp_subtitol);			//debugTextView
 //		//		debugViewHelper.start();
 //			}
 ////			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
@@ -5933,6 +5929,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "headClickAction";
 		String dbMsg = "";
 		try{
+	//		list_player.setVisibility(View.GONE);
 			dbMsg = "操作中のリスト="+sousalistName;////////"リスト；parent="+parent+",view="+view+
 			if( sousalistName.equals(getResources().getString(R.string.listmei_zemkyoku)) ){		// 全曲リストのアーティスト選択
 				dbMsg +=",現在;reqCode=" + reqCode + ",albumArtist=" + MuList.this.albumArtist;////////////////////////////////////
@@ -7907,8 +7904,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
 				Uri dataUri = Uri.parse(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)));
 				String dataFN = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-				lp_artist.setText( creditArtistName);
-				lp_title.setText( titolName);
+//				lp_subtitol.setText( creditArtistName);
+//				lp_title.setText( titolName);
 				if ( albumArt ==null ) {
 					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
 					dbMsg +=">>" + albumArt ;/////////////////////////////////////
@@ -12081,9 +12078,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",artistMei= " + artistMei;
 			dbMsg +=",albumMei= " + albumMei;
 			dbMsg +=",titolMei= " + titolMei;
-			lp_artist.setText(artistMei);									//プレイヤーのアーティスト表示
-	//		lp_album.setText(albumMei);									//プレイヤーのアルバム表示
 			lp_title.setText(titolMei);										//プレイヤーのタイトル表示
+			lp_subtitol.setText(artistMei);									//プレイヤーのアーティスト表示
+//	//		lp_album.setText(albumMei);									//プレイヤーのアルバム表示
 		//	dbMsg +=",albumArt= " + albumArt;
 //			if( albumArt != null  ){
 //				ImageView rc_Img = findViewById(R.id.rc_Img);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
@@ -12680,147 +12677,19 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 			});
 			registerForContextMenu(lvID);							//コンテキストメニュー
+			seekFromUser = false;
+			pousePosition=0;
 			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
-			playerView = findViewById(R.id.player_view);
-//			playerView = list_player.findViewById(R.id.player_view);
+			playerView = list_player.findViewById(R.id.player_view);
+			pv_bt = list_player.findViewById(R.id.pv_bt);
+			lp_title = list_player.findViewById(R.id.titol_tv);
+			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
 //			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
 ////			playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
 //			playerView.requestFocus();
 ////			playerView.setVisibility(View.GONE);
-			rc_fbace = list_player.findViewById(R.id.rc_fbace);		//プレイヤーフィールド部の土台
-			lp_title = list_player.findViewById(R.id.title);										//プレイヤーのタイトル表示
-			seekFromUser = false;
-			lp_seekBar = list_player.findViewById(R.id.seekBar);
-			lp_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-				/**ツマミのドラッグを開始*/
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-					final String TAG = "onStartTrackingTouch";
-					String dbMsg = "[SeekBarChange]";
-					try{
-						seekProgress = seekBar.getProgress();
-						dbMsg +="[" + seekProgress +"/"+ seekBar.getMax() + "]";
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
 
-				/**ツマミの位置が変化した*/
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-					final String TAG = "onProgressChanged";
-					String dbMsg = "[SeekBarChange]";
-					try{
-						dbMsg +="[" +seekBar.getProgress() +"/"+ seekBar.getMax() + "]";
-						dbMsg +=">>" +progress +",fromUser="+ fromUser;
-						if(fromUser){
-							seekFromUser = true;
-							lp_chronometer.setBase(SystemClock.elapsedRealtime()-progress);
-						}
-//						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-
-				/**ツマミのドラッグを終了*/
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					final String TAG = "onStopTrackingTouch";
-					String dbMsg = "[SeekBarChange]";
-					try{
-						seekProgress = seekBar.getProgress();
-						dbMsg +="[" + seekProgress +"/"+ seekBar.getMax() + "]";
-						if(MPSIntent != null){
-							MPSIntent.setAction(MusicService.ACTION_SEEK);
-							MPSIntent.putExtra("seekProgress",seekProgress);
-							MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-							dbMsg += " ,MPSName=" + MPSName + "でstartService";
-						}else{
-							dbMsg += ",MPSIntent==null";
-						}
-						seekFromUser = false;
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-			});
-			lp_duranation = list_player.findViewById(R.id.duranation);									//プレイヤーのアルバム表示
-			lp_chronometer = list_player.findViewById(R.id.chronometer);		//プレイヤーの再生ポジション表示
-			pousePosition=0;
-			lp_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-				@Override
-				public void onChronometerTick(Chronometer chronometer) {
-					final String TAG = "onChronometerTick";
-					String dbMsg = "[lp_chronometer]";
-					try{
-						String chronometerStr = (String) chronometer.getText();
-						dbMsg +=",getBase="+chronometer.getBase()+ ",text="+chronometerStr;
-						dbMsg +=",isPlaying="+isPlaying;
-						dbMsg +=",contentPositionLong="+contentPositionLong;
-						String[] chronometerStrs = chronometerStr.split(":");
-						int minitInt = 0;
-						if(!chronometerStrs[0].equals("00")){
-							minitInt = Integer.parseInt( chronometerStrs[0]) * 60;
-						}
-						dbMsg +=",minitInt="+minitInt;
-						int secInt =0;
-						if(!chronometerStrs[1].equals("00")){
-							secInt = Integer.parseInt( chronometerStrs[1]);
-						}
-						dbMsg +=",secInt="+secInt;
-						seekProgress = (minitInt+secInt)*1000;
-						dbMsg +=">>"+seekProgress;
-						seekChangedInfo();
-						dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
-//						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-			});
-			lp_rewButton = list_player.findViewById(R.id.rc_rewButton);
-			lp_rewButton.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
-				public void onClick(View v) {	// クリックされた時の処理を記述
-					final String TAG = "onClick";
-					String dbMsg = "[lp_rewButton]";
-					try{
-						if(MPSIntent != null){
-							MPSIntent.setAction(MusicService.ACTION_REWIND);
-							MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-							dbMsg += " ,MPSName=" + MPSName + "でstartService";
-						}else{
-							dbMsg += ",MPSIntent==null";
-						}
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-			});
-			lp_ffButton = list_player.findViewById(R.id.rc_ffButton);
-			lp_ffButton.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
-				public void onClick(View v) {	// クリックされた時の処理を記述
-					final String TAG = "onClick";
-					String dbMsg = "[lp_ffButton]";
-					try{
-						if(MPSIntent != null){
-							MPSIntent.setAction(MusicService.ACTION_SKIP);
-							MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-							dbMsg += " ,MPSName=" + MPSName + "でstartService";
-						}else{
-							dbMsg += ",MPSIntent==null";
-						}
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-			});
-
-			lp_quitButton = findViewById(R.id.quitBt);
+			lp_quitButton = list_player.findViewById(R.id.quitBt);
 			lp_quitButton.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
 				public void onClick(View v) {	// クリックされた時の処理を記述
 					final String TAG = "onClick";
@@ -12837,9 +12706,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					}
 				}
 			});
-			rc_fbace.setOnClickListener(this);
 
-//			list_player.setVisibility(View.GONE);  //再生したまま戻って来るまで非表示
 			mainHTF.setOnKeyListener( this);
 			//ヘッダー部分のロングタップ/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			mainHTF.setOnLongClickListener(new View.OnLongClickListener() {	// ボタンが長押しクリックされた時のハンドラ
@@ -13069,7 +12936,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				unregisterReceiver(mReceiver);
 				mReceiver = null;
 				dbMsg += ">>" + mReceiver;
-				list_player.setVisibility(View.GONE);
+//				list_player.setVisibility(View.GONE);
 			} else{
 				dbMsg += "mReceiver = null";
 			}
@@ -13112,27 +12979,29 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",nowList_id= " + nowList_id;
 					dbMsg += ",currentIndex=" + currentIndex ;
 					String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
+					list_player.setVisibility(View.VISIBLE);
+					dbMsg += ",wStr=" + wStr ;
 					lp_title.setText(wStr);
-					dbMsg += ",duranationStr=" + duranationStr;
-					lp_duranation.setText( duranationStr);
+//					dbMsg += ",duranationStr=" + duranationStr;
+//					lp_duranation.setText( duranationStr);
 
-					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
-					lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″から開始
-					chronometerStopTime= lp_chronometer.getBase();
-					dbMsg += ">>"+lp_chronometer.getBase() + ",text="+lp_chronometer.getText();
-					dbMsg += ",isPlaying=" + isPlaying;
-					if(isPlaying){
-						lp_chronometer.start();
-					}else{
-						lp_chronometer.stop();
-					}
-					lp_seekBar.setProgress(0);
-					lp_seekBar.setMax((int) duranationLong);
-					dbMsg += ",contentPositionLong= " + contentPositionLong;
-					if(0L < contentPositionLong){
-						lp_seekBar.setProgress((int) contentPositionLong);
-					}
-					dbMsg += ">>seek[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+//					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
+//					lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″から開始
+//					chronometerStopTime= lp_chronometer.getBase();
+//					dbMsg += ">>"+lp_chronometer.getBase() + ",text="+lp_chronometer.getText();
+//					dbMsg += ",isPlaying=" + isPlaying;
+//					if(isPlaying){
+//						lp_chronometer.start();
+//					}else{
+//						lp_chronometer.stop();
+//					}
+//					lp_seekBar.setProgress(0);
+//					lp_seekBar.setMax((int) duranationLong);
+//					dbMsg += ",contentPositionLong= " + contentPositionLong;
+//					if(0L < contentPositionLong){
+//						lp_seekBar.setProgress((int) contentPositionLong);
+//					}
+//					dbMsg += ">>seek[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 
 					if(mServiceBinder!=null){
 						exoPlayer = mServiceBinder.exoPlayer;
@@ -13140,7 +13009,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",exoPlayer=" + exoPlayer;
 					if(exoPlayer != null){
 						playerView.setPlayer(exoPlayer);
-
+						pv_bt.setPlayer(exoPlayer);
+						String subTitol = albumTitle + " - " + albumTitle;
+						dbMsg += ",subTitol=" + subTitol;
+						lp_subtitol.setText(subTitol);									//プレイヤーのアーティスト表示
 					}
 
 					myLog(TAG, dbMsg);
@@ -13160,34 +13032,34 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ",isPlaying=" + b_isPlaying+ ",>>" + isPlaying;
 				dbMsg += "[" + contentPositionLong + "/" + duranationLong + "]chronometerStopTime=" + chronometerStopTime;
 				dbMsg += ",contentPositionLong= " + contentPositionLong;
-				dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
-				if(! lp_chronometer.getText().equals("00:00")){
-					lp_chronometer.setBase(SystemClock.elapsedRealtime()-contentPositionLong);
-				}
-//				if(0<contentPositionLong){
-//					lp_chronometer.setBase(SystemClock.elapsedRealtime() - chronometerStopTime);
-//				}else{
-//					lp_chronometer.setBase(SystemClock.elapsedRealtime()+contentPositionLong);				//”00:00″から開始
+//				dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
+//				if(! lp_chronometer.getText().equals("00:00")){
+//					lp_chronometer.setBase(SystemClock.elapsedRealtime()-contentPositionLong);
 //				}
-				dbMsg += ">>" + lp_chronometer.getBase() +  ",text="+lp_chronometer.getText();
-				chronometerStopTime= lp_chronometer.getBase();
-
-				lp_seekBar.setProgress((int) contentPositionLong);
-				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
-				if(isPlaying){
-					if(contentPositionLong == 0L){
-						lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″を撮り直し
-					}
-//					if(lp_seekBar.getProgress() == 0){
-//						startLong = SystemClock.elapsedRealtime();
-//					}else{
-//						reStartLong = SystemClock.elapsedRealtime();
+////				if(0<contentPositionLong){
+////					lp_chronometer.setBase(SystemClock.elapsedRealtime() - chronometerStopTime);
+////				}else{
+////					lp_chronometer.setBase(SystemClock.elapsedRealtime()+contentPositionLong);				//”00:00″から開始
+////				}
+//				dbMsg += ">>" + lp_chronometer.getBase() +  ",text="+lp_chronometer.getText();
+//				chronometerStopTime= lp_chronometer.getBase();
+//
+//				lp_seekBar.setProgress((int) contentPositionLong);
+//				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+//				if(isPlaying){
+//					if(contentPositionLong == 0L){
+//						lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″を撮り直し
 //					}
-					lp_chronometer.start();
-				}else{
-					pousePosition=lp_seekBar.getProgress();
-					lp_chronometer.stop();
-				}
+////					if(lp_seekBar.getProgress() == 0){
+////						startLong = SystemClock.elapsedRealtime();
+////					}else{
+////						reStartLong = SystemClock.elapsedRealtime();
+////					}
+//					lp_chronometer.start();
+//				}else{
+//					pousePosition=lp_seekBar.getProgress();
+//					lp_chronometer.stop();
+//				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -13203,8 +13075,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String dbMsg = "[seekChangedInfo]";
 			try{
 				dbMsg += ",seekProgress=" + seekProgress;
-				lp_seekBar.setProgress((int) seekProgress);
-				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
+//				lp_seekBar.setProgress((int) seekProgress);
+//				dbMsg += ",seekBar[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
 //				myLog(TAG, dbMsg);
 			} catch (Exception e) {
 				myErrorLog(TAG ,  dbMsg + "で" + e);
