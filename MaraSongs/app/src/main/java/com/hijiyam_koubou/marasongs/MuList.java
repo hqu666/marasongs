@@ -199,12 +199,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public int headImgH = 52;			//ヘッダーのアイコン高さ
 	public int headImgW = 52;			//ヘッダーのアイコン高さ
 	public LinearLayout list_player;		//プレイヤーのインクルード
-//	public ImageButton lp_ppPButton;			//プレイヤーの再生/停止ボタン
 	public ImageButton lp_quitButton;					//プレイヤーの終了ボタン
 	protected PlayerView playerView;					//project.PlayerView
 	protected PlayerView pv_bt;					//アートワーク、再生ボタン専用
 	public TextView lp_title ;						//プレイヤーのタイトル表示
 	public TextView lp_subtitol ;					//プレイヤーのアーティスト表示
+	public ImageButton lp_album_rew_bt ;
+	public ImageButton lp_album_ff_bt ;
+
 //	public LinearLayout rc_fbace;			//プレイヤーフィールド部の土台;クリックの反応部
 	
 	public List<String> plNameSL=null;					//プレイリスト名用簡易リスト
@@ -12684,6 +12686,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			pv_bt = list_player.findViewById(R.id.pv_bt);
 			lp_title = list_player.findViewById(R.id.titol_tv);
 			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
+			ImageButton lp_album_rew_bt = list_player.findViewById(R.id.rc_rewButton);
+			ImageButton lp_album_ff_bt = list_player.findViewById(R.id.rc_ffButton);
+			lp_album_rew_bt.setVisibility(View.GONE);
+			lp_album_ff_bt.setVisibility(View.GONE);
 //			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
 ////			playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
 //			playerView.requestFocus();
@@ -12929,7 +12935,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	public void receiverHaki(){		//レシーバーを破棄
 		final String TAG = "receiverHaki";
-		String dbMsg= "[MaraSonActivity]";/////////////////////////////////////
+		String dbMsg= "";
 		try{
 			dbMsg += "mReceivert=" + mReceiver;
 			if( mReceiver != null ){

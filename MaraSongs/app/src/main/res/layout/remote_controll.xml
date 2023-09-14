@@ -35,6 +35,14 @@
 				<!--        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
 				<!--		https://qiita.com/emusute1212/items/81061b3de48f2b0f51e6-->
 				<!--		https://tech.gamewith.co.jp/entry/2019/03/25/103300-->
+			<ImageButton
+				android:id="@+id/rc_rewButton"
+				android:layout_width="48dp"
+				android:layout_height="wrap_content"
+				android:layout_gravity="left"
+				android:layout_marginLeft="0dp"
+				android:src="@drawable/rewbtn" />
+
 			<androidx.media3.ui.PlayerView
 				android:id="@+id/player_view"
 				android:layout_width="match_parent"
@@ -57,11 +65,17 @@
 				<!--		app:auto_show="true"-->
 				<!--		app:show_subtitle_button="true"-->
 				<!--		app:show_vr_button="true"-->
+
+			<ImageButton
+				android:id="@+id/rc_ffButton"
+				android:layout_width="48dp"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ffbtn" />
+
 			<LinearLayout
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:layout_gravity="bottom|right"
-				android:layout_weight="3"
 				android:orientation="vertical">
 
 				<ImageButton
@@ -86,14 +100,6 @@
 <!--		</LinearLayout>-->
 
 
-	<!--	<ImageButton-->
-	<!--		android:id="@+id/rc_rewButton"-->
-	<!--		android:layout_width="56dp"-->
-	<!--		android:layout_height="wrap_content"-->
-	<!--		android:layout_gravity="left"-->
-	<!--		android:layout_margin="2dp"-->
-	<!--		android:layout_marginLeft="0dp"-->
-	<!--		android:src="@drawable/rewbtn" />-->
 
 	<!--    <LinearLayout-->
 	<!--        android:id="@+id/rc_fbace"-->
@@ -153,28 +159,6 @@
 	<!--				android:singleLine="true" />-->
 	<!--		</LinearLayout>-->
 	<!--    </LinearLayout>-->
-
-	<!--	<ImageButton-->
-	<!--		android:id="@+id/rc_ffButton"-->
-	<!--		android:layout_width="56dp"-->
-	<!--		android:layout_height="wrap_content"-->
-	<!--		android:layout_gravity="left"-->
-	<!--		android:layout_margin="2dp"-->
-	<!--		android:layout_marginLeft="0dp"-->
-	<!--		android:src="@drawable/ffbtn" />-->
-
-
-	<!--	<LinearLayout-->
-	<!--        android:layout_width="wrap_content"-->
-	<!--        android:layout_height="match_parent"-->
-	<!--        android:orientation="vertical" >-->
-
-	<!--        <ImageButton-->
-	<!--            android:id="@+id/quitBt"-->
-	<!--            android:layout_width="38dp"-->
-	<!--            android:layout_height="38dp"-->
-	<!--            android:src="@android:drawable/ic_lock_power_off" />-->
-
 	<!--    </LinearLayout>-->
 
 </LinearLayout>

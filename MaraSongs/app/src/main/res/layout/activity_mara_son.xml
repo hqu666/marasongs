@@ -320,12 +320,19 @@
         android:orientation="vertical">
         <!--android:gravity="bottom"-->
 
-        <SeekBar
-            android:id="@+id/saiseiSeekMP"
+<!--        <SeekBar-->
+<!--            android:id="@+id/saiseiSeekMP"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="80px"/>-->
+
+        <include
+            android:id="@+id/remote_controll"
+            layout="@layout/remote_controll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="80px"/>
-        <!-- android:progressDrawable="@drawable/pp_progress" -->
+            />
+
 
         <LinearLayout
             android:id="@+id/playPanel"

@@ -1568,6 +1568,9 @@ public class MusicService extends MediaBrowserService {
             }else{
                 dbMsg += ",player生成済み";
             }
+            Intent intent = new Intent(this, MaraSonActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
 
             exoPlayer.prepare();
             updateButtonVisibility();
@@ -1575,8 +1578,7 @@ public class MusicService extends MediaBrowserService {
             mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
             // Notification作成//////////////////////////////////////////////////////////////
             MediaStyleNotificationHelper.MediaStyle mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
-//            mediaStyle.setShowActionsInCompactView(0,1,2);              //,3,4
-            //  https://developer.android.com/training/notify-user/expanded?hl=ja
+//            PendingIntent pendingIntentList = PendingIntent.getActivity(context, REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE);
 
             notificationBuilder = new NotificationCompat.Builder(context, channelId);
             notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
@@ -1595,6 +1597,8 @@ public class MusicService extends MediaBrowserService {
             notificationBuilder.setContentText(artistName+" - "+ albumName);
             notificationBuilder.setSound(null);         //通知音を消す
             notificationBuilder.setSilent(true);
+
+            notificationBuilder.setContentIntent(pendingIntent);
             //        notificationBuilder.setLargeIcon(albumArtBitmap);
 
             notification = notificationBuilder.build();
