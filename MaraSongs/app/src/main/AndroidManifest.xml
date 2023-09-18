@@ -60,6 +60,7 @@
             android:permission="TODO" >
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService"/>
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
@@ -100,7 +101,6 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -155,6 +155,12 @@
 
 <!--Android 12から   android:exported="false"　で外部アプリに公開するか　を明示的に宣言-->
         <receiver android:name=".MuList$SongSelectReceiver"
+            android:exported="false">
+            <!--                    <intent-filter>-->
+            <!--                        <action android:name="android.intent.action.MEDIA_BUTTON" />-->
+            <!--                    </intent-filter>-->
+        </receiver>
+        <receiver android:name=".MaraSonActivity$MusicReceiver"
             android:exported="false">
             <!--                    <intent-filter>-->
             <!--                        <action android:name="android.intent.action.MEDIA_BUTTON" />-->

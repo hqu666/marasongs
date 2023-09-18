@@ -136,9 +136,13 @@ public class MusicService extends MediaBrowserService {
     /** 選曲された楽曲を読み込ませたプレイヤーを作製 */
     public static final String ACTION_SET_SONG= "SET_SONG";
     public static final int MS_SET_SONG = MS_MAKE_ALBUM_LIST + 1;
+    /** 選曲された楽曲の情報をブロードキャストさせる */
+    public static final String ACTION_GET_SONG= "GET_SONG";
+    public static final int MS_GET_SONG = MS_SET_SONG + 1;
+
     /**再生状況変化*/
     public static final String ACTION_STATE_CHANGED = "com.example.android.remotecontrol.ACTION_STATE_CHANGED";
-    public static final int MS_STATE_CHANGED = MS_SET_SONG + 1;
+    public static final int MS_STATE_CHANGED = MS_GET_SONG + 1;
     /**再生停止トグル*/
     public static final String ACTION_PLAYPAUSE = "com.example.android.remotecontrol.ACTION_PLAYPAUSE";
     public static final int MS_PLAYPAUSE = MS_STATE_CHANGED + 1;
@@ -874,6 +878,16 @@ public class MusicService extends MediaBrowserService {
                         isListChange = true;
                         reNewAllSong(setArtistName,setAlbumName);
                     }
+                }else if(action.equals(ACTION_GET_SONG)){
+                    dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
+                    int reqIndex = intent.getIntExtra("mIndex", 0);
+                    dbMsg += ",reqIndex=" + reqIndex + "曲目";
+                    if(reqIndex != mIndex){
+                        dbMsg += ",mIndex=" + mIndex;
+                        mIndex = reqIndex;
+                        dbMsg += ">>" + mIndex + "曲目";
+                    }
+                    sendSongInfo(mIndex);
                 }else{
                     repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し
                     if(! currentListName.equals(setListName)){
@@ -1466,7 +1480,7 @@ public class MusicService extends MediaBrowserService {
                 exoPlayer = new ExoPlayer.Builder(context)                     //MusicService.this
                         .setHandleAudioBecomingNoisy(true)
                         .build();
-                dbMsg += "[" +mIndex + "/" + mediaItemList.size() + "件]" + saiseiJikan + "からrepeatMode=" + repeatMode;
+                dbMsg += ",myPreferences[" + myPreferences.nowList_id + "]" + myPreferences.nowList + "の" + "[" +mIndex + "/" + mediaItemList.size() + "番目]" + saiseiJikan + "からrepeatMode=" + repeatMode;
                 exoPlayer.setMediaItems(mediaItemList, true);
                 exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
                 if(currentListName.equals(getResources().getString(R.string.listmei_zemkyoku))) {
@@ -1568,10 +1582,17 @@ public class MusicService extends MediaBrowserService {
             }else{
                 dbMsg += ",player生成済み";
             }
+            dbMsg += ",currentList[" + currentListId + "]" + currentListName + "の" + mIndex + "番目=" + pref_data_url;
             Intent intent = new Intent(this, MaraSonActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("nowList_id",myPreferences.nowList_id);
+            intent.putExtra("nowList",myPreferences.nowList);             //currentListName
+            intent.putExtra("mIndex",mIndex);
+            intent.putExtra("pref_data_url",pref_data_url);
+//            intent.putExtra("nowArtist",sousa_artist);
+//            intent.putExtra("nowAlbum",sousa_alubm);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
-
+                //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
             exoPlayer.prepare();
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
@@ -1579,6 +1600,7 @@ public class MusicService extends MediaBrowserService {
             // Notification作成//////////////////////////////////////////////////////////////
             MediaStyleNotificationHelper.MediaStyle mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
 //            PendingIntent pendingIntentList = PendingIntent.getActivity(context, REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE);
+//              https://developer.android.com/topic/security/risks/pending-intent?hl=ja
 
             notificationBuilder = new NotificationCompat.Builder(context, channelId);
             notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
