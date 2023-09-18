@@ -39,35 +39,35 @@
             android:layout_marginTop="2dp"
             >
 
-            <LinearLayout
-                android:id="@+id/artistCountLL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/artistCountLL"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom">-->
 
-                <TextView
-                    android:id="@+id/artistIDPTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/artistIDPTF"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="right"-->
+<!--                    android:text="@string/pp_zerozrozero"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                <TextView
-                    android:id="@+id/TextView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/srash"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/TextView12"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/srash"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                <TextView
-                    android:id="@+id/artistTotalPTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/artistTotalPTF"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginRight="5dp"-->
+<!--                    android:text="@string/pp_zerozrozero"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
+<!--            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/artist_tv"
@@ -82,6 +82,17 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <ImageButton
+                android:id="@+id/vol_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:adjustViewBounds="true"
+                android:focusableInTouchMode="true"
+                android:longClickable="true"
+                android:scaleType="fitEnd"
+                android:src="@android:drawable/ic_lock_silent_mode_off"/>
+
         </TableRow>
         <!-- android:ellipsize="marquee" -->
         <!-- android:focusable="true" -->
@@ -95,36 +106,36 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp">
 
-            <LinearLayout
-                android:id="@+id/albumCountLL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/albumCountLL"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom">-->
 
-                <TextView
-                    android:id="@+id/albumIDPTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/albumIDPTF"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="right"-->
+<!--                    android:text="@string/pp_zerozrozero"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                <TextView
-                    android:id="@+id/TextView02"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/srash"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/TextView02"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/srash"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                <TextView
-                    android:id="@+id/alubumTotalPTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/alubumTotalPTF"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="bottom"-->
+<!--                    android:layout_marginRight="5dp"-->
+<!--                    android:text="@string/pp_zerozrozero"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
+<!--            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/alubum_tv"
@@ -138,6 +149,28 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <TextView
+                android:id="@+id/vol_tf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="15"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <TextView
+                android:id="@+id/textView81"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            <TextView
+                android:id="@+id/textView82"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:text="15"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </TableRow>
 
         <TableRow
@@ -146,35 +179,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp">
 
-            <LinearLayout
-                android:id="@+id/titolCountLL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/titolCountLL"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom">-->
 
-                <TextView
-                    android:id="@+id/nIDPTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/nIDPTF"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="right"-->
+<!--                    android:text="@string/pp_zerozrozero"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                <TextView
-                    android:id="@+id/nol_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/srash"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/nol_tv"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/srash"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                <TextView
-                    android:id="@+id/tIDPTF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/pp_zerozrozero"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/tIDPTF"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginRight="5dp"-->
+<!--                    android:text="@string/pp_zerozrozero"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
+<!--            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/titol_tv"
@@ -189,85 +222,88 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
+            <LinearLayout
+                android:id="@+id/songCountLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/songIDPTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/TextView03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/srash"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/titolAllPTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/pp_start_tf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/pp_kyoku"
+                    android:textSize="10sp" />
+            </LinearLayout>
         </TableRow>
     </TableLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="0px"
         android:layout_weight="2">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:orientation="vertical">-->
 
-            <!--             <ImageButton -->
-            <!--                 android:id="@+id/lockButton" -->
-            <!--                 android:layout_width="wrap_content" -->
-            <!--                 android:layout_height="wrap_content" -->
-            <!--                 android:nextFocusUp="@id/titolLayauto" -->
-            <!--                 android:scaleType="fitStart" -->
-            <!--                 android:src="@android:drawable/ic_secure" /> -->
+<!--            &lt;!&ndash;             <ImageButton &ndash;&gt;-->
+<!--            &lt;!&ndash;                 android:id="@+id/lockButton" &ndash;&gt;-->
+<!--            &lt;!&ndash;                 android:layout_width="wrap_content" &ndash;&gt;-->
+<!--            &lt;!&ndash;                 android:layout_height="wrap_content" &ndash;&gt;-->
+<!--            &lt;!&ndash;                 android:nextFocusUp="@id/titolLayauto" &ndash;&gt;-->
+<!--            &lt;!&ndash;                 android:scaleType="fitStart" &ndash;&gt;-->
+<!--            &lt;!&ndash;                 android:src="@android:drawable/ic_secure" /> &ndash;&gt;-->
 
-            <ImageButton
-                android:id="@+id/vol_btn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:adjustViewBounds="true"
-                android:focusableInTouchMode="true"
-                android:longClickable="true"
-                android:scaleType="fitEnd"
-                android:src="@android:drawable/ic_lock_silent_mode_off"/>
 
-            <LinearLayout
-                android:id="@+id/vol_ll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/vol_ll"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/vol_tf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:text="15"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--            </LinearLayout>-->
 
-                <TextView
-                    android:id="@+id/textView81"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="/"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView82"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="15"
-                android:textAlignment="textEnd"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-            <ImageButton
-                android:id="@+id/rewPButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginRight="2dp"
-                android:layout_marginBottom="60dp"
-                android:layout_weight="1"
-                android:background="@drawable/color_state"
-                android:baselineAlignBottom="false"
-                android:scaleType="fitEnd"
-                android:src="@drawable/rewbtn"/>
-        </LinearLayout>
+<!--            <ImageButton-->
+<!--                android:id="@+id/rewPButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom"-->
+<!--                android:layout_marginRight="2dp"-->
+<!--                android:layout_marginBottom="60dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:background="@drawable/color_state"-->
+<!--                android:baselineAlignBottom="false"-->
+<!--                android:scaleType="fitEnd"-->
+<!--                android:src="@drawable/rewbtn"/>-->
+<!--        </LinearLayout>-->
 
         <ViewFlipper
             android:id="@+id/pp_vf"
@@ -292,22 +328,22 @@
                 />
         </ViewFlipper>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="right"-->
+<!--            android:orientation="vertical">-->
 
-            <ImageButton
-                android:id="@+id/ffPButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/color_state"
-                android:scaleType="fitStart"
-                android:src="@drawable/ffbtn"/>
-        </LinearLayout>
+<!--            <ImageButton-->
+<!--                android:id="@+id/ffPButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:background="@drawable/color_state"-->
+<!--                android:scaleType="fitStart"-->
+<!--                android:src="@drawable/ffbtn"/>-->
+<!--        </LinearLayout>-->
 
         <!-- android:background="@null" pingの透明部分反映 -->
     </LinearLayout>
@@ -404,66 +440,66 @@
                             android:text="@string/mm_ss"/>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/timeLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        >
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/timeLayout"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        >-->
 
-                        <TextView
-                            android:id="@+id/songIDPTF"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:text="0"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/songIDPTF"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:gravity="right"-->
+<!--                            android:text="0"-->
+<!--                            android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                        <TextView
-                            android:id="@+id/TextView03"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/srash"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/TextView03"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="@string/srash"-->
+<!--                            android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                        <TextView
-                            android:id="@+id/titolAllPTF"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/titolAllPTF"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="0"-->
+<!--                            android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                        <TextView
-                            android:id="@+id/pp_start_tf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:text="@string/pp_kyoku"
-                            android:textSize="10sp"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/pp_start_tf"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="0"-->
+<!--                            android:text="@string/pp_kyoku"-->
+<!--                            android:textSize="10sp"/>-->
 
-                        <TextView
-                            android:id="@+id/saiseiPositionPTF"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.49"
-                            android:gravity="right"
-                            android:text="@string/mm_ss"
-                            android:textAppearance="?android:attr/textAppearanceLarge"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/saiseiPositionPTF"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="0.49"-->
+<!--                            android:gravity="right"-->
+<!--                            android:text="@string/mm_ss"-->
+<!--                            android:textAppearance="?android:attr/textAppearanceLarge"/>-->
 
-                        <TextView
-                            android:id="@+id/TextView01"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/srash"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/TextView01"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="@string/srash"-->
+<!--                            android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-                        <TextView
-                            android:id="@+id/totalTimePTF"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left|right"
-                            android:text="@string/mm_ss"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>
-                    </LinearLayout>
+<!--                        <TextView-->
+<!--                            android:id="@+id/totalTimePTF"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:gravity="left|right"-->
+<!--                            android:text="@string/mm_ss"-->
+<!--                            android:textAppearance="?android:attr/textAppearanceSmall"/>-->
+<!--                    </LinearLayout>-->
 
                     <LinearLayout
                         android:id="@+id/pp_zenkai_ll"
