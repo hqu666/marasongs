@@ -79,7 +79,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
     public boolean pref_notifplayer =true;				//ノティフィケーションプレイヤー</string>
     public String myPFN = "ma_pref";
     public String pref_commmn_music = "";				//音楽ファイルの格納先
-    public String pref_data_url = "";
+    public String nowData = "";
 
     long start;		// 開始時刻の取得
     long startPart;		// 開始時刻の取得
@@ -229,7 +229,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
             all_songs_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.all_songs_file_name) + ".m3u";  //m3u8だとYutbMusicで読み込めない？
             dbMsg += ",全曲リストの汎用ファイル" + all_songs_file_name;
             album_artist_file_name = cContext.getString(R.string.album_artist_file_name);
-            pref_data_url = myPreferences.pref_data_url;
+            nowData = myPreferences.nowData;
 
             album_artist_file_name = pref_commmn_music + File.separator + cContext.getString(R.string.album_artist_file_name);
             dbMsg += ",アーティスト名の汎用ファイル" + album_artist_file_name;

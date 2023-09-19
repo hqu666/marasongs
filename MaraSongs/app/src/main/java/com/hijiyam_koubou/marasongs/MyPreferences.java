@@ -35,7 +35,7 @@ import java.util.Map;
  * 未設定の必須項目は読み込み時に取得
  * **/
 public class MyPreferences{
-	public OrgUtil ORGUT;		//自作関数集                                                 .putString( "pref_data_url",   putString( "data"
+	public OrgUtil ORGUT;		//自作関数集                                                 .putString( "nowData",   putString( "data"
 //	public String PREFS_NAME = "defaults";
 //	public PreferenceManager mPreferenceManager;
 
@@ -118,7 +118,7 @@ public class MyPreferences{
 	 * 	<li>選曲時：MuList.sousinnMaeSyori
 	 * 	<li>アプリ終了時：MusicService.destructionPlayer
 	 * */
-	public int pref_mIndex;
+	public int nowIndex;
 	/**
 	 * 再生中のファイル名
 	 * <ul>書込みは
@@ -126,7 +126,7 @@ public class MyPreferences{
 	 * 	<li>再生曲変更時：MusicService.onMediaItemTransition
 	 * 	<li>アプリ終了時：MusicService.destructionPlayer
 	 * */
-	public String pref_data_url = "";
+	public String nowData = "";
 	public String saisei_fname =null;
 	/**
 	 * 再開時間
@@ -334,14 +334,14 @@ public class MyPreferences{
 				dbMsg +=  nowList;
 			}
 
-			if(keys.get("pref_mIndex") == null ){
-				pref_mIndex =0;
-				dbMsg += "[>>" + pref_mIndex + "]";
-				myEditor.putInt("pref_mIndex", pref_mIndex);
+			if(keys.get("nowIndex") == null ){
+				nowIndex =0;
+				dbMsg += "[>>" + nowIndex + "]";
+				myEditor.putInt("nowIndex", nowIndex);
 				myEditor.apply();
 			}else{
-				pref_mIndex =  Integer.parseInt(keys.get("pref_mIndex").toString());
-				dbMsg += "[" + pref_mIndex + "]";
+				nowIndex =  Integer.parseInt(keys.get("nowIndex").toString());
+				dbMsg += "[" + nowIndex + "]";
 			}
 
 			if(keys.get("pref_file_in") == null ){
@@ -503,10 +503,10 @@ public class MyPreferences{
 					try {
 						if (String.valueOf(keys.get(key)) != null) {
 
-							if (key.equals("pref_data_url")) {
+							if (key.equals("nowData")) {
 								saisei_fname = String.valueOf(keys.get(key));
 								dbMsg += "　は再生中のファイル";
-								pref_data_url = saisei_fname;
+								nowData = saisei_fname;
 							} else if (key.equals("pref_position")) {
 								pref_position = String.valueOf(keys.get(key));
 								dbMsg += " = ";//////////////////

@@ -77,8 +77,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/color_state"
                 android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
@@ -144,8 +142,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/color_state"
                 android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
@@ -217,8 +213,6 @@
                 android:background="@drawable/color_state"
                 android:clickable="true"
                 android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>

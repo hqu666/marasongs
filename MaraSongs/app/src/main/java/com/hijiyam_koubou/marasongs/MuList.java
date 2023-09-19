@@ -677,7 +677,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
 			dbMsg += "]" + myPreferences.nowList;
 			sousalistID=Integer.parseInt(myPreferences.nowList_id);
-			dbMsg += "、再生中のファイル名[" + myPreferences.pref_mIndex + "]" + myPreferences.pref_data_url;
+			dbMsg += "、再生中のファイル名[" + myPreferences.nowIndex + "]" + myPreferences.nowData;
 
 			dbMsg += "、このアプリのバージョンコード=" + myPreferences.pref_sonota_vercord;
 			dbMsg += "、クロスフェード時間=" + myPreferences.pref_gyapless;
@@ -689,7 +689,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "、ランダム再生リストアップ曲数=" + myPreferences.pref_rundam_list_size;	
 			repeatType = myPreferences.repeatType;							//リピート再生の種類
 //			rp_pp = myPreferences.rp_pp;							//2点間リピート中
-	//		String pref_data_url =myPreferences.saisei_fname;				//
+	//		String nowData =myPreferences.saisei_fname;				//
 			pref_zenkai_saiseKyoku = Integer.parseInt(myPreferences.pref_zenkai_saiseKyoku);			//前回の連続再生曲数
 			pref_zenkai_saiseijikann =Integer.parseInt(myPreferences.pref_zenkai_saiseijikann);			//前回の連続再生時間
 			dbMsg += "、前回=" + pref_zenkai_saiseKyoku + "曲、" + pref_zenkai_saiseijikann + "時間";
@@ -745,7 +745,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				chFile3.delete();
 			}
 			dbMsg += ">再生中のリストは[" + myPreferences.nowList_id + "]" + myPreferences.nowList ;
-			String dataFN = getPrefStr( "pref_data_url" ,"" , MuList.this);
+			String dataFN = getPrefStr( "nowData" ,"" , MuList.this);
 			dbMsg += ",dataFN = " + dataFN;
 			if(dataFN.equals("")){
 				dataFN = null;
@@ -2410,7 +2410,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "jyoukyouBunki";
 		String dbMsg = "";
 		try{
-			String dataFN = getPrefStr( "pref_data_url" ,"" , MuList.this);
+			String dataFN = getPrefStr( "nowData" ,"" , MuList.this);
 			dbMsg +="プリファレンス；端末内にあるファイル数=" + pref_file_kyoku + ",更新日=" + myPreferences.pref_file_saisinn;
 			dbMsg +="[" + myPreferences.nowList_id + "]" + myPreferences.nowList;
 			dtitol="";
@@ -2566,8 +2566,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}else if( MuList.this.myPreferences.nowList.equals(getResources().getString(R.string.playlist_namae_saikintuika)) ){
 				readDB_AddNew();							//最近追加リストの読み込み
 			}else if( MuList.this.myPreferences.nowList.equals(getResources().getString(R.string.listmei_zemkyoku)) ){
-				dbMsg +="、再生する曲=" + myPreferences.pref_data_url;
-				wakeUpFromAllSong(myPreferences.pref_data_url);
+				dbMsg +="、再生する曲=" + myPreferences.nowData;
+				wakeUpFromAllSong(myPreferences.nowData);
 	//			readDB();										//全曲リストの読み込み
 			}else{
 				dbMsg +="[" + myPreferences.nowList_id + "]" + myPreferences.nowList + "を作成";
@@ -4485,7 +4485,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	/** 送信前のプリファレンス処理など onCreateで受け取った再生リスト(myPreferences.nowList)と異なる操作結果リストが渡されたら更新 */
 	@SuppressLint("Range")
-	public void sousinnMaeSyori(String pref_data_url ) {										//送信前のプリファレンス処理など
+	public void sousinnMaeSyori(String nowData ) {										//送信前のプリファレンス処理など
 		final String TAG = "sousinnMaeSyori";
 		String dbMsg = "";
 		try{
@@ -4505,8 +4505,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			dbMsg += ">書込み>[" + myPreferences.nowList_id +"]"+ myPreferences.nowList;	////////////////
 			dbMsg += ",rp_pp=" + rp_pp;	////////////////
-			dbMsg += ",pref_data_url= "+ pref_data_url ;////////
-			myEditor.putString( "pref_data_url", String.valueOf(pref_data_url));		//再生中のファイル名
+			dbMsg += ",nowData= "+ nowData ;////////
+			myEditor.putString( "nowData", String.valueOf(nowData));		//再生中のファイル名
 			myPreferences.pref_zenkyoku_list_id = getAllSongItems();
 			dbMsg += " [全曲リスト； " + myPreferences.pref_zenkyoku_list_id + "]";/////////////////////////////////////
 //			mIndex = musicPlaylist.getPlaylistItemOrder(sousalistID,senntakuItem);			//Item.getMPItem( senntakuItem );
@@ -5097,7 +5097,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSIntent.setAction(MusicService.ACTION_SET_SONG);
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			MPSIntent.putExtra("nowList",listName);
-			MPSIntent.putExtra("pref_data_url",dataFN);
+			MPSIntent.putExtra("nowData",dataFN);
 			MPSIntent.putExtra("nowArtist",sousa_artist);
 			MPSIntent.putExtra("nowAlbum",sousa_alubm);
 			MPSIntent.putExtra("mIndex",mIndex);
@@ -5124,7 +5124,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		try{
 			dbMsg +=" 、[ " + myPreferences.nowList_id+ "] " + listName + " の " + mIndex + "番目で"+ dataFN + "の" + saiseiJikan + "から";
-			myEditor.putString ("pref_data_url", dataFN);
+			myEditor.putString ("nowData", dataFN);
 			if(listName.equals(getResources().getString(R.string.listmei_zemkyoku))){
 				myPreferences.nowList_id = "-1";
 				dbMsg +=">>[ " + myPreferences.nowList_id+ "] ";
@@ -5139,7 +5139,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				IsPlaying = false;
 //			}
 			dbMsg += ",プレイリスト[ID=" + myPreferences.nowList_id + "]" + listName;
-			dbMsg += "]pref_data_url=" + dataFN;
+			dbMsg += "]nowData=" + dataFN;
 			dbMsg += " の" +  saiseiJikan +"から再生";
 			toPlaying = send2Service( dataFN,listName,toPlaying);
 			dbMsg += ",toPlaying=" + toPlaying;
@@ -5756,7 +5756,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //						dbMsg +=" ,audioID= " + audioID ;
 						String dataFN = treeEntry.getDataURL();      //null?
 						dbMsg +=")" + dataFN ;
-						setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
+						setPrefStr( "nowData" ,  dataFN , MuList.this);
 						setPrefInt("pref_position", 0, MuList.this);
 //						duration = treeEntry.getDuration();
 //						dbMsg +=",再生時間=" + duration ;
@@ -9509,7 +9509,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MyUtil MyUtil = new MyUtil();
 			String albumArtist = MyUtil.getAlbumArtist(cursor);
 			dbMsg +=",albumArtist="+ albumArtist;
-			String dataFN = getPrefStr( "pref_data_url" ,"" , MuList.this);
+			String dataFN = getPrefStr( "nowData" ,"" , MuList.this);
 			ZenkyokuHelper workHelper = new ZenkyokuHelper(MuList.this , workTable);
 			SQLiteDatabase workDb = workHelper.getWritableDatabase();
 			workHelper.onCreate(workDb);
@@ -9617,7 +9617,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "を書込み" + retBool + "]";
 			if( 0 < mIndex){
 				dbMsg += "listTopFname=" + MuList.this.listTopFname;							//リストの先頭ファイル名（プレイリスト作成時など）
-				retBool = setPrefStr( "pref_data_url" , listTopFname , MuList.this);        //プリファレンスの読込み
+				retBool = setPrefStr( "nowData" , listTopFname , MuList.this);        //プリファレンスの読込み
 				dbMsg += "を書込み" + retBool;
 			}
 
@@ -10125,7 +10125,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg += ",一曲目;dataFN=" + dataFN;			//[42529]content://media/external/audio/playlists/42529
 				sousalistID = tuikaSakiListID;		//最終操作設定値へ
 				sousalistName = tuikaSakiListName;
-				setPrefStr( "pref_data_url" ,  dataFN , MuList.this);
+				setPrefStr( "nowData" ,  dataFN , MuList.this);
 				setPrefInt("pref_position" ,  0 , MuList.this);
 				back2Player( dataFN);												//プレイヤーにuriを送る
 			}
@@ -10406,7 +10406,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg += "渡されたリスト名="+ MuList.this.myPreferences.nowList;/////////////////////////////////////
 						dbMsg += "、すでにリクエスト実行中="+ MuList.this.requestJikkoucyuu;/////////////////////////////////////
 						if( ! MuList.this.requestJikkoucyuu){					// && ! myPreferences.nowList.equals(getResources().getString(R.string.playlist_namae_request))
-							String dataFN = getPrefStr( "pref_data_url" ,  "" , MuList.this);
+							String dataFN = getPrefStr( "nowData" ,  "" , MuList.this);
 							dbMsg += ",保留["+ myPreferences.nowList_id + "]"+ myPreferences.nowList + ",dataFN = "+ dataFN ;////////
 							myEditor.putString( "maeList", String.valueOf(MuList.this.myPreferences.nowList));
 							myEditor.putString( "maeList_id", String.valueOf(myPreferences.nowList_id));		//☆intで書き込むとcannot be cast
@@ -11092,7 +11092,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		String dbMsg = "";
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;
-			String dataFN = getPrefStr( "pref_data_url" ,  "" , MuList.this);
+			String dataFN = getPrefStr( "nowData" ,  "" , MuList.this);
 			b_saisei_fname = dataFN;
 			b_album = albumName;			//それまで参照していたアルバム名
 			dbMsg +=" , クリックされたのは" + v.getId();
@@ -11931,7 +11931,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true);		/////////////////////////////////////
 			String subTStr = "";
-			myPreferences.saisei_fname = getPrefStr( "pref_data_url" ,  "" , MuList.this);
+			myPreferences.saisei_fname = getPrefStr( "nowData" ,  "" , MuList.this);
 			dbMsg +=  ",reqC=" + reqC +") artist;" + ";album=" + albumMei + ",titolMei=" + titolMei ;
 //			if(myPreferences.nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
 //				if(MyConstants.v_titol <= reqC){
@@ -12272,8 +12272,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										break;
 									case MyConstants.syoki_Yomikomi:		//128；全曲リスト更新
 										dbMsg += "全曲リスト更新後";
-										String pref_data_url = getPrefStr("pref_data_url" , "",MuList.this);
-										String albumArtist = musicPlaylist.uri2Item(pref_data_url,0);
+										String nowData = getPrefStr("nowData" , "",MuList.this);
+										String albumArtist = musicPlaylist.uri2Item(nowData,0);
 										sigotoFuriwake(MyConstants.v_artist,albumArtist,"","", "");
 										break;
 									case settei_hyouji:
@@ -12302,11 +12302,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 										dbMsg +="]" + myPreferences.nowList;//			// 全曲リスト
 										mIndex = bundle.getInt("mIndex");
 										dbMsg += "[mIndex=" + mIndex;/////////////////////////////////////
-										pref_data_url = bundle.getString("pref_data_url");
-										dbMsg += "]再生しているファイル="+pref_data_url;
+										nowData = bundle.getString("nowData");
+										dbMsg += "]再生しているファイル="+nowData;
 										int mcPosition = bundle.getInt("mcPosition");
 										dbMsg += " の "+mcPosition + "ms";
-										String[] names = pref_data_url.split(File.pathSeparator);
+										String[] names = nowData.split(File.pathSeparator);
 
 										albumArtist = names[names.length-2];
 										dbMsg += ",albumArtist = "+albumArtist;
@@ -13238,7 +13238,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				if(intent.getAction().equals(MusicService.ACTION_SET_SONG)) {
 					nowList_id = intent.getStringExtra("nowList_id");
 					dbMsg += ",nowList_id= " + nowList_id;
-					dataStr = intent.getStringExtra("pref_data_url");
+					dataStr = intent.getStringExtra("nowData");
 					dbMsg += ",dataStr= " + dataStr;
 
 					currentIndex = intent.getIntExtra("currentIndex", 0);

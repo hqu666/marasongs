@@ -100,7 +100,7 @@ public class MusicService extends MediaBrowserService {
      *        <li> ACTION_PLAY/ACTION_PAUSE
      * **/
     public boolean nowPlay;
-    public String pref_data_url;
+    public String nowData;
     public String artistName;
     public String albumName;
     public String songTitol;
@@ -255,7 +255,7 @@ public class MusicService extends MediaBrowserService {
 
             dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
             dbMsg += "]" + myPreferences.nowList;
-            dbMsg += "の" + myPreferences.pref_mIndex +"曲目";
+            dbMsg += "の" + myPreferences.nowIndex +"曲目";
 //            sousalistID=Integer.parseInt(myPreferences.nowList_id);
             dbMsg += "、再生中のファイル名=" + myPreferences.saisei_fname;
 //            pl_file_name = myPreferences.pref_commmn_music + File.separator;//汎用プレイリストのファイル名のパスまで
@@ -268,7 +268,6 @@ public class MusicService extends MediaBrowserService {
             dbMsg += "、ランダム再生リストアップ曲数=" + myPreferences.pref_rundam_list_size;
 //            repeatType = myPreferences.repeatType;							//リピート再生の種類
 //			rp_pp = myPreferences.rp_pp;							//2点間リピート中
-            //		String pref_data_url =myPreferences.saisei_fname;				//
 
             dbMsg += "、共通音楽フォルダ=" + myPreferences.pref_commmn_music;
             dbMsg += "、内蔵メモリ=" + myPreferences.pref_file_in;
@@ -751,8 +750,8 @@ public class MusicService extends MediaBrowserService {
         try{
             dbMsg +="、flags=" + flags;
             dbMsg +="、startId=" + startId;
-            Class<?> callClass = intent.getClass();
-            dbMsg +="、callClass=" + callClass.getName();
+//            Class<?> callClass = intent.getClass();
+//            dbMsg +="、callClass=" + callClass.getName();
             String action = intent.getAction();                    //ボタンなどで指定されたアクション
             if(exoPlayer != null){
                 nowPlay = exoPlayer.isPlaying();
@@ -838,8 +837,8 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += "の" + setArtistName + " - " + setAlbumName;
                 mIndex= intent.getIntExtra("mIndex",0);
                 dbMsg += "で" + mIndex + "曲目の" + saiseiJikan;
-                pref_data_url= intent.getStringExtra("pref_data_url");		//extras.getString("pref_data_url");
-                dbMsg += "で " + pref_data_url;
+                nowData= intent.getStringExtra("nowData");
+                dbMsg += "で " + nowData;
                 saiseiJikan= intent.getIntExtra("saiseiJikan",0);
                 dbMsg += "の"+ saiseiJikan+ "から";
                 boolean isListChange = false;
@@ -894,7 +893,7 @@ public class MusicService extends MediaBrowserService {
                         currentListId = setListId;
                         currentListName = setListName;
                         isListChange = true;
-                        mediaItemList = add2List(Integer.parseInt(currentListId),pref_data_url,mediaItemList,plAL);
+                        mediaItemList = add2List(Integer.parseInt(currentListId),nowData,mediaItemList,plAL);
                     }
                 }
                 if(exoPlayer == null){
@@ -1542,7 +1541,7 @@ public class MusicService extends MediaBrowserService {
                         try {
                             mIndex=exoPlayer.getCurrentMediaItemIndex();
                             int endIndex = exoPlayer.getMediaItemCount();
-                            setPrefInt("pref_mIndex" , mIndex ,  context);
+                            setPrefInt("nowIndex" , mIndex ,  context);
                             dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
 //                            boolean nowPlaying = exoPlayer.isPlaying();
 //                            dbMsg += ",nowPlaying=" + nowPlaying;
@@ -1582,13 +1581,14 @@ public class MusicService extends MediaBrowserService {
             }else{
                 dbMsg += ",player生成済み";
             }
-            dbMsg += ",currentList[" + currentListId + "]" + currentListName + "の" + mIndex + "番目=" + pref_data_url;
+            dbMsg += ",currentList[" + currentListId + "]" + currentListName + "の" + mIndex + "番目=" + nowData;
+            dbMsg += ",Preferences[" + myPreferences.nowIndex + "]" + myPreferences.nowData;
             Intent intent = new Intent(this, MaraSonActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("nowList_id",myPreferences.nowList_id);
             intent.putExtra("nowList",myPreferences.nowList);             //currentListName
             intent.putExtra("mIndex",mIndex);
-            intent.putExtra("pref_data_url",pref_data_url);
+            intent.putExtra("nowData",nowData);             //nowData
 //            intent.putExtra("nowArtist",sousa_artist);
 //            intent.putExtra("nowAlbum",sousa_alubm);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
@@ -1663,7 +1663,7 @@ public class MusicService extends MediaBrowserService {
             String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
             dbMsg += ",duranation=" + duranation;
             MediaItem mediaItem = mediaItemList.get(currentIndex);
-            MRIintent.putExtra("pref_data_url",dataFN);
+            MRIintent.putExtra("nowData",dataFN);
             MRIintent.putExtra("artist",mediaItem.mediaMetadata.artist);
             MRIintent.putExtra("albumTitle",mediaItem.mediaMetadata.albumTitle);
             MRIintent.putExtra("title",mediaItem.mediaMetadata.title);
@@ -1702,7 +1702,6 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
-
    /**
     *  プレイヤー破棄
     *  <ul>破棄する前に
@@ -1719,8 +1718,8 @@ public class MusicService extends MediaBrowserService {
             mIndex = exoPlayer.getCurrentMediaItemIndex();
             String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
             dbMsg += "[" + mIndex + "]" + data_url;
-            myEditor.putString( "pref_mIndex", String.valueOf(mIndex));
-            myEditor.putString( "pref_data_url", data_url);                 // myPreferences.pref_data_url
+            myEditor.putString( "nowIndex", String.valueOf(mIndex));
+            myEditor.putString( "nowData", data_url);                 // myPreferences.nowData
 
             dbMsg += "exoPlayer=" + exoPlayer;
             long contentPosition = 0l;

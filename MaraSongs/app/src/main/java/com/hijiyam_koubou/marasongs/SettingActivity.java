@@ -73,8 +73,8 @@ public class SettingActivity extends AppCompatActivity {
 //    public String myPreferences.pref_file_kyoku="0";		//総曲数
 //    public String pref_file_album="0";		//総アルバム数
 //    public String myPreferences.pref_file_saisinn="";	//最新更新日
-//    public int pref_mIndex;
-//    public String myPreferences.pref_data_url = "";
+//    public int nowIndex;
+//    public String myPreferences.nowData = "";
 //    public String myPreferences.myPreferences.nowList_id;				//再生中のプレイリストID	playListID
 //    public String myPreferences.nowList;					//再生中のプレイリスト名	playlistNAME
 //    public int list_max = -1;			///再生中のプレイリストのアイテム数
@@ -558,11 +558,11 @@ public class SettingActivity extends AppCompatActivity {
                 summelyStr += myPreferences.nowList ;
             }
             summelyStr += "\n" ;
-            if(0 <= myPreferences.pref_mIndex){
-                summelyStr += "[" + myPreferences.pref_mIndex + "]" ;
+            if(0 <= myPreferences.nowIndex){
+                summelyStr += "[" + myPreferences.nowIndex + "]" ;
             }
-            if(myPreferences.pref_data_url != null){
-                summelyStr += myPreferences.pref_data_url +"\n" ;
+            if(myPreferences.nowData != null){
+                summelyStr += myPreferences.nowData +"\n" ;
             }
 
 //            if(saisei_fname != null){
@@ -730,9 +730,9 @@ public class SettingActivity extends AppCompatActivity {
             dbMsg += "、Bluetoothの接続に連携して一時停止/再開=" + myPreferences.pref_bt_renkei;
             dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
             dbMsg += "]" + myPreferences.nowList;
-            dbMsg += "、再生中のファイル名=" + myPreferences.pref_data_url;
+            dbMsg += "、再生中のファイル名=" + myPreferences.nowData;
 //            saisei_fname = myPreferences.saisei_fname;
-//            myPreferences.pref_data_url =myPreferences.saisei_fname;				//
+//            myPreferences.nowData =myPreferences.saisei_fname;				//
 //            dbMsg += "、汎用プレイリストのファイル名=" + saisei_fname;
             dbMsg += "、前回=" + myPreferences.pref_zenkai_saiseKyoku + "曲、" + myPreferences.pref_zenkai_saiseijikann + "時間";
             dbMsg += "、内蔵メモリ=" + myPreferences.pref_file_in;
@@ -805,7 +805,7 @@ public class SettingActivity extends AppCompatActivity {
 //			20200223:前回に再生したファイル、プレイリストが無いことでインストール直後であることを判定：
 //			saisei_fname = "";						//再生中のファイル名
 //			dbMsg +=  "再生中のファイル名" + saisei_fname;////////////////////////////////////////////////////////////////////////////
-//			myEditor.putString ("myPreferences.pref_data_url", saisei_fname);
+//			myEditor.putString ("myPreferences.nowData", saisei_fname);
 //			myPreferences.pref_saisei_jikan = "0";		//再開時間		Integer.valueOf(keys.get(key).toString());
 //			dbMsg += "再生中音楽ファイルの再開時間" ;//////////////////
 //			wrStr = ORGUT.sdf_mss.format(Long.valueOf(myPreferences.pref_saisei_jikan));
