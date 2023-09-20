@@ -1,5 +1,8 @@
 package com.hijiyam_koubou.marasongs;
 
+import static android.widget.ImageView.ScaleType.CENTER_CROP;
+import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -23,9 +26,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Build;
@@ -78,7 +83,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
@@ -99,7 +103,6 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.exoplayer.source.ads.AdsLoader;
 import androidx.media3.exoplayer.util.DebugTextViewHelper;
-import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.session.MediaSession;
 import androidx.media3.ui.PlayerView;
 import androidx.preference.PreferenceManager;
@@ -117,7 +120,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -1453,6 +1458,42 @@ public class MaraSonActivity extends AppCompatActivity
 	public Handler handler = new Handler();
 	public int audioId;
 
+	/**Dataのuriからジャケットアートを表示させる
+	 *　https://www.jisei-firm.com/android_develop38/
+	 * */
+	public void setArt(ImageView imageView,String urlStr,String albumId){
+		final String TAG = "setArt";
+		String dbMsg= "";
+		try{
+			dbMsg= ",imageView=" + imageView;
+			Context context =this.getApplicationContext();
+			MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+			dbMsg= ",urlStr=" + urlStr;
+			mediaMetadataRetriever.setDataSource(context, Uri.parse(urlStr));
+			byte[] binary = mediaMetadataRetriever.getEmbeddedPicture();
+			if (binary != null) {
+				dbMsg +="、binary=" + binary.length ;
+				imageView.setImageBitmap(BitmapFactory.decodeByteArray(binary, 0, binary.length));
+			} else {
+				ContentResolver contentResolver = context.getContentResolver();
+				try {
+					dbMsg= ",albumId=" + albumId;
+					InputStream inputStream = contentResolver.openInputStream(Uri.parse(albumId));		//musicItemList.get(position).albumUri
+					Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+					imageView.setScaleType(CENTER_CROP);
+					imageView.setImageBitmap(bitmap);
+				} catch (FileNotFoundException e) {
+					imageView.setScaleType(CENTER_INSIDE);
+					imageView.setImageResource(R.drawable.no_image);
+				}
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
 	/**
 	 * urlからプレイヤーの書き込みを行う
 	 * onReceive、onWindowFocusChanged後の処理
@@ -1487,14 +1528,11 @@ public class MaraSonActivity extends AppCompatActivity
 				tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
 				dbMsg +=tStr;/////////////////////////////////////
 				titolName=tStr;
-				@SuppressLint("Range") int tInt = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-				dbMsg +=tInt;/////////////////////////////////////
-				audioId=tInt;
-//				dbMsg +="、ジャケット写真=" + albumArt ;/////////////////////////////////////
-//				if ( albumArt ==null ) {
-//					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
-//					dbMsg +=">>" + albumArt ;/////////////////////////////////////
-//				}
+				@SuppressLint("Range") int audioId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+				dbMsg +=",audioId="+audioId;
+				@SuppressLint("Range") String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+				dbMsg +="、albumId=" + albumId ;
+
 				if(handler == null){
 					handler = new Handler();
 				}
@@ -1516,7 +1554,7 @@ public class MaraSonActivity extends AppCompatActivity
 							alubum_tv.setText(albumName);											//アルバム
 							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 							titol_tv.setText(titolName);					//タイトル
-
+							setArt(mpJakeImg,urlStr,albumId);
 //							dbMsg += "(myPreferences.nowIndex=" + myPreferences.nowIndex+")" ;
 //							songIDPTF.setText(String.valueOf((myPreferences.nowIndex+1)));			//リスト中の何曲目か
 //							songIDTotal = listEnd;
@@ -1620,7 +1658,35 @@ public class MaraSonActivity extends AppCompatActivity
 //				dbMsg +=" ,audioId= " + audioId;
 //				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//アルバムアーティスト名
 //				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
-//				dbMsg +="、ジャケット写真=" + albumArt ;/////////////////////////////////////
+//			currentIndex=exoPlayer.getCurrentMediaItemIndex();
+//			dbMsg +="、currentIndex=" + currentIndex ;
+//			MediaMetadata nowMediaMetadata = exoPlayer.getCurrentMediaItem().mediaMetadata;
+//			albumArt = String.valueOf(nowMediaMetadata.artworkUri);
+//			dbMsg +="、albumArt=" + albumArt ;
+//			MediaItem currentMediaItem = mediaItems.get(currentIndex);
+//			dbMsg +=">>" + currentMediaItem.mediaMetadata.artworkUri ;
+//	//		playerView.getDisplay().
+//	//		pv_bt.
+////			if(albumArt == null){
+////				MediaItem currentMediaItem = mediaItems.get(currentIndex);
+////				albumArt= String.valueOf(currentMediaItem.mediaMetadata.artworkUri);
+////				dbMsg +=">>" + albumArt ;
+////				byte[] artworkData = currentMediaItem.mediaMetadata.artworkData;
+////				dbMsg +=",artworkData=" + artworkData.length ;
+////			}
+//			if(albumArt == null || albumArt.equals("null")){
+//				byte[] artworkData = nowMediaMetadata.artworkData;
+//				if (artworkData != null) {
+//					dbMsg +=",artworkData=" + artworkData.length ;
+//					Bitmap bmp = null;
+//					bmp = BitmapFactory.decodeByteArray(artworkData, 0, artworkData.length);
+//					dbMsg +=",bmp[" + bmp.getWidth() + "×" + bmp.getHeight() + "]" ;
+//					mpJakeImg.setImageBitmap(bmp);
+//				}
+//			}else{
+//				jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
+//			}
+
 //				if ( albumArt ==null ) {
 //					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
 //					dbMsg +=">>" + albumArt ;/////////////////////////////////////
