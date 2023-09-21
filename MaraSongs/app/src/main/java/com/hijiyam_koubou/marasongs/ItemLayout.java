@@ -36,11 +36,12 @@ public class ItemLayout extends LinearLayout {							//Custom View
 	AttributeSet attrs;
 	String sucssesPass;
 
-	public ItemLayout(Context context, AttributeSet attrs) {					// , int reqCode
-		super(context, attrs);													// , reqCode
+	public ItemLayout(Context rContext, AttributeSet attrs) {					// , int reqCode
+		super(rContext, attrs);													// , reqCode
 		final String TAG = "ItemLayout";
 		String dbMsg= "開始";/////////////////////////////////////
 		try{
+			this.context =rContext;
 	//		ORGUT = new OrgUtil();						//自作関数集
 	//	myLog(TAG,dbMsg);
 		} catch (Exception e) {		//汎用
@@ -92,139 +93,11 @@ public class ItemLayout extends LinearLayout {							//Custom View
 //			case MaraSonActivity.v_alubum:												//...340
 				noView.setVisibility(View.GONE);
 				mIconView.setVisibility(View.VISIBLE);
-				if( item.imageUrl_ != null ){
-					final Handler bindViewHandler = new Handler(Looper.getMainLooper());
-					bindViewHandler.post(() -> {
-						final String TAG1 = "post";
-						String dbMsg1 = "[bindView]";
-						try{
-							//					//		Uri uri = MediaStore.Images.Media.getContentUri( item.imageUrl_);
-//					//		String wholeId = DocumentsContract.getDocumentId(Uri.parse(item.imageUrl_));
-							Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
-							long albumId = Long.parseLong(item.getAlbum_id());
-							dbMsg1 += ",albumId= " + albumId;
-							Uri imageUrl = ContentUris.withAppendedId(albumArtUri, albumId);
-					//		String imageUrl = item.imageUrl_;
-							dbMsg1 += ",imageUrl_= " + imageUrl;
-							String albumID = item.getAlbum_id();
-							dbMsg1 += ",albumID= " + albumID;
-
-							Cursor cursor = context.getContentResolver().query(
-									MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-									null,
-									MediaStore.Audio.Albums.ALBUM_ID + "=?",
-									new String[]{ albumID },
-									null);
-			//				MediaStore.Audio.AlbumColumns.
-							dbMsg1 += ",cursor= " + cursor.getCount() +"件";
-							if (cursor.moveToFirst()){
-
-								// アルバム画像ファイル
-								int albumArtIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);			//nullだった
-								String albumArtPass = cursor.getString(albumArtIndex);
-								dbMsg1 += ",albumArtPass= " + albumArtPass;
-								if(albumArtPass != null ){
-									Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(albumArtPass));
-									dbMsg1 += ",bitmap= " + bitmap.getWidth() + " × " + bitmap.getHeight();
-									mIconView.setImageBitmap(bitmap);
-								}else{
-									//  https://pisuke-code.com/android-10-or-later-file-save/
-									String albumName = item.getAlbum_name();
-									dbMsg1 +=  ",albumName= " + albumName + "　を再検索";
-									File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-									dbMsg1 +=  ",PublicDirectory= " + path.getName() ;
-//									File folder = new File(path, "subDirectoryName");
-//									String passName = folder.getPath();
-//									dbMsg1 +=  ",passName= " + folder.getPath();
-//									String[] files = folder.list();
-//									dbMsg1 += ",passName= " + folder.getPath()+",file= " + files[0] ;
-								}
-							}
-							cursor.close();
-
-//							Cursor cursor = context.getContentResolver().query(
-//									MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-//									null,
-//									MediaStore.Audio.Albums.ALBUM_ID + "=?",
-//									new String[]{ item.getAlbum_id() },
-//									null);
-//							dbMsg1 += ",cursor= " + cursor.getCount() +"件";
-//							if (cursor.moveToFirst()){
-//
-//								// アルバム画像ファイル
-//								int albumArtIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);
-//								String albumArt = cursor.getString(albumArtIndex);
-//								Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(albumArt));
-//								dbMsg1 += ",bitmap= " + bitmap.getWidth() + " × " + bitmap.getHeight();
-//								mIconView.setImageBitmap(bitmap);
-//							}
-
-//							ContentResolver cr = context.getContentResolver();
-//							InputStream inputStream = cr.openInputStream(imageUrl);
-//							Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//							inputStream.close();
-
-
-//							File file = new File(imageUrl.getPath());			//パス抜きのファイル名
-//							dbMsg1 += ",file= " + file.getName();
-//							Bitmap bitmap= context.getContentResolver().loadThumbnail (imageUrl,new Size(mIconView.getWidth(),mIconView.getHeight()),null);
-			//				Bitmap bitmap= context.getContentResolver().loadThumbnail (imageUrl,new Size(96,96),null);
-
-//							ParcelFileDescriptor parcelFileDescriptor =context.getContentResolver().openFileDescriptor(imageUrl, "r");
-//							FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-//							Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-//							parcelFileDescriptor.close();
-
-
-//								ContentResolver cr = context.getContentResolver();
-//								String[] columns = {
-//										MediaStore.Images.Media.ALBUM
-////										MediaStore.Images.Media.DATA
-//								};
-//							String selection = MediaStore.Images.Media.ALBUM + "=?";
-////							String selection = MediaStore.Images.Media._ID + "=?";
-//								Cursor cursor = cr.query(
-//										MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//										columns, selection, new String[]{item.getAlbum_id()}, null);
-//								dbMsg1 += ",cursor= " + cursor.getCount() +"件";
-//								if(cursor.moveToFirst()) {
-//									String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-//									dbMsg1 += ",path= " + path;
-//									Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(path));
-//	//							InputStream stream = context.getContentResolver().openInputStream(uri);
-//	//							dbMsg1 += ",stream= " + stream.available();
-//									dbMsg1 += ",bitmap= " + bitmap.getWidth() + " × " + bitmap.getHeight();
-//									mIconView.setImageBitmap(bitmap);
-//								}
-//								cursor.close();
-
-////							InputStream is = cr.openInputStream(imageUrl);
-////								Bitmap bitmap = BitmapFactory.decodeStream(is);
-//								dbMsg1 += ",bitmap= " + bitmap.getWidth() + " × " + bitmap.getHeight();
-//								mIconView.setImageBitmap(bitmap);
-////							try{
-////							}catch(FileNotFoundException err){
-////								err.printStackTrace();
-////							}
-
-
-
-
-////							ContentResolver resolver = context.getContentResolver();
-////							try (InputStream stream = resolver.openInputStream(Uri.parse(item.imageUrl_))) {
-////								BitmapFactory.Options options = new BitmapFactory.Options();
-////								options.inJustDecodeBounds = true;											//最終的に縮小して読み込む
-////								Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(stream), null, options);
-////							}
-//					//		Bitmap bitmap = context.getContentResolver().loadThumbnail(uri, new Size(mIconView.getWidth(), mIconView.getHeight()), null);
-////							Drawable drawable = Drawable.createFromPath(item.imageUrl_);
-////							mIconView.setImageDrawable(drawable);
-//							myLog(TAG1, dbMsg1);
-						} catch (Exception e) {
-							myErrorLog(TAG1 ,  dbMsg1 + "で" + e);
-						}
-					});
-				}
+				String dataUri = item.getDataUri();
+				dbMsg +=",dataUri =" + dataUri;
+				String albumId = item.getAlbum_id();
+				dbMsg +=",albumId =" + albumId;
+				OrgUtil.setArt(context,mIconView,dataUri,albumId);
 				break;
 			}
 			myLog(TAG,dbMsg);

@@ -1458,40 +1458,40 @@ public class MaraSonActivity extends AppCompatActivity
 	public Handler handler = new Handler();
 	public int audioId;
 
-	/**Dataのuriからジャケットアートを表示させる
-	 *　https://www.jisei-firm.com/android_develop38/
-	 * */
-	public void setArt(ImageView imageView,String urlStr,String albumId){
-		final String TAG = "setArt";
-		String dbMsg= "";
-		try{
-			dbMsg= ",imageView=" + imageView;
-			Context context =this.getApplicationContext();
-			MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-			dbMsg= ",urlStr=" + urlStr;
-			mediaMetadataRetriever.setDataSource(context, Uri.parse(urlStr));
-			byte[] binary = mediaMetadataRetriever.getEmbeddedPicture();
-			if (binary != null) {
-				dbMsg +="、binary=" + binary.length ;
-				imageView.setImageBitmap(BitmapFactory.decodeByteArray(binary, 0, binary.length));
-			} else {
-				ContentResolver contentResolver = context.getContentResolver();
-				try {
-					dbMsg= ",albumId=" + albumId;
-					InputStream inputStream = contentResolver.openInputStream(Uri.parse(albumId));		//musicItemList.get(position).albumUri
-					Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-					imageView.setScaleType(CENTER_CROP);
-					imageView.setImageBitmap(bitmap);
-				} catch (FileNotFoundException e) {
-					imageView.setScaleType(CENTER_INSIDE);
-					imageView.setImageResource(R.drawable.no_image);
-				}
-			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
+//	/**Dataのuriからジャケットアートを表示させる
+//	 *　https://www.jisei-firm.com/android_develop38/
+//	 * */
+//	public void setArt(ImageView imageView,String urlStr,String albumId){
+//		final String TAG = "setArt";
+//		String dbMsg= "";
+//		try{
+//			dbMsg= ",imageView=" + imageView;
+//			Context context =this.getApplicationContext();
+//			MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+//			dbMsg= ",urlStr=" + urlStr;
+//			mediaMetadataRetriever.setDataSource(context, Uri.parse(urlStr));
+//			byte[] binary = mediaMetadataRetriever.getEmbeddedPicture();
+//			if (binary != null) {
+//				dbMsg +="、binary=" + binary.length ;
+//				imageView.setImageBitmap(BitmapFactory.decodeByteArray(binary, 0, binary.length));
+//			} else {
+//				ContentResolver contentResolver = context.getContentResolver();
+//				try {
+//					dbMsg= ",albumId=" + albumId;
+//					InputStream inputStream = contentResolver.openInputStream(Uri.parse(albumId));		//musicItemList.get(position).albumUri
+//					Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//					imageView.setScaleType(CENTER_CROP);
+//					imageView.setImageBitmap(bitmap);
+//				} catch (FileNotFoundException e) {
+//					imageView.setScaleType(CENTER_INSIDE);
+//					imageView.setImageResource(R.drawable.no_image);
+//				}
+//			}
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
 
 
 	/**
@@ -1517,7 +1517,6 @@ public class MaraSonActivity extends AppCompatActivity
 			String[] c_selectionArgs= { String.valueOf(urlStr) };		//"%" + albumArtist + "%"
 			Cursor cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
 			dbMsg +=cursor.getCount() +"曲";/////////////////////////////////////
-			//		myLog(TAG,dbMsg);
 			if(cursor.moveToFirst()){
 				@SuppressLint("Range") String tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 				dbMsg +=tStr;/////////////////////////////////////
@@ -1544,7 +1543,7 @@ public class MaraSonActivity extends AppCompatActivity
 							dbMsg += "[nowList_id=" + myPreferences.nowList_id +"]F" + myPreferences.nowList ;
 							toolbar.setTitle(myPreferences.nowList);
 							dbMsg += "Index=" + currentIndex;
-							songIDPTF.setText(String.valueOf(currentIndex));			//リスト中の何曲目か (myPreferences.nowIndex+1))
+							songIDPTF.setText(String.valueOf(currentIndex+1));			//リスト中の何曲目か (myPreferences.nowIndex+1))
 							songIDTotal=listEnd;		//plSL.size();
 							dbMsg +="/" + songIDTotal +"曲";
 							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
@@ -1554,50 +1553,8 @@ public class MaraSonActivity extends AppCompatActivity
 							alubum_tv.setText(albumName);											//アルバム
 							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 							titol_tv.setText(titolName);					//タイトル
-							setArt(mpJakeImg,urlStr,albumId);
-//							dbMsg += "(myPreferences.nowIndex=" + myPreferences.nowIndex+")" ;
-//							songIDPTF.setText(String.valueOf((myPreferences.nowIndex+1)));			//リスト中の何曲目か
-//							songIDTotal = listEnd;
-//							dbMsg +="/" + songIDTotal +"曲";
-//							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
-//							String[] items = urlStr.split(File.separator);
-//							albumArtist = items[items.length-3];
-//							dbMsg +=",albumArtist=" + albumArtist;
-//							artistID = artisIndex(albumArtist);								//アーティストリストの中でアルバムアーティスト名が何番目にあるか
-////							albumID = albumyPreferences.mIndex(albumArtist , albumName);					//アルバムアーティスト名のアルバムリストの中でアルバムが何番目にあるか
-//							int rInt = titolIndex(albumArtist ,  albumName , titolName) + 1;				//タイトルリストの中でそのタイトルが何番目にあるか
-//							dbMsg +=",rInt=" + rInt + "曲目";
-//							nIDPTF.setText(String.valueOf(rInt));										//タイトルカウント
-//
-//							dbMsg +=" ,audioId= " + audioId;
-//							if( b_albumArt == null ){
-//								b_albumArt = "";
-//							}
-////							if( ! b_albumArt.equals(albumArt)){
-////								MaraSonActivity.this.jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
-////								b_albumArt = albumArt;
-////								dbMsg +=">b_albumArt>" + b_albumArt ;/////////////////////////////////////
-////							}
-//							listBetuSettei( myPreferences.nowList );					//リスト毎のヘッダー部変更
-////							if( rp_pp ){			//2点間リピート中
-////								String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start);				//二点間再生開始点(mmss000)
-////								dbMsg +=", " + pp_startStr;
-////								String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end);			//二点間再生終了点(mmss000)
-////								dbMsg +="～" + pp_endStr + "のリピート";
-////								pp_pp_ll.setVisibility(View.VISIBLE);
-////								pp_pp_start_tf.setText(pp_startStr);				//二点間再生開始点
-////								pp_pp_end_tf.setText(pp_endStr);							//二点間再生終了点
-////								saiseiSeekMP.setSecondaryProgress(MaraSonActivity.this.pp_end);
-////								Drawable drawable = getResources().getDrawable(R.drawable.pp_progress);
-////								saiseiSeekMP.setProgressDrawable(drawable);
-////								saiseiSeekMP.setProgress(pp_start);
-////								//				mcPosition = pp_start;
-////							}else{
-////								pp_pp_ll.setVisibility(View.GONE);
-////								saiseiSeekMP.setSecondaryProgress(0);
-////								saiseiSeekMP.setProgressDrawable(dofoltSBDrawable);
-////							}
 							lyric_tv.setText(songLyric);					//歌詞表示
+							OrgUtil.setArt(getApplicationContext(),mpJakeImg,urlStr,albumId);
 						} catch (Exception e) {
 							myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
 						}
@@ -1606,121 +1563,6 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			cursor.close();
 
-/*
-			dbMsg += "、myPreferences.nowIndex；" + myPreferences.nowIndex;
-			if(urlStr == null || urlStr.equals("") ||  urlStr.equals("null")) {
-				urlStr = null;
-				urlStr = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
-				dbMsg += ">nowData>" + urlStr;
-				if(urlStr == null || urlStr.equals("")) {
-					urlStr = getPrefStr( "myPreferences.nowData" ,"" , MaraSonActivity.this);
-					dbMsg += ">myPreferences.nowData>" + urlStr;
-					if(urlStr == null || urlStr.equals("")) {
-						if( -1 < myPreferences.nowIndex){
-							dbMsg += ">myPreferences.nowIndex>" + myPreferences.nowIndex;
-							urlStr = Item.getURI(MaraSonActivity.this , myPreferences.nowIndex).toString();
-						}
-						dbMsg += ">myPreferences.nowData>" + urlStr;
-							if(urlStr == null || urlStr.equals("")) {
-//							if(playingItem != null) {
-//								urlStr = playingItem.data;
-//								dbMsg += ">>" + urlStr;
-//							}
-						}
-					}
-				}
-			}
-			*/
-//			if(urlStr == null || urlStr.equals("")) {
-//			}else{
-//				if( -1 < myPreferences.nowIndex){
-//				start = System.currentTimeMillis();		// 開始時刻の取得
-//				dbMsg += "[myPreferences.nowList_id=" + myPreferences.nowList_id +"]F" + myPreferences.nowList ;
-//				toolbar.setTitle(myPreferences.nowList);
-//				myPreferences.nowIndex = musicPlaylist.getPlaylistItemOrder(myPreferences.nowList_id,urlStr);
-//				dbMsg += "(myPreferences.nowIndex=" + myPreferences.nowIndex+")" ;
-//				songIDPTF.setText(String.valueOf((myPreferences.nowIndex+1)));			//リスト中の何曲目か
-//				songIDTotal = musicPlaylist.getUserListMaxPlayOrder(myPreferences.nowList_id);
-//				dbMsg +="/" + songIDTotal +"曲";
-//				titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
-//				Cursor playingItem = musicPlaylist.getPlaylistItems(myPreferences.nowList_id,myPreferences.nowIndex);
-//				creditArtistName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));		//playingItem.artist;	//クレジットされているアーティスト名
-//				dbMsg +=" ,クレジット⁼ " + creditArtistName;
-//				artist_tv.setText(creditArtistName);
-//				albumName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));		//playingItem.album;			//アルバム名
-//				dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-//				alubum_tv.setText(albumName);											//アルバム
-//				titolName = playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));		//playingItem.title;		//曲名
-//				dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-//				titol_tv.setText(titolName);					//タイトル
-//				int audioId = Integer.parseInt(playingItem.getString(playingItem.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID)));
-//				playingItem.close();
-//				dbMsg +=" ,audioId= " + audioId;
-//				albumArtist = musicPlaylist.getAlbumArtist(audioId , MaraSonActivity.this);	//アルバムアーティスト名
-//				dbMsg +=" ,アルバムアーティスト= " + albumArtist;
-//			currentIndex=exoPlayer.getCurrentMediaItemIndex();
-//			dbMsg +="、currentIndex=" + currentIndex ;
-//			MediaMetadata nowMediaMetadata = exoPlayer.getCurrentMediaItem().mediaMetadata;
-//			albumArt = String.valueOf(nowMediaMetadata.artworkUri);
-//			dbMsg +="、albumArt=" + albumArt ;
-//			MediaItem currentMediaItem = mediaItems.get(currentIndex);
-//			dbMsg +=">>" + currentMediaItem.mediaMetadata.artworkUri ;
-//	//		playerView.getDisplay().
-//	//		pv_bt.
-////			if(albumArt == null){
-////				MediaItem currentMediaItem = mediaItems.get(currentIndex);
-////				albumArt= String.valueOf(currentMediaItem.mediaMetadata.artworkUri);
-////				dbMsg +=">>" + albumArt ;
-////				byte[] artworkData = currentMediaItem.mediaMetadata.artworkData;
-////				dbMsg +=",artworkData=" + artworkData.length ;
-////			}
-//			if(albumArt == null || albumArt.equals("null")){
-//				byte[] artworkData = nowMediaMetadata.artworkData;
-//				if (artworkData != null) {
-//					dbMsg +=",artworkData=" + artworkData.length ;
-//					Bitmap bmp = null;
-//					bmp = BitmapFactory.decodeByteArray(artworkData, 0, artworkData.length);
-//					dbMsg +=",bmp[" + bmp.getWidth() + "×" + bmp.getHeight() + "]" ;
-//					mpJakeImg.setImageBitmap(bmp);
-//				}
-//			}else{
-//				jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
-//			}
-
-//				if ( albumArt ==null ) {
-//					albumArt =ORGUT.retAlbumArtUri( getApplicationContext() , creditArtistName , albumName );			//アルバムアートUriだけを返すalbumArtist		MaraSonActivity.this  ,
-//					dbMsg +=">>" + albumArt ;/////////////////////////////////////
-//				}
-//				if( b_albumArt == null ){
-//					b_albumArt = "";
-//				}
-//				if( ! b_albumArt.equals(albumArt)){
-//					MaraSonActivity.this.jakeSya( albumArt ,  mpJakeImg);		//相当するジャケット写真
-//					b_albumArt = albumArt;
-//					dbMsg +=">b_albumArt>" + b_albumArt ;/////////////////////////////////////
-//				}
-//				listBetuSettei( myPreferences.nowList );					//リスト毎のヘッダー部変更
-//				if( rp_pp ){			//2点間リピート中
-//					String pp_startStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_start);				//二点間再生開始点(mmss000)
-//					dbMsg +=", " + pp_startStr;
-//					String pp_endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.pp_end);			//二点間再生終了点(mmss000)
-//					dbMsg +="～" + pp_endStr + "のリピート";
-//					pp_pp_ll.setVisibility(View.VISIBLE);
-//					pp_pp_start_tf.setText(pp_startStr);				//二点間再生開始点
-//					pp_pp_end_tf.setText(pp_endStr);							//二点間再生終了点
-//					saiseiSeekMP.setSecondaryProgress(MaraSonActivity.this.pp_end);
-//					Drawable drawable = getResources().getDrawable(R.drawable.pp_progress);
-//					saiseiSeekMP.setProgressDrawable(drawable);
-//					saiseiSeekMP.setProgress(pp_start);
-//	//				mcPosition = pp_start;
-//				}else{
-//					pp_pp_ll.setVisibility(View.GONE);
-//					saiseiSeekMP.setSecondaryProgress(0);
-//					saiseiSeekMP.setProgressDrawable(dofoltSBDrawable);
-//				}
-//				lyric_tv.setText(songLyric);					//歌詞表示
-//			}
-//			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);

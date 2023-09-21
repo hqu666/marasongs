@@ -201,6 +201,7 @@ public class MyTreeAdapter extends BaseTreeAdapter {
 					subText.setText(rStr);
 					albumID = treeEntry.getAlbumID();
 					dbMsg += ",albumID="+albumID;
+		//			OrgUtil.setArt(parent.getApplicationContext(),lrow_image,urlStr,albumID);
 					setIMG(  parent ,  albumID , lrow_image);						//アルバムアート描画
 					break;
 				default:

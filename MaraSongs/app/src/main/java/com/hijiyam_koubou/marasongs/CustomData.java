@@ -7,6 +7,7 @@ public class CustomData {
 	public String imageUrl_;
 	public String textData_;
 	public String subData_;
+	/**DataのUri**/
 	public String dataUri;
 	public String no_;
 	public String album_name_;

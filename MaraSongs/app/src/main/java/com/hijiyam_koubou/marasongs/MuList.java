@@ -6064,18 +6064,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						item1.setTextData(rStr);
 						rStr =  (String) ItemAL.get(i).get("sub");
 						dbMsg +=",sub=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-						if(rStr != null){
-							if(! rStr.equals("") ){
+//						if(rStr != null){
+//							if(! rStr.equals("") ){
 								item1.setSubData(rStr);
-							}
-						}
+//							}
+//						}
 						rStr =  (String) ItemAL.get(i).get("DATA");
-						dbMsg +=",DATA=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-						if(rStr != null){
-							if(! rStr.equals("") ){
+						dbMsg +=",DATA=" +rStr ;
+//						if(rStr != null){
+//							if(! rStr.equals("") ){
 								item1.setDataUri(rStr);
-							}
-						}
+//							}
+//						}
 						break;
 					case MyConstants.v_play_list:			//198
 						String title = (String) ItemAL.get(i).get("title");
@@ -6217,7 +6217,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				// リスナーを登録する thisを引数にできない //☆キャストの方法　(OnItemLongClickListener) this
 			//	@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {	// 長押しクリックされた時の処理を記述
-					final String TAG = "onItemLongClick[setHeadImgList]";
+					final String TAG = "onItemLongClick";
 					String dbMsg =  "[MuList・setHeadImgList]";
 					dbMsg += ORGUT.nowTime(true,true,true);
 					try{
@@ -7098,10 +7098,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=  ">>"+Dur;
 					}else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
 						String cVal = playLists.getString(i);
-						if(cVal != null){
-							cVal = cVal;
-						}
-						MuList.this.objMap.put(cName ,cVal );
+						MuList.this.objMap.put("DATA" ,cVal );
 						MuList.this.saisei_fnameList.add(cVal);
 						MuList.this.plSL.add(cVal);
 						dbMsg +=  "="+cVal;
@@ -7111,7 +7108,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						MuList.this.objMap.put(cName ,cVal );
 					}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
 						String cVal = String.valueOf(playLists.getInt(i));
-						MuList.this.objMap.put(cName ,cVal );
+						MuList.this.objMap.put("album_id" ,cVal );
 						dbMsg +=  "="+cVal;
 					}else{
 						int cPosition = playLists.getColumnIndex(cName);
@@ -12631,8 +12628,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					final String TAG = "onScrollStateChanged";
 					String dbMsg = "[setOnScrollListener]";
 					try{
-				//		dbMsg += ORGUT.nowTime(true,true,true);
-				//		dbMsg +=",view="+view;//lvID
 						dbMsg +=",scrollState="+b_scrollState;
 						dbMsg +=">>scrollState="+scrollState;
 						switch (scrollState){

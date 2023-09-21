@@ -1,10 +1,14 @@
 package com.hijiyam_koubou.marasongs;
 
+import static android.widget.ImageView.ScaleType.CENTER_CROP;
+import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -28,6 +33,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -1741,6 +1747,41 @@ public class OrgUtil  extends Activity{				//
 		}
 		return retBM;
 	}
+
+	/**Dataのuriからジャケットアートを表示させる
+	 *　https://www.jisei-firm.com/android_develop38/
+	 * */
+	public static void setArt(Context context,ImageView imageView, String urlStr, String albumId){
+		final String TAG = "setArt";
+		String dbMsg= "";
+		try{
+			dbMsg= ",imageView=" + imageView;
+			MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+			dbMsg= ",urlStr=" + urlStr;
+			mediaMetadataRetriever.setDataSource(context, Uri.parse(urlStr));
+			byte[] binary = mediaMetadataRetriever.getEmbeddedPicture();
+			if (binary != null) {
+				dbMsg +="、binary=" + binary.length ;
+				imageView.setImageBitmap(BitmapFactory.decodeByteArray(binary, 0, binary.length));
+			} else {
+				ContentResolver contentResolver = context.getContentResolver();
+				try {
+					dbMsg= ",albumId=" + albumId;
+					InputStream inputStream = contentResolver.openInputStream(Uri.parse(albumId));		//musicItemList.get(position).albumUri
+					Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+					imageView.setScaleType(CENTER_CROP);
+					imageView.setImageBitmap(bitmap);
+				} catch (FileNotFoundException e) {
+					imageView.setScaleType(CENTER_INSIDE);
+					imageView.setImageResource(R.drawable.no_image);
+				}
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
 
 	public String jaName;
 	public int ih;

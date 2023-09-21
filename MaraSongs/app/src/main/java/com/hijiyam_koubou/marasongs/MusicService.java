@@ -1489,12 +1489,6 @@ public class MusicService extends MediaBrowserService {
                 }
                 dbMsg += ">>" + repeatMode;
                 exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
-//                if(NowSavedInstanceState != null){
-//                    trackSelectionParameters =
-//                            TrackSelectionParameters.fromBundle(
-//                                    NowSavedInstanceState.getBundle("track_selection_parameters"));
-//                    exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
-//                }
                 exoPlayer.addListener(new PlayerEventListener());
                 exoPlayer.addListener(new Player.Listener() {
                     /**曲変更などのイベント
