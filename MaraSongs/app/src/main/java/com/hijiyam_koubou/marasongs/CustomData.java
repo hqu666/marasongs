@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 public class CustomData {
 	public Bitmap imageData_;
+	/**リスト先頭のDataUri*/
 	public String imageUrl_;
 	public String textData_;
 	public String subData_;
@@ -30,7 +31,7 @@ public class CustomData {
 		return textData_;
 	}
 
-
+	/**リスト先頭のDataUriを返す*/
 	public String getimageUrl() {
 		return imageUrl_;
 	}

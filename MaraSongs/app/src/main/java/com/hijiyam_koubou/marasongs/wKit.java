@@ -1094,9 +1094,9 @@ public class wKit extends Activity {
 								wk_pp_bt.setImageResource(R.drawable.play40);
 								wk_pp_bt.setContentDescription(getResources().getText(R.string.pause));			//play
 							}
-							String dataFN =intent.getStringExtra("data");		//			intent.putExtra("data", dataFN);
+							String dataFN =intent.getStringExtra("DATA");		//			intent.putExtra(MediaStore.Audio.Playlists.Members.DATA, dataFN);
 							if(dataFN == null ) {
-								dataFN = "";
+								dataFN = intent.getStringExtra("data");
 							}
 							if(b_dataFN == null){
 								b_dataFN = dataFN;

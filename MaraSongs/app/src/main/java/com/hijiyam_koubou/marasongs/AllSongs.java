@@ -1013,7 +1013,7 @@ public class AllSongs extends Activity implements plogTaskCallback{		// extends 
 
                 } else {
                     stmt.bindString(cCount, cVal);
-                    if(cName.equals("DATA")){
+                    if(cName.equals(MediaStore.Audio.Playlists.Members.DATA)){
                         String[] uris = cVal.split(File.separator,-1);
                         dataUriStr = uris[uris.length-3] + File.separator +  uris[uris.length-2] + File.separator +  uris[uris.length-1] ;
                         dbMsg += ",dataUriStr=" + dataUriStr;

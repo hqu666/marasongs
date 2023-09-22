@@ -105,7 +105,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			Cursor cursor = Zenkyoku_db.query(zenkyokuTName, c_columns, c_selection, c_selectionArgs , null, null, c_orderBy);	// table, columns,new String[] {MotoN, albamN}
 			dbMsg += "；" + cursor.getCount() + "件";
 			if(cursor.moveToFirst()){
-				retUri = Uri.parse(cursor.getString(cursor.getColumnIndex( "DATA" )));			//MediaStore.Audio.Media.TRACK
+				retUri = Uri.parse(cursor.getString(cursor.getColumnIndex( MediaStore.Audio.Playlists.Members.DATA )));			//MediaStore.Audio.Media.TRACK
 			}
 			cursor.close();
 			Zenkyoku_db.close();
@@ -174,7 +174,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 			String moh = MyUtil.stf.format(new Date(Long.valueOf(duration)));
 			dbMsg += "=" + moh;
 				//I'll Be Alright
-			@SuppressLint("Range") String dataUrl = cursor.getString(cursor.getColumnIndex("DATA"));
+			@SuppressLint("Range") String dataUrl = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
 //			dbMsg += ",DATA=" + dataUrl;
 
 			items.add(new Item(
@@ -187,7 +187,7 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 					Integer.parseInt(trackVar),		//track
 					titleNeme,				//cursor.getString(cursor.getColumnIndex("TITLE")),								//title
 					Long.valueOf(duration),					//Long.valueOf(cursor.getString(cursor.getColumnIndex("DURATION"))),		//duration
-					dataUrl								//cursor.getString(cursor.getColumnIndex("DATA"))								//data
+					dataUrl								//cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA))								//data
 			));
 				//ALBUM_ARTIST text, MODIFIED text, COMPOSER text, BOOKMARK text " +				//idbOOKMARK = cur.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);			//APIL8
 //								dbMsg2 += items.get(items.size()-1)._id +"]" + items.get(items.size()-1).artist +"(" + items.get(items.size()-1).album_artist +")"+
@@ -361,7 +361,6 @@ public class Item implements Comparable<Object> {	// 外部ストレージ上の
 										playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),	//title
 										Long.valueOf(playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION))),	//duration
 										data
-										//playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)) 	//_data
 								));
 								dbMsg2 += "[" + items.get(items.size() - 1)._id + "]" + items.get(items.size() - 1).artist + "(" + items.get(items.size() - 1).album_artist + ")" +
 										items.get(items.size() - 1).album + "[" + items.get(items.size() - 1).track + "]" + items.get(items.size() - 1).title + " >> " + items.get(items.size() - 1).data;/////////////////////////////////////

@@ -398,7 +398,7 @@ public class MusicService extends MediaBrowserService {
                             if( cName.equals(MediaStore.Audio.Playlists.Members.AUDIO_ID)){
                                 audioId = playLists.getString(i);
                                 cVal = playLists.getString(i);
-                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
+                            }else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//MediaStore.Audio.Playlists.Members.DATA[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
                                 uriStr = playLists.getString(i);
                                 cVal = playLists.getString(i);
                             }else if( cName.equals("album_artist")){		//[26/37]
@@ -899,9 +899,12 @@ public class MusicService extends MediaBrowserService {
                 if(exoPlayer == null){
                     initializePlayer(); // EXOPLAYER
                 }else{
+                    String mediaId = "-1";
                     dbMsg += ",player生成済み";
                     MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
-                    String mediaId = currentMediaItem.mediaId;
+                    if(currentMediaItem != null){
+                        mediaId = currentMediaItem.mediaId;
+                    }
                     dbMsg += ",現在:" + mediaId;
                     MediaItem sarchItem = mediaItemList.get(mIndex);
                     String sarchId = sarchItem.mediaId;

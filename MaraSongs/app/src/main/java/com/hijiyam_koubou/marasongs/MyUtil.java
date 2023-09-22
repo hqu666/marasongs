@@ -720,7 +720,7 @@ public class MyUtil {
 			values.put("TITLE",titolName);				//7.title;					//タイトル
 			values.put("DURATION",duration);		//8.duration;				//再生時間
 			values.put("YEAR",year);			//9.MediaStore.Audio.Media.YEAR
-			values.put("DATA",dataVal );						//10.data;	cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))				//URI
+			values.put(MediaStore.Audio.Playlists.Members.DATA,dataVal );						//10.data;	cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))				//URI
 			values.put("MODIFIED",modified);					//MODIFIED11.idkousinnbi = cur.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
 			values.put("COMPOSER",composer);							//12.idcomposer = cur.getColumnIndex(MediaStore.Audio.Media.COMPOSER);
 			values.put("LAST_YEAR",lastYear);

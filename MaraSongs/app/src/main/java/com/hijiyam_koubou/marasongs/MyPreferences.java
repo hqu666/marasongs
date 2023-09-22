@@ -35,7 +35,7 @@ import java.util.Map;
  * 未設定の必須項目は読み込み時に取得
  * **/
 public class MyPreferences{
-	public OrgUtil ORGUT;		//自作関数集                                                 .putString( "nowData",   putString( "data"
+	public OrgUtil ORGUT;		//自作関数集                                                 .putString( "nowData",   putString( MediaStore.Audio.Playlists.Members.DATA
 //	public String PREFS_NAME = "defaults";
 //	public PreferenceManager mPreferenceManager;
 

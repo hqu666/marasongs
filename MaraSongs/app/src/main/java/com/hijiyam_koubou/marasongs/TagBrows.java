@@ -2143,10 +2143,10 @@ private byte majorVersion = (byte) 0;
 						dbMsg +=readStr;
 					}
 					dbMsg += "(" + readInt + "/" + result.length() +"文字)";		//"M4A mp42isom".length()
-				int endInt = readStr.lastIndexOf("data");
+				int endInt = readStr.lastIndexOf("DATA");
 				dbMsg += 	",dataの開始=" + endInt ;
-				if(0 < endInt ){				//"data"が有れば
-					endInt = endInt + 8;		//"data"の文字数+αをシフトして
+				if(0 < endInt ){				//MediaStore.Audio.Playlists.Members.DATAが有れば
+					endInt = endInt + 8;		//MediaStore.Audio.Playlists.Members.DATAの文字数+αをシフトして
 					endInt = retEndNullPoint( readStr , endInt );				//渡された文字列の先頭のnullが無くなるポイントを返す
 					char[] testChar = readStr.substring(0, endInt + 1 ).toCharArray();
 					dbMsg += 	",testChar=" + testChar[endInt] ;
@@ -2157,7 +2157,7 @@ private byte majorVersion = (byte) 0;
 					endInt = readStr.lastIndexOf(target) + target.length() + 8;
 				}
 				dbMsg += 	",endInt=" + endInt ;
-//				int startInt = readStr.lastIndexOf("data");				//渡された文字列の先頭のnullが無くなるポイントを返す
+//				int startInt = readStr.lastIndexOf(MediaStore.Audio.Playlists.Members.DATA);				//渡された文字列の先頭のnullが無くなるポイントを返す
 				String sentouMoji = readStr.substring( 0, endInt );
 				dbMsg += 	",sentouMoji=" + sentouMoji ;
 				dbMsg += ",buffer" ;
@@ -2624,7 +2624,7 @@ private byte majorVersion = (byte) 0;
 			dbMsg +=",WAVE.infoチャンク；RIFF=" + result.indexOf("RIFF") + "文字目";
 			dbMsg +=",DATA=" + result.indexOf("DATA") + "文字目";
 			dbMsg +=",fmt=" + result.indexOf("fmt") + "文字目";				//<fmt >: フォーマット定義(必須)\n"
-			dbMsg +=",data=" + result.indexOf("data") + "文字目";			// <data>: 波形データ(必須)\n"
+			dbMsg +=",data=" + result.indexOf("DATA") + "文字目";			// <data>: 波形データ(必須)\n"
 			dbMsg +=",fact=" + result.indexOf("fact") + "文字目";			//<fact>: 全サンプル数\n"
 			dbMsg +=",LIST=" + result.indexOf("LIST") + "文字目";			//<LIST>: 各種情報\n"
 			dbMsg +=",DISP=" + result.indexOf("DISP") + "文字目";			//<DISP>: 表\示情報\n"

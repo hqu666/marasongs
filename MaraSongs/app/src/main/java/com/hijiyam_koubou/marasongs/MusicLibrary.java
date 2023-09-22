@@ -69,7 +69,7 @@ public class MusicLibrary {
                         dbMsg += "," + AlbumName ;
                         @SuppressLint("Range") String titolName = cursor.getString(cursor.getColumnIndex("TITLE"));
                         dbMsg += "," + titolName ;
-                        @SuppressLint("Range") String dataVal = cursor.getString(cursor.getColumnIndex("DATA"));
+                        @SuppressLint("Range") String dataVal = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
                         dbMsg += ",dataVal="+ dataVal;
                         @SuppressLint("Range") long duration = Long.getLong(cursor.getString(cursor.getColumnIndex("DURATION")));
 //                        MuList.this.objMap.put("year" ,cursor.getString(cursor.getColumnIndex("YEAR")) );
