@@ -97,7 +97,16 @@ public class ItemLayout extends LinearLayout {							//Custom View
 				dbMsg +=",dataUri =" + dataUri;
 				String albumId = item.getAlbum_id();
 				dbMsg +=",albumId =" + albumId;
-				OrgUtil.setArt(context,mIconView,dataUri,albumId);
+				switch(reqCode) {
+					case MyConstants.v_play_list:
+						String firstUri = item.getFirstUri();
+						dbMsg +=",firstUri =" + firstUri;
+						OrgUtil.setArt(context,mIconView,firstUri,albumId);
+						break;
+					default:
+						OrgUtil.setArt(context,mIconView,dataUri,albumId);
+						break;
+				}
 				break;
 			}
 			myLog(TAG,dbMsg);

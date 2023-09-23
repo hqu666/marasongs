@@ -6060,7 +6060,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					case MENU_infoKaisou:							//539				//537;情報付き曲名リスト書き込み中
 						rStr = (String) ItemAL.get(i).get("img");
 						dbMsg +=",img=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
-						item1.setimageUrl(rStr);
+						item1.setFirstUri(rStr);
 						rStr =  (String) ItemAL.get(i).get("main");
 						dbMsg +=",main=" + rStr ;///////////////////////////////////////////////////////////////////////////////////////////
 						item1.setTextData(rStr);
@@ -6102,19 +6102,22 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							}
 						}
 						rStr =  (String) ItemAL.get(i).get("_data");
-						dbMsg +=",_data=" +rStr ;///////////////////////////////////////////////////////////////////////////////////////////
+						dbMsg +=",_data=" +rStr ;
 						if(rStr != null){
 							if(! rStr.equals("") ){
 								item1.setDataUri(rStr);
 							}
 						}
+						rStr =  (String) ItemAL.get(i).get("firstUri");
+						dbMsg +=",firstUri=" +rStr ;
+						item1.setFirstUri(rStr);
 						myPreferences.nowList = getResources().getString(R.string.listmei_list_all);
 						break;
 					default:
 						dbMsg +="\n汎用リスト[" +i + "]" ;
 						rStr = (String) ItemAL.get(i).get("img");
 						dbMsg +=",img=" +rStr ;
-						item1.setimageUrl(rStr);
+						item1.setFirstUri(rStr);
 						String titleStr =  (String) ItemAL.get(i).get("main");
 						dbMsg +=",titleStr=" +titleStr ;
 						if( titleStr.equals(senntakuItem) ){
@@ -6736,6 +6739,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	 * nameを　pl_sp スピナーに表示する
 	 * プリファレンスの定例リストIdを更新する
 	 * */
+	@SuppressLint("Range")
 	public List<String> getPList() throws IOException {		//プレイリストを取得する
 		final String TAG = "getPList";
 		String dbMsg = "";
@@ -6821,6 +6825,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				dbMsg +=  rCount +"件" + koumoku +"項目";
 				if( playLists.moveToFirst() ){
 					do{
+						@SuppressLint("Range") String firstUri ="";
 						boolean kakikomu = false;
 						int rPosi = playLists.getPosition();
 						dbMsg +=  "\n[" + rPosi +"/" + rCount +"件目]";
@@ -6844,6 +6849,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								if(0 < tCount){
 									kakikomu = true;
 								}
+								if(cursor2.moveToFirst()){
+									firstUri = cursor2.getString(cursor2.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+									dbMsg += ",firstUri=" + firstUri;
+								}
 								cursor2.close();
 							}
 							cursor.close();
@@ -6851,6 +6860,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg += ",kakikomu=" + kakikomu;
 						if(kakikomu){
 							objMap = new HashMap<String, Object>();
+							objMap.put("firstUri" ,firstUri );
 							for(int i = 0 ; i < koumoku ; i++ ){
 								dbMsg += "[" + i +"/" + koumoku +"]";
 								String cName = playLists.getColumnName(i);
