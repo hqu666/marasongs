@@ -6175,11 +6175,42 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	/**contentRsolberから指定された最初の楽曲を取得*/
 	@SuppressLint("Range")
-	public String getFirstDataOFAlbum() {
+	public String getFirstDataOFAlbum(String albumId) {
 		final String TAG = "getFirstDataOFAlbum";
 		String dbMsg = "";
 		String retStr="";
 		try{
+			ContentResolver resolver = getApplicationContext().getContentResolver();
+			Uri cUri;
+			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
+				cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+				//content://media/external/audio/media
+			} else {
+				cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				//     cUri =MediaStore.Audio.Media.INTERNAL_CONTENT_URI はビルドできない
+			}
+			dbMsg += ",cUri=" + cUri.toString();
+
+			String[] c_columns = null;
+			String c_selection = MediaStore.Audio.Media.IS_MUSIC + " <> ? ";			//2.projection   " = ?";
+			String[] c_selectionArgs= {"0"};   			//音楽と分類されるファイルだけを抽出する
+			dbMsg += ",albumId=" + albumId;
+			if(albumId != null && !albumId.equals("")){
+				c_selection = MediaStore.Audio.Media.ALBUM_ID + " = ? ";			//2.projection   " = ?";
+				c_selectionArgs= new String[]{albumId};   			//音楽と分類されるファイルだけを抽出する
+			}
+			String c_orderBy= MediaStore.Audio.Media.DATA;
+			Cursor c_Cursor = resolver.query(
+					cUri,             	// Uri of the table
+					c_columns,      	// The columns to return for each row
+					c_selection,       	// Selection criteria
+					c_selectionArgs,
+					c_orderBy
+			);
+			dbMsg += "；アルバム内=" + c_Cursor.getCount() + "曲";
+			if(c_Cursor.moveToFirst()){
+				retStr = c_Cursor.getString(c_Cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+			}
 			dbMsg +=  ",retStr="+retStr;
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
@@ -6278,10 +6309,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						}else if( cName.equals(MediaStore.Audio.Playlists._ID) ) {				//"_id"
 							listID = Long.parseLong(cVal);
 							if(listName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+								firstUri=getFirstDataOFAlbum("");
 							}else{
 								firstUri=getFirstDataOfPlayList(listID);
-								objMap.put("firstUri" ,firstUri );
 							}
+							dbMsg += "firstUri" + firstUri;
+							objMap.put("firstUri" ,firstUri );
 						}
 					}
 					plNameAL.add(objMap);
