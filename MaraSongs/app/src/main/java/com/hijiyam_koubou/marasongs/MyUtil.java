@@ -868,6 +868,25 @@ public class MyUtil {
 		return retBool;
 	}
 	/** 整数プリファレンスの書込み*/
+	public static boolean setPrefLong(String keyNmae , long wrightVal , Context context) {
+		boolean retBool = true;
+		final String TAG = "setPrefLong";
+		String dbMsg="[util]keyNmae=" + keyNmae+ ",defaultVal=" + wrightVal;
+		try {
+			String pefName = context.getResources().getString(R.string.pref_main_file);
+			SharedPreferences sharedPref = context.getSharedPreferences(pefName, Context.MODE_PRIVATE);		//	getSharedPreferences(prefFname,MODE_PRIVATE);
+			SharedPreferences.Editor myEditor = sharedPref.edit();
+			myEditor.putLong( keyNmae, wrightVal);						//再生中のファイル名  Editor に値を代入
+			retBool = myEditor.commit();
+			dbMsg +=">>書込み成功="+ retBool;
+//			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+	}
+
+	/** 整数プリファレンスの書込み*/
 	public static boolean setPrefBool(String keyNmae , boolean wrightVal , Context context) {
 		boolean retBool = true;
 		final String TAG = "setPrefInt";

@@ -146,11 +146,11 @@ public class MyPreferences{
 	/**再生中のプレイリストのアイテム数*/
 	public int list_max = -1;						//リスト選択時に更新
 	/**全曲リスト のID*/
-	public int pref_zenkyoku_list_id = -1;			//
+	public long pref_zenkyoku_list_id = -1;			//
 	/**最近追加 のID*/
-	public int saikintuika_list_id = -1;			//
+	public long saikintuika_list_id = -1;			//
 	/**最近再生 のID*/
-	public int saikinsisei_list_id = -1;			//
+	public long saikinsisei_list_id = -1;			//
 
 	public int repeatType;							//リピート再生の種類
 	public boolean rp_pp;							//2点間リピート中
