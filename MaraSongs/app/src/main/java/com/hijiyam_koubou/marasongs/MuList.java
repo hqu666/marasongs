@@ -4958,42 +4958,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 ////						albumMap.put("artist_key", artistKey);
 ////						albumMap.put("album_key", albumKey);
 ////						albumMap.put("album_art", albumArt);
-//					albumAL.add(albumMap);
-
-					ContentResolver resolver = getApplicationContext().getContentResolver();
-					Uri cUri;
-					if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
-						cUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-						//content://media/external/audio/media
-					} else {
-						cUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-						//     cUri =MediaStore.Audio.Media.INTERNAL_CONTENT_URI はビルドできない
-					}
-					dbMsg += ",cUri=" + cUri.toString();
-
-					String[] cColumns = null;
-					String cSelection = MediaStore.Audio.Media.ALBUM_ID + " = ? ";			//2.projection   " = ?";
-					String[] cSelectionArgs= {albumId};   			//音楽と分類されるファイルだけを抽出する
-					String cOrderBy= MediaStore.Audio.Media.DATA ;	// 名前の降順	 アーティストフォルダの最後 MediaStore.Audio.Media.DATA + " DESC , "	降順はDESC
-					Cursor c_Cursor = resolver.query(
-							cUri,             	// Uri of the table
-							cColumns,      	// The columns to return for each row
-							cSelection,       	// Selection criteria
-							cSelectionArgs,
-							cOrderBy
-					);
-					dbMsg += "；アルバム内に=" + c_Cursor.getCount() + "曲";
-					if(c_Cursor.moveToFirst()){
-						//	@SuppressLint("Range") String
-						String readFile = c_Cursor.getString(c_Cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-						dbMsg +=  ",firstUri=" + readFile;
-						albumMap.put("firstUri", readFile);
-						String[] passNames = readFile.split("/");
-						String albumPass = passNames[passNames.length - 2];
-						dbMsg +=  ",albumPass=" + albumPass;
-						MuList.this.albumList.add(albumPass);                    //Uriから検索できるフォルダ名
-					}
-					c_Cursor.close();
+					String readFile = getFirstDataOFAlbum(albumId);
+					dbMsg +=  ",firstUri=" + readFile;
+					albumMap.put("firstUri", readFile);
+					String[] passNames = readFile.split("/");
+					String albumPass = passNames[passNames.length - 2];
+					dbMsg +=  ",albumPass=" + albumPass;
+					MuList.this.albumList.add(albumPass);                    //Uriから検索できるフォルダ名
 
 					albumAL.add(albumMap);
 
