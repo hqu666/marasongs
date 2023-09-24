@@ -2362,12 +2362,18 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=  "myPreferences.nowList = " + myPreferences.nowList;
 			dbMsg +=",reqCode = " + reqCode;
 			switch(reqCode) {
+				case MyConstants.v_artist:							//2131427340アルバム
+				case MyConstants.v_alubum:							//2131427340アルバム
+					artistHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
+					headImgIV.setVisibility(View.GONE);
+					mainHTF.setVisibility(View.VISIBLE);
+					pl_sp.setVisibility(View.GONE);
+					break;
 			case listType_2ly2:				// = listType_2ly + 1;albumとtitolの２階層
-			case MyConstants.v_alubum:							//2131427340アルバム
 			case MyConstants.v_titol:
-				headImgIV.setVisibility(View.GONE);
-				mainHTF.setVisibility(View.VISIBLE);
+				headImgIV.setVisibility(View.VISIBLE);
 				artistHTF.setVisibility(View.VISIBLE);			//ヘッダーのアーティスト名表示枠
+				mainHTF.setVisibility(View.VISIBLE);
 				pl_sp.setVisibility(View.GONE);
 				break;
 			default:
@@ -2387,12 +2393,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg +=",reqCode = " + reqCode;
 
 				headImgIV.setVisibility(View.GONE);
-				mainHTF.setVisibility(View.GONE);
-				pl_sp.setVisibility(View.VISIBLE);
+				mainHTF.setVisibility(View.VISIBLE);
+				pl_sp.setVisibility(View.GONE);
 				dbMsg +=",plNameSL = " + plNameSL;
-				if( plNameSL == null ){
-					makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
-				}
+//				if( plNameSL == null ){
+//					makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
+//				}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4878,7 +4884,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 				headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 				artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
-
+				artistHTF.setText("");
 				mainHTF.setVisibility(View.VISIBLE);
 				mainHTF.setText( sousa_artist);					//ヘッダーのメインテキスト表示枠		albumArtist		//		getSupportActionBar().setTitle(artistMei);
 				subHTF.setText(subStr);					//ヘッダーのサブテキスト表示枠
@@ -5366,12 +5372,16 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						break;
 					case MyConstants.v_alubum:				//199
 						dbMsg +=",クリックしたのはalbumリストのヘッド" ;
+						headImgIV.setVisibility(View.GONE);
+						artistHTF.setText("");
+						artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+						mainHTF.setVisibility(View.VISIBLE);
+						mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
 						reqCode = MyConstants.v_artist;
 						dbMsg +=",sousa_artist="+ sousa_artist  ;
 						dbMsg +=",artistAL="+ artistAL.size() + "件";
 						senntakuItem = sousa_artist;
 						if(0 < artistAL.size()){
-							mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
 							String subText =getResources().getString(R.string.pp_artist) + " ; "  + artistAL.size() + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
 							subHTF.setText(subText );
 							setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
@@ -5384,6 +5394,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						dbMsg +=",クリックしたのはtitolリストのヘッド" ;////////////////////////////////////
 						dbMsg +="["+ artistListIndex +"]" ;
 						dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm ;
+						headImgIV.setVisibility(View.GONE);
+						artistHTF.setText("");
+						artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+						mainHTF.setVisibility(View.VISIBLE);
+						mainHTF.setText(sousa_artist);
 						senntakuItem = sousa_alubm ;
 						reqCode = MyConstants.v_alubum;
 						if(0<albumAL.size()){
@@ -5790,59 +5805,59 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
  * http://qiita.com/yu_eguchi/items/65311af1c9fc0bff0cb0
  * http://lucasr.org/2012/04/05/performance-tips-for-androids-listview/
  * */
-		private  class ThumbnailTask extends AsyncTask {					//static?
-			private int mPosition;
-			private ViewHolder mHolder;
-			private String album_art;
-
-			public ThumbnailTask(int position, ViewHolder holder ) {
-				mPosition = position;
-				mHolder = holder;
-			}
-
-			@Override
-			protected String doInBackground(Object... params) {
-				final String TAG = "doInBackground";
-				String dbMsg = "[MuList.CustomAdapter]";
-				try{
-					String album_art = (String) params[0] ;
-					dbMsg +=  "album_art="+ album_art;///////////////////////////////////////////////////////////////////////////////////////////
-					String rPass = MuList.this.ORGUT.setAlbumArt( album_art ,  mHolder.thumbnail ,  45 , 45 , MuList.this , sucssesPass);		//指定したイメージビューに指定したURiのファイルを表示させる
-					dbMsg += ",rPass="+ rPass;///////////////////////////////////////////////////////////////////////////////////////////
-					if( rPass != null ){
-						File SPF = new File(rPass);
-						 MuList.this.sucssesPass = SPF.getPath();			//実際に読み出せたアルバムアートのパス
-						dbMsg += ">>sucssesPass=" + MuList.this.sucssesPass;
-					}
-//					myLog(TAG, dbMsg);
-				}catch (Exception e) {
-					myErrorLog(TAG ,  dbMsg + "で" + e);
-				}
-				return sucssesPass;
-			}
-
+//		private  class ThumbnailTask extends AsyncTask {					//static?
+//			private int mPosition;
+//			private ViewHolder mHolder;
+//			private String album_art;
+//
+//			public ThumbnailTask(int position, ViewHolder holder ) {
+//				mPosition = position;
+//				mHolder = holder;
+//			}
+//
 //			@Override
-			protected void onPostExecute() {
-				final String TAG = "onPostExecute";
-				String dbMsg = "[MuList.CustomAdapter]";
-				try{
-					dbMsg +=  "mHolder.position="+ mHolder.position +  ",mPosition="+ mPosition;///////////////////////////////////////////////////////////////////////////////////////////
-					if (mHolder.position == mPosition) {
-//						dbMsg +=  "album_art="+ this.album_art;///////////////////////////////////////////////////////////////////////////////////////////
-//						String rPass = MuList.this.ORGUT.setAlbumArt( this.album_art ,  mHolder.thumbnail ,  45 , 45 , MuList.this , sucssesPass);		//指定したイメージビューに指定したURiのファイルを表示させる
-//						dbMsg += ",rPass="+ rPass;///////////////////////////////////////////////////////////////////////////////////////////
-//						if( rPass != null ){
-//							File SPF = new File(rPass);
-//							 MuList.this.sucssesPass = SPF.getPath();			//実際に読み出せたアルバムアートのパス
-//							dbMsg += ">>sucssesPass=" + MuList.this.sucssesPass;
-//						}
-					}
-					myLog(TAG, dbMsg);
-				}catch (Exception e) {
-					myErrorLog(TAG ,  dbMsg + "で" + e);
-				}
-			}
-		}
+//			protected String doInBackground(Object... params) {
+//				final String TAG = "doInBackground";
+//				String dbMsg = "[MuList.CustomAdapter]";
+//				try{
+//					String album_art = (String) params[0] ;
+//					dbMsg +=  "album_art="+ album_art;///////////////////////////////////////////////////////////////////////////////////////////
+//					String rPass = MuList.this.ORGUT.setAlbumArt( album_art ,  mHolder.thumbnail ,  45 , 45 , MuList.this , sucssesPass);		//指定したイメージビューに指定したURiのファイルを表示させる
+//					dbMsg += ",rPass="+ rPass;///////////////////////////////////////////////////////////////////////////////////////////
+//					if( rPass != null ){
+//						File SPF = new File(rPass);
+//						 MuList.this.sucssesPass = SPF.getPath();			//実際に読み出せたアルバムアートのパス
+//						dbMsg += ">>sucssesPass=" + MuList.this.sucssesPass;
+//					}
+////					myLog(TAG, dbMsg);
+//				}catch (Exception e) {
+//					myErrorLog(TAG ,  dbMsg + "で" + e);
+//				}
+//				return sucssesPass;
+//			}
+//
+////			@Override
+//			protected void onPostExecute() {
+//				final String TAG = "onPostExecute";
+//				String dbMsg = "[MuList.CustomAdapter]";
+//				try{
+//					dbMsg +=  "mHolder.position="+ mHolder.position +  ",mPosition="+ mPosition;///////////////////////////////////////////////////////////////////////////////////////////
+//					if (mHolder.position == mPosition) {
+////						dbMsg +=  "album_art="+ this.album_art;///////////////////////////////////////////////////////////////////////////////////////////
+////						String rPass = MuList.this.ORGUT.setAlbumArt( this.album_art ,  mHolder.thumbnail ,  45 , 45 , MuList.this , sucssesPass);		//指定したイメージビューに指定したURiのファイルを表示させる
+////						dbMsg += ",rPass="+ rPass;///////////////////////////////////////////////////////////////////////////////////////////
+////						if( rPass != null ){
+////							File SPF = new File(rPass);
+////							 MuList.this.sucssesPass = SPF.getPath();			//実際に読み出せたアルバムアートのパス
+////							dbMsg += ">>sucssesPass=" + MuList.this.sucssesPass;
+////						}
+//					}
+//					myLog(TAG, dbMsg);
+//				}catch (Exception e) {
+//					myErrorLog(TAG ,  dbMsg + "で" + e);
+//				}
+//			}
+//		}
 	}
 
 	private static class ViewHolder {				//？
@@ -7491,6 +7506,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			headImgIV.setVisibility(View.GONE);
 			mainHTF.setVisibility(View.GONE);
 			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+			artistHTF.setText("");
 			pl_sp.setVisibility(View.VISIBLE);
 			plNameSL = null;
 			myLog(TAG,dbMsg);
@@ -8662,8 +8678,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			cursor0 = this.getContentResolver().query(uri, columns, null, null, c_orderBy );
 			dbMsg += ">>"+ cursor0.getCount() +"件";
 			cursor0.close();
-
-//			headKuseiDefault();								//ヘッドエリアの構成物調整
 
 			saikintuikaDBname = getResources().getString(R.string.playlist_saikintuika_filename);
 			dbMsg +=  "、ファイル=" + saikintuikaDBname ;
@@ -11345,6 +11359,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg +=",アーティストリストのヘッダータップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+					artistHTF.setText("");
 					mainHTF.setVisibility(View.VISIBLE);
 					pl_sp.setVisibility(View.GONE);
 					mainTStr = getResources().getString(R.string.listmei_list_all);
@@ -11357,10 +11372,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				case MyConstants.v_artist:							//195;	2131558436 :アーティスト
 					backCode = MyConstants.v_play_list;		//上のリスト
 					dbMsg +=",全曲のアーティストリストタップ後、backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
-//					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
-//					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
-//					mainHTF.setVisibility(View.GONE);
-//					pl_sp.setVisibility(View.VISIBLE);
+					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+					artistHTF.setText("");
+					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
+					mainHTF.setVisibility(View.GONE);
+					pl_sp.setVisibility(View.GONE);
 //					makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
 					//	makeArtistNameList();
 					readArtistDB();
@@ -11386,6 +11402,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg +=",アルバムリストをタップ；alubum_tv <backCode=" + backCode;	//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
 					pl_sp.setVisibility(View.GONE);	//プレイリスト選択
 					headImgIV.setVisibility(View.GONE);								 // 表示枠を消す
+					artistHTF.setText("");
 					artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
 
 					dbMsg +="alubum_tv:artistMei= " + artistMei +",albumMei= " + albumMei;		//////////// 0始まりでposition= id ///////////////////////////////////////////////////////////
