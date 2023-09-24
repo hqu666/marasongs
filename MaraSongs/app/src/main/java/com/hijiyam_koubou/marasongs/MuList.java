@@ -1633,7 +1633,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								albumList.remove(MuList.this.SelectLocation);		//アルバム名
 								dbMsg += ">>"+albumList.size() + "件";
 								dbMsg += ",有無="+albumList.indexOf(sousa_alubm);
-								dbMsg += ",albumAL="+albumAL.size() ;
+								dbMsg += ",albumAL="+albumAL.size() +"件";
 								albumAL.remove(MuList.this.SelectLocation);		//アルバム名
 								dbMsg += ">>"+albumAL.size() + "件";
 								senntakuItem = albumList.get(MuList.this.SelectLocation);
@@ -2844,9 +2844,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += ";myPreferences.nowList=" + myPreferences.nowList  ;/////////////////////////////////////
 			dbMsg += ";reqC=" + reqC  ;/////////////////////////////////////
 			if( myPreferences.nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
-				sigotoFuriwake(reqC , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け		, albumAL
+				sigotoFuriwake(reqC , sousa_artist , sousa_alubm  , sousa_titol , null);
 			}else if( myPreferences.nowList.equals(getResources().getString(R.string.listmei_list_all))){
-				sigotoFuriwake(reqC , sousa_artist , sousa_alubm  , sousa_titol , null);		//表示するリストの振り分け		, albumAL
+				sigotoFuriwake(reqC , sousa_artist , sousa_alubm  , sousa_titol , null);
 			}else{
 				String pdMessage = myPreferences.nowList + getResources().getString(R.string.data_lad);			//データ読み込み中
 				CreatePLList( Long.valueOf(MuList.this.sousalistID) , pdMessage);		//プレイリストの内容取得		MuList.this.sousalist_data,
@@ -3906,9 +3906,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			retInt = readArtistDBBody();
 			dbMsg +=">artistAL>" + retInt + "件";
 			retInt = albumDB2ListBody(sousa_artist);
-			dbMsg +=">albumAL>" + retInt + "件";
+			dbMsg +=">albumAL>" + albumAL.size() + "件";
 			titolAL = CreateTitleList(sousa_artist , sousa_alubm , titleFileName,null);
 			dbMsg +=">titolAL>" + titolAL.size() + "件";
+			reqCode=MyConstants.v_titol;
 
 			myPreferences.nowList_id = String.valueOf(myPreferences.pref_zenkyoku_list_id);
 			myPreferences.nowList = getResources().getString(R.string.listmei_zemkyoku);
@@ -4173,6 +4174,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						}
 						dbMsg += " , " + fYear;
 						MuList.this.albumMap.put("sub" ,fYear );		//アルバム付加情報
+						String firstUri = getFirstDataOFAlbum(rAlbumID);
+						dbMsg +=  ",firstUri=" + firstUri;
+						albumMap.put("firstUri", firstUri);
 						MuList.this.albumAL.add( albumMap);			//アルバムリスト用ArrayList
 					}
 				}
@@ -4223,7 +4227,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							} else {
 								MuList.this.albumMap = new HashMap<String, Object>();		//アルバムトリスト用
 								MuList.this.albumMap.put("main" ,aName );
-								MuList.this.albumMap.put(MediaStore.Audio.Albums._ID ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums._ID)));
+								String albumId=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+								dbMsg +=  ",albumId=" + albumId;
+								MuList.this.albumMap.put(MediaStore.Audio.Albums._ID ,albumId);
 								MuList.this.albumMap.put(MediaStore.Audio.Albums.ALBUM_ID ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID)) );
 								MuList.this.albumMap.put(MediaStore.Audio.Albums.ALBUM_ART ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)));
 								MuList.this.albumMap.put(MediaStore.Audio.Albums.ALBUM ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
@@ -4244,6 +4250,11 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								}
 								dbMsg += " , " + fYear;
 								MuList.this.albumMap.put("sub" ,fYear );		//アルバム付加情報
+
+								String firstUri = getFirstDataOFAlbum(albumId);
+								dbMsg +=  ",firstUri=" + firstUri;
+								albumMap.put("firstUri", firstUri);
+
 								MuList.this.albumAL.add( albumMap);			//アルバムリスト用ArrayList
 							}
 							dbMsg += " , " + MuList.this.albumAL.size() + "件";
@@ -5351,7 +5362,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						reqCode = MyConstants.v_play_list;
 						dbMsg +=",現在[" + sousalistID + "]" + sousalistName +"次はプレイリスト一覧：" + reqCode ;
 						senntakuItem = sousalistName;
-						sigotoFuriwake(reqCode , sousalistName , null  , null , null);		//表示するリストの振り分け		, albumAL
+						sigotoFuriwake(reqCode , sousalistName , null  , null , null);
 						break;
 					case MyConstants.v_alubum:				//199
 						dbMsg +=",クリックしたのはalbumリストのヘッド" ;
@@ -5369,18 +5380,29 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							readArtistDB();
 						}
 						break;
-					case MyConstants.v_titol:						//2131558448 	タイトル
+					case MyConstants.v_titol:						//200
 						dbMsg +=",クリックしたのはtitolリストのヘッド" ;////////////////////////////////////
-						reqCode = MyConstants.v_alubum;
 						dbMsg +="["+ artistListIndex +"]" ;
 						dbMsg +=",sousa_artist="+ sousa_artist +",sousa_alubm=" + sousa_alubm ;
 						senntakuItem = sousa_alubm ;
-						Artist2AlbumList(artistListIndex);
+						reqCode = MyConstants.v_alubum;
+						if(0<albumAL.size()){
+							if( myPreferences.pref_list_simple ){					//シンプルなリスト表示（サムネールなど省略）
+								dbMsg +=",albumList="+ albumList.size() +"件";
+								makePlainList( albumList);			//階層化しないシンプルなリスト
+							} else {
+								dbMsg +=",albumAL="+ albumAL.size() +"件";
+								setHeadImgList(albumAL );				//イメージとサブテキストを持ったリストを構成
+							}
+						}else{
+							albumDB2List(sousa_artist);
+						}
+						//			Artist2AlbumList(artistListIndex);
 						break;
 					default:
 						dbMsg +=",reqCode = MyConstants.v_play_listに変更" ;////////////////////////////////////
 						reqCode = MyConstants.v_play_list;
-						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け
 						//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
 						break;
 				}
@@ -5390,7 +5412,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				switch(reqCode) {			//backCode
 					case listType_2ly:				// = listType_info + 1;アーティストの単階層リストとalbumとtitolの２階層
 						reqCode = MyConstants.v_play_list;
-						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け
 						//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
 						break;
 					case MENU_TAKAISOU:						//535多階層リスト選択選択中
@@ -5418,7 +5440,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						break;
 					default:
 						reqCode = MyConstants.v_play_list;
-						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け		, albumAL
+						sigotoFuriwake(reqCode , null , null  , null , null);		//表示するリストの振り分け
 						//		MuList.this.finish();				//プレイヤーからquitMeを呼ばれても仕事が残っていたら終わらない
 						break;
 				}
@@ -5583,6 +5605,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								item1.setAlbum_key(rStr);
 							}
 						}
+						rStr =  (String) ItemAL.get(i).get("firstUri");
+						dbMsg +=",firstUri=" +rStr ;
+						item1.setFirstUri(rStr);
+
 						break;
 				}
 				isList.add(item1);
@@ -11687,23 +11713,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 													sigotoFuriwake(reqCode , albumArtist , null , null , null);        //表示するリストの振り分け		artistAL ,
 													break;
 												case MyConstants.v_alubum:                                                //196...340
-//													dbMsg += ",albumAL = " + albumAL.size() + "件";
-//
-//													if ( b_artist.equals(albumArtist) && b_album.equals(albumName) ) {
-//													} else {    //それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
-//									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
-//									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
-														sigotoFuriwake(reqCode , albumArtist , albumName , null , null);        //表示するリストの振り分け	albumAL ,
-//													}
+														sigotoFuriwake(reqCode , albumArtist , albumName , null , null);
 													break;
 												case MyConstants.v_titol:                                                    //197
-//													dbMsg += ",曲リスト = " + titolAL.size() + "件";
-//								//							if( b_artist.equals(albumArtist) && b_album.equals(albumName) ){
-//								//							} else {	//それまで参照していたアーティスト名かそれまで参照していたアルバム名が変わっていたら
-//									albumAL = CreateAlbumList( albumArtist ,  "");		//アルバムリスト作成
-//									titolAL = CreateTitleList( albumArtist , albumName , titolName);		//曲リスト作成
-//									dbMsg +=">>曲リスト = " + titolAL.size() + "件";
-//															}
 													sigotoFuriwake(reqCode , albumArtist , albumName , null , null);        //表示するリストの振り分けtitolAL ,
 													break;
 												default:

@@ -99,7 +99,7 @@ public class ItemLayout extends LinearLayout {							//Custom View
 				dbMsg +=",albumId =" + albumId;
 				switch(reqCode) {
 					case MyConstants.v_play_list:
-					case MyConstants.v_alubum:
+					case MyConstants.v_alubum:					//199
 						String firstUri = item.getFirstUri();
 						dbMsg +=",firstUri =" + firstUri;
 						OrgUtil.setArt(context,mIconView,firstUri,albumId);
