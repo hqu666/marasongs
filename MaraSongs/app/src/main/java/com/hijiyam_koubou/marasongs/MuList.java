@@ -255,18 +255,17 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public int reqKariCode=0;
 	public String listTopFname;							//リストの先頭ファイル名（プレイリスト作成時など）
 
-	public String subTex = null;		//ヘッド部の付加情報
-
-	public List<String> albumArtistList = null;		//クレジットされているアーティスト名
+//	public String subTex = null;		//ヘッド部の付加情報
+//	public List<String> albumArtistList = null;		//クレジットされているアーティスト名
 	public List<String> artistList = null;		//クレジットされているアーティスト名
 	public List<String> albumList = null;		//アルバム名
 	public List<String> titolList = null;		//曲名
 	public List<String> uriList = null;		//楽曲ファイルのUri
 
-	public List<String> mainList = null;		//アルバムアーティスト
-	public List<String> imgList = null;		//アルバムアート
-	public List<String> subList = null;		//アルバム付加情報
-	public List<String> titoSubList = null;		//曲名付加情報
+//	public List<String> mainList = null;		//アルバムアーティスト
+//	public List<String> imgList = null;		//アルバムアート
+//	public List<String> subList = null;		//アルバム付加情報
+//	public List<String> titoSubList = null;		//曲名付加情報
 	public String nowListSub;				//再生中のプレイリストの詳細
 	//public List<MediaItem> mediaItemList;
 //	public String pref_file_wr;		//再生中のプレイリストの保存場所
@@ -281,14 +280,19 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public String albumName;			//アルバム名
 	public String titolName ;				//曲名
 	public String albumArt ;				//アルバムアートのURI
-	public int trackInAlbum = 0;			//アルバム内の曲数
-	public int releaceYear = 0;			//制作年
+	/**操作中のアーティスト：再生中ではない*/
+	public String sousa_artist = null;
+	public String sousa_alubmArtist = null;
+	public String sousa_alubm = null;
+	public String sousa_titol = null;
+//	public int trackInAlbum = 0;			//アルバム内の曲数
+//	public int releaceYear = 0;			//制作年
 	public String b_saisei_fname ="";				//すでに再生している再生ファイル
 	public String b_artist = "";				//それまで参照していたアーティスト名
 	public String b_album = "";				//それまで参照していたアルバム名
 	public boolean IsPlaying ;			//再生中か
 	public boolean IsSeisei;			//再生中か
-	public String sucssesPass;			//実際に読み出せたアルバムアートのパス
+//	public String sucssesPass;			//実際に読み出せたアルバムアートのパス
 	public int yobidashiItem = -1;		//プレイヤー画面でタップされたアイテム
 
 	public LinearLayout headLayout;			//ツールバーのカスタムレイアウト
@@ -1020,10 +1024,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 ///ContextMenu///http://techbooster.jpn.org/andriod/ui/7490///
 	public String contextTitile = null;
-	public String sousa_artist = null;
-	public String sousa_alubmArtist = null;
-	public String sousa_alubm = null;
-	public String sousa_titol = null;
 	public String tuikaSakiArtist = null;
 	public int SelectLocation = 0;
 	public SQLiteDatabase shyuusei_db;									//登録アーティスト修正DB
@@ -2473,7 +2473,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //									dbMsg +=  ","+ dataFN + "を" + list_dataUMUCursor.getCount() + "件検出";
 //									if( list_dataUMUCursor.moveToFirst() ){
 //										if ( imanoJyoutai == veiwPlayer  ){											//200;プレイヤーを表示;起動直後
-//											//22020810一時停止								send2Player(dataFN,false );														//プレイヤーにuriを送る
+//											//22020810一時停止																//プレイヤーにuriを送る
 //										}
 //									}
 //									list_dataUMUCursor.close();
@@ -4592,16 +4592,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if(listName.equals(getResources().getString(R.string.listmei_zemkyoku))){
 				currentArtistName = sousa_artist;
 				currentAlbumName = sousa_alubm;
-//				dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
-
-//				if(sousa_artist.equals(currentArtistName) && sousa_alubm.equals(currentAlbumName)){
-//				}else{
-//					isListChange = true;
-//				}
-//                        dbMsg += ",setAlbumName=" + setAlbumName;
-//                        if(! setAlbumName.equals(currentAlbumName)){
-//                            isListChange = true;
-//                        }
 			}
 			if( MPSIntent == null){
 				MPSIntent = new Intent(getApplication(), MusicService.class);
@@ -5104,17 +5094,17 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 						}
 
-						MPSIntent.putExtra("nowList_id","-1");
-						MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
-						MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
-						dbMsg +=  ",MPSIntent=" + MPSIntent;
-						MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
-						dbMsg +=  ",sousa_artist=" + sousa_artist + ",sousa_alubm=" + sousa_alubm;
-						MPSIntent.putExtra("sousa_artist",sousa_artist);
-						MPSIntent.putExtra("sousa_alubm",sousa_alubm);
-						MPSName = startService(MPSIntent);
-						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+//						MPSIntent.putExtra("nowList_id","-1");
+//						MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
+//						MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+//						dbMsg +=  ",MPSIntent=" + MPSIntent;
+//						MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
+//						dbMsg +=  ",sousa_artist=" + sousa_artist + ",sousa_alubm=" + sousa_alubm;
+//						MPSIntent.putExtra("sousa_artist",sousa_artist);
+//						MPSIntent.putExtra("sousa_alubm",sousa_alubm);
+//						MPSName = startService(MPSIntent);
+//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
 						dbMsg += "," + sousa_artist + "の-"+ sousa_alubm +"で[" + position + "]" + sousa_titol;
 						contextTitile = sousa_artist + "/" + sousa_alubm + "/" + sousa_titol;
 						b_artist = albumArtist;                //それまで参照していたアーティスト名
@@ -6466,6 +6456,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 				MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 				MPSIntent.putExtra("nowList",myPreferences.nowList);
+				dbMsg +=  ",Uri="+ myPreferences.nowData;
+				MPSIntent.putExtra("uriStr",myPreferences.nowData);
+				String[] passNames = myPreferences.nowData.split("/");
+				String artistFolder = passNames[passNames.length - 3];
+				String albumFolder = passNames[passNames.length - 2];
+				dbMsg += ",sousa_artist="+ artistFolder + ",sousa_alubm="+ albumFolder;
+				MPSIntent.putExtra("sousa_artist",artistFolder);
+				MPSIntent.putExtra("sousa_alubm",albumFolder);
+
 //				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
 				MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 				dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
@@ -6670,15 +6669,15 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			MuList.this.plAL.add( objMap);
 
-			dbMsg +=  ",MPSIntent=" + MPSIntent;
-			MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
-			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
-			MPSIntent.putExtra("nowList",myPreferences.nowList);
-			String uriStr = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-			dbMsg +=  ",\nUri="+ uriStr;
-			MPSIntent.putExtra("uriStr",uriStr);
-			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-			dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+//			dbMsg +=  ",MPSIntent=" + MPSIntent;
+//			MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
+//			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+//			MPSIntent.putExtra("nowList",myPreferences.nowList);
+//			String uriStr = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+//			dbMsg +=  ",\nUri="+ uriStr;
+//			MPSIntent.putExtra("uriStr",uriStr);
+//			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+//			dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg  + "で" + e);
