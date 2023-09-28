@@ -12169,7 +12169,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		try{
 			dbMsg += ORGUT.nowTime(true,true,true)+dbMsg;/////////////////////////////////////
 			if (Build.VERSION.SDK_INT > 23) {
-				initializePlayer();
+			//	initializePlayer();
 				if (playerView != null) {
 					playerView.onResume();
 				}
@@ -12200,7 +12200,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			receiverSeisei();		//
 			dbMsg +=":レシーバーを生成";
 			if (Build.VERSION.SDK_INT <= 23 || exoPlayer == null) {
-				initializePlayer();
+		//		initializePlayer();
 				if (playerView != null) {
 					playerView.onResume();
 				}

@@ -724,18 +724,6 @@ public class MusicService extends MediaBrowserService {
                 plAL.clear();
                 mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
                 dbMsg += "＞＞" + mediaItemList.size() + "件";
-                if(exoPlayer != null){
-                    exoPlayer.pause();
-                    exoPlayer.release();
-                    exoPlayer = null;
-                    dbMsg += ">>" + exoPlayer;
-                }
-                dbMsg += ",mediaSession=" + mediaSession;
-                if(mediaSession != null){
-                    mediaSession.release();
-                    mediaSession = null;
-                    dbMsg += ">>" + mediaSession;
-                }
                 dbMsg += ">変更>";
                 if(! setArtistName.equals(currentArtistName)){
                     dbMsg += setArtistName;
@@ -753,28 +741,46 @@ public class MusicService extends MediaBrowserService {
     }
 
     /**指定したリストもしくはアルバムを読み込む*/
-    public List<MediaItem>  makeMediaItemList(int playlistId,String setListName,String uriStr,String wArtist,String wAlubm) {
+    public void makeMediaItemList(int playlistId,String setListName,String uriStr,String wArtist,String wAlubm) {
         final String TAG = "makeMediaItemList";
         String dbMsg="";
 //        dbMsg +="mediaItemList=" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
-        List<MediaItem> mItemList = new ArrayList<MediaItem>();
+  //      List<MediaItem> mItemList = new ArrayList<MediaItem>();
         try{
             mediaItemList = new ArrayList<MediaItem>();
             plAL = new ArrayList<Map<String, Object>>();
             plAL.clear();
             dbMsg="setList[" +playlistId+ "]" + setListName + "の" + uriStr;
             if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                mItemList = add2List( playlistId ,uriStr,mItemList,plAL);
+                mediaItemList = add2List( playlistId ,uriStr,mediaItemList,plAL);
             }else{
                 dbMsg=",wArtist=" +wArtist+ ",wAlubm=" + wAlubm;
                 reNewAllSong(wArtist,wAlubm);
             }
-            dbMsg +=">>" + mItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
+            dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
+            if(exoPlayer != null){
+                exoPlayer.pause();
+                exoPlayer.release();
+                exoPlayer = null;
+                dbMsg += ">>" + exoPlayer;
+            }
+            dbMsg += ",mediaSession=" + mediaSession;
+            if(mediaSession != null){
+                mediaSession.release();
+                mediaSession = null;
+                dbMsg += ">>" + mediaSession;
+            }
+            initializePlayer();
+            dbMsg += "で変更[" +currentListId ;
+            currentListId = String.valueOf(playlistId);
+            currentListName = setListName;
+            dbMsg += ">>" +currentListId + "]" + currentListName;
+
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
         }
-        return mItemList;				//サービスの実体を返します
+    //    return mItemList;				//サービスの実体を返します
     }
 
     /**
@@ -803,10 +809,10 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ",渡されたのは[ " + nowList_id+ "] ";
                 String setListName = intent.getStringExtra("nowList");
                 dbMsg += setListName;
-                if(currentListName.equals("")){
-                    currentListId = nowList_id;
-                    currentListName = setListName;
-                }
+//                if(currentListName.equals("")){
+//                    currentListId = nowList_id;
+//                    currentListName = setListName;
+//                }
                 String uriStr = intent.getStringExtra("uriStr");
                 dbMsg +=  ",Uri="+ uriStr;
                 String sousa_artist = intent.getStringExtra("sousa_artist");
@@ -815,13 +821,13 @@ public class MusicService extends MediaBrowserService {
 
 //                if(mediaItemList == null){
                 dbMsg += ",プライマリーmediaItemList作成 ";
-                mediaItemList = new ArrayList<MediaItem>();
-                mediaItemList = makeMediaItemList(Integer.parseInt(nowList_id),setListName,"",sousa_artist,sousa_alubm);
+       //         mediaItemList = new ArrayList<MediaItem>();
+                makeMediaItemList(Integer.parseInt(nowList_id),setListName,"",sousa_artist,sousa_alubm);
 //                    plAL = new ArrayList<Map<String, Object>>();
 //                    plAL.clear();
 //                }else{              // if(nowPlay && mediaItemList != null)
                     dbMsg += ",プライマリー" + mediaItemList.size() + "件";
-                initializePlayer();
+//                initializePlayer();
                     dbMsg += ",予備リスト： mediaItemList2へ";
                     mediaItemList2 = new ArrayList<MediaItem>();
                     plAL2 = new ArrayList<Map<String, Object>>();
@@ -872,6 +878,7 @@ public class MusicService extends MediaBrowserService {
                     dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
                 }
             }else if(action.equals(ACTION_SET_SONG)){
+                dbMsg +=",現在[" +currentListId + "]" + currentListName + "で"+mediaItemList.size() + "件";
                 dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
                 String setListId = intent.getStringExtra("nowList_id");
                 String setListName = intent.getStringExtra("nowList");
@@ -917,14 +924,16 @@ public class MusicService extends MediaBrowserService {
 
                     }else{
                         dbMsg +=",全曲中でアルバム＝リスト変更" ;
-                        isListChange = true;
-                        mediaItemList = new ArrayList<MediaItem>();
-                        plAL = new ArrayList<Map<String, Object>>();
-                        plAL.clear();
-                        mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
+//                        mediaItemList = new ArrayList<MediaItem>();
+                        makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
+                        //                        isListChange = true;
+//                        mediaItemList = new ArrayList<MediaItem>();
+//                        plAL = new ArrayList<Map<String, Object>>();
+//                        plAL.clear();
+//                        mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
                      //   reNewAllSong(setArtistName,setAlbumName);
-                        currentListId = setListId;
-                        currentListName = setListName;
+//                        currentListId = setListId;
+//                        currentListName = setListName;
                     }
 //                }else if(action.equals(ACTION_GET_SONG)){
 //                    dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
@@ -937,31 +946,34 @@ public class MusicService extends MediaBrowserService {
 //                    }
 //                    sendSongInfo(mIndex);
                 }else{
-                    currentArtistName = "";
-                    currentAlbumName = "";
                     dbMsg += "汎用リスト" ;
+                    currentArtistName = "";         //全曲のパラメータ初期化
+                    currentAlbumName = "";
                     repeatMode = Player.REPEAT_MODE_ALL;                    //2:プレイリスト内繰り返し
                     if(! currentListName.equals(setListName)){
-                        dbMsg += "で変更[" +currentListId ;
-                        currentListId = setListId;
-                        currentListName = setListName;
-                        dbMsg += ">>" +currentListId + "]" + currentListName;
-                        isListChange = true;
-                        mediaItemList = new ArrayList<MediaItem>();
-                        plAL = new ArrayList<Map<String, Object>>();
-                        plAL.clear();
-                        mediaItemList = add2List(Integer.parseInt(currentListId),nowData,mediaItemList,plAL);
-                        dbMsg += ",mediaItemList=" +mediaItemList.size()+ "件" ;
+//                        dbMsg += "で変更[" +currentListId ;
+//                        currentListId = setListId;
+//                        currentListName = setListName;
+//                        dbMsg += ">>" +currentListId + "]" + currentListName;
+//                        mediaItemList = new ArrayList<MediaItem>();
+                        makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
+
+//                        isListChange = true;
+//                        mediaItemList = new ArrayList<MediaItem>();
+//                        plAL = new ArrayList<Map<String, Object>>();
+//                        plAL.clear();
+//                        mediaItemList = add2List(Integer.parseInt(currentListId),nowData,mediaItemList,plAL);
+                        dbMsg += ",変更後：mediaItemList=" +mediaItemList.size()+ "件" ;
                     }else{
                         dbMsg += "変更なし" ;
                     }
                 }
 
-                if(isListChange){
-                    exoPlayer.release();
-                    exoPlayer = null;
-                    initializePlayer();
-                }else{
+//                if(isListChange){
+////                    exoPlayer.release();
+////                    exoPlayer = null;
+////                    initializePlayer();
+//                }else{
 //                    if(exoPlayer != null){
                     nowPlay = false;
                     if(exoPlayer.isPlaying()) {
@@ -988,7 +1000,7 @@ public class MusicService extends MediaBrowserService {
                             sendStateChasng();
                     }
 //                    }
-                }
+//                }
 //                if(exoPlayer == null){
 //                    initializePlayer(); // EXOPLAYER
 //                }else{
@@ -1573,6 +1585,12 @@ public class MusicService extends MediaBrowserService {
 
     /**
      * exoPlayerを生成する
+     * <ul>
+     *     <li>mediaItemListをセットしてインデックスとポジションも設定する</li>
+     *     <li>生成した exoPlayerをセットしたMediaSessionを生成する</li>
+     *     <li>notificationを作成する</li>
+     *     <li>この段階の情報をブロードキャストする；sendSongInfo</li>
+     * </ul>
      * @return Whether initialization was successful.
      * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
      */
