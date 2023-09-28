@@ -2978,6 +2978,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				mainHTF.setText(getResources().getString(R.string.listmei_zemkyoku));					//ヘッダーのメインテキスト表示枠
 				String subText =getResources().getString(R.string.pp_artist) + " ; "  + artistAL.size() + getResources().getString(R.string.comon_nin) ;			//アーティスト 人
 				subHTF.setText(subText );
+				reqCode=MyConstants.v_artist;
 				setHeadImgList(artistAL );				//イメージとサブテキストを持ったリストを構成
 			}else {
 				CreatePLList(readID , sousalistName);		//myPreferences.nowList
@@ -5509,7 +5510,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //							}
 //						}
 						break;
-					case MyConstants.v_play_list:			//198
+					case MyConstants.v_play_list:			//195
 						String title = (String) ItemAL.get(i).get("title");
 						dbMsg +=",title=" + title ;
 						item1.setTextData(title);
