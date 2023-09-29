@@ -6074,7 +6074,6 @@ public class MaraSonActivity extends AppCompatActivity
 			ad_layout = findViewById(R.id.ad_layout);
 			nend_layout = findViewById(R.id.nend_layout);
 			//////////////////////////////////////
-//			url2FSet( myPreferences.nowData);
 			shigot_bangou =  syoki_activty_set ;			//	onWindowFocusChangedを経てaSetei； ;ボタンなどへのイベント割付け
 
 			LinearLayout playPanel = findViewById(R.id.playPanel);
@@ -6117,6 +6116,9 @@ public class MaraSonActivity extends AppCompatActivity
 					toolbar.setTitle(nowList);
 					nowData = MPSIntent.getStringExtra("nowData");
 					dbMsg +="=" + nowData;
+					if(nowData != null){
+						url2FSet( nowData);
+					}
 					break;
 				}
 			}

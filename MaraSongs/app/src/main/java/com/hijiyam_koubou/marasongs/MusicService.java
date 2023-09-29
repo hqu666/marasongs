@@ -1639,10 +1639,13 @@ public class MusicService extends MediaBrowserService {
             intent.putExtra("nowList",myPreferences.nowList);             //currentListName
             intent.putExtra("mIndex",mIndex);
             intent.putExtra("nowData",nowData);             //nowData
-//            intent.putExtra("nowArtist",sousa_artist);
-//            intent.putExtra("nowAlbum",sousa_alubm);
+
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
                 //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
+            // プレイヤーを表示
+               pendingIntent.send();
+         //       getApplication().startActivity(intent);           //では表示した挽回で何も表示されていない
+
             exoPlayer.prepare();
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
@@ -1675,8 +1678,7 @@ public class MusicService extends MediaBrowserService {
 
             notification = notificationBuilder.build();
             startForeground(NOTIFICATION_ID, notification);
-            ////////////////////////////////////////////////////////////// Notification作成 //
-
+            ////////////////////////////////////////////////////////////// Notification作成
 //            objMap=plAL.get(mIndex);
 //            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
 //            dbMsg += ",dataFN=" + dataFN;
