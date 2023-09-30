@@ -899,7 +899,7 @@ public class MusicService extends MediaBrowserService {
                     dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
                 }
             }else if(action.equals(ACTION_SET_SONG)){
-                dbMsg +=",現在[" +currentListId + "]" + currentListName + "で"+mediaItemList.size() + "件";
+                dbMsg +=",現在[" +currentListId + "]" + currentListName;              // + "で"+mediaItemList.size() + "件";
                 dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
                 String setListId = intent.getStringExtra("nowList_id");
                 String setListName = intent.getStringExtra("nowList");
@@ -957,6 +957,8 @@ public class MusicService extends MediaBrowserService {
                     exoPlayer.pause();
                     dbMsg += ",一時停止して";
                 }
+                mIndex=exoPlayer.getCurrentMediaItemIndex();
+                dbMsg += ",mIndex[" + mIndex + "]";
                 MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
                 String mediaId = currentMediaItem.mediaId;
                 dbMsg += ",現在:" + mediaId;
@@ -982,7 +984,8 @@ public class MusicService extends MediaBrowserService {
                 }else{
                     exoPlayer.pause();
                 }
-                sendStateChasng();
+                sendSongInfo(mIndex);
+       //         sendStateChasng();
                 dbMsg += ">>" + exoPlayer.isPlaying();
             }else if(action.equals(ACTION_GET_SONG)){
                 dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
@@ -1732,21 +1735,28 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "sendSongInfo";
         String dbMsg="";
         try {
-            Intent MRIintent = new Intent();
-            //      Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
-            MRIintent.setAction(ACTION_SET_SONG);
             dbMsg += ",currentList[" + currentListId + "]" + currentListName;
-//            String list_id = myPreferences.nowList_id;
-//            dbMsg += ",送信するのは" + list_id;
-            MRIintent.putExtra("nowList_id",currentListId);
-            MRIintent.putExtra("currentListName",currentListName);
-            dbMsg += "の[" + currentIndex +"]";
-            MRIintent.putExtra("currentIndex",currentIndex);
+            dbMsg += "(Artis=" + currentArtistName + ",Album=" + currentAlbumName + ")";
+            myEditor.putString( "nowList_id", currentListId);
+            myEditor.putString( "nowList", currentListName);
+            mIndex = exoPlayer.getCurrentMediaItemIndex();
+//            String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
+            dbMsg += "の[" + currentIndex + "]" + nowData;
+            myEditor.putString( "nowIndex", String.valueOf(currentIndex));
             objMap=plAL.get(currentIndex);            //mIndex?
             nowData = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
             dbMsg += ",nowData=" + nowData;
+            myEditor.putString( "nowData", nowData);
             String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
             dbMsg += ",duranation=" + duranation;
+            myEditor.putString( "pref_duration", String.valueOf(duranation));
+            boolean kakikomi = myEditor.commit();
+            Intent MRIintent = new Intent();
+            //      Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
+            MRIintent.setAction(ACTION_SET_SONG);
+            MRIintent.putExtra("nowList_id",currentListId);
+            MRIintent.putExtra("currentListName",currentListName);
+            MRIintent.putExtra("currentIndex",currentIndex);
             MediaItem mediaItem = mediaItemList.get(currentIndex);
             MRIintent.putExtra("nowData",nowData);
             MRIintent.putExtra("artist",mediaItem.mediaMetadata.artist);
@@ -1805,7 +1815,8 @@ public class MusicService extends MediaBrowserService {
 //            String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
             dbMsg += "の[" + mIndex + "]" + nowData;
             myEditor.putString( "nowIndex", String.valueOf(mIndex));
-            myEditor.putString( "nowData", nowData);                 // myPreferences.nowData
+            myEditor.putString( "nowData", nowData);
+            // myPreferences.nowData
 
             dbMsg += "exoPlayer=" + exoPlayer;
             long contentPosition = 0l;

@@ -2971,7 +2971,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //			dbMsg += "を書込み" + retBool;
 //			retBool = setPrefStr("nowList" , sousalistName , MuList.this);        //プリファレンスの読込み
 //			dbMsg += "を書込み" + retBool;
-
+			mIndex=0;
 			if(sousalistName.equals(getString(R.string.listmei_zemkyoku))){
 				readArtistDB();
 				dbMsg +=">>アーティストリスト"+MuList.this.artistAL.size() + "件";// + "件、末尾グループのアーティスト=" + MuList.this.suffixAL.size() + "人"+ "；末尾グループのアルバム=" + MuList.this.suffixAlbumList.size() + "枚";
