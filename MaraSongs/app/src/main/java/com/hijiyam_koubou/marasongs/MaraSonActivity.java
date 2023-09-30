@@ -139,6 +139,12 @@ public class MaraSonActivity extends AppCompatActivity
 
 	/**呼び出し元のサービス*/
 	private MusicService mServiceBinder;
+	public String currentListId = "";
+	public String currentListName = "";
+	public String currentArtistName = "";
+	public String currentAlbumName = "";
+	/**currentList中でnowDataの位置*/
+	public int nowIndex = 0;
 	/**呼び出し元のサービスで再生している曲のインデックス*/
 	public int mIndex = -1;
 	/**呼び出し元のサービスで再生している曲のuri*/
@@ -401,76 +407,76 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "quitMe";
 		String dbMsg = "[MaraSonActivity]";
 		try{
-			dbMsg +="、mVisualizer="+ mVisualizer;//////////////////
-			if( mVisualizer != null ){
-				mVisualizer.release();
-				mVisualizer = null;
-			}
-//			dbMsg += ",adView="+ mAdView;//////////////////
-//			if( mAdView != null ){
-//				mAdView.destroy();
-//				dbMsg += ">>"+ mAdView;//////////////////
+//			dbMsg +="、mVisualizer="+ mVisualizer;//////////////////
+//			if( mVisualizer != null ){
+//				mVisualizer.release();
+//				mVisualizer = null;
 //			}
-			dbMsg +=",startVol=" + startVol;/////////////////////////////////////
-			reSetVol();			//設定されたミュートを解除
-			audioManage.setStreamMute(AudioManager.STREAM_MUSIC, false);					// ミュート設定をONにする
-			if ( startVol == 0) {	//起動時の音楽音量
-				audioManage.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
-			}else{
-				audioManage.setStreamVolume(AudioManager.STREAM_MUSIC, startVol, 0);			//起動時の音楽音量に戻す
-			}
-			receiverHaki();							//unregisterReceiverでレシーバーを破棄
-			ArrayList<String> serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
-			dbMsg += "破棄前serviceList="+ serviceList ;/////////////////////////////////////
-			if( 0 < serviceList.size() ){
-				dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
-				for(String serviceName : serviceList){
-					if(serviceName.contains("MusicService")){
-						dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
-						if( MPSIntent == null){
-//							MusicService MPS = new MusicService(MaraSonActivity.this);
-//							Class<? extends MusicService> mpsClass = MPS.getClass();
-							MPSIntent = new Intent(getApplication(), MusicService.class);
-							dbMsg +=">>" + MPSIntent;/////////////////////////////////////
-						}
-						MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
-						startService(MPSIntent);
-//						stopService(MPSIntent);			//こっちで消える？
-					}else if(serviceName.contains("NotifRecever")){
-						MPSIntent = new Intent(getApplication(), NotifRecever.class);
-						dbMsg += ",NotifRecever="+ MPSIntent;//////////////////
-//						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
-						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
-					}else if(serviceName.contains("BuletoohtReceiver")){
-						MPSIntent = new Intent(getApplication(), BuletoohtReceiver.class);
-						dbMsg += ",BuletoohtReceiver="+ MPSIntent;//////////////////
-//						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
-						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
-					}
-				}
-				serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
-				dbMsg +=">>破棄後serviceList="+ serviceList ;/////////////////////////////////////
-			}
-			dbMsg += ",IsPlaying="+ IsPlaying ;///
-
-			Intent intentSub = new Intent();
-			dbMsg +=  ",reqCode=" + reqCode;
-			if(reqCode != MyConstants.v_artist && reqCode != MyConstants.v_alubum && reqCode != MyConstants.v_titol) {
-				reqCode = MyConstants.v_play_list;
-				dbMsg +=  ">>" + reqCode;
-			}
-			intentSub.putExtra("reqCode",reqCode);
-			dbMsg += "[" + myPreferences.nowList_id+ "]" + myPreferences.nowList;
-			intentSub.putExtra("nowList_id",myPreferences.nowList_id);
-			intentSub.putExtra("nowList",myPreferences.nowList);
-			intentSub.putExtra("nowIndex",myPreferences.nowIndex);
-			dbMsg += ",nowData=" + myPreferences.nowData;
-			intentSub.putExtra("nowData",myPreferences.nowData);
-			setResult(RESULT_OK, intentSub);
+////			dbMsg += ",adView="+ mAdView;//////////////////
+////			if( mAdView != null ){
+////				mAdView.destroy();
+////				dbMsg += ">>"+ mAdView;//////////////////
+////			}
+//			dbMsg +=",startVol=" + startVol;/////////////////////////////////////
+//			reSetVol();			//設定されたミュートを解除
+//			audioManage.setStreamMute(AudioManager.STREAM_MUSIC, false);					// ミュート設定をONにする
+//			if ( startVol == 0) {	//起動時の音楽音量
+//				audioManage.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
+//			}else{
+//				audioManage.setStreamVolume(AudioManager.STREAM_MUSIC, startVol, 0);			//起動時の音楽音量に戻す
+//			}
+//			receiverHaki();							//unregisterReceiverでレシーバーを破棄
+//			ArrayList<String> serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+//			dbMsg += "破棄前serviceList="+ serviceList ;/////////////////////////////////////
+//			if( 0 < serviceList.size() ){
+//				dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
+//				for(String serviceName : serviceList){
+//					if(serviceName.contains("MusicService")){
+//						dbMsg +=",MPSIntent=" + MPSIntent;/////////////////////////////////////
+//						if( MPSIntent == null){
+////							MusicService MPS = new MusicService(MaraSonActivity.this);
+////							Class<? extends MusicService> mpsClass = MPS.getClass();
+//							MPSIntent = new Intent(getApplication(), MusicService.class);
+//							dbMsg +=">>" + MPSIntent;/////////////////////////////////////
+//						}
+//						MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
+//						startService(MPSIntent);
+////						stopService(MPSIntent);			//こっちで消える？
+//					}else if(serviceName.contains("NotifRecever")){
+//						MPSIntent = new Intent(getApplication(), NotifRecever.class);
+//						dbMsg += ",NotifRecever="+ MPSIntent;//////////////////
+////						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+//						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
+//					}else if(serviceName.contains("BuletoohtReceiver")){
+//						MPSIntent = new Intent(getApplication(), BuletoohtReceiver.class);
+//						dbMsg += ",BuletoohtReceiver="+ MPSIntent;//////////////////
+////						stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+//						dbMsg +=">>" + MPSIntent;/////////////////////////////////////
+//					}
+//				}
+//				serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+//				dbMsg +=">>破棄後serviceList="+ serviceList ;/////////////////////////////////////
+//			}
+//			dbMsg += ",IsPlaying="+ IsPlaying ;///
+//
+//			Intent intentSub = new Intent();
+//			dbMsg +=  ",reqCode=" + reqCode;
+//			if(reqCode != MyConstants.v_artist && reqCode != MyConstants.v_alubum && reqCode != MyConstants.v_titol) {
+//				reqCode = MyConstants.v_play_list;
+//				dbMsg +=  ">>" + reqCode;
+//			}
+//			intentSub.putExtra("reqCode",reqCode);
+//			dbMsg += "[" + myPreferences.nowList_id+ "]" + myPreferences.nowList;
+//			intentSub.putExtra("nowList_id",myPreferences.nowList_id);
+//			intentSub.putExtra("nowList",myPreferences.nowList);
+//			intentSub.putExtra("nowIndex",myPreferences.nowIndex);
+//			dbMsg += ",nowData=" + myPreferences.nowData;
+//			intentSub.putExtra("nowData",myPreferences.nowData);
+//			setResult(RESULT_OK, intentSub);
 
 			MaraSonActivity.this.finish ();
-			serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
-			dbMsg +=",serviceList="+ serviceList ;/////////////////////////////////////
+//			serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+//			dbMsg +=",serviceList="+ serviceList ;/////////////////////////////////////
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -875,68 +881,6 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-/**
- * サービスにプレイヤー画面のデータを送る
- *呼出し元	起動直後にaSetei 、onActivityResultでリストから戻ってきた時
- * */
-//	private void mData2Service(int myPreferences.nowIndex){										//①ⅳサービスにプレイヤー画面のデータを送る	＜aSetei, , onStopTrackingTouch , preparBody[MaraSonActivity]
-//		final String TAG = "mData2Service";
-//		String dbMsg= "";
-//		try{
-//			dbMsg += "MPSIntent=" + MPSIntent;/////////////////////////////////////
-//			if(MPSIntent == null){
-//				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
-//				dbMsg +=">>" + MPSIntent;
-//			}
-//			String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
-//			dbMsg += "[" + myPreferences.nowList_id + "]=" + myPreferences.nowList;/////////////////////////////////////
-//			MPSIntent.putExtra("myPreferences.nowList_id",myPreferences.nowList_id);
-//			if(myPreferences.nowList == null){
-//				myPreferences.nowList = getPLName( myPreferences.nowList_id);			//プレイリスト名を返す
-//				dbMsg += ">>" + myPreferences.nowList;/////////////////////////////////////
-//			}
-//			MPSIntent.putExtra("myPreferences.nowList",myPreferences.nowList);
-//			dbMsg +="[play_order=ID=myPreferences.nowIndex=" + myPreferences.nowIndex;/////////////////////////////////////
-//			MPSIntent.putExtra("myPreferences.nowIndex",myPreferences.nowIndex);
-//			dbMsg +=",toPlaying=" + toPlaying;/////////////////////////////////////
-//			MPSIntent.putExtra("continu_status",toPlaying);
-//			dbMsg += ","+ n_dataFN;/////////////////////////////////////
-//			if( n_dataFN != null ){				//n_dataFN
-//				MPSIntent.putExtra("dataFN",n_dataFN);	//n_dataFN
-//			} else {
-//				if(dataFN != null){          //        &&  nowData.equals("")
-//					MPSIntent.putExtra("dataFN",dataFN);
-//				}
-//				MPSIntent.setAction(MusicService.ACTION_REQUEST_STATE);	//起動時の表示
-//			}
-//
-////			dbMsg += "[再生ポジション=" + mcPosition;/////////////////////////////////////
-////			//	MPSIntent.setAction(MusicService.ACTION_LISTSEL);
-//////			if( rp_pp ){
-//////				MPSIntent.setAction(MusicService.ACTION_STOP);		//音が出てしまう
-//////			}
-//////			dbMsg +="[再生ポジション=" + mcPosition;/////////////////////////////////////
-////			MPSIntent.putExtra("mcPosition",mcPosition);	//再生ポジション
-//			dbMsg +="/" + saiseiJikan +"mS]";/////////////////////////////////////
-//			if(0 < saiseiJikan){
-//				MPSIntent.putExtra("saiseiJikan",saiseiJikan);	//DURATION;
-//			}
-//
-//			MPSIntent.putExtra("rp_pp",rp_pp);					//2点間リピート中
-//			MPSIntent.putExtra("pp_start",pp_start);			//リピート区間開始点
-//			MPSIntent.putExtra("pp_end",pp_end);				//リピート区間終了点
-//			MPSIntent.putExtra("tugiList_id",myPreferences.pref_zenkyoku_list_id );
-//			MPSIntent.putExtra("tugiList","");
-//
-//			dbMsg +=" ,getAction=" + MPSIntent.getAction();/////////////////////////////////////
-//			MPSName = startService(MPSIntent);
-//			dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-
 	/**プレイリスト名を返す*/
 	@SuppressLint("Range")
 	public String getPLName(int nowList_id){
@@ -973,9 +917,7 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 ///②サービスで稼働している情報をActivtyに書き込む/////////////////////////////////////////////////①起動動作
-	public String currentArtistName="";
-	public String currentAlbumName="";
-	
+
 	/**
 	 * 送信元はMusicService.sendPlayerStateと	changeCount	および	onHandleIntent
 	 *
@@ -1002,8 +944,11 @@ public class MaraSonActivity extends AppCompatActivity
 						isPlaying = intent.getBooleanExtra("isPlaying", false);
 						dbMsg += ",isPlaying=" + isPlaying;
 						if(intent.getAction().equals(MusicService.ACTION_SET_SONG)) {
-							nowList_id = intent.getStringExtra("nowList_id");
-							dbMsg += ",nowList_id= " + nowList_id;
+							currentListId = intent.getStringExtra("nowList_id");
+							currentListName = intent.getStringExtra("currentListName");
+							dbMsg += ",現在[" + currentListId + "]" + currentListName;
+							toolbar.setTitle(currentListName);
+
 							dataStr = intent.getStringExtra("nowData");
 							dbMsg += ",dataStr= " + dataStr;
 
@@ -1231,74 +1176,6 @@ public class MaraSonActivity extends AppCompatActivity
 			});
 		}
 	}
-
-////http://blog.justoneplanet.info/2011/12/14/android%E3%81%A7notification%E3%82%92%E4%BD%BF%E3%81%86/
-//	public void setSeekMax(int saiseiJikan ){		//     ,
-//		final String TAG = "setSeekMax";
-//		String dbMsg= "";
-//		try{
-//			dbMsg +="saiseiJikan =" + saiseiJikan;
-////			totalTimePTF.setText(ORGUT.sdf_mss.format(saiseiJikan));
-////			saiseiSeekMP.setMax(saiseiJikan);		//DURATION;
-//			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-//			dbMsg +=">>" + nowVol;//0～15/////////////////////////////
-//			vol_tf.setText(String.valueOf(nowVol));//音量表示
-//	//							myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-//	/**
-//	 * 再生ポイント更新
-//	 * 呼出し元  MusicReceiver
-//	 * */
-//	public void pointKousin(int mcPosition ){		//     , int saiseiJikan
-//		final String TAG = "pointKousin";
-//		String dbMsg= "";
-////			new Thread(new Runnable() {				//ワーカースレッドの生成
-////				public void run() {
-////					String dbMsg= "thread id = " + Thread.currentThread().getId();/////////////////////////////////////
-////					try {
-////						Thread.sleep(1); // 1ms秒待つ
-////					} catch (InterruptedException e) {
-////						e.printStackTrace();
-////					}
-////					runOnUiThread(new Runnable() {			//メインスレッド以外からのUI更新
-////						/*☆メインスレッドにポストする-
-////						 *メインスレッドから呼ばれた場合、渡されたアクションをすぐに実行
-////						 *メインスレッド以外から呼ばれた場合、渡されたアクションをメインスレッドのイベントキューにポスト*/
-////						public void run() {
-////							final String TAG = "runOnUiThread[pointKousin]";
-////							String dbMsg= "開始";/////////////////////////////////////
-//		try{
-//			dbMsg +="mcPosition =" + mcPosition;
-////			int saiseiJikan = saiseiSeekMP.getMax();
-////			dbMsg +="/ " + saiseiJikan;
-////			if( saiseiJikan < mcPosition ){
-////				saiseiJikan = getPrefInt("pref_duration" , 0, MaraSonActivity.this);		//sharedPref.getInt("pref_duration" , 0);
-////				dbMsg +=">再生時間>" +saiseiJikan;
-////				if( saiseiJikan < mcPosition ){
-////					return;
-////				}else{
-////					setSeekMax(saiseiJikan);		//DURATION;
-////				}
-////			}
-////			dbMsg +="[再生ポジション=" + mcPosition + "/";
-////			saiseiSeekMP.setProgress(mcPosition);
-////			saiseiPositionPTF.setText(ORGUT.sdf_mss.format(mcPosition));	   		//再生画面の経過時間枠
-//			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-//			dbMsg +=">>" + nowVol;//0～15/////////////////////////////
-//			vol_tf.setText(String.valueOf(nowVol));//音量表示
-//
-////							myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-////						}
-////					});
-////				}
-////			}).start();
-//	}
 
 	/**レシーバを作り直す*/
 	public void rusekiKousin(){		//累積更新;累積曲数が発生する一瞬で書き換える
@@ -5654,52 +5531,6 @@ public class MaraSonActivity extends AppCompatActivity
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
 	}
-
-	/**
-	 * @return Whether initialization was successful.
-	 * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
-	 */
-//	protected boolean initializePlayer() {
-//		final String TAG = "initializePlayer";
-//		String dbMsg="";
-//		try {
-//			if (exoPlayer == null) {
-//				Intent intent = getIntent();
-//
-//				mediaItems = createMediaItems(intent);
-//				if (mediaItems.isEmpty()) {
-//					return false;
-//				}
-//
-//				lastSeenTracks = Tracks.EMPTY;
-//				ExoPlayer.Builder playerBuilder =
-//						new ExoPlayer.Builder(/* context= */ this)
-//								.setMediaSourceFactory(createMediaSourceFactory());
-//				setRenderersFactory(
-//						playerBuilder, intent.getBooleanExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, false));
-//				exoPlayer = playerBuilder.build();
-//				exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
-//				exoPlayer.addListener(new PlayerEventListener());
-//				exoPlayer.addAnalyticsListener(new EventLogger());
-//				exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);
-//				exoPlayer.setPlayWhenReady(startAutoPlay);
-//				playerView.setPlayer(exoPlayer);
-//				configurePlayerWithServerSideAdsLoader();
-//				debugViewHelper = new DebugTextViewHelper(exoPlayer, artist_tv);			//debugTextView
-//				debugViewHelper.start();
-//			}
-//			boolean haveStartPosition = startItemIndex != C.INDEX_UNSET;
-//			if (haveStartPosition) {
-//				exoPlayer.seekTo(startItemIndex, startPosition);
-//			}
-//			exoPlayer.setMediaItems(mediaItems, /* resetPosition= */ !haveStartPosition);
-//			exoPlayer.prepare();
-//			updateButtonVisibility();
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		return true;
-//	}
 	///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
 	public  ImageView playPause;
 	void buildTransportControls(){
@@ -6109,11 +5940,12 @@ public class MaraSonActivity extends AppCompatActivity
 					imanoJyoutai = MuList.sonomama;
 
 					MPSIntent = getIntent();
-					String nowList_id = MPSIntent.getStringExtra("nowList_id");
-					String nowList = MPSIntent.getStringExtra("nowList");
+					dbMsg += ",現在[" + currentListId + "]" + currentListName;
+					currentListId = MPSIntent.getStringExtra("nowList_id");
+					currentListName = MPSIntent.getStringExtra("nowList");
 					mIndex = MPSIntent.getIntExtra("mIndex",0);
-					dbMsg +="、渡されたのは[" + nowList_id + "]" + nowList + "の"+ mIndex +"番目";
-					toolbar.setTitle(nowList);
+					dbMsg +="、渡されたのは[" + currentListId + "]" + currentListName + "の"+ mIndex +"番目";
+					toolbar.setTitle(currentListName);
 					nowData = MPSIntent.getStringExtra("nowData");
 					dbMsg +="=" + nowData;
 					if(nowData != null){

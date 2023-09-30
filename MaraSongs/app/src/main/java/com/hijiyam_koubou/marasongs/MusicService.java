@@ -72,6 +72,10 @@ public class MusicService extends MediaBrowserService {
     public String currentListName = "";
     public String currentArtistName = "";
     public String currentAlbumName = "";
+    public String nowData;
+    /**currentList中でnowDataの位置*/
+    public int nowIndex = 0;
+    public int mIndex = 0;          //nowIndex;
 
     /**プレイヤーに保持させるMediaItemのリスト*/
     public List<MediaItem> mediaItemList;
@@ -90,7 +94,6 @@ public class MusicService extends MediaBrowserService {
     public List<Map<String, Object>> plAL2;
 
     public Map<String, Object> objMap;				//汎用マップ
-    public int mIndex = 0;
     /**
      * 状況変化前の再生状況
      * <ul>
@@ -100,7 +103,7 @@ public class MusicService extends MediaBrowserService {
      *        <li> ACTION_PLAY/ACTION_PAUSE
      * **/
     public boolean nowPlay;
-    public String nowData;
+
     public String artistName;
     public String albumName;
     public String songTitol;
@@ -353,9 +356,9 @@ public class MusicService extends MediaBrowserService {
     /**
      * 指定されたプレイリストの楽曲を内部配列に読み込む
      * <ul>
-     *     <li>
-     *         dataStrを指定しなければ全権取得
-     *     </li>
+     *     <li>dataStrを指定しなければ全権取得</li>
+     *     <li>plALはMediaStore.Audio.Playlists.Members.DATAでDataを記録</li>
+     *     <li>nowDataに該当するインデックスをnowIndexに格納</li>
      * </ul>
      * */
     @SuppressLint("Range")
@@ -412,6 +415,10 @@ public class MusicService extends MediaBrowserService {
                             }else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//MediaStore.Audio.Playlists.Members.DATA[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
                                 uriStr = playLists.getString(i);
                                 cVal = playLists.getString(i);
+                                if(uriStr.equals(nowData)){
+                                    nowIndex=playLists.getPosition();
+                                    dbMsg += "," + nowData +"のインデックスは" + nowIndex;
+                                }
                             }else if( cName.equals("album_artist")){		//[26/37]
                                 albumArtistStr = playLists.getString(i);
                                 cVal = playLists.getString(i);
@@ -527,7 +534,13 @@ public class MusicService extends MediaBrowserService {
         return targetMediaItemList;
     }
 
-    /**全曲からアルバム内の一曲をMediaItemのリストに加える*/
+    /**全曲からアルバム内の一曲をMediaItemのリストに加える
+     * <ul>
+     *     <li>artistとalbumの名称で楽曲を抽出</li>
+     *     <li>plALはMediaStore.Audio.Playlists.Members.DATAでDataを記録</li>
+     *     <li>nowDataに該当するインデックスをnowIndexに格納</li>
+     * </ul>
+     * */
     @SuppressLint("Range")
     public List<MediaItem> add2TitolList(String artistMei ,String albumMei,List<MediaItem> targetMediaItemList,List<Map<String, Object>> targetAL){
         final String TAG = "add2TitolList";
@@ -590,6 +603,10 @@ public class MusicService extends MediaBrowserService {
                             }else if( cName.equals(MediaStore.Audio.Media.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
                                 uriStr = playLists.getString(i);
                                 cVal = playLists.getString(i);
+                                if(uriStr.equals(nowData)){
+                                    nowIndex=playLists.getPosition();
+                                    dbMsg += "," + nowData +"のインデックスは" + nowIndex;
+                                }
                             }else if( cName.equals("album_artist")){		//[26/37]
                                 albumArtistStr = playLists.getString(i);
                                 cVal = playLists.getString(i);
@@ -718,10 +735,10 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ">>同一アルバムを読み込み済み";
             }else{
                 repeatMode =Player.REPEAT_MODE_OFF;                     //繰り返しをOFF
-                mediaItemList = new ArrayList<MediaItem>();
-                dbMsg += "mediaItemList" + mediaItemList.size() + "件";
-                plAL = new ArrayList<Map<String, Object>>();
-                plAL.clear();
+//                mediaItemList = new ArrayList<MediaItem>();
+//                dbMsg += "mediaItemList" + mediaItemList.size() + "件";
+//                plAL = new ArrayList<Map<String, Object>>();
+//                plAL.clear();
                 mediaItemList = add2TitolList( setArtistName ,setAlbumName,mediaItemList,plAL);
                 dbMsg += "＞＞" + mediaItemList.size() + "件";
                 dbMsg += ">変更>";
@@ -756,6 +773,7 @@ public class MusicService extends MediaBrowserService {
             mediaItemList = new ArrayList<MediaItem>();
             plAL = new ArrayList<Map<String, Object>>();
             plAL.clear();
+            nowIndex=-1;
             dbMsg="setList[" +playlistId+ "]" + setListName + "の" + uriStr;
             if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                 mediaItemList = add2List( playlistId ,uriStr,mediaItemList,plAL);
@@ -765,6 +783,15 @@ public class MusicService extends MediaBrowserService {
             }
             retInt=mediaItemList.size();
             dbMsg +=">>" + retInt+ "件"+ ":名称リスト" + plAL.size() + "件";
+
+            dbMsg +="、" + nowData+ "は" + nowIndex + "番目";
+            if(-1< nowIndex){
+                dbMsg += nowIndex + "番目";
+                mIndex = nowIndex;
+            }else{
+                dbMsg += "リストに無し";
+            }
+
             if(exoPlayer != null){
                 exoPlayer.pause();
                 exoPlayer.release();
@@ -814,8 +841,8 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ",渡されたのは[ " + nowList_id+ "] ";
                 String setListName = intent.getStringExtra("nowList");
                 dbMsg += setListName;
-                String uriStr = intent.getStringExtra("uriStr");
-                dbMsg +=  ",Uri="+ uriStr;
+                nowData = intent.getStringExtra("uriStr");
+                dbMsg +=  ",Uri="+ nowData;
                 String sousa_artist = intent.getStringExtra("sousa_artist");
                 String sousa_alubm = intent.getStringExtra("sousa_alubm");
                 dbMsg += ",sousa_artist="+ sousa_artist + ",sousa_alubm="+ sousa_alubm;
@@ -896,6 +923,8 @@ public class MusicService extends MediaBrowserService {
                     }else{
                         dbMsg +=",全曲中でアルバム＝リスト変更" ;
                         makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
+                        currentListId=setListId;
+                        currentListName=setListName;
                     }
 //                }else if(action.equals(ACTION_GET_SONG)){
 //                    dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
@@ -915,6 +944,8 @@ public class MusicService extends MediaBrowserService {
                     if(! currentListName.equals(setListName)){
                         makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
                         dbMsg += ",変更後：mediaItemList=" +mediaItemList.size()+ "件" ;
+                        currentListId=setListId;
+                        currentListName=setListName;
                     }else{
                         dbMsg += "変更なし" ;
                     }
@@ -1704,18 +1735,20 @@ public class MusicService extends MediaBrowserService {
             Intent MRIintent = new Intent();
             //      Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
             MRIintent.setAction(ACTION_SET_SONG);
-            String list_id = myPreferences.nowList_id;
-            dbMsg += ",送信するのは" + list_id;
-            MRIintent.putExtra("nowList_id",list_id);
+            dbMsg += ",currentList[" + currentListId + "]" + currentListName;
+//            String list_id = myPreferences.nowList_id;
+//            dbMsg += ",送信するのは" + list_id;
+            MRIintent.putExtra("nowList_id",currentListId);
+            MRIintent.putExtra("currentListName",currentListName);
             dbMsg += "の[" + currentIndex +"]";
             MRIintent.putExtra("currentIndex",currentIndex);
             objMap=plAL.get(currentIndex);            //mIndex?
-            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-            dbMsg += ",dataFN=" + dataFN;
+            nowData = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+            dbMsg += ",nowData=" + nowData;
             String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
             dbMsg += ",duranation=" + duranation;
             MediaItem mediaItem = mediaItemList.get(currentIndex);
-            MRIintent.putExtra("nowData",dataFN);
+            MRIintent.putExtra("nowData",nowData);
             MRIintent.putExtra("artist",mediaItem.mediaMetadata.artist);
             MRIintent.putExtra("albumTitle",mediaItem.mediaMetadata.albumTitle);
             MRIintent.putExtra("title",mediaItem.mediaMetadata.title);
@@ -1764,14 +1797,15 @@ public class MusicService extends MediaBrowserService {
         final String TAG = "destructionPlayer";
         String dbMsg="";
         try {
-            dbMsg += "[" + myPreferences.nowList_id + "]" + myPreferences.nowList;
-//            myEditor.putString( "nowList_id", String.valueOf(myPreferences.nowList_id));
-//            myEditor.putString( "nowList", String.valueOf(myPreferences.nowList));
+            dbMsg += ",currentList[" + currentListId + "]" + currentListName;
+            dbMsg += "(Artis=" + currentArtistName + ",Album=" + currentAlbumName + ")";
+            myEditor.putString( "nowList_id", currentListId);
+            myEditor.putString( "nowList", currentListName);
             mIndex = exoPlayer.getCurrentMediaItemIndex();
-            String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
-            dbMsg += "[" + mIndex + "]" + data_url;
+//            String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
+            dbMsg += "の[" + mIndex + "]" + nowData;
             myEditor.putString( "nowIndex", String.valueOf(mIndex));
-            myEditor.putString( "nowData", data_url);                 // myPreferences.nowData
+            myEditor.putString( "nowData", nowData);                 // myPreferences.nowData
 
             dbMsg += "exoPlayer=" + exoPlayer;
             long contentPosition = 0l;

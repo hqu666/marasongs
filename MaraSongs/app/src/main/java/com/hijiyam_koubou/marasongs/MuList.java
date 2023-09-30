@@ -6425,7 +6425,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 	public Cursor rCursor;
 
-	/** 指定したプレイリストの内容取得 */
+	/** 指定したプレイリストの内容取得
+	 *
+	 * */
 	public void CreatePLList( long playlistId , String pdMessage){		//playlistIdで指定したMediaStore.Audio.Playlists.Membersの内容取得		String volumeName,
 		final String TAG = "CreatePLList";
 		String dbMsg = "";
@@ -12079,6 +12081,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					try{
 						if( MPSIntent == null){
 						}else{
+
 							stopService(MPSIntent);
 						}
 						quitMe();		//このアプリを終了する
