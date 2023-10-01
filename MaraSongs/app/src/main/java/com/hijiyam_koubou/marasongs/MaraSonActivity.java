@@ -135,8 +135,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class MaraSonActivity extends AppCompatActivity
-	implements View.OnClickListener  , View.OnLongClickListener , View.OnKeyListener ,OnSeekBarChangeListener , android.view.GestureDetector.OnGestureListener , PlayerView.ControllerVisibilityListener{
-
+	implements View.OnClickListener  , View.OnLongClickListener , View.OnKeyListener , android.view.GestureDetector.OnGestureListener , PlayerView.ControllerVisibilityListener{
+// ,OnSeekBarChangeListener
 	/**呼び出し元のサービス*/
 	private MusicService mServiceBinder;
 	public String currentListId = "";
@@ -4173,49 +4173,49 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {	// トラッキング中に呼び出されます☆ここが呼ばれる//☆キー操作為操作以外でも動いてしまえば発生
-		final String TAG = "onProgressChanged[saiseiSeekMP]";
-		String dbMsg= "";/////////////////////////////////////
-		try{
-			dbMsg +="再生ポジション=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
-			dbMsg +="progress"+ progress + ",fromTouch=" + fromTouch;/////////////////////////////////////
-//			saiseiPositionPTF.setText(ORGUT.sdf_mss.format(saiseiSeekMP.getProgress()));	   		//再生画面の経過時間枠
-//			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
+//	@Override
+//	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {	// トラッキング中に呼び出されます☆ここが呼ばれる//☆キー操作為操作以外でも動いてしまえば発生
+//		final String TAG = "onProgressChanged[saiseiSeekMP]";
+//		String dbMsg= "";/////////////////////////////////////
+//		try{
+//			dbMsg +="再生ポジション=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
+//			dbMsg +="progress"+ progress + ",fromTouch=" + fromTouch;/////////////////////////////////////
+////			saiseiPositionPTF.setText(ORGUT.sdf_mss.format(saiseiSeekMP.getProgress()));	   		//再生画面の経過時間枠
+////			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
 
 	/**
 	 * トラッキング終了時に呼び出されます
 	 * レシーバ生成
 	 * */
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		final String TAG = "onStopTrackingTouch";
-		String dbMsg= "";/////////////////////////////////////
-		try{
-			receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
-			dbMsg += "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
-//			int mcPosition = saiseiSeekMP.getProgress();					///seekBar.getProgress();
-//			int saiseiJikan  = saiseiSeekMP.getMax();
-//			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-//			setPrefInt("pref_position" ,  mcPosition , MaraSonActivity.this);
-
-			CharSequence btStre = ppPBT.getContentDescription();
-			dbMsg +=",ppPBT=" + btStre;
-			dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
-			if (ppPBT.getContentDescription().equals(getResources().getText(R.string.pause))) {	//isPlaying
-	//			receiverSeisei();	//レシーバーを生成
-				readPlaying( mcPosition );						//このアクティビティで設定されたデータを渡して再生
-			}
-			dbMsg += ">>"+ ppPBT.getContentDescription().toString();
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}			//onStopTrackingTouch(SeekBar seekBar)
+//	@Override
+//	public void onStopTrackingTouch(SeekBar seekBar) {
+//		final String TAG = "onStopTrackingTouch";
+//		String dbMsg= "";/////////////////////////////////////
+//		try{
+//			receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
+//			dbMsg += "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
+////			int mcPosition = saiseiSeekMP.getProgress();					///seekBar.getProgress();
+////			int saiseiJikan  = saiseiSeekMP.getMax();
+////			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+////			setPrefInt("pref_position" ,  mcPosition , MaraSonActivity.this);
+//
+//			CharSequence btStre = ppPBT.getContentDescription();
+//			dbMsg +=",ppPBT=" + btStre;
+//			dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
+//			if (ppPBT.getContentDescription().equals(getResources().getText(R.string.pause))) {	//isPlaying
+//	//			receiverSeisei();	//レシーバーを生成
+//				readPlaying( mcPosition );						//このアクティビティで設定されたデータを渡して再生
+//			}
+//			dbMsg += ">>"+ ppPBT.getContentDescription().toString();
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}			//onStopTrackingTouch(SeekBar seekBar)
 
 	int b_focusItemID = 0;
 	int b_Action = 9;
@@ -5563,93 +5563,6 @@ public class MaraSonActivity extends AppCompatActivity
 //      		mediaController.registerCallback(controllerCallback);
 //		}
 	}
-
-//	private final MediaBrowserCompat.ConnectionCallback connectionCallbacks =new MediaBrowserCompat.ConnectionCallback() {
-//
-//		/**
-//		 * <ul>
-//		 *    <li>MediaSession のトークンを取得する</li>
-//		 *    <li>MediaControllerCompat を作成する</li>
-//		 *    <li>コントローラーを保存する</li>
-//		 *    <li>UIの構築を完了する</li>
-//		 *  </ul>
-//		 * */
-//		@Override
-//		public void onConnected() {
-//			final String TAG = "onConnected";
-//			String dbMsg= "開始;";
-//			try{
-//				dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
-//				MediaSessionCompat.Token token = mBrowser.getSessionToken();
-//				MediaControllerCompat mController =
-//						new MediaControllerCompat(MaraSonActivity.this, // Context
-//								token);
-//				MediaControllerCompat.setMediaController(MaraSonActivity.this, mController);
-//
-//				//
-//				buildTransportControls();
-//				myLog(TAG, dbMsg);
-//			} catch (Exception e) {
-//				myErrorLog(TAG ,  dbMsg + "で" + e);
-//			}
-//
-//		}
-//
-//		/**サービスがクラッシュ
-//		 * 自動的に再接続されるまでトランスポート コントロールを無効にする*/
-//		@Override
-//		public void onConnectionSuspended() {
-//			final String TAG = "onConnectionSuspended";
-//			String dbMsg= "開始;";
-//			try{
-//				dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
-//				myLog(TAG, dbMsg);
-//			} catch (Exception e) {
-//				myErrorLog(TAG ,  dbMsg + "で" + e);
-//			}
-//		}
-//
-//		/**サービスが接続を拒否*/
-//		@Override
-//		public void onConnectionFailed() {
-//			//
-//			final String TAG = "onConnectionFailed";
-//			String dbMsg= "開始;";
-//			try{
-//				dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
-//				myLog(TAG, dbMsg);
-//			} catch (Exception e) {
-//				myErrorLog(TAG ,  dbMsg + "で" + e);
-//			}
-//		}
-//	};
-//
-//	MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
-//				@Override
-//				public void onMetadataChanged(MediaMetadataCompat metadata) {
-//					final String TAG = "onMetadataChanged";
-//					String dbMsg= "開始;";
-//					try{
-//						dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
-//						myLog(TAG, dbMsg);
-//					} catch (Exception e) {
-//						myErrorLog(TAG ,  dbMsg + "で" + e);
-//					}
-//
-//				}
-//
-//				@Override
-//				public void onPlaybackStateChanged(PlaybackStateCompat state) {
-//					final String TAG = "onPlaybackStateChanged";
-//					String dbMsg= "開始;";
-//					try{
-//						dbMsg=ORGUT.nowTime(true,true,true)+dbMsg;
-//						myLog(TAG, dbMsg);
-//					} catch (Exception e) {
-//						myErrorLog(TAG ,  dbMsg + "で" + e);
-//					}
-//				}
-//			};
 
 	private ServiceConnection myConnection = new ServiceConnection() {
 		@Override

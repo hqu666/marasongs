@@ -925,6 +925,12 @@ public class MusicService extends MediaBrowserService {
                         makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
                         currentListId=setListId;
                         currentListName=setListName;
+                        myEditor.putString( "nowList_id", String.valueOf(setListId));		//☆intで書き込むとcannot be cast
+                        myEditor.putString( "nowList", setListName);
+                        myEditor.putInt( "nowIndex", mIndex);
+                        myEditor.putString( "nowData", nowData);		//☆intで書き込むとcannot be cast
+                        boolean kakikomi = myEditor.commit();
+                        dbMsg +=",書き込み=" + kakikomi;	////////////////
                     }
 //                }else if(action.equals(ACTION_GET_SONG)){
 //                    dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
@@ -946,6 +952,12 @@ public class MusicService extends MediaBrowserService {
                         dbMsg += ",変更後：mediaItemList=" +mediaItemList.size()+ "件" ;
                         currentListId=setListId;
                         currentListName=setListName;
+                        myEditor.putString( "nowList_id", String.valueOf(setListId));		//☆intで書き込むとcannot be cast
+                        myEditor.putString( "nowList", setListName);
+                        myEditor.putInt( "nowIndex", mIndex);
+                        myEditor.putString( "nowData", nowData);		//☆intで書き込むとcannot be cast
+                        boolean kakikomi = myEditor.commit();
+                        dbMsg +=",書き込み=" + kakikomi;	////////////////
                     }else{
                         dbMsg += "変更なし" ;
                     }
@@ -1224,7 +1236,6 @@ public class MusicService extends MediaBrowserService {
             return MusicService.this;
         }
     }
-
 
     //   @Override
     public MediaSession onGetSession(MediaSession.ControllerInfo info) {
@@ -1625,7 +1636,7 @@ public class MusicService extends MediaBrowserService {
                         try {
                             mIndex=exoPlayer.getCurrentMediaItemIndex();
                             int endIndex = exoPlayer.getMediaItemCount();
-                            setPrefInt("nowIndex" , mIndex ,  context);
+//                            setPrefInt("nowIndex" , mIndex ,  context);
                             dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
 //                            boolean nowPlaying = exoPlayer.isPlaying();
 //                            dbMsg += ",nowPlaying=" + nowPlaying;
