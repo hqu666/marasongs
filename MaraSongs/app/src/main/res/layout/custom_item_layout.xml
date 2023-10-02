@@ -1,68 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hijiyam_koubou.marasongs.ItemLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<com.hijiyam_koubou.marasongs.ItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/custom_item_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+	<LinearLayout
+		android:id="@+id/custom_item_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iconView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/no_image"
-            android:contentDescription="@null" />
+		<ImageView
+			android:id="@+id/iconView"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:background="@drawable/no_image"
+			android:contentDescription="@null" />
 
-        <Button
-            android:id="@+id/pouseBt"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/pouse_notif"
-			android:contentDescription="no"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/playBt"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/play_notif"
+		<Button
+			android:id="@+id/pouseBt"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:background="@drawable/pouse_notif"
 			android:contentDescription="no"
 			android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/noView"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="right"
-	    android:textAppearance="?android:attr/textAppearanceSmall" />
+		<Button
+			android:id="@+id/playBt"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:background="@drawable/play_notif"
+			android:contentDescription="no"
+			android:visibility="visible" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+		<TextView
+			android:id="@+id/noView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:id="@+id/titleView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/list_item_selector"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/descriptionView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/list_item_selector"
-                android:gravity="right"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+			<TextView
+				android:id="@+id/titleView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/list_item_selector"
+				android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        </LinearLayout>
-    </LinearLayout>
+			<TextView
+				android:id="@+id/descriptionView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/list_item_selector"
+				android:gravity="right"
+				android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		</LinearLayout>
+	</LinearLayout>
 
 </com.hijiyam_koubou.marasongs.ItemLayout>

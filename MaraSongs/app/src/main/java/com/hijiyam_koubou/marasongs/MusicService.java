@@ -969,8 +969,12 @@ public class MusicService extends MediaBrowserService {
                     exoPlayer.pause();
                     dbMsg += ",一時停止して";
                 }
-                mIndex=exoPlayer.getCurrentMediaItemIndex();
-                dbMsg += ",mIndex[" + mIndex + "]";
+                int currentIndex = exoPlayer.getCurrentMediaItemIndex();
+                dbMsg += ",Current[" + currentIndex + "]";
+                if(currentIndex !=mIndex){
+                    exoPlayer.seekTo(mIndex, saiseiJikan); //特定のアイテムの特定の位置から開始
+                    dbMsg += ">>" + exoPlayer.getCurrentMediaItemIndex();
+                }
                 MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
                 String mediaId = currentMediaItem.mediaId;
                 dbMsg += ",現在:" + mediaId;
