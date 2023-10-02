@@ -5049,17 +5049,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 						}
 
-//						MPSIntent.putExtra("nowList_id","-1");
-//						MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
-//						MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
-//						dbMsg +=  ",MPSIntent=" + MPSIntent;
-//						MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
-//						dbMsg +=  ",sousa_artist=" + sousa_artist + ",sousa_alubm=" + sousa_alubm;
-//						MPSIntent.putExtra("sousa_artist",sousa_artist);
-//						MPSIntent.putExtra("sousa_alubm",sousa_alubm);
-//						MPSName = startService(MPSIntent);
-//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
 						dbMsg += "," + sousa_artist + "の-"+ sousa_alubm +"で[" + position + "]" + sousa_titol;
 						contextTitile = sousa_artist + "/" + sousa_alubm + "/" + sousa_titol;
 						b_artist = albumArtist;                //それまで参照していたアーティスト名
@@ -6403,28 +6392,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				}
 			dbMsg += ",rCursor=" + rCursor.getCount() + "件";
 			if( rCursor.moveToFirst() ){
-//				dbMsg +=  ",MPSIntent=" + MPSIntent;
-//				if( MPSIntent == null){
-//				}else{
-//					stopService(MPSIntent);
-//				}
-//				MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
-//				dbMsg +=  ",MPSIntent=" + MPSIntent;
-//				MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
-//				MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
-//				MPSIntent.putExtra("nowList",myPreferences.nowList);
-//				dbMsg +=  ",Uri="+ myPreferences.nowData;
-//				MPSIntent.putExtra("uriStr",myPreferences.nowData);
-//				String[] passNames = myPreferences.nowData.split("/");
-//				String artistFolder = passNames[passNames.length - 3];
-//				String albumFolder = passNames[passNames.length - 2];
-//				dbMsg += ",sousa_artist="+ artistFolder + ",sousa_alubm="+ albumFolder;
-//				MPSIntent.putExtra("sousa_artist",artistFolder);
-//				MPSIntent.putExtra("sousa_alubm",albumFolder);
-//
-////				MPSIntent.putExtra("callClass",new Intent(getApplication(), MaraSonActivity.class));
-//				MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-//				dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
 
 				reqCode = MyConstants.PUPRPOSE_lIST;
 				String pdTitol = getResources().getString(R.string.pref_playlist) +"" + getResources().getString(R.string.common_yomitori);				//読み込み
@@ -11794,6 +11761,40 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			dbMsg += ",imanoJyoutai="+ imanoJyoutai ;/////////////////////////////////////
 			yobidashiMoto = imanoJyoutai;													//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
+
+			dbMsg +=  ",MPSIntent=" + MPSIntent;
+			if( MPSIntent == null){
+			}else{
+				stopService(MPSIntent);
+			}
+			MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+			dbMsg +=  ",MPSIntent=" + MPSIntent;
+			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
+			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+			MPSIntent.putExtra("nowList",myPreferences.nowList);
+			dbMsg +=  ",Uri="+ myPreferences.nowData;
+			MPSIntent.putExtra("uriStr",myPreferences.nowData);
+			String[] passNames = myPreferences.nowData.split("/");
+			String artistFolder = passNames[passNames.length - 3];
+			String albumFolder = passNames[passNames.length - 2];
+			dbMsg += ",sousa_artist="+ artistFolder + ",sousa_alubm="+ albumFolder;
+			MPSIntent.putExtra("sousa_artist",artistFolder);
+			MPSIntent.putExtra("sousa_alubm",albumFolder);
+			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+			dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+
+			//						MPSIntent.putExtra("nowList_id","-1");
+//						MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
+//						MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+//						dbMsg +=  ",MPSIntent=" + MPSIntent;
+//						MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
+//						dbMsg +=  ",sousa_artist=" + sousa_artist + ",sousa_alubm=" + sousa_alubm;
+//						MPSIntent.putExtra("sousa_artist",sousa_artist);
+//						MPSIntent.putExtra("sousa_alubm",sousa_alubm);
+//						MPSName = startService(MPSIntent);
+//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+
 			//スレッド起動確認///////////////////////////////////
 //			ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
 //			dbMsg +=  ",ActivityManager="+ am ;/////////////////////////////////////

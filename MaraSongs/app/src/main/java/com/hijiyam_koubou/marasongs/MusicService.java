@@ -835,20 +835,37 @@ public class MusicService extends MediaBrowserService {
             dbMsg +="、nowPlay=" + nowPlay;
             dbMsg +=",action=" + action;
             dbMsg += ",現在[" + currentListId + "]" + currentListName;
+            dbMsg +=",現在[" +currentListId + "]" + currentListName;              // + "で"+mediaItemList.size() + "件";
+            dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
+            String setListId = intent.getStringExtra("nowList_id");
+            String setListName = intent.getStringExtra("nowList");
+            dbMsg += ",渡されたのは[" + setListId + "]" + setListName;
+            String setArtistName = intent.getStringExtra("nowArtist");
+            String setAlbumName = intent.getStringExtra("nowAlbum");
+            dbMsg += "の" + setArtistName + " - " + setAlbumName;
+            mIndex= intent.getIntExtra("mIndex",0);
+            dbMsg += "で" + mIndex + "曲目の" + saiseiJikan;
+            String setData = intent.getStringExtra("nowData");
+            dbMsg += "で " + nowData + ">>" + setData;
+            saiseiJikan= intent.getIntExtra("saiseiJikan",0);
+            dbMsg += "の"+ saiseiJikan+ "から";
+            String sousa_artist = intent.getStringExtra("sousa_artist");
+            String sousa_alubm = intent.getStringExtra("sousa_alubm");
+            dbMsg += ",sousa_artist="+ sousa_artist + ",sousa_alubm="+ sousa_alubm;
             if(action.equals(ACTION_START_SERVICE)) {
                 dbMsg += "、MusicServiceの開始,List<MediaItem>の初期化";
-                String nowList_id = intent.getStringExtra("nowList_id");
-                dbMsg += ",渡されたのは[ " + nowList_id+ "] ";
-                String setListName = intent.getStringExtra("nowList");
-                dbMsg += setListName;
-                nowData = intent.getStringExtra("uriStr");
-                dbMsg +=  ",Uri="+ nowData;
-                String sousa_artist = intent.getStringExtra("sousa_artist");
-                String sousa_alubm = intent.getStringExtra("sousa_alubm");
-                dbMsg += ",sousa_artist="+ sousa_artist + ",sousa_alubm="+ sousa_alubm;
+//                String nowList_id = intent.getStringExtra("nowList_id");
+//                dbMsg += ",渡されたのは[ " + nowList_id+ "] ";
+//                String setListName = intent.getStringExtra("nowList");
+//                dbMsg += setListName;
+//                nowData = intent.getStringExtra("uriStr");
+//                dbMsg +=  ",Uri="+ nowData;
+//                String sousa_artist = intent.getStringExtra("sousa_artist");
+//                String sousa_alubm = intent.getStringExtra("sousa_alubm");
+//                dbMsg += ",sousa_artist="+ sousa_artist + ",sousa_alubm="+ sousa_alubm;
 
                 dbMsg += ",プライマリーmediaItemList作成 ";
-                makeMediaItemList(Integer.parseInt(nowList_id),setListName,"",sousa_artist,sousa_alubm);
+                makeMediaItemList(Integer.parseInt(setListId),setListName,"",sousa_artist,sousa_alubm);
                 dbMsg += ",プライマリー" + mediaItemList.size() + "件";
                 dbMsg += ",予備リスト： mediaItemList2へ";
                 mediaItemList2 = new ArrayList<MediaItem>();
@@ -856,65 +873,57 @@ public class MusicService extends MediaBrowserService {
                 plAL2.clear();
             }else if(action.equals(ACTION_MAKE_LIST)){
                 dbMsg +="、ListにMediaItemを呼び込む";
-                String nowList_id = intent.getStringExtra("nowList_id");
-                int playlistId = Integer.parseInt(nowList_id);
-                String setListName = intent.getStringExtra("nowList");
-                String uriStr = intent.getStringExtra("uriStr");
-                dbMsg +="[" + playlistId + "]" + setListName + "の" + uriStr;
-                String sousa_artist = intent.getStringExtra("sousa_artist");
-                String sousa_alubm = intent.getStringExtra("sousa_alubm");
-                dbMsg +=",uriから読み取ったartist＝" + sousa_artist + "、alubm＝" + sousa_alubm;
-                String setArtistName = intent.getStringExtra("nowArtist");
-                String setAlbumName = intent.getStringExtra("nowAlbum");
-                boolean isListChange = false;
-                if(0<mediaItemList.size()) {
-                    if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
-                        if(sousa_artist.equals(currentArtistName) && sousa_alubm.equals(currentAlbumName)){
-                        }else{
-                            isListChange = true;
-                        }
-                    }else{
-                        if(! currentListName.equals(setListName)){
-                            isListChange = true;
-                        }
-                    }
-                }
-                dbMsg += ",isListChange=" + isListChange;
-                if(isListChange){
-                    dbMsg += ",予備リスト ";
-                    if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        mediaItemList2 = add2List( playlistId ,uriStr,mediaItemList2,plAL2);
-                    }else{
-                        mediaItemList2 = add2TitolList( sousa_artist ,sousa_alubm,mediaItemList2,plAL2);
-                    }
-                    dbMsg +=">>" + mediaItemList2.size() + "件:名称リスト" + plAL2.size() + "件";
-                }else{
-                    dbMsg +=",プライマリー" ;
-                    if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-                        mediaItemList = add2List( playlistId ,uriStr,mediaItemList,plAL);
-                    }else{
-                        reNewAllSong(sousa_artist,sousa_alubm);
-                    }
-                    dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
-                }
-            }else if(action.equals(ACTION_SET_SONG)){
-                dbMsg +=",現在[" +currentListId + "]" + currentListName;              // + "で"+mediaItemList.size() + "件";
-                dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
-                String setListId = intent.getStringExtra("nowList_id");
-                String setListName = intent.getStringExtra("nowList");
-                dbMsg += ",渡されたのは[" + setListId + "]" + setListName;
-                String setArtistName = intent.getStringExtra("nowArtist");
-                String setAlbumName = intent.getStringExtra("nowAlbum");
-                dbMsg += "の" + setArtistName + " - " + setAlbumName;
-                mIndex= intent.getIntExtra("mIndex",0);
-                dbMsg += "で" + mIndex + "曲目の" + saiseiJikan;
-                nowData= intent.getStringExtra("nowData");
-                dbMsg += "で " + nowData;
-                saiseiJikan= intent.getIntExtra("saiseiJikan",0);
-                dbMsg += "の"+ saiseiJikan+ "から";
-                boolean isListChange = false;
+                makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
+                currentListId=setListId;
+                currentListName=setListName;
 
+
+                sendSongInfo(mIndex);
+
+////                String nowList_id = intent.getStringExtra("nowList_id");
+////                int playlistId = Integer.parseInt(nowList_id);
+////                String setListName = intent.getStringExtra("nowList");
+////                String uriStr = intent.getStringExtra("uriStr");
+////                dbMsg +="[" + playlistId + "]" + setListName + "の" + uriStr;
+////                String sousa_artist = intent.getStringExtra("sousa_artist");
+////                String sousa_alubm = intent.getStringExtra("sousa_alubm");
+////                dbMsg +=",uriから読み取ったartist＝" + sousa_artist + "、alubm＝" + sousa_alubm;
+////                String setArtistName = intent.getStringExtra("nowArtist");
+////                String setAlbumName = intent.getStringExtra("nowAlbum");
+//                boolean isListChange = false;
+//                if(0<mediaItemList.size()) {
+//                    if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+//                        dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
+//                        if(sousa_artist.equals(currentArtistName) && sousa_alubm.equals(currentAlbumName)){
+//                        }else{
+//                            isListChange = true;
+//                        }
+//                    }else{
+//                        if(! currentListName.equals(setListName)){
+//                            isListChange = true;
+//                        }
+//                    }
+//                }
+//                dbMsg += ",isListChange=" + isListChange;
+//                if(isListChange){
+//                    dbMsg += ",予備リスト ";
+//                    if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+//                        mediaItemList2 = add2List(Integer.parseInt(setListId),setData,mediaItemList2,plAL2);
+//                    }else{
+//                        mediaItemList2 = add2TitolList( sousa_artist ,sousa_alubm,mediaItemList2,plAL2);
+//                    }
+//                    dbMsg +=">>" + mediaItemList2.size() + "件:名称リスト" + plAL2.size() + "件";
+//                }else{
+//                    dbMsg +=",プライマリー" ;
+//                    if(! setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+//                        mediaItemList = add2List(Integer.parseInt(setListId),setData,mediaItemList,plAL);
+//                    }else{
+//                        reNewAllSong(sousa_artist,sousa_alubm);
+//                    }
+//                    dbMsg +=">>" + mediaItemList.size() + "件"+ ":名称リスト" + plAL.size() + "件";
+//                }
+            }else if(action.equals(ACTION_SET_SONG)){
+                dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
                 if(setListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
                     repeatMode = Player.REPEAT_MODE_OFF;                    //0:繰り返しなしの通常の再生を行う /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
                     dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
