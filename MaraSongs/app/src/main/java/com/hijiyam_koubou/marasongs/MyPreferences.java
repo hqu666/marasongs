@@ -267,6 +267,34 @@ public class MyPreferences{
 		}
 	}
 
+	/**渡されたIDに該当するプレイリスト名を返す*/
+	@SuppressLint("Range")
+	public String getPlayListName(Context sContext,Long serchId){				//プリファレンスに文字を書き込む	this.rContext
+		final String TAG = "prefItemuKakikomi";
+		String dbMsg="";
+		String retStr="";
+			try{
+				dbMsg= "serchId="+ serchId;
+				;
+				final Uri cUri = MediaStore.Audio.Playlists.Members.getContentUri("external", serchId);
+				String[] columns = null;        //{ MediaStore.Audio.Playlists.Members.DATA };
+				String c_selection = null;        //MediaStore.Audio.Playlists.Members.DATA +" = ? ";
+				String[] c_selectionArgs = null;        //{dataStr};        //⑥引数groupByには、groupBy句を指定します。
+				String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
+				;
+				Cursor playLists= sContext.getContentResolver().query(cUri, columns, c_selection, c_selectionArgs, c_orderBy );
+				dbMsg += ",該当" + playLists.getCount() +"件、";
+				if(playLists.moveToFirst()){
+					retStr = playLists.getString(playLists.getColumnIndex(MediaStore.Audio.Playlists.DISPLAY_NAME));
+					dbMsg +=  retStr;
+				}
+				myLog(TAG,dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG,dbMsg+"で"+e);
+			}
+		return retStr;
+	}
+
 	/**
 	 * プリファレンスの読込み
 	 * */
@@ -316,8 +344,10 @@ public class MyPreferences{
 			dbMsg += ",選択中のリスト[" ;
 			if(keys.get("nowList_id") == null ){
 				nowList_id = "-1";
+				nowList = String.valueOf(rContext.getResources().getText(R.string.listmei_zemkyoku));
 				dbMsg += ">>" + nowList_id + "]" ;
 				myEditor.putString("nowList_id", nowList_id);
+				myEditor.putString("nowList", nowList);
 				myEditor.apply();
 			}else{
 				nowList_id = String.valueOf(keys.get("nowList_id"));
@@ -332,6 +362,13 @@ public class MyPreferences{
 			}else{
 				nowList = String.valueOf(keys.get("nowList"));
 				dbMsg +=  nowList;
+			}
+			dbMsg +=nowList ;
+			if(nowList_id.equals("-1")){
+				if(!nowList.equals(String.valueOf(rContext.getResources().getText(R.string.listmei_zemkyoku)))){
+					nowList=getPlayListName(this.rContext, Long.valueOf(nowList_id));
+					dbMsg += ">>>"+ nowList;
+				}
 			}
 
 			if(keys.get("nowIndex") == null ){

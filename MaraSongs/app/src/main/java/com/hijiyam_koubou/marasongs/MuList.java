@@ -627,7 +627,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			myLog(TAG , dbMsg);
 			switch ( requestCode ) {
 				case REQUEST_PREF:
-					readPref();
+		//			readPref();
 					break;
 			}
 		} catch (Exception er) {
@@ -689,7 +689,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 
 			dbMsg += "、再生中のプレイリスト[" + myPreferences.nowList_id;
 			dbMsg += "]" + myPreferences.nowList;
-			sousalistID=Integer.parseInt(myPreferences.nowList_id);
+			if(myPreferences.nowList_id == null || myPreferences.nowList_id.equals("")){
+				myPreferences.nowList_id= String.valueOf(-1);
+				myPreferences.nowList=getResources().getString(R.string.listmei_zemkyoku);
+				dbMsg += ">>[" + myPreferences.nowList_id;
+				dbMsg += "]" + myPreferences.nowList;
+			}else{
+				sousalistID= Integer.parseInt(myPreferences.nowList_id);
+			}
 			dbMsg += "、再生中のファイル名[" + myPreferences.nowIndex + "]" + myPreferences.nowData;
 
 			dbMsg += "、このアプリのバージョンコード=" + myPreferences.pref_sonota_vercord;
@@ -11711,7 +11718,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			//Permission確認
 			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 //			dbMsg += "::readPrefへ";
-//			readPref();
+			readPref();
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
 			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
 			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点

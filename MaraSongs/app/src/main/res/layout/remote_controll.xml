@@ -42,13 +42,13 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_weight="1"
-				app:artwork_display_mode="off"
 				app:controller_layout_id="@layout/exo_controller_view"
 				app:show_timeout="10000"
 				app:use_artwork="false"
 				app:use_controller="true" />
 				<!--
-				List下部のプレイヤー実装
+					app:artwork_display_mode="off"
+			List下部のプレイヤー実装
 				高さをsewrap_contentにするとListViewが表示されなくなりItemLayout.bindViewでnull参照が発生する
 				デフォルトのUIコントローラー
 
