@@ -844,7 +844,7 @@ public class MusicService extends MediaBrowserService {
             String setAlbumName = intent.getStringExtra("nowAlbum");
             dbMsg += "の" + setArtistName + " - " + setAlbumName;
             mIndex= intent.getIntExtra("mIndex",0);
-            dbMsg += "で" + mIndex + "曲目の" + saiseiJikan;
+            dbMsg += "で[" + mIndex + "曲目]";
             String setData = intent.getStringExtra("nowData");
             dbMsg += "で " + nowData + ">>" + setData;
             saiseiJikan= intent.getIntExtra("saiseiJikan",0);
@@ -876,8 +876,6 @@ public class MusicService extends MediaBrowserService {
                 makeMediaItemList(Integer.parseInt(setListId),setListName,"",setArtistName,setAlbumName);
                 currentListId=setListId;
                 currentListName=setListName;
-
-
                 sendSongInfo(mIndex);
 
 ////                String nowList_id = intent.getStringExtra("nowList_id");

@@ -11779,6 +11779,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
 			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 			MPSIntent.putExtra("nowList",myPreferences.nowList);
+			dbMsg +=  "["+ myPreferences.nowIndex + "]";
+			MPSIntent.putExtra("mIndex",myPreferences.nowIndex);
 			dbMsg +=  ",Uri="+ myPreferences.nowData;
 			MPSIntent.putExtra("uriStr",myPreferences.nowData);
 			String[] passNames = myPreferences.nowData.split("/");
