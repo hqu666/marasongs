@@ -804,11 +804,12 @@ public class MusicService extends MediaBrowserService {
                 mediaSession = null;
                 dbMsg += ">>" + mediaSession;
             }
-            initializePlayer();
             dbMsg += "で変更[" +currentListId ;
             currentListId = String.valueOf(playlistId);
             currentListName = setListName;
-            dbMsg += ">>" +currentListId + "]" + currentListName;
+     //       nowData =uriStr;
+            dbMsg += ">>" +currentListId + "]" + currentListName + "の["+ mIndex + "]" + nowData;
+            initializePlayer();
 
             myLog(TAG,dbMsg);
         } catch (Exception e) {
@@ -1431,14 +1432,21 @@ public class MusicService extends MediaBrowserService {
                         && !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {        //TRACK_TYPE_VIDEO:1
                 }
                 lastSeenTracks = tracks;
-//                mIndex=exoPlayer.getCurrentMediaItemIndex();
+
+                mIndex=exoPlayer.getCurrentMediaItemIndex();
 //                int endIndex = exoPlayer.getMediaItemCount();
 //                objMap=plAL.get(mIndex);
-//                String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-//                dbMsg += ",dataFN=" + dataFN;
-//                String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
-//                dbMsg += ",duranation=" + duranation;
+                String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+                dbMsg += ",dataFN[" + mIndex + "]" + dataFN;
+                String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+                dbMsg += ",duranation=" + duranation;
+                String mod = sdffiles.format(new Date(Long.valueOf(duranation) * 1000));
+                dbMsg += ">>" + mod;
 //                MediaItem mediaItem = mediaItemList.get(mIndex);
+                myEditor.putString( "nowIndex", String.valueOf(mIndex));
+                myEditor.putString( "nowData", dataFN);
+                myEditor.putString( "pref_position", String.valueOf(0));
+                boolean kakikomi = myEditor.commit();
 //                sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
@@ -1848,12 +1856,15 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += ">>" + exoPlayer;
             }
             dbMsg += "," + contentPosition ;
+            String mod = sdffiles.format(new Date(Long.valueOf(contentPosition) * 1000));
+            dbMsg += ">>" + mod;
             myEditor.putString( "pref_position", String.valueOf(contentPosition));
             String duration = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DURATION);
             dbMsg += "/" + duration + "[ms]";
             myEditor.putString( "pref_duration", String.valueOf(duration));
             boolean kakikomi = myEditor.commit();
             dbMsg +=",Pref書き込み=" + kakikomi;
+            Thread.sleep(100);			//書ききる為の時間
 
             dbMsg += ",mediaSession=" + mediaSession;
             if(mediaSession != null){

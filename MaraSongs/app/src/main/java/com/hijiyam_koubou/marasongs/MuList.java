@@ -4553,6 +4553,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				currentArtistName = sousa_artist;
 				currentAlbumName = sousa_alubm;
 			}
+			myEditor.putString ("nowList_id", myPreferences.nowList_id);
+			myEditor.putString ("nowList", listName);
+			myEditor.putString( "nowIndex", String.valueOf(mIndex));
+			myEditor.putString( "nowData", dataFN);
+			myEditor.putString( "pref_position", String.valueOf(0));
+			boolean kakikomi = myEditor.commit();
+			dbMsg +=",書き込み=" + kakikomi;
 
 
 			if( MPSIntent == null){
@@ -4594,10 +4601,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				myPreferences.nowList_id = "-1";
 				dbMsg +=">>[ " + myPreferences.nowList_id+ "] ";
 			}
-//			myEditor.putString ("nowList_id", myPreferences.nowList_id);
-//			myEditor.putString ("nowList", listName);
-//			boolean kakikomi = myEditor.commit();
-//			dbMsg +=",書き込み=" + kakikomi;
 			dbMsg += ",toPlaying=" + toPlaying;
 //			if(toPlaying){
 //				imanoJyoutai = chyangeSong;
