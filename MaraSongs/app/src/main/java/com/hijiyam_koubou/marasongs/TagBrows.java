@@ -4411,8 +4411,10 @@ private byte majorVersion = (byte) 0;
 	public static final int FELDE_TYPE_IVENT_TIME_CORD = FELDE_TYPE_ONGAKU_CD_SIKIBETUSI + 1;			//イベントタイムコード
 	public static final int FELDE_TYPE_MPRG_LCATION_TABLE = FELDE_TYPE_IVENT_TIME_CORD + 1;			//MPEG ロケーションルックアップテーブル
 	public static final int FELDE_TYPE_DOUKI_TEMPO_CORD = FELDE_TYPE_MPRG_LCATION_TABLE + 1;			//同期テンポコード
-	public static final int FELDE_TYPE_HIDOPUKI_KASI = FELDE_TYPE_DOUKI_TEMPO_CORD + 1;			//非同期の歌詞/文章のコピー
-	public static final int FELDE_TYPE_DOPUKI_KASI = FELDE_TYPE_HIDOPUKI_KASI + 1;			//同期をとった歌詞/文章
+	/**非同期の歌詞/文章のコピー*/
+	public static final int FELDE_TYPE_HIDOPUKI_KASI = FELDE_TYPE_DOUKI_TEMPO_CORD + 1;
+	/**同期をとった歌詞/文章*/
+	public static final int FELDE_TYPE_DOPUKI_KASI = FELDE_TYPE_HIDOPUKI_KASI + 1;			//
 	public static final int FELDE_TYPE_COMENTS = FELDE_TYPE_DOPUKI_KASI + 1;			//Comments
 	public static final int FELDE_TYPE_RELEATIVE_VOLUME_ADJUSTMENT = FELDE_TYPE_COMENTS + 1;			//Relative volume adjustment
 	public static final int FELDE_TYPE_EQUALISATION = FELDE_TYPE_RELEATIVE_VOLUME_ADJUSTMENT + 1;			//Equalisation

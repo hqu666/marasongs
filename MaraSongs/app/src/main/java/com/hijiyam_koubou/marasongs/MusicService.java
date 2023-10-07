@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.browse.MediaBrowser;
 import android.net.Uri;
 import android.os.Binder;
@@ -27,6 +28,7 @@ import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.Metadata;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackSelectionParameters;
@@ -35,6 +37,8 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.DataSource;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.RenderersFactory;
+import androidx.media3.exoplayer.analytics.AnalyticsCollector;
+import androidx.media3.exoplayer.analytics.AnalyticsListener;
 import androidx.media3.exoplayer.ima.ImaAdsLoader;
 import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource;
 import androidx.media3.exoplayer.offline.DownloadRequest;
@@ -48,6 +52,7 @@ import androidx.preference.PreferenceManager;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,6 +69,10 @@ public class MusicService extends MediaBrowserService {
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
     public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
+    public EventLogger eventLogger;
+    public AnalyticsListener.EventTime eventTime = null;
+    public Metadata metadata = null;
+    public Metadata.Entry[] metaEntrys = null;
 //    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
     //    private MediaSessionCompat.Token sessionToken;
 //    private PlaybackStateCompat.Builder stateBuilder;
@@ -296,7 +305,6 @@ public class MusicService extends MediaBrowserService {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }																	//設定読込・旧バージョン設定の消去
-
 
     private static final int[] REQUEST_CODE = { 0, 1, 2 };
     /////////////////////プレイヤーの状態をクライアントに通知する//
@@ -1409,6 +1417,7 @@ public class MusicService extends MediaBrowserService {
         /**
          * トラックの戻る・進むを検知
          * */
+        @SuppressLint("UnsafeOptInUsageError")
         @Override
         @SuppressWarnings("ReferenceEquality")
         public void onTracksChanged(Tracks tracks) {
@@ -1447,13 +1456,42 @@ public class MusicService extends MediaBrowserService {
                 myEditor.putString( "nowData", dataFN);
                 myEditor.putString( "pref_position", String.valueOf(0));
                 boolean kakikomi = myEditor.commit();
+
+        //        showMetadata(Uri.parse(dataFN));
 //                sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
             }
-
         }
+
+        /**メタデータの変わり目
+         * <ul>
+         *     <li>Media3.ExoPlayerのイベント</li>
+         *     <li>https://developer.android.com/guide/topics/media/exoplayer/retrieving-metadata</li>
+         *     <li>2回発生する？</li>
+         * </ul>
+         * */
+        @Override
+        public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+            final String TAG = "onMediaMetadataChanged";
+            String dbMsg="[PlayerEventListener]";
+            try {
+                dbMsg += ",artist="+mediaMetadata.artist;
+                dbMsg += "（albumArtist="+mediaMetadata.albumArtist;
+                dbMsg += "）albumTitle="+mediaMetadata.albumTitle;
+                dbMsg += "["+mediaMetadata.trackNumber;
+                dbMsg += "]title="+mediaMetadata.title;
+                dbMsg += "(display="+mediaMetadata.displayTitle;
+                dbMsg += ")genre="+mediaMetadata.genre;
+                dbMsg += ",recording="+mediaMetadata.recordingYear+ "/"+mediaMetadata.recordingMonth+ "/"+mediaMetadata.recordingDay;
+                dbMsg += ",release="+mediaMetadata.releaseYear+ "/"+mediaMetadata.releaseMonth+ "/"+mediaMetadata.releaseDay;
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+        }
+
     }
 
     @OptIn(markerClass = UnstableApi.class)
@@ -1609,6 +1647,69 @@ public class MusicService extends MediaBrowserService {
                 }
                 dbMsg += ">>" + repeatMode;
                 exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
+                eventLogger = new EventLogger();
+                eventTime = null;
+                metaEntrys =new Metadata.Entry[0];
+                metadata = new Metadata(metaEntrys);
+//                eventLogger.StartSession();
+//                exoPlayer.AddListener(eventLogger);
+//                exoPlayer.SetInfoListener(eventLogger);
+//                exoPlayer.SetInternalErrorListener(eventLogger);
+            //  https://developer.android.com/guide/topics/media/exoplayer/debug-logging
+        //        exoPlayer.addAnalyticsListener(eventLogger);
+                exoPlayer.addAnalyticsListener(
+                        new AnalyticsListener() {
+                            @Override
+                            public void onPlaybackStateChanged(  EventTime eventTime, @Player.State int state) {
+                                final String TAG = "onPlaybackStateChanged";
+                                String dbMsg="[AnalyticsListener]";
+                                try {
+                                    dbMsg += ",eventTime=" + eventTime;
+                                    dbMsg += ",state=" + state;
+                                    myLog(TAG,dbMsg);
+                                } catch (Exception e) {
+                                    myErrorLog(TAG ,  dbMsg + "で" + e);
+                                }
+                            }
+
+                            @Override
+                            public void onMetadata(EventTime eventTime, Metadata metadata) {
+                                final String TAG = "onMetadata";
+                                String dbMsg="[AnalyticsListener]";
+                                try {
+                                    dbMsg += ",eventTime=" + eventTime;
+                                    int metadataLength=metadata.length();
+                                    dbMsg += ",metadataLength=" + metadataLength + "件";
+                                    for(int i=0; i<metadataLength;i++ ){
+                                        dbMsg += "\n[" + i + "]";
+                                        Metadata.Entry data = metadata.get(i);
+                                        dbMsg +=data;
+                                    }
+                                    myLog(TAG,dbMsg);
+                                } catch (Exception e) {
+                                    myErrorLog(TAG ,  dbMsg + "で" + e);
+                                }
+
+                            }
+
+                            @Override
+                            public void onDroppedVideoFrames(
+                                    EventTime eventTime, int droppedFrames, long elapsedMs) {
+                                final String TAG = "onDroppedVideoFrames";
+                                String dbMsg="[AnalyticsListener]";
+                                try {
+                                    myLog(TAG,dbMsg);
+                                } catch (Exception e) {
+                                    myErrorLog(TAG ,  dbMsg + "で" + e);
+                                }
+
+                            }
+                        });
+
+//                AnalyticsCollector analyticsCollector = exoPlayer.getAnalyticsCollector();
+//                analyticsCollector.addListener();
+
+
                 exoPlayer.addListener(new PlayerEventListener());
                 exoPlayer.addListener(new Player.Listener() {
                     /**曲変更などのイベント
@@ -1672,6 +1773,7 @@ public class MusicService extends MediaBrowserService {
 //                                //       intent.putExtra("MUSIC", FWD);
 //                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                             }
+                            //
                             redrowNotification(mediaItem);
 
                             objMap=plAL.get(mIndex);
@@ -1688,7 +1790,6 @@ public class MusicService extends MediaBrowserService {
                     }
                 });
                 ////////https://www.jisei-firm.com/android_develop44/#toc2//
-                exoPlayer.addAnalyticsListener(new EventLogger());
                 exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT,  true);
                 exoPlayer.setPlayWhenReady(startAutoPlay);
                 configurePlayerWithServerSideAdsLoader();
@@ -1755,6 +1856,110 @@ public class MusicService extends MediaBrowserService {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
         return true;
+    }
+/*
+tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
+    group [
+        [X] Track:0, id=1, mimeType=audio/mp4a-latm, bitrate=171184, codecs=mp4a.40.2, channels=2, sample_rate=44100, language=und, supported=YES
+    ]
+    Metadata [
+        IT2: description=null: values=[Virtual Insanity]
+        TPE1: description=null: values=[Jamiroquai]
+        TCOM: description=null: values=[Jay Kay]
+        TALB: description=null: values=[High Times: Singles 1992-2006 [Bonus Track]]
+        TRCK: description=null: values=[6/20]
+        TPOS: description=null: values=[1/1]
+        TDRC: description=null: values=[1995]
+        TCMP: description=null: values=[0]
+        COMM: language=und, description=ITUNESGAPLESS
+        TBPM: description=null: values=[0]
+        TSSE: description=null: values=[iTunes 9.2.1.5, QuickTime 7.6.6]
+        USLT:
+        APIC:
+    ]
+    */
+
+    /**
+     * MediaMetadataRetrieverを使ってファイルのメタデータを取得
+     * <ul>
+     *     <li>旧Mediaでの取得例</li>
+     *     <li> http://yonayona.biz/yonayona/blog/archives/1057945147.html</li>
+     * </ul>
+     * */
+    private void showMetadata(Uri uri) throws IOException {
+        final String TAG = "showMetadata";
+        String dbMsg="";
+        try {
+            // メディアメタデータにアクセスするクラスをインスタンス化する。
+            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+            dbMsg +=",uri="+uri;
+            /**
+             * メタデータを取得するファイルを指定する。
+             * アクセスするためにはまずMediaMetadataRetriever#setDataSourceを呼ぶ必要があります。
+             * このメソッドはいくつかのオーバーロードがありますが、
+             * URIで指定するかファイルパスを指定する方法がメインかなと思います。
+             */
+            mediaMetadataRetriever.setDataSource(getApplicationContext(), uri);
+
+            /**
+             * メタデータにアクセスします。
+             * 設定されていない場合はnullが返ってきます。
+             */
+            dbMsg +=" \"、アルバム名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+            dbMsg+= "、アルバムアーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
+            dbMsg += "、アーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+            dbMsg += "、著者名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR);
+            dbMsg += "、ビットレート(bits/sec):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+            dbMsg += "、キャプチャフレームレート:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE);
+            dbMsg += "、オーディオデータの順序:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+            dbMsg += "、音楽ファイルの編集状態:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPILATION);
+            dbMsg += "、作曲家情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
+            dbMsg += "、ファイル作成日:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+            dbMsg += "、わからない:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
+            dbMsg += "、再生時間(ms):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            dbMsg += "、カテゴリタイプ・ジャンル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+            dbMsg += "、音声を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO);
+            dbMsg += "、動画を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
+            dbMsg += "、位置情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+            dbMsg += "、マイムタイプ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+            dbMsg += "、オーディオ/ビデオ/テキストのトラック数:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS);
+            dbMsg += "、タイトル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            dbMsg += "、作家:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER);
+            dbMsg += "、作成年:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+
+            /**
+             * 指定した時間(us)の画像(Bitmap)を動画からキャプチャすることができます。
+             * MediaMetadataRetriever#getFrameAtTimeを使います。
+             * このメソッドは複数のオーバーロードがあります。
+             * 今回は時間とオプションを設定するメソッドを使います。
+             *
+             * OPTION_CLOSEST→指定した時間に一番近いフレームを取得する。
+             * OPTION_CLOSEST_SYNC→指定した時間に一番近い同期フレームを取得する。
+             * OPTION_NEXT_SYNC→指定した時間の後の同期フレームを取得する。
+             * OPTION_PREVIOUS_SYNC→指定した時間の前の同期フレームを取得する。
+             *
+             * 注意としては動画の高さ幅の画像を取得するのでメモリと処理時間がかかります。
+             *
+             */
+            dbMsg += "、再生時間:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+//            int count = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
+//            bitmapArrayList = new ArrayList<>();
+//            for(int i = 0 ; i < count ; i++) {
+//                bitmapArrayList.add(mediaMetadataRetriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST));
+//            }
+//            ImageViewAdapter imageViewAdapter = new ImageViewAdapter(getApplicationContext() , bitmapArrayList);
+//            gridView.setAdapter(imageViewAdapter);
+
+            dbMsg += "、ビデオの高さ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+            dbMsg += "、ビデオの回転角度:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            dbMsg += "、ビデオの幅:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+
+            // 使ったファイルを開放する。
+            mediaMetadataRetriever.release();
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
     }
 
     ///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
@@ -1854,6 +2059,9 @@ public class MusicService extends MediaBrowserService {
                 contentPosition = exoPlayer.getContentPosition();
                 exoPlayer.release();
                 dbMsg += ">>" + exoPlayer;
+                exoPlayer = null;
+         //       eventLogger.EndSession();
+                eventLogger = null;
             }
             dbMsg += "," + contentPosition ;
             String mod = sdffiles.format(new Date(Long.valueOf(contentPosition) * 1000));

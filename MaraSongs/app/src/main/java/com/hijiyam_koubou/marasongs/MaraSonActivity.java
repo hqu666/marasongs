@@ -999,6 +999,7 @@ public class MaraSonActivity extends AppCompatActivity
 //							lp_title.setText(titleStr);
 							lp_subtitol.setText(dataStr);
 							url2FSet(dataStr);
+							readLyric( dataStr );					//歌詞の読出し
 
 							dbMsg += ",wStr=" + wStr ;
 //							lp_title.setText(wStr);
@@ -3347,19 +3348,20 @@ public class MaraSonActivity extends AppCompatActivity
 	public String b_filePath = null;					//読み込み済みのファイル
 	private void readLyric( String filepath ) {					//歌詞の読出し
 		final String TAG = "readLyric";
-		String dbMsg= "";/////////////////////////////////////
+		String dbMsg= "";
 		try{
+			dbMsg= ",filepath=" + filepath;
 			if(filepath != null){
 				if(! filepath.equals(b_filePath)){
 					songLyric = getResources().getString(R.string.yomikomi_hunou);		//e="">この曲はタグ情報を読み込めませんでした。</string>
 					lyricAri = false;			//歌詞を取得できた
 					dbMsg= "filepath=" + filepath;
-					Intent intentTB = new Intent(getApplication(),TagBrows.class);
-					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
-					intentTB.putExtra("filePath",filepath);
-					lyricAri = false;			//歌詞を取得できた
-					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
-					resultLauncher.launch(intentTB);
+//					Intent intentTB = new Intent(getApplication(),TagBrows.class);
+//					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
+//					intentTB.putExtra("filePath",filepath);
+//					lyricAri = false;			//歌詞を取得できた
+//					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
+//					resultLauncher.launch(intentTB);
 					/*		クラスとしての読出し
 					//					File sdFile = new File(Environment.getExternalStorageDirectory(), dataFN);
 										TagBrows mp3file = new TagBrows(dataFN ,this);
