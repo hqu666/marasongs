@@ -37,8 +37,6 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.DataSource;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.RenderersFactory;
-import androidx.media3.exoplayer.analytics.AnalyticsCollector;
-import androidx.media3.exoplayer.analytics.AnalyticsListener;
 import androidx.media3.exoplayer.ima.ImaAdsLoader;
 import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource;
 import androidx.media3.exoplayer.offline.DownloadRequest;
@@ -65,11 +63,14 @@ public class MusicService extends MediaBrowserService {
     public OrgUtil ORGUT;						//自作関数集
     public MyUtil MyUtil;
     public MyPreferences myPreferences;
+    public MyEventLogger myEventLogger;
+
+
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
     public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
-    public EventLogger eventLogger;
+   // public EventLogger eventLogger;
     public AnalyticsListener.EventTime eventTime = null;
     public Metadata metadata = null;
     public Metadata.Entry[] metaEntrys = null;
@@ -1358,6 +1359,126 @@ public class MusicService extends MediaBrowserService {
     }
 
 
+    @OptIn(markerClass = UnstableApi.class)
+    private void configurePlayerWithServerSideAdsLoader() {
+        final String TAG = "configurePlayerWithServerSideAdsLoader";
+        String dbMsg="";
+        try {
+            if(exoPlayer != null){
+                if(serverSideAdsLoader !=null){
+                    serverSideAdsLoader.setPlayer(exoPlayer);
+                }else{
+                    dbMsg +="serverSideAdsLoader=null";
+                }
+            }
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    private static List<MediaItem> createMediaItems(Intent intent, DownloadTracker downloadTracker) {
+        final String TAG = "createMediaItems";
+        String dbMsg="";
+        try {
+
+            List<MediaItem> mediaItems = new ArrayList<>();
+            for (MediaItem item : IntentUtil.createMediaItemsFromIntent(intent)) {
+                mediaItems.add(
+                        maybeSetDownloadProperties(
+                                item, downloadTracker.getDownloadRequest(item.localConfiguration.uri)));
+            }
+            return mediaItems;
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return null;
+    }
+
+    @OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
+    private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
+        final String TAG = "maybeSetDownloadProperties";
+        String dbMsg="";
+        try {
+
+            if (downloadRequest == null) {
+                return item;
+            }
+            MediaItem.Builder builder = item.buildUpon();
+            builder
+                    .setMediaId(downloadRequest.id)
+                    .setUri(downloadRequest.uri)
+                    .setCustomCacheKey(downloadRequest.customCacheKey)
+                    .setMimeType(downloadRequest.mimeType)
+                    .setStreamKeys(downloadRequest.streamKeys);
+            @Nullable
+            MediaItem.DrmConfiguration drmConfiguration = item.localConfiguration.drmConfiguration;
+            if (drmConfiguration != null) {
+                builder.setDrmConfiguration(
+                        drmConfiguration.buildUpon().setKeySetId(downloadRequest.keySetId).build());
+            }
+            myLog(TAG,dbMsg);
+            return builder.build();
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return null;
+    }
+
+
+    private AdsLoader getClientSideAdsLoader(MediaItem.AdsConfiguration adsConfiguration) {
+        final String TAG = "getClientSideAdsLoader";
+        String dbMsg="";
+        try {
+            // The ads loader is reused for multiple playbacks, so that ad playback can resume.
+            if (clientSideAdsLoader == null) {
+                clientSideAdsLoader = new ImaAdsLoader.Builder(/* context= */ this).build();
+            }
+            clientSideAdsLoader.setPlayer(exoPlayer);
+            return clientSideAdsLoader;
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return null;
+    }
+
+
+    @OptIn(markerClass = UnstableApi.class)
+    private void setRenderersFactory(ExoPlayer.Builder playerBuilder, boolean preferExtensionDecoders) {
+        final String TAG = "setRenderersFactory";
+        String dbMsg="";
+        try {
+
+            RenderersFactory renderersFactory =
+                    DemoUtil.buildRenderersFactory(/* context= */ this, preferExtensionDecoders);
+            playerBuilder.setRenderersFactory(renderersFactory);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    private void updateButtonVisibility() {
+        final String TAG = "updateButtonVisibility";
+        String dbMsg="";
+        try {
+//			lp_ppPButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+            //	selectTracksButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    /***/
+    public void onVisibilityChanged(int visibility) {
+        final String TAG = "onVisibilityChanged";
+        String dbMsg="";
+        try {
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    /**PlayerのPlaybackState、Error、TracksChanged、MediaMetadataChanged*/
     private class PlayerEventListener implements Player.Listener {
 
         @Override
@@ -1457,7 +1578,7 @@ public class MusicService extends MediaBrowserService {
                 myEditor.putString( "pref_position", String.valueOf(0));
                 boolean kakikomi = myEditor.commit();
 
-        //        showMetadata(Uri.parse(dataFN));
+                //        showMetadata(Uri.parse(dataFN));
 //                sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
@@ -1494,120 +1615,157 @@ public class MusicService extends MediaBrowserService {
 
     }
 
-    @OptIn(markerClass = UnstableApi.class)
-    private void configurePlayerWithServerSideAdsLoader() {
-        final String TAG = "configurePlayerWithServerSideAdsLoader";
-        String dbMsg="";
-        try {
-            if(exoPlayer != null){
-                serverSideAdsLoader.setPlayer(exoPlayer);
+    /**plaerのログ;PlaybackStateChanged、DroppedVideoFrames*/
+    @UnstableApi private class AnalyticsListener implements androidx.media3.exoplayer.analytics.AnalyticsListener {
+
+        @Override
+        public void onPlaybackStateChanged(EventTime eventTime, @Player.State int state) {
+            final String TAG = "onPlaybackStateChanged";
+            String dbMsg="[AnalyticsListener]";
+            try {
+                dbMsg += ",eventTime=" + eventTime;
+                dbMsg += ",state=" + state;
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
             }
-            myLog(TAG,dbMsg);
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
         }
-    }
 
-    private static List<MediaItem> createMediaItems(Intent intent, DownloadTracker downloadTracker) {
-        final String TAG = "createMediaItems";
-        String dbMsg="";
-        try {
-
-            List<MediaItem> mediaItems = new ArrayList<>();
-            for (MediaItem item : IntentUtil.createMediaItemsFromIntent(intent)) {
-                mediaItems.add(
-                        maybeSetDownloadProperties(
-                                item, downloadTracker.getDownloadRequest(item.localConfiguration.uri)));
+        @Override
+        public void onMetadata(EventTime eventTime, Metadata metadata) {
+            final String TAG = "onMetadata";
+            String dbMsg="[AnalyticsListener]";
+            try {
+                dbMsg += ",eventTime=" + eventTime;
+                int metadataLength=metadata.length();
+                dbMsg += ",metadataLength=" + metadataLength + "件";
+                for(int i=0; i<metadataLength;i++ ){
+                    dbMsg += "\n[" + i + "]";
+                    Metadata.Entry data = metadata.get(i);
+                    dbMsg +=data;
+                }
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
             }
-            return mediaItems;
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
+
         }
-        return null;
-    }
 
-    @OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
-    private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
-        final String TAG = "maybeSetDownloadProperties";
-        String dbMsg="";
-        try {
-
-            if (downloadRequest == null) {
-                return item;
+        @Override
+        public void onDroppedVideoFrames(
+                EventTime eventTime, int droppedFrames, long elapsedMs) {
+            final String TAG = "onDroppedVideoFrames";
+            String dbMsg="[AnalyticsListener]";
+            try {
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
             }
-            MediaItem.Builder builder = item.buildUpon();
-            builder
-                    .setMediaId(downloadRequest.id)
-                    .setUri(downloadRequest.uri)
-                    .setCustomCacheKey(downloadRequest.customCacheKey)
-                    .setMimeType(downloadRequest.mimeType)
-                    .setStreamKeys(downloadRequest.streamKeys);
-            @Nullable
-            MediaItem.DrmConfiguration drmConfiguration = item.localConfiguration.drmConfiguration;
-            if (drmConfiguration != null) {
-                builder.setDrmConfiguration(
-                        drmConfiguration.buildUpon().setKeySetId(downloadRequest.keySetId).build());
-            }
-            myLog(TAG,dbMsg);
-            return builder.build();
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-        return null;
-    }
 
-
-    private AdsLoader getClientSideAdsLoader(MediaItem.AdsConfiguration adsConfiguration) {
-        final String TAG = "getClientSideAdsLoader";
-        String dbMsg="";
-        try {
-            // The ads loader is reused for multiple playbacks, so that ad playback can resume.
-            if (clientSideAdsLoader == null) {
-                clientSideAdsLoader = new ImaAdsLoader.Builder(/* context= */ this).build();
-            }
-            clientSideAdsLoader.setPlayer(exoPlayer);
-            return clientSideAdsLoader;
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-        return null;
-    }
-
-
-    @OptIn(markerClass = UnstableApi.class)
-    private void setRenderersFactory(ExoPlayer.Builder playerBuilder, boolean preferExtensionDecoders) {
-        final String TAG = "setRenderersFactory";
-        String dbMsg="";
-        try {
-
-            RenderersFactory renderersFactory =
-                    DemoUtil.buildRenderersFactory(/* context= */ this, preferExtensionDecoders);
-            playerBuilder.setRenderersFactory(renderersFactory);
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
 
-    private void updateButtonVisibility() {
-        final String TAG = "updateButtonVisibility";
-        String dbMsg="";
-        try {
-//			lp_ppPButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
-            //	selectTracksButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-    }
+//    @SuppressWarnings("UngroupedOverloads")
+//    @UnstableApi
+//    private class MyEventLogger implements androidx.media3.exoplayer.analytics.AnalyticsListener {
+//        private static final String DEFAULT_TAG = "MyEventLogger";
+//        private  String tag = null;
+//        private Timeline.Window window = null;
+//        private Timeline.Period period = null;
+//        private long startTimeMs = 0l;
+//
+//        /** Creates an instance. */
+//        public MyEventLogger() {
+//            this(DEFAULT_TAG);
+//        }
+//
+//        /**
+//         * Creates an instance.
+//         *
+//         * @param tag The tag used for logging.
+//         */
+//        public MyEventLogger(String tag) {
+//            final String TAG = "MyEventLogger";
+//            String dbMsg="[MyEventLogger]";
+//            try {
+//                dbMsg += ",tag=" + tag;
+//                this.tag = tag;
+//                window = new Timeline.Window();
+//                period = new Timeline.Period();
+//                startTimeMs = SystemClock.elapsedRealtime();
+//                dbMsg += ",startTimeMs=" + startTimeMs;
+//                myLog(TAG,dbMsg);
+//            } catch (Exception e) {
+//                myErrorLog(TAG ,  dbMsg + "で" + e);
+//            }
+//        }
+//        @UnstableApi
+//        @Deprecated
+//        public MyEventLogger(@Nullable MappingTrackSelector trackSelector) {
+//            this(DEFAULT_TAG);
+//        }
+//
+//        /**
+//         * Creates an instance.
+//         *
+//         * @param trackSelector This parameter is ignored.
+//         * @param tag The tag used for logging.
+//         * @deprecated Use {@link MyEventLogger(String)}
+//         */
+//        @UnstableApi
+//        @Deprecated
+//        public MyEventLogger(@Nullable MappingTrackSelector trackSelector, String tag) {
+//            this(tag);
+//        }
+//
+//        @Override
+//        public void onPlaybackStateChanged(EventTime eventTime, @Player.State int state) {
+//            final String TAG = "onPlaybackStateChanged";
+//            String dbMsg="["+this.tag+"]";
+//            try {
+//                dbMsg += ",eventTime=" + eventTime.timeline;
+//                dbMsg += ",state=" + state;
+//                myLog(TAG,dbMsg);
+//            } catch (Exception e) {
+//                myErrorLog(TAG ,  dbMsg + "で" + e);
+//            }
+//        }
+//
+//        @UnstableApi
+//        @Override
+//        public void onMetadata(EventTime eventTime, Metadata metadata) {
+//            final String TAG = "onMetadata";
+//            String dbMsg="["+this.tag+"]";
+//            try {
+//                dbMsg += ",eventTime=" + eventTime;
+//                int metadataLength=metadata.length();
+//                dbMsg += ",metadataLength=" + metadataLength + "件";
+//                for(int i=0; i<metadataLength;i++ ){
+//                    dbMsg += "\n[" + i + "]";
+//                    Metadata.Entry data = metadata.get(i);
+//                    dbMsg +=data;
+//                }
+//                myLog(TAG,dbMsg);
+//            } catch (Exception e) {
+//                myErrorLog(TAG ,  dbMsg + "で" + e);
+//            }
+//
+//        }
+//
+//        @Override
+//        public void onDroppedVideoFrames(
+//                EventTime eventTime, int droppedFrames, long elapsedMs) {
+//            final String TAG = "onDroppedVideoFrames";
+//            String dbMsg="["+this.tag+"]";
+//            try {
+//                myLog(TAG,dbMsg);
+//            } catch (Exception e) {
+//                myErrorLog(TAG ,  dbMsg + "で" + e);
+//            }
+//
+//        }
+//    }
 
-    //	@Override
-    public void onVisibilityChanged(int visibility) {
-        final String TAG = "onVisibilityChanged";
-        String dbMsg="";
-        try {
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-    }
 
     /**
      * exoPlayerを生成する
@@ -1647,68 +1805,6 @@ public class MusicService extends MediaBrowserService {
                 }
                 dbMsg += ">>" + repeatMode;
                 exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
-                eventLogger = new EventLogger();
-                eventTime = null;
-                metaEntrys =new Metadata.Entry[0];
-                metadata = new Metadata(metaEntrys);
-//                eventLogger.StartSession();
-//                exoPlayer.AddListener(eventLogger);
-//                exoPlayer.SetInfoListener(eventLogger);
-//                exoPlayer.SetInternalErrorListener(eventLogger);
-            //  https://developer.android.com/guide/topics/media/exoplayer/debug-logging
-        //        exoPlayer.addAnalyticsListener(eventLogger);
-                exoPlayer.addAnalyticsListener(
-                        new AnalyticsListener() {
-                            @Override
-                            public void onPlaybackStateChanged(  EventTime eventTime, @Player.State int state) {
-                                final String TAG = "onPlaybackStateChanged";
-                                String dbMsg="[AnalyticsListener]";
-                                try {
-                                    dbMsg += ",eventTime=" + eventTime;
-                                    dbMsg += ",state=" + state;
-                                    myLog(TAG,dbMsg);
-                                } catch (Exception e) {
-                                    myErrorLog(TAG ,  dbMsg + "で" + e);
-                                }
-                            }
-
-                            @Override
-                            public void onMetadata(EventTime eventTime, Metadata metadata) {
-                                final String TAG = "onMetadata";
-                                String dbMsg="[AnalyticsListener]";
-                                try {
-                                    dbMsg += ",eventTime=" + eventTime;
-                                    int metadataLength=metadata.length();
-                                    dbMsg += ",metadataLength=" + metadataLength + "件";
-                                    for(int i=0; i<metadataLength;i++ ){
-                                        dbMsg += "\n[" + i + "]";
-                                        Metadata.Entry data = metadata.get(i);
-                                        dbMsg +=data;
-                                    }
-                                    myLog(TAG,dbMsg);
-                                } catch (Exception e) {
-                                    myErrorLog(TAG ,  dbMsg + "で" + e);
-                                }
-
-                            }
-
-                            @Override
-                            public void onDroppedVideoFrames(
-                                    EventTime eventTime, int droppedFrames, long elapsedMs) {
-                                final String TAG = "onDroppedVideoFrames";
-                                String dbMsg="[AnalyticsListener]";
-                                try {
-                                    myLog(TAG,dbMsg);
-                                } catch (Exception e) {
-                                    myErrorLog(TAG ,  dbMsg + "で" + e);
-                                }
-
-                            }
-                        });
-
-//                AnalyticsCollector analyticsCollector = exoPlayer.getAnalyticsCollector();
-//                analyticsCollector.addListener();
-
 
                 exoPlayer.addListener(new PlayerEventListener());
                 exoPlayer.addListener(new Player.Listener() {
@@ -1767,6 +1863,10 @@ public class MusicService extends MediaBrowserService {
                             artistName= (String) mediaItem.mediaMetadata.artist;
                             albumName= (String) mediaItem.mediaMetadata.albumTitle;
                             songTitol= (String) mediaItem.mediaMetadata.title;
+                            String description = (String) mediaItem.mediaMetadata.description;
+                            dbMsg += ",description=" +description;
+                            Bundle extras = mediaItem.mediaMetadata.extras; //null : extras
+///playbackProperties.uri
                             dbMsg += ",getCurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex();
                             if (exoPlayer.getCurrentMediaItemIndex() == 1) {
 //                                Intent intent = new Intent("SEND_MESSAGE");
@@ -1789,8 +1889,29 @@ public class MusicService extends MediaBrowserService {
                         }
                     }
                 });
+
                 ////////https://www.jisei-firm.com/android_develop44/#toc2//
+
                 exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT,  true);
+
+          //      eventLogger = new EventLogger();
+                eventTime = null;
+                metaEntrys =new Metadata.Entry[10];
+                metadata = new Metadata(metaEntrys);
+//                eventLogger.StartSession();
+//                exoPlayer.AddListener(eventLogger);
+//                exoPlayer.SetInfoListener(eventLogger);
+//                exoPlayer.SetInternalErrorListener(eventLogger);
+                //  https://developer.android.com/guide/topics/media/exoplayer/debug-logging
+                myEventLogger=new MyEventLogger();
+                exoPlayer.addAnalyticsListener(myEventLogger);          //ここで歌詞が出る
+          //      exoPlayer.addAnalyticsListener(new MyEventLogger());
+
+         //       exoPlayer.addAnalyticsListener(new AnalyticsListener());
+
+//                AnalyticsCollector analyticsCollector = exoPlayer.getAnalyticsCollector();
+//                analyticsCollector.addListener();
+
                 exoPlayer.setPlayWhenReady(startAutoPlay);
                 configurePlayerWithServerSideAdsLoader();
             }else{
@@ -1966,6 +2087,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
 ///ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 
     /**再生曲情報をBroadcastする*/
+    @OptIn(markerClass = UnstableApi.class)
     public void sendSongInfo(int currentIndex) {       // String dataFN,,MediaItem mediaItem,String duranatione
         final String TAG = "sendSongInfo";
         String dbMsg="";
@@ -2002,6 +2124,10 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
             long contentPosition = 0l;
             MRIintent.putExtra("isPlaying",  nowPlay);
 //            MRIintent.putExtra("contentPosition",contentPosition);
+            String rStr = myEventLogger.lylicStr;
+            dbMsg += ",lylicStr=" + rStr;
+            MRIintent.putExtra("lylicStr",  rStr);
+
             dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",contentPosition=" +  contentPosition;
             getBaseContext().sendBroadcast(MRIintent);
             myLog(TAG,dbMsg);
@@ -2061,7 +2187,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
                 dbMsg += ">>" + exoPlayer;
                 exoPlayer = null;
          //       eventLogger.EndSession();
-                eventLogger = null;
+      //          eventLogger = null;
             }
             dbMsg += "," + contentPosition ;
             String mod = sdffiles.format(new Date(Long.valueOf(contentPosition) * 1000));

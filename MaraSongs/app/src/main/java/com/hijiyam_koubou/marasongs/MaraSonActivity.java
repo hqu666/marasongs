@@ -999,7 +999,11 @@ public class MaraSonActivity extends AppCompatActivity
 //							lp_title.setText(titleStr);
 							lp_subtitol.setText(dataStr);
 							url2FSet(dataStr);
-							readLyric( dataStr );					//歌詞の読出し
+							songLyric=intent.getStringExtra("lylicStr");
+							dbMsg += "\n" + songLyric ;
+							lyric_tv.setText(songLyric);
+
+							//readLyric( dataStr );					//歌詞の読出し
 
 							dbMsg += ",wStr=" + wStr ;
 //							lp_title.setText(wStr);
