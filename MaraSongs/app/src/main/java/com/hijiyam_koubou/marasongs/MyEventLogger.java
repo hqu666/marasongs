@@ -300,50 +300,54 @@ public class MyEventLogger implements AnalyticsListener {
         String dbMsg=",tracks [" + getEventTimeString(eventTime);
         dbMsg += "";
         try{
+            logd("tracks [" + getEventTimeString(eventTime));
+            // Log tracks associated to renderers.
+            ImmutableList<Tracks.Group> trackGroups = tracks.getGroups();
+//            dbMsg += ",trackGroups=" + trackGroups;
+            for (int groupIndex = 0; groupIndex < trackGroups.size(); groupIndex++) {
+                Tracks.Group trackGroup = trackGroups.get(groupIndex);
+                logd("  group [");
+                for (int trackIndex = 0; trackIndex < trackGroup.length; trackIndex++) {
+                    dbMsg += "\n[" + trackIndex + "]" + Format.toLogString(trackGroup.getTrackFormat(trackIndex));
+                    String status = getTrackStatusString(trackGroup.isTrackSelected(trackIndex));
+                    dbMsg += ",status=" + status;
+                    String formatSupport = getFormatSupportString(trackGroup.getTrackSupport(trackIndex));
+                    dbMsg += ",supported=" + formatSupport;
+                    logd(
+                            "    "
+                                    + status
+                                    + " Track:"
+                                    + trackIndex
+                                    + ", "
+                                    + Format.toLogString(trackGroup.getTrackFormat(trackIndex))
+                                    + ", supported="
+                                    + formatSupport);
+                }
+                logd("  ]");
+            }
+            // TODO: Replace this with an override of onMediaMetadataChanged.
+            // Log metadata for at most one of the selected tracks.
+            boolean loggedMetadata = false;
+            for (int groupIndex = 0; !loggedMetadata && groupIndex < trackGroups.size(); groupIndex++) {
+                Tracks.Group trackGroup = trackGroups.get(groupIndex);
+                for (int trackIndex = 0; !loggedMetadata && trackIndex < trackGroup.length; trackIndex++) {
+                    if (trackGroup.isTrackSelected(trackIndex)) {
+                        @Nullable Metadata metadata = trackGroup.getTrackFormat(trackIndex).metadata;
+                        if (metadata != null && metadata.length() > 0) {
+                            dbMsg += "\n[groupIndex:" + groupIndex + "][trackGroup:" + trackGroup + "]" + metadata.length() + "件";
+                            logd("  Metadata [");
+                            printMetadata(metadata, "    ");
+                            logd("  ]");
+                            loggedMetadata = true;
+                        }
+                    }
+                }
+            }
+            logd("]");
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
         }
-
-        logd("tracks [" + getEventTimeString(eventTime));
-        // Log tracks associated to renderers.
-        ImmutableList<Tracks.Group> trackGroups = tracks.getGroups();
-        for (int groupIndex = 0; groupIndex < trackGroups.size(); groupIndex++) {
-            Tracks.Group trackGroup = trackGroups.get(groupIndex);
-            logd("  group [");
-            for (int trackIndex = 0; trackIndex < trackGroup.length; trackIndex++) {
-                String status = getTrackStatusString(trackGroup.isTrackSelected(trackIndex));
-                String formatSupport = getFormatSupportString(trackGroup.getTrackSupport(trackIndex));
-                logd(
-                        "    "
-                                + status
-                                + " Track:"
-                                + trackIndex
-                                + ", "
-                                + Format.toLogString(trackGroup.getTrackFormat(trackIndex))
-                                + ", supported="
-                                + formatSupport);
-            }
-            logd("  ]");
-        }
-        // TODO: Replace this with an override of onMediaMetadataChanged.
-        // Log metadata for at most one of the selected tracks.
-        boolean loggedMetadata = false;
-        for (int groupIndex = 0; !loggedMetadata && groupIndex < trackGroups.size(); groupIndex++) {
-            Tracks.Group trackGroup = trackGroups.get(groupIndex);
-            for (int trackIndex = 0; !loggedMetadata && trackIndex < trackGroup.length; trackIndex++) {
-                if (trackGroup.isTrackSelected(trackIndex)) {
-                    @Nullable Metadata metadata = trackGroup.getTrackFormat(trackIndex).metadata;
-                    if (metadata != null && metadata.length() > 0) {
-                        logd("  Metadata [");
-                        printMetadata(metadata, "    ");
-                        logd("  ]");
-                        loggedMetadata = true;
-                    }
-                }
-            }
-        }
-        logd("]");
     }
 
     @UnstableApi
@@ -655,10 +659,16 @@ public class MyEventLogger implements AnalyticsListener {
         loge(eventTime, "internalError", type, e);
     }
 
+    /**
+     * MwtaDataの読み取り
+     * <ul>
+     *     <li>読み出し個所はonTracksChanged（ここで発生）とonMetadata</li>
+     * </ul>
+     * */
     private void printMetadata(Metadata metadata, String prefix) {
-        for (int i = 0; i < metadata.length(); i++) {
-            logd(prefix + metadata.get(i));
-        }
+//        for (int i = 0; i < metadata.length(); i++) {
+//            logd(prefix + metadata.get(i));
+//        }
         final String TAG = "printMetadata";
         String dbMsg="";
         try{

@@ -26,6 +26,7 @@ import androidx.annotation.OptIn;
 import androidx.core.app.NotificationCompat;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
+import androidx.media3.common.Format;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.Metadata;
@@ -42,10 +43,11 @@ import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource;
 import androidx.media3.exoplayer.offline.DownloadRequest;
 import androidx.media3.exoplayer.source.ads.AdsLoader;
 import androidx.media3.exoplayer.util.DebugTextViewHelper;
-import androidx.media3.exoplayer.util.EventLogger;
 import androidx.media3.session.MediaSession;
 import androidx.media3.session.MediaStyleNotificationHelper;
 import androidx.preference.PreferenceManager;
+
+import com.google.common.collect.ImmutableList;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -73,6 +75,8 @@ public class MusicService extends MediaBrowserService {
    // public EventLogger eventLogger;
     public AnalyticsListener.EventTime eventTime = null;
     public Metadata metadata = null;
+    public String lylicStr = null;
+
     public Metadata.Entry[] metaEntrys = null;
 //    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
     //    private MediaSessionCompat.Token sessionToken;
@@ -1562,7 +1566,59 @@ public class MusicService extends MediaBrowserService {
                         && !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {        //TRACK_TYPE_VIDEO:1
                 }
                 lastSeenTracks = tracks;
-
+                ///EventLogger.onTracksChangedから ////////////////////////////////////////
+                // Log tracks associated to renderers.
+                ImmutableList<Tracks.Group> trackGroups = tracks.getGroups();
+//            dbMsg += ",trackGroups=" + trackGroups;
+//                for (int groupIndex = 0; groupIndex < trackGroups.size(); groupIndex++) {
+//                    Tracks.Group trackGroup = trackGroups.get(groupIndex);
+//                    for (int trackIndex = 0; trackIndex < trackGroup.length; trackIndex++) {
+//                        dbMsg += "\n[" + trackIndex + "]" + Format.toLogString(trackGroup.getTrackFormat(trackIndex));
+//                }
+                // TODO: Replace this with an override of onMediaMetadataChanged.
+                // Log metadata for at most one of the selected tracks.
+                boolean loggedMetadata = false;
+                for (int groupIndex = 0; !loggedMetadata && groupIndex < trackGroups.size(); groupIndex++) {
+                    Tracks.Group trackGroup = trackGroups.get(groupIndex);
+                    for (int trackIndex = 0; !loggedMetadata && trackIndex < trackGroup.length; trackIndex++) {
+                        if (trackGroup.isTrackSelected(trackIndex)) {
+                            @Nullable Metadata metadata = trackGroup.getTrackFormat(trackIndex).metadata;
+                            if (metadata != null && metadata.length() > 0) {
+                                dbMsg += "\n[groupIndex:" + groupIndex + "][trackGroup:" + trackGroup + "]" + metadata.length() + "件";
+                                dbMsg += ",metadata=" + metadata.length() +"件";
+                                List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
+                                oneMeta.clear();
+                                HashMap<String, String> objMap = new HashMap<String, String>();
+                                lylicStr = null;
+                                String sepStr = ":";
+                                for (int i = 0; i < metadata.length(); i++) {
+                                    Metadata.Entry rData = metadata.get(i);
+                                    String rStr = rData.toString();
+                                    dbMsg += "\n["+i +"]" + rStr;
+                                    String cName = rStr;
+                                    String cVal = "";
+                                    if(rStr.contains(":")){
+                                        rStr=rStr.replace(": description=null: values=[", ":");
+                                        String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
+                                        cName = rStrs[0];
+                                        cVal = rStrs[1];
+                                        cVal= cVal.replace("]", "");
+                                        if(cName.equals("USLT")){
+                                            lylicStr=cVal;
+                                            dbMsg += "\nlylicStr=" + lylicStr;
+                                        }
+                                    }
+                                    dbMsg += ">>" + cName +" : " + cVal;
+                                    objMap.put(cName ,cVal);
+                                    oneMeta.add(objMap);
+                                }
+                                dbMsg += ",oneMeta=" + oneMeta.size()+"件";                            }
+                            loggedMetadata = true;
+                            sendSongInfo(mIndex);
+                        }
+                    }
+                }
+                //////////////////////////////////////////////////////////////////////////
                 mIndex=exoPlayer.getCurrentMediaItemIndex();
 //                int endIndex = exoPlayer.getMediaItemCount();
 //                objMap=plAL.get(mIndex);
@@ -2124,7 +2180,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
             long contentPosition = 0l;
             MRIintent.putExtra("isPlaying",  nowPlay);
 //            MRIintent.putExtra("contentPosition",contentPosition);
-            String rStr = myEventLogger.lylicStr;
+            String rStr = lylicStr;
             dbMsg += ",lylicStr=" + rStr;
             MRIintent.putExtra("lylicStr",  rStr);
 
