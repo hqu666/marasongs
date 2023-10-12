@@ -1567,16 +1567,7 @@ public class MusicService extends MediaBrowserService {
                 }
                 lastSeenTracks = tracks;
                 ///EventLogger.onTracksChangedから ////////////////////////////////////////
-                // Log tracks associated to renderers.
                 ImmutableList<Tracks.Group> trackGroups = tracks.getGroups();
-//            dbMsg += ",trackGroups=" + trackGroups;
-//                for (int groupIndex = 0; groupIndex < trackGroups.size(); groupIndex++) {
-//                    Tracks.Group trackGroup = trackGroups.get(groupIndex);
-//                    for (int trackIndex = 0; trackIndex < trackGroup.length; trackIndex++) {
-//                        dbMsg += "\n[" + trackIndex + "]" + Format.toLogString(trackGroup.getTrackFormat(trackIndex));
-//                }
-                // TODO: Replace this with an override of onMediaMetadataChanged.
-                // Log metadata for at most one of the selected tracks.
                 boolean loggedMetadata = false;
                 for (int groupIndex = 0; !loggedMetadata && groupIndex < trackGroups.size(); groupIndex++) {
                     Tracks.Group trackGroup = trackGroups.get(groupIndex);
@@ -1614,7 +1605,11 @@ public class MusicService extends MediaBrowserService {
                                 }
                                 dbMsg += ",oneMeta=" + oneMeta.size()+"件";                            }
                             loggedMetadata = true;
+                            if(lylicStr == null || lylicStr.equals("")){
+                                lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
+                            }
                             sendSongInfo(mIndex);
+
                         }
                     }
                 }
@@ -1950,23 +1945,11 @@ public class MusicService extends MediaBrowserService {
 
                 exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT,  true);
 
-          //      eventLogger = new EventLogger();
-                eventTime = null;
-                metaEntrys =new Metadata.Entry[10];
-                metadata = new Metadata(metaEntrys);
-//                eventLogger.StartSession();
-//                exoPlayer.AddListener(eventLogger);
-//                exoPlayer.SetInfoListener(eventLogger);
-//                exoPlayer.SetInternalErrorListener(eventLogger);
+                //メタデータ取得のEventLogger：破棄可能///////////////////////
                 //  https://developer.android.com/guide/topics/media/exoplayer/debug-logging
                 myEventLogger=new MyEventLogger();
                 exoPlayer.addAnalyticsListener(myEventLogger);          //ここで歌詞が出る
-          //      exoPlayer.addAnalyticsListener(new MyEventLogger());
-
-         //       exoPlayer.addAnalyticsListener(new AnalyticsListener());
-
-//                AnalyticsCollector analyticsCollector = exoPlayer.getAnalyticsCollector();
-//                analyticsCollector.addListener();
+                //メタデータ取得のEventLogger：破棄可能///////////////////////
 
                 exoPlayer.setPlayWhenReady(startAutoPlay);
                 configurePlayerWithServerSideAdsLoader();

@@ -409,6 +409,7 @@
     <string name="lylic_contex_lylic2web">拡大表示</string>
     <string name="lylic_contex_encord">再エンコード</string>
     <string name="lylic_contex_reload">歌詞の再読み込み</string>
+    <string name="lylics_not_set">歌詞未設定</string>
 
     <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. [CHAR LIMIT=30] -->
     <!--<string name="permlab_sdcardRead" product="nosdcard">test access to protected storage</string>-->

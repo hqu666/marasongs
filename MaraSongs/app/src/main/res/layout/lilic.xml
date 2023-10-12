@@ -1,16 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:layout_width="wrap_content"
-			  android:layout_height="match_parent"
-			  android:orientation="vertical">
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
 	<TextView
 		android:id="@+id/lyric_tv"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="28px"
-		android:maxLines="18"
-		android:scrollbars="vertical"
-		android:singleLine="false"
-		android:textSize="14sp" />
+		android:layout_height="match_parent"
+		android:layout_marginTop="8px"
+		android:autoSizeMinTextSize="12sp"
+		android:autoSizeMaxTextSize="36sp"
+		android:autoSizeStepGranularity="2sp"
+		android:scrollbars="horizontal|vertical"
+		android:singleLine="false" />
+	<!--	android:textSize="14sp"-->
+	<!--	android:maxLines="18"-->
+<!--	android:autoSizeTextType="uniform"-->
 
 </LinearLayout>

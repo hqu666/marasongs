@@ -266,18 +266,20 @@ public class MaraSonActivity extends AppCompatActivity
 //	public TextView nIDPTF;						//タイトルカウント
 //	public TextView saiseiPositionPTF;		//再生ポイント
 //	public TextView totalTimePTF;			//再生時間
-	public TextView ruikei_jikan_tv;			//累積時間
-	public TextView ruikei_kyoku_tv;			//累積曲数
-	public TextView zenkai_ruikei_suu_tv;	//前回の累積曲数
-	public TextView zenkai_ruikei_tv;			//前回の累積
+//	public TextView ruikei_jikan_tv;			//累積時間
+//	public TextView ruikei_kyoku_tv;			//累積曲数
+//	public TextView zenkai_ruikei_suu_tv;	//前回の累積曲数
+//	public TextView zenkai_ruikei_tv;			//前回の累積
 	public TextView vol_tf;												//音量表示
-	public TextView dviceStyte;			//デバイスの接続情報
-	public HorizontalScrollView dviceStyteHSV;					//デバイスの接続情報のスクロール
+//	public TextView dviceStyte;			//デバイスの接続情報
+//	public HorizontalScrollView dviceStyteHSV;					//デバイスの接続情報のスクロール
 	public ImageButton ppPBT;			//再生ボタン
 //	public ImageButton ffPBT;			//送りボタン
 //	public ImageButton rewPBT;			//戻しボタン
 	public ImageButton vol_btn;								//ボリュームボタン
 	public ViewFlipper pp_vf;									//中心部の表示枠
+	int pp_vfHeight = 0;
+
 	public ImageView mpJakeImg;			//ジャケット
 	public TextView lyric_tv;					//歌詞表示
 //	public SeekBar saiseiSeekMP;		//シークバー
@@ -287,7 +289,7 @@ public class MaraSonActivity extends AppCompatActivity
 //	public LinearLayout artistCountLL;					//アーティストカウント
 //	public LinearLayout albumCountLL;					//アルバムカウント
 //	public LinearLayout titolCountLL;					//タイトルカウント
-	public LinearLayout pp_zenkai_ll;								//前回の累積レイアウト
+//	public LinearLayout pp_zenkai_ll;								//前回の累積レイアウト
 	public Drawable dofoltSBDrawable;					//シークバーの元設定
 	public LinearLayout pp_bt_ll;						//buletooth情報
 	//	public LinearLayout pp_koukoku;					//広告表示枠		include
@@ -783,23 +785,23 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += "前回の累積=" + zenkai_saiseKyoku +"曲";/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if(zenkai_saiseKyoku >0){
 	//			zennkaiLL.setVisibility(View.VISIBLE);							//前回の累積レイアウト
-				zenkai_ruikei_suu_tv.setText(String.valueOf(zenkai_saiseKyoku));								//前回の累積曲数
+//				zenkai_ruikei_suu_tv.setText(String.valueOf(zenkai_saiseKyoku));								//前回の累積曲数
 				dbMsg += "/" + zenkai_saiseijikann + "[ms]";/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//		zenkai_ruikei_tv.setText(ORGUT.sdf_hms.format(zenkai_saiseijikann));						//前回の再生時間
 				Date wrDate = new Date(zenkai_saiseijikann);
 				dbMsg += ">Date>" + wrDate;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 				String convertedDateStr = convertFormat.format(wrDate);
 				dbMsg += ">format>" + convertedDateStr +"S";/////////////////////////////////////////////////////////////////////////////////////////////////////////
-				zenkai_ruikei_tv.setText(convertedDateStr);						//前回の再生時間
+//				zenkai_ruikei_tv.setText(convertedDateStr);						//前回の再生時間
 //			} else {
 //				zennkaiLL.setVisibility(View.GONE);							//前回の累積レイアウト
 			}
-			ruikei_kyoku_tv.setText(String.valueOf(0));	//累積曲数
+//			ruikei_kyoku_tv.setText(String.valueOf(0));	//累積曲数
 			Date wrDate = new Date(0);
 			dbMsg += ">Date>" + wrDate;/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			String convertedDateStr = convertFormat.format(wrDate);
 			dbMsg += ">format>" + convertedDateStr;/////////////////////////////////////////////////////////////////////////////////////////////////////////
-			ruikei_jikan_tv.setText(convertedDateStr);						//累積時間
+//			ruikei_jikan_tv.setText(convertedDateStr);						//累積時間
 	//		myLog(TAG,dbMsg);
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg +=(int)((end - start)) + "mS";		//	<string name="">所要時間</string>
@@ -1194,59 +1196,58 @@ public class MaraSonActivity extends AppCompatActivity
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				/*Viewのpostメソッドを利用*/
-				ruikei_kyoku_tv.post(new Runnable() {
-					public void run() {
-						final String TAG = "post";
-						String dbMsg= "[ruikei_kyoku_tv]";
-						try{
-							dbMsg= "post thread id = " + Thread.currentThread().getId();
-							dbMsg +=",累積曲数=" + ruikeikyoku;
-							ruikei_kyoku_tv.setText(String.valueOf(ruikeikyoku));	//累積曲数
-							myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG ,  dbMsg + "で" + e);
-						}
-					}
-				});
-				ruikei_jikan_tv.post(new Runnable() {
-					@SuppressWarnings("deprecation")
-					public void run() {
-						final String TAG = "post[ruikei_jikan_tv]";
-						String dbMsg= "開始";/////////////////////////////////////
-						try{
-							dbMsg= "post thread id = " + Thread.currentThread().getId();
-							dbMsg += "累計" + ruikeiSTTime;/////////////////////////////////////////////////////////////////////////////////////////////////////////
-							Date wrDate = new Date(ruikeiSTTime);
-							dbMsg += ">Date>" + wrDate;/////////////////////////////////////////////////////////////////////////////////////////////////////////
-							String convertedDateStr = convertFormat.format(wrDate);
-							dbMsg += ">format>" + convertedDateStr + "S";/////////////////////////////////////////////////////////////////////////////////////////////////////////
-							ruikei_jikan_tv.setText(convertedDateStr);						//前回の再生時間
-
-////								int jisa = TimeZone.getDefault().getRawOffset();
-////								dbMsg +="(時差" +jisa  ;
-////								Date jisaDate = new Date(jisa);
-////								dbMsg +="＞" +jisaDate  ;
-////								long jisaLomg = jisaDate.getTime();
-////								dbMsg +="＞" +jisaLomg  ;
-//								dbMsg +=",累積時間=" +ruikeiSTTime ;
-////								Date ruikeiDate = new Date(ruikeiSTTime);
-////								dbMsg +=",ruikeiDate=" +ruikeiDate.getTime() ;
-////								int jiInt =ruikeiDate.getHours();
-////								dbMsg +="、" +jiInt +"時" ;
-////								dbMsg +="）" +jiInt +"時" ;
-////								int minInt = ruikeiDate.getMinutes();
-////								dbMsg += minInt +"分" ;
-////								int secInt = ruikeiDate.getSeconds();
-////								dbMsg += minInt +"秒" ;
-//			//					ruikei_jikan_tv.setText(diffTimeStr);						//累積時間	-(9*60*60*1000)
-//							ruikei_jikan_tv.setText(String.valueOf(ORGUT.sdf_hms.format(ruikeiSTTime)));						//累積時間	-(9*60*60*1000)
-							myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG ,  dbMsg + "で" + e);
-						}
-					}
-				});
+//				ruikei_kyoku_tv.post(new Runnable() {
+//					public void run() {
+//						final String TAG = "post";
+//						String dbMsg= "[ruikei_kyoku_tv]";
+//						try{
+//							dbMsg= "post thread id = " + Thread.currentThread().getId();
+//							dbMsg +=",累積曲数=" + ruikeikyoku;
+//							ruikei_kyoku_tv.setText(String.valueOf(ruikeikyoku));	//累積曲数
+//							myLog(TAG, dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG ,  dbMsg + "で" + e);
+//						}
+//					}
+//				});
+//				ruikei_jikan_tv.post(new Runnable() {
+//					@SuppressWarnings("deprecation")
+//					public void run() {
+//						final String TAG = "post[ruikei_jikan_tv]";
+//						String dbMsg= "開始";/////////////////////////////////////
+//						try{
+//							dbMsg= "post thread id = " + Thread.currentThread().getId();
+//							dbMsg += "累計" + ruikeiSTTime;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//							Date wrDate = new Date(ruikeiSTTime);
+//							dbMsg += ">Date>" + wrDate;/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//							String convertedDateStr = convertFormat.format(wrDate);
+//							dbMsg += ">format>" + convertedDateStr + "S";/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//							ruikei_jikan_tv.setText(convertedDateStr);						//前回の再生時間
+//
+//////								int jisa = TimeZone.getDefault().getRawOffset();
+//////								dbMsg +="(時差" +jisa  ;
+//////								Date jisaDate = new Date(jisa);
+//////								dbMsg +="＞" +jisaDate  ;
+//////								long jisaLomg = jisaDate.getTime();
+//////								dbMsg +="＞" +jisaLomg  ;
+////								dbMsg +=",累積時間=" +ruikeiSTTime ;
+//////								Date ruikeiDate = new Date(ruikeiSTTime);
+//////								dbMsg +=",ruikeiDate=" +ruikeiDate.getTime() ;
+//////								int jiInt =ruikeiDate.getHours();
+//////								dbMsg +="、" +jiInt +"時" ;
+//////								dbMsg +="）" +jiInt +"時" ;
+//////								int minInt = ruikeiDate.getMinutes();
+//////								dbMsg += minInt +"分" ;
+//////								int secInt = ruikeiDate.getSeconds();
+//////								dbMsg += minInt +"秒" ;
+////			//					ruikei_jikan_tv.setText(diffTimeStr);						//累積時間	-(9*60*60*1000)
+////							ruikei_jikan_tv.setText(String.valueOf(ORGUT.sdf_hms.format(ruikeiSTTime)));						//累積時間	-(9*60*60*1000)
+//							myLog(TAG, dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG ,  dbMsg + "で" + e);
+//						}
+//					}
+//				});
 			}
 		}).start();
 	}
@@ -1339,42 +1340,6 @@ public class MaraSonActivity extends AppCompatActivity
 
 	public Handler handler = new Handler();
 	public int audioId;
-
-//	/**Dataのuriからジャケットアートを表示させる
-//	 *　https://www.jisei-firm.com/android_develop38/
-//	 * */
-//	public void setArt(ImageView imageView,String urlStr,String albumId){
-//		final String TAG = "setArt";
-//		String dbMsg= "";
-//		try{
-//			dbMsg= ",imageView=" + imageView;
-//			Context context =this.getApplicationContext();
-//			MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-//			dbMsg= ",urlStr=" + urlStr;
-//			mediaMetadataRetriever.setDataSource(context, Uri.parse(urlStr));
-//			byte[] binary = mediaMetadataRetriever.getEmbeddedPicture();
-//			if (binary != null) {
-//				dbMsg +="、binary=" + binary.length ;
-//				imageView.setImageBitmap(BitmapFactory.decodeByteArray(binary, 0, binary.length));
-//			} else {
-//				ContentResolver contentResolver = context.getContentResolver();
-//				try {
-//					dbMsg= ",albumId=" + albumId;
-//					InputStream inputStream = contentResolver.openInputStream(Uri.parse(albumId));		//musicItemList.get(position).albumUri
-//					Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//					imageView.setScaleType(CENTER_CROP);
-//					imageView.setImageBitmap(bitmap);
-//				} catch (FileNotFoundException e) {
-//					imageView.setScaleType(CENTER_INSIDE);
-//					imageView.setImageResource(R.drawable.no_image);
-//				}
-//			}
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-
 
 	/**
 	 * urlからプレイヤーの書き込みを行う
@@ -2042,7 +2007,7 @@ public class MaraSonActivity extends AppCompatActivity
 								String endStr = ORGUT.sdf_mss.format(MaraSonActivity.this.saiseiJikan);			//再生終了点(mmss000)
 								dbMsg +=";;" + endStr + ";;";
 								rd_pp_ll.setVisibility(View.VISIBLE);
-								pp_zenkai_ll.setVisibility(View.GONE);						//前回の累積レイアウト
+//								pp_zenkai_ll.setVisibility(View.GONE);						//前回の累積レイアウト
 
 					//			pp_start_rd.setChecked(true);
 								rd_pp_gr.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {				//ラジオボタンが押された、状態が変わった時の挙動を記述する
@@ -2090,7 +2055,7 @@ public class MaraSonActivity extends AppCompatActivity
 							default:
 								MaraSonActivity.this.pp_start = 0;
 								rd_pp_ll.setVisibility(View.GONE);
-								pp_zenkai_ll.setVisibility(View.VISIBLE);						//前回の累積レイアウト
+//								pp_zenkai_ll.setVisibility(View.VISIBLE);						//前回の累積レイアウト
 								break;
 							}
 							MaraSonActivity.this.repeatSyurui = checkedId;
@@ -4518,7 +4483,7 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg +=",Buletooth=" +stateBaseStr;
 			this.stateBaseStr = stateBaseStr;
-			dbMsg +=",dviceStyte=" +MaraSonActivity.this.dviceStyte;
+//			dbMsg +=",dviceStyte=" +MaraSonActivity.this.dviceStyte;
 			dbMsg +=",Buletooth=" +stateBaseStr;
 			this.stateBaseStr = stateBaseStr;
 //			Intent intent = new Intent(MusicService.ACTION_STATE_CHANGED);
@@ -4530,7 +4495,7 @@ public class MaraSonActivity extends AppCompatActivity
 				if(stateBaseStr != null){
 			//		if( ! b_stateStr.equals(stateBaseStr)){
 					MaraSonActivity.this.pp_bt_ll.setVisibility(View.VISIBLE);
-					MaraSonActivity.this.dviceStyte.setText(stateBaseStr);			// メッセージ出力
+//					MaraSonActivity.this.dviceStyte.setText(stateBaseStr);			// メッセージ出力
 			//		}
 				}else{
 					MaraSonActivity.this.pp_bt_ll.setVisibility(View.GONE);			//フィールドを非表示
@@ -4906,6 +4871,11 @@ public class MaraSonActivity extends AppCompatActivity
 			try{
 				dbMsg= ",hasFocus=" + hasFocus;
 				if(hasFocus){
+					if(pp_vfHeight == 0){
+						pp_vfHeight = pp_vf.getHeight();
+						dbMsg +=" ,pp_vfHeight=" +pp_vfHeight;
+						pp_vf.setMinimumHeight(pp_vfHeight);
+					}
 					String rStr = (String) lp_subtitol.getText() + "";
 					dbMsg += ",lp_subtitol=" + rStr;
 //					if(rStr.equals("")){
@@ -5744,21 +5714,19 @@ public class MaraSonActivity extends AppCompatActivity
 //			saiseiSeekMP.setMax(0);        													//起動フラグ
 ////			saiseiSeekMP.setProgress(mcPosition);
 //			dofoltSBDrawable = saiseiSeekMP.getProgressDrawable();					//シークバーの元設定
-			ruikei_jikan_tv = findViewById(R.id.ruikei_jikan_tv);						//累積時間
-			ruikei_kyoku_tv = findViewById(R.id.ruikei_kyoku_tv);					//累積曲数
-			pp_zenkai_ll = findViewById(R.id.pp_zenkai_ll);								//前回の累積レイアウト
-			zenkai_ruikei_suu_tv = findViewById(R.id.zenkai_ruikei_suu_tv);		//前回の累積曲数
-			zenkai_ruikei_tv = findViewById(R.id.zenkai_ruikei_tv);					//前回の累積
-			vol_tf = findViewById(R.id.vol_tf);												//音量表示
-			dviceStyte = findViewById(R.id.dviceStyte);								//デバイスの接続情報
-			dviceStyteHSV = findViewById(R.id.dviceStyteHSV);					//デバイスの接続情報のスクロール
+//			ruikei_jikan_tv = findViewById(R.id.ruikei_jikan_tv);						//累積時間
+//			ruikei_kyoku_tv = findViewById(R.id.ruikei_kyoku_tv);					//累積曲数
+//			pp_zenkai_ll = findViewById(R.id.pp_zenkai_ll);								//前回の累積レイアウト
+//			zenkai_ruikei_suu_tv = findViewById(R.id.zenkai_ruikei_suu_tv);		//前回の累積曲数
+//			zenkai_ruikei_tv = findViewById(R.id.zenkai_ruikei_tv);					//前回の累積
+//			dviceStyte = findViewById(R.id.dviceStyte);								//デバイスの接続情報
+//			dviceStyteHSV = findViewById(R.id.dviceStyteHSV);					//デバイスの接続情報のスクロール
 //			ppPBT = findViewById(R.id.ppPButton);									//再生ボタン
 //			ppPBT.setContentDescription(getResources().getText(R.string.pause));
 //			ffPBT = findViewById(R.id.ffPButton);									//送りボタン
 //			rewPBT = findViewById(R.id.rewPButton);								//戻しボタン
 			//	lockButton = (ImageButton) findViewById(R.id.lockButton);							//画面ロックボタン
 //			stopPButton = (ImageButton) findViewById(R.id.stopPButton);						//終了ボタン
-			vol_btn = findViewById(R.id.vol_btn);								//ボリュームボタン
 //			artistCountLL = findViewById(R.id.artistCountLL);					//アーティストカウント
 //			artistTotalPTF = findViewById(R.id.artistTotalPTF);					//アルバムアーティス合計
 //			artistIDPTF = findViewById(R.id.artistIDPTF);							//アルバムアーティスカウント
@@ -5774,6 +5742,8 @@ public class MaraSonActivity extends AppCompatActivity
 //			pp_pp_ll.setVisibility(View.GONE);
 //			pp_bt_ll = findViewById(R.id.pp_bt_ll);					//buletooth情報
 //			pp_bt_ll.setVisibility(View.GONE);			//フィールドを非表示
+			vol_tf = findViewById(R.id.vol_tf);												//音量表示
+			vol_btn = findViewById(R.id.vol_btn);								//ボリュームボタン
 
 			pp_vf = findViewById(R.id.pp_vf);									//中心部の表示枠
 			slideInFromLeft = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_left);			//左フリック
@@ -5794,7 +5764,7 @@ public class MaraSonActivity extends AppCompatActivity
 			artist_tv.setMovementMethod(ScrollingMovementMethod.getInstance());			//ScrollView を使わないで TextView に スクロールバーを表示する	http://kokufu.blogspot.jp/2012/12/scrollview-textview.html
 			alubum_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 			titol_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
-			dviceStyte.setMovementMethod(ScrollingMovementMethod.getInstance());
+//			dviceStyte.setMovementMethod(ScrollingMovementMethod.getInstance());
 
 //			ppPBT.setOnClickListener(this);
 //			ffPBT.setOnClickListener(this);
@@ -5826,8 +5796,10 @@ public class MaraSonActivity extends AppCompatActivity
 			//////////////////////////////////////
 			shigot_bangou =  syoki_activty_set ;			//	onWindowFocusChangedを経てaSetei； ;ボタンなどへのイベント割付け
 
+/*
 			LinearLayout playPanel = findViewById(R.id.playPanel);
 			playPanel.setVisibility(View.GONE);
+*/
 
 			list_player = findViewById(R.id.remote_controll);		//プレイヤーのインクルード
 			playerView = list_player.findViewById(R.id.player_view);
