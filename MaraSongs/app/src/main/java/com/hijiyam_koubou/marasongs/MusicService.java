@@ -1482,9 +1482,64 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
+
+
     /**PlayerのPlaybackState、Error、TracksChanged、MediaMetadataChanged*/
     private class PlayerEventListener implements Player.Listener {
 
+        /**メタデータ1件分を読み出す*/
+        @SuppressLint("UnsafeOptInUsageError")
+        public void ReadMetadata(Metadata metadata) {
+            final String TAG = "ReadMetadata";
+            String dbMsg="[PlayerEventListener]";
+            try {
+                if (metadata != null && 0 < metadata.length()) {
+                    dbMsg += ",metadata="+metadata.length() +"項目";
+                    List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
+                    oneMeta.clear();
+                    HashMap<String, String> objMap = new HashMap<String, String>();
+                    lylicStr = null;
+                    String sepStr = ":";
+                    for (int i = 0; i < metadata.length(); i++) {
+                        Metadata.Entry rData = metadata.get(i);
+                        String rStr = rData.toString();
+                        dbMsg += "\n["+i +"]" + rStr;
+                        String cName = rStr;
+                        String cVal = "";
+                        if(rStr.contains(":")){
+                            rStr=rStr.replace(": description=null: values=[", ":");
+                            String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
+                            cName = rStrs[0];
+                            cVal = rStrs[1];
+                            cVal= cVal.replace("]", "");
+                            if(cName.equals("USLT")){
+                                dbMsg += "\nlylicStr=" + cVal;
+                                if(cVal.contains("\u200B")) {
+                                    lylicStr = cVal.replaceAll("\u200B", "\n");
+                                    dbMsg += ",改行されないu200B有り\n" + lylicStr;
+                                }else if(cVal.contains("\u00A0")) {
+                                    lylicStr = cVal.replaceAll("\u00A0", "\n");
+                                    dbMsg += ",改行されないu00A0有り\n" + lylicStr;
+                                }else if(cVal.contains("$0\u200b")) {
+                                    lylicStr=cVal.replaceAll("$0\u200b", "\n");         //スペースを Unicode のノーブレークスペース文字 (U+00A0) に置き換える
+                                    //          lylicStr=cVal.replaceAll(".(?!$)", "$0\u200b");     //非表示の幅ゼロのスペース (「\u200b」)
+                                    dbMsg += ",改行されない$0\u200B有り\n" + lylicStr;
+                                }else{
+                                    lylicStr=cVal;
+                                }
+                            }
+                        }
+                        dbMsg += ">>" + cName +" : " + cVal;
+                        objMap.put(cName ,cVal);
+                        oneMeta.add(objMap);
+                    }
+                    dbMsg += ",oneMeta=" + oneMeta.size()+"件";
+                }
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+        }
         @Override
         public void onPlaybackStateChanged(@Player.State int playbackState) {
             final String TAG = "onPlaybackStateChanged";
@@ -1576,34 +1631,48 @@ public class MusicService extends MediaBrowserService {
                             @Nullable Metadata metadata = trackGroup.getTrackFormat(trackIndex).metadata;
                             if (metadata != null && metadata.length() > 0) {
                                 dbMsg += "\n[groupIndex:" + groupIndex + "][trackGroup:" + trackGroup + "]" + metadata.length() + "件";
-                                dbMsg += ",metadata=" + metadata.length() +"件";
-                                List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
-                                oneMeta.clear();
-                                HashMap<String, String> objMap = new HashMap<String, String>();
-                                lylicStr = null;
-                                String sepStr = ":";
-                                for (int i = 0; i < metadata.length(); i++) {
-                                    Metadata.Entry rData = metadata.get(i);
-                                    String rStr = rData.toString();
-                                    dbMsg += "\n["+i +"]" + rStr;
-                                    String cName = rStr;
-                                    String cVal = "";
-                                    if(rStr.contains(":")){
-                                        rStr=rStr.replace(": description=null: values=[", ":");
-                                        String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
-                                        cName = rStrs[0];
-                                        cVal = rStrs[1];
-                                        cVal= cVal.replace("]", "");
-                                        if(cName.equals("USLT")){
-                                            lylicStr=cVal;
-                                            dbMsg += "\nlylicStr=" + lylicStr;
-                                        }
-                                    }
-                                    dbMsg += ">>" + cName +" : " + cVal;
-                                    objMap.put(cName ,cVal);
-                                    oneMeta.add(objMap);
-                                }
-                                dbMsg += ",oneMeta=" + oneMeta.size()+"件";                            }
+                                ReadMetadata(metadata);
+//                                dbMsg += ",metadata=" + metadata.length() +"件";
+//                                List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
+//                                oneMeta.clear();
+//                                HashMap<String, String> objMap = new HashMap<String, String>();
+//                                lylicStr = null;
+//                                String sepStr = ":";
+//                                for (int i = 0; i < metadata.length(); i++) {
+//                                    Metadata.Entry rData = metadata.get(i);
+//                                    String rStr = rData.toString();
+//                                    dbMsg += "\n["+i +"]" + rStr;
+//                                    String cName = rStr;
+//                                    String cVal = "";
+//                                    if(rStr.contains(":")){
+//                                        rStr=rStr.replace(": description=null: values=[", ":");
+//                                        String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
+//                                        cName = rStrs[0];
+//                                        cVal = rStrs[1];
+//                                        cVal= cVal.replace("]", "");
+//                                        if(cName.equals("USLT")){
+//                                            dbMsg += "\nlylicStr=" + cVal;
+//                                            if(cVal.contains("\u200B")) {
+//                                                lylicStr = cVal.replaceAll("\u200B", "\n");
+//                                                dbMsg += ",改行されないu200B有り\n" + lylicStr;
+//                                            }else if(cVal.contains("\u00A0")) {
+//                                                lylicStr = cVal.replaceAll("\u00A0", "\n");
+//                                                dbMsg += ",改行されないu00A0有り\n" + lylicStr;
+//                                            }else if(cVal.contains("$0\u200b")) {
+//                                                lylicStr=cVal.replaceAll("$0\u200b", "\n");         //スペースを Unicode のノーブレークスペース文字 (U+00A0) に置き換える
+//                                                //          lylicStr=cVal.replaceAll(".(?!$)", "$0\u200b");     //非表示の幅ゼロのスペース (「\u200b」)
+//                                                dbMsg += ",改行されない$0\u200B有り\n" + lylicStr;
+//                                            }else{
+//                                                lylicStr=cVal;
+//                                            }
+//                                        }
+//                                    }
+//                                    dbMsg += ">>" + cName +" : " + cVal;
+//                                    objMap.put(cName ,cVal);
+//                                    oneMeta.add(objMap);
+//                                }
+//                                dbMsg += ",oneMeta=" + oneMeta.size()+"件";
+                            }
                             loggedMetadata = true;
                             if(lylicStr == null || lylicStr.equals("")){
                                 lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
@@ -1637,6 +1706,7 @@ public class MusicService extends MediaBrowserService {
             }
         }
 
+
         /**メタデータの変わり目
          * <ul>
          *     <li>Media3.ExoPlayerのイベント</li>
@@ -1644,26 +1714,30 @@ public class MusicService extends MediaBrowserService {
          *     <li>2回発生する？</li>
          * </ul>
          * */
+        @SuppressLint("UnsafeOptInUsageError")
         @Override
         public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
             final String TAG = "onMediaMetadataChanged";
             String dbMsg="[PlayerEventListener]";
             try {
-                dbMsg += ",artist="+mediaMetadata.artist;
-                dbMsg += "（albumArtist="+mediaMetadata.albumArtist;
-                dbMsg += "）albumTitle="+mediaMetadata.albumTitle;
-                dbMsg += "["+mediaMetadata.trackNumber;
-                dbMsg += "]title="+mediaMetadata.title;
-                dbMsg += "(display="+mediaMetadata.displayTitle;
-                dbMsg += ")genre="+mediaMetadata.genre;
-                dbMsg += ",recording="+mediaMetadata.recordingYear+ "/"+mediaMetadata.recordingMonth+ "/"+mediaMetadata.recordingDay;
-                dbMsg += ",release="+mediaMetadata.releaseYear+ "/"+mediaMetadata.releaseMonth+ "/"+mediaMetadata.releaseDay;
+    //            dbMsg += ",metadata="+metadata.length() +"件";
+//                if (metadata != null && metadata.length() > 0) {
+                    ReadMetadata(metadata);
+                    dbMsg += ",artist="+mediaMetadata.artist;
+                    dbMsg += "（albumArtist="+mediaMetadata.albumArtist;
+                    dbMsg += "）albumTitle="+mediaMetadata.albumTitle;
+                    dbMsg += "["+mediaMetadata.trackNumber;
+                    dbMsg += "]title="+mediaMetadata.title;
+                    dbMsg += "(display="+mediaMetadata.displayTitle;
+                    dbMsg += ")genre="+mediaMetadata.genre;
+                    dbMsg += ",recording="+mediaMetadata.recordingYear+ "/"+mediaMetadata.recordingMonth+ "/"+mediaMetadata.recordingDay;
+                    dbMsg += ",release="+mediaMetadata.releaseYear+ "/"+mediaMetadata.releaseMonth+ "/"+mediaMetadata.releaseDay;
+//                }
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
             }
         }
-
     }
 
     /**plaerのログ;PlaybackStateChanged、DroppedVideoFrames*/

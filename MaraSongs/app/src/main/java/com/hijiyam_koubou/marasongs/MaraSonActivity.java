@@ -5765,7 +5765,6 @@ public class MaraSonActivity extends AppCompatActivity
 			alubum_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 			titol_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 //			dviceStyte.setMovementMethod(ScrollingMovementMethod.getInstance());
-
 //			ppPBT.setOnClickListener(this);
 //			ffPBT.setOnClickListener(this);
 //			rewPBT.setOnClickListener(this);

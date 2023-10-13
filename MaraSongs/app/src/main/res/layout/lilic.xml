@@ -7,9 +7,9 @@
 		android:id="@+id/lyric_tv"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_marginTop="8px"
-		android:autoSizeMinTextSize="12sp"
+		android:layout_marginTop="2px"
 		android:autoSizeMaxTextSize="36sp"
+		android:autoSizeMinTextSize="12sp"
 		android:autoSizeStepGranularity="2sp"
 		android:scrollbars="horizontal|vertical"
 		android:singleLine="false" />

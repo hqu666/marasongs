@@ -700,8 +700,7 @@ public class MyEventLogger implements AnalyticsListener {
                 oneMeta.add(objMap);
             }
             dbMsg += ",oneMeta=" + oneMeta.size()+"件";
-
-            myLog(TAG,dbMsg);
+//            myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG,dbMsg+"で"+e);
         }

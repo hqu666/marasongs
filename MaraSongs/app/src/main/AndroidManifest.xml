@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- BluetoothA2dpの取得も兼ねる -->
     <!-- 未使用 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
-    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+<!--    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />-->
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -107,10 +107,12 @@
         <activity
             android:name=".MaraSonActivity"
             android:excludeFromRecents="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/AppTheme">
-<!--            <meta-data-->
+<!--            android:screenOrientation="fullSensor"で回転追従-->
+
+            <!--            <meta-data-->
 <!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
 <!--                android:value="@string/banner_test_id" />-->
 <!--            <meta-data-->
