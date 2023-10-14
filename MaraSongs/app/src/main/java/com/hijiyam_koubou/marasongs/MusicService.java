@@ -1482,8 +1482,6 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
-
-
     /**PlayerのPlaybackState、Error、TracksChanged、MediaMetadataChanged*/
     private class PlayerEventListener implements Player.Listener {
 
@@ -1493,54 +1491,147 @@ public class MusicService extends MediaBrowserService {
             final String TAG = "ReadMetadata";
             String dbMsg="[PlayerEventListener]";
             try {
-                if (metadata != null && 0 < metadata.length()) {
+                if (metadata != null) {
                     dbMsg += ",metadata="+metadata.length() +"項目";
-                    List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
-                    oneMeta.clear();
-                    HashMap<String, String> objMap = new HashMap<String, String>();
-                    lylicStr = null;
-                    String sepStr = ":";
-                    for (int i = 0; i < metadata.length(); i++) {
-                        Metadata.Entry rData = metadata.get(i);
-                        String rStr = rData.toString();
-                        dbMsg += "\n["+i +"]" + rStr;
-                        String cName = rStr;
-                        String cVal = "";
-                        if(rStr.contains(":")){
-                            rStr=rStr.replace(": description=null: values=[", ":");
-                            String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
-                            cName = rStrs[0];
-                            cVal = rStrs[1];
-                            cVal= cVal.replace("]", "");
-                            if(cName.equals("USLT")){
-                                dbMsg += "\nlylicStr=" + cVal;
-                                if(cVal.contains("\u200B")) {
-                                    lylicStr = cVal.replaceAll("\u200B", "\n");
-                                    dbMsg += ",改行されないu200B有り\n" + lylicStr;
-                                }else if(cVal.contains("\u00A0")) {
-                                    lylicStr = cVal.replaceAll("\u00A0", "\n");
-                                    dbMsg += ",改行されないu00A0有り\n" + lylicStr;
-                                }else if(cVal.contains("$0\u200b")) {
-                                    lylicStr=cVal.replaceAll("$0\u200b", "\n");         //スペースを Unicode のノーブレークスペース文字 (U+00A0) に置き換える
-                                    //          lylicStr=cVal.replaceAll(".(?!$)", "$0\u200b");     //非表示の幅ゼロのスペース (「\u200b」)
-                                    dbMsg += ",改行されない$0\u200B有り\n" + lylicStr;
-                                }else{
+                    if ( 0 < metadata.length()) {
+                        List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
+                        oneMeta.clear();
+                        HashMap<String, String> objMap = new HashMap<String, String>();
+                        lylicStr = null;
+                        String sepStr = ":";
+                        for (int i = 0; i < metadata.length(); i++) {
+                            Metadata.Entry rData = metadata.get(i);
+                            String rStr = rData.toString();
+                            dbMsg += "\n["+i +"]" + rStr;
+                            String cName = rStr;
+                            String cVal = "";
+                            if(rStr.contains(":")){
+                                rStr=rStr.replace(": description=null: values=[", ":");
+                                String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
+                                cName = rStrs[0];
+                                cVal = rStrs[1];
+                                cVal= cVal.replace("]", "");
+                                if(cName.equals("USLT")){
+                                    dbMsg += "\nlylicStr=" + cVal +"\n";
                                     lylicStr=cVal;
+                                    if(cVal.contains("\r\n")) {
+                                        dbMsg += ",rとｎ";
+                                    }else if(cVal.contains("\r")) {
+                                        dbMsg += ",rのみ";
+                                        lylicStr = cVal.replaceAll("\r", "\n");
+                                    }else if(cVal.contains("\n")) {
+                                        dbMsg += ",nのみ";
+                                    }else if(cVal.contains("\u200B")) {
+                                        lylicStr = cVal.replaceAll("\u200B", "\n");
+                                        dbMsg += ",改行されないu200B有り\n" + lylicStr;
+                                    }else if(cVal.contains("\u00A0")) {
+                                        lylicStr = cVal.replaceAll("\u00A0", "\n");
+                                        dbMsg += ",改行されないu00A0有り\n" + lylicStr;
+                                    }else if(cVal.contains("$0\u200b")) {
+                                        lylicStr=cVal.replaceAll("$0\u200b", "\n");         //スペースを Unicode のノーブレークスペース文字 (U+00A0) に置き換える
+                                        //          lylicStr=cVal.replaceAll(".(?!$)", "$0\u200b");     //非表示の幅ゼロのスペース (「\u200b」)
+                                        dbMsg += ",改行されない$0\u200B有り\n" + lylicStr;
+                                    }else{
+                                        lylicStr=cVal;
+                                    }
                                 }
                             }
+                            dbMsg += ">>" + cName +" : " + cVal;
+                            objMap.put(cName ,cVal);
+                            oneMeta.add(objMap);
                         }
-                        dbMsg += ">>" + cName +" : " + cVal;
-                        objMap.put(cName ,cVal);
-                        oneMeta.add(objMap);
+                        dbMsg += ",oneMeta=" + oneMeta.size()+"件";
                     }
-                    dbMsg += ",oneMeta=" + oneMeta.size()+"件";
+                }else{
+                    dbMsg += ",metadata=null";
                 }
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
             }
         }
+
+        /**追加*/
         @Override
+        public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
+            final String TAG = "onEvents";
+            String dbMsg="[PlayerEventListener]";
+            try {
+                List<Integer> eventList = new ArrayList<>();
+                dbMsg += "eventList=" + eventList.size() +"件";
+                for (int i = 0 ; i < events.size(); i++){
+                    eventList.add(events.get(i));
+                }
+                if (eventList.size() > 2) {
+                    dbMsg += "、(0)=" + eventList.get(0);
+                    dbMsg += "、(1)=" + eventList.get(1);
+                    dbMsg += "、(2)=" + eventList.get(2);
+                    dbMsg += "、ContentPosition=" + exoPlayer.getContentPosition();
+                    if (eventList.get(0) == 4 && eventList.get(1) == 7 && eventList.get(2) == 11 && exoPlayer.getContentPosition() == 0) {
+//                                    // SEEK_TO_PREVIOUS
+//                                    Intent intent = new Intent("SEND_MESSAGE");
+//                                    //            intent.putExtra("MUSIC", RWD);
+//                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    }
+                }
+//                            if (player.playbackState == Player.STATE_ENDED){
+//                                https://qiita.com/monhiromu/items/315bde9b1a40b41427fb　:
+//                                playbackStateが参照できない
+//                            }
+                myLog(TAG,dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+            Player.Listener.super.onEvents(player, events);
+        }
+
+        /**追加*/
+        @Override
+        public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
+            final String TAG = "onMediaItemTransition";
+            String dbMsg="[PlayerEventListener]";
+            try {
+                mIndex=exoPlayer.getCurrentMediaItemIndex();
+                int endIndex = exoPlayer.getMediaItemCount();
+//                            setPrefInt("nowIndex" , mIndex ,  context);
+                dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
+//                            boolean nowPlaying = exoPlayer.isPlaying();
+//                            dbMsg += ",nowPlaying=" + nowPlaying;
+                dbMsg += ",reason=" + reason;
+                ReadMetadata(metadata);
+                dbMsg += ",artist=" + mediaItem.mediaMetadata.artist;
+                dbMsg += ",albumTitle=" + mediaItem.mediaMetadata.albumTitle;
+                dbMsg += ",title=" + mediaItem.mediaMetadata.title;
+                artistName= (String) mediaItem.mediaMetadata.artist;
+                albumName= (String) mediaItem.mediaMetadata.albumTitle;
+                songTitol= (String) mediaItem.mediaMetadata.title;
+                String description = (String) mediaItem.mediaMetadata.description;
+                dbMsg += ",description=" +description;
+                Bundle extras = mediaItem.mediaMetadata.extras; //null : extras
+///playbackProperties.uri
+                dbMsg += ",getCurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex();
+                if (exoPlayer.getCurrentMediaItemIndex() == 1) {
+//                                Intent intent = new Intent("SEND_MESSAGE");
+//                                //       intent.putExtra("MUSIC", FWD);
+//                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                }
+                //
+                redrowNotification(mediaItem);
+
+                objMap=plAL.get(mIndex);
+                String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+                dbMsg += ",dataFN=" + dataFN;
+                String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+                dbMsg += ",duranation=" + duranation;
+                myLog(TAG,dbMsg);
+                sendSongInfo(mIndex);
+                Player.Listener.super.onMediaItemTransition(mediaItem, reason);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+        }
+
+    @Override
         public void onPlaybackStateChanged(@Player.State int playbackState) {
             final String TAG = "onPlaybackStateChanged";
             String dbMsg="[PlayerEventListener]";
@@ -1632,46 +1723,6 @@ public class MusicService extends MediaBrowserService {
                             if (metadata != null && metadata.length() > 0) {
                                 dbMsg += "\n[groupIndex:" + groupIndex + "][trackGroup:" + trackGroup + "]" + metadata.length() + "件";
                                 ReadMetadata(metadata);
-//                                dbMsg += ",metadata=" + metadata.length() +"件";
-//                                List<Map<String, String>> oneMeta = new ArrayList<Map<String, String>>();
-//                                oneMeta.clear();
-//                                HashMap<String, String> objMap = new HashMap<String, String>();
-//                                lylicStr = null;
-//                                String sepStr = ":";
-//                                for (int i = 0; i < metadata.length(); i++) {
-//                                    Metadata.Entry rData = metadata.get(i);
-//                                    String rStr = rData.toString();
-//                                    dbMsg += "\n["+i +"]" + rStr;
-//                                    String cName = rStr;
-//                                    String cVal = "";
-//                                    if(rStr.contains(":")){
-//                                        rStr=rStr.replace(": description=null: values=[", ":");
-//                                        String[] rStrs = rStr.split(sepStr);            //: description=null: values=[
-//                                        cName = rStrs[0];
-//                                        cVal = rStrs[1];
-//                                        cVal= cVal.replace("]", "");
-//                                        if(cName.equals("USLT")){
-//                                            dbMsg += "\nlylicStr=" + cVal;
-//                                            if(cVal.contains("\u200B")) {
-//                                                lylicStr = cVal.replaceAll("\u200B", "\n");
-//                                                dbMsg += ",改行されないu200B有り\n" + lylicStr;
-//                                            }else if(cVal.contains("\u00A0")) {
-//                                                lylicStr = cVal.replaceAll("\u00A0", "\n");
-//                                                dbMsg += ",改行されないu00A0有り\n" + lylicStr;
-//                                            }else if(cVal.contains("$0\u200b")) {
-//                                                lylicStr=cVal.replaceAll("$0\u200b", "\n");         //スペースを Unicode のノーブレークスペース文字 (U+00A0) に置き換える
-//                                                //          lylicStr=cVal.replaceAll(".(?!$)", "$0\u200b");     //非表示の幅ゼロのスペース (「\u200b」)
-//                                                dbMsg += ",改行されない$0\u200B有り\n" + lylicStr;
-//                                            }else{
-//                                                lylicStr=cVal;
-//                                            }
-//                                        }
-//                                    }
-//                                    dbMsg += ">>" + cName +" : " + cVal;
-//                                    objMap.put(cName ,cVal);
-//                                    oneMeta.add(objMap);
-//                                }
-//                                dbMsg += ",oneMeta=" + oneMeta.size()+"件";
                             }
                             loggedMetadata = true;
                             if(lylicStr == null || lylicStr.equals("")){
@@ -1720,19 +1771,7 @@ public class MusicService extends MediaBrowserService {
             final String TAG = "onMediaMetadataChanged";
             String dbMsg="[PlayerEventListener]";
             try {
-    //            dbMsg += ",metadata="+metadata.length() +"件";
-//                if (metadata != null && metadata.length() > 0) {
-                    ReadMetadata(metadata);
-                    dbMsg += ",artist="+mediaMetadata.artist;
-                    dbMsg += "（albumArtist="+mediaMetadata.albumArtist;
-                    dbMsg += "）albumTitle="+mediaMetadata.albumTitle;
-                    dbMsg += "["+mediaMetadata.trackNumber;
-                    dbMsg += "]title="+mediaMetadata.title;
-                    dbMsg += "(display="+mediaMetadata.displayTitle;
-                    dbMsg += ")genre="+mediaMetadata.genre;
-                    dbMsg += ",recording="+mediaMetadata.recordingYear+ "/"+mediaMetadata.recordingMonth+ "/"+mediaMetadata.recordingDay;
-                    dbMsg += ",release="+mediaMetadata.releaseYear+ "/"+mediaMetadata.releaseMonth+ "/"+mediaMetadata.releaseDay;
-//                }
+                ReadMetadata(metadata);
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1932,88 +1971,88 @@ public class MusicService extends MediaBrowserService {
                 exoPlayer.setRepeatMode(repeatMode);                    //2:プレイリスト内繰り返し  /  Player.REPEAT_MODE_ONE: 現在の項目が無限ループで繰り返されます。
 
                 exoPlayer.addListener(new PlayerEventListener());
-                exoPlayer.addListener(new Player.Listener() {
-                    /**曲変更などのイベント
-                     *https://www.jisei-firm.com/android_develop44/
-                     * */
-                    @Override
-                    public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
-                        final String TAG = "onEvents";
-                        String dbMsg="[Player.Listener]";
-                        try {
-                            List<Integer> eventList = new ArrayList<>();
-                            dbMsg += "eventList=" + eventList.size() +"件";
-                            for (int i = 0 ; i < events.size(); i++){
-                                eventList.add(events.get(i));
-                            }
-                            if (eventList.size() > 2) {
-                                dbMsg += "、(0)=" + eventList.get(0);
-                                dbMsg += "、(1)=" + eventList.get(1);
-                                dbMsg += "、(2)=" + eventList.get(2);
-                                dbMsg += "、ContentPosition=" + exoPlayer.getContentPosition();
-                                if (eventList.get(0) == 4 && eventList.get(1) == 7 && eventList.get(2) == 11 && exoPlayer.getContentPosition() == 0) {
-//                                    // SEEK_TO_PREVIOUS
-//                                    Intent intent = new Intent("SEND_MESSAGE");
-//                                    //            intent.putExtra("MUSIC", RWD);
-//                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                                }
-                            }
-//                            if (player.playbackState == Player.STATE_ENDED){
-//                                https://qiita.com/monhiromu/items/315bde9b1a40b41427fb　:
-//                                playbackStateが参照できない
+//                exoPlayer.addListener(new Player.Listener() {
+//                    /**曲変更などのイベント
+//                     *https://www.jisei-firm.com/android_develop44/
+//                     * */
+//                    @Override
+//                    public void onEvents(@NonNull Player player, @NonNull Player.Events events) {
+//                        final String TAG = "onEvents";
+//                        String dbMsg="[Player.Listener]";
+//                        try {
+//                            List<Integer> eventList = new ArrayList<>();
+//                            dbMsg += "eventList=" + eventList.size() +"件";
+//                            for (int i = 0 ; i < events.size(); i++){
+//                                eventList.add(events.get(i));
 //                            }
-                            myLog(TAG,dbMsg);
-                        } catch (Exception e) {
-                            myErrorLog(TAG ,  dbMsg + "で" + e);
-                        }
-                        Player.Listener.super.onEvents(player, events);
-                    }
-
-                    /**再生が別のメディア項目に移行するときの検出:https://developer.android.com/guide/topics/media/exoplayer/playlists#detecting-when-playback-transitions-to-another-media-item*/
-                    @Override
-                    public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-                        final String TAG = "onMediaItemTransition";
-                        String dbMsg="[Player.Listener]";
-                        try {
-                            mIndex=exoPlayer.getCurrentMediaItemIndex();
-                            int endIndex = exoPlayer.getMediaItemCount();
-//                            setPrefInt("nowIndex" , mIndex ,  context);
-                            dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
-//                            boolean nowPlaying = exoPlayer.isPlaying();
-//                            dbMsg += ",nowPlaying=" + nowPlaying;
-                            dbMsg += ",reason=" + reason;
-                            dbMsg += ",artist=" + mediaItem.mediaMetadata.artist;
-                            dbMsg += ",albumTitle=" + mediaItem.mediaMetadata.albumTitle;
-                            dbMsg += ",title=" + mediaItem.mediaMetadata.title;
-                            artistName= (String) mediaItem.mediaMetadata.artist;
-                            albumName= (String) mediaItem.mediaMetadata.albumTitle;
-                            songTitol= (String) mediaItem.mediaMetadata.title;
-                            String description = (String) mediaItem.mediaMetadata.description;
-                            dbMsg += ",description=" +description;
-                            Bundle extras = mediaItem.mediaMetadata.extras; //null : extras
-///playbackProperties.uri
-                            dbMsg += ",getCurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex();
-                            if (exoPlayer.getCurrentMediaItemIndex() == 1) {
-//                                Intent intent = new Intent("SEND_MESSAGE");
-//                                //       intent.putExtra("MUSIC", FWD);
-//                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                            }
-                            //
-                            redrowNotification(mediaItem);
-
-                            objMap=plAL.get(mIndex);
-                            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-                            dbMsg += ",dataFN=" + dataFN;
-                            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
-                            dbMsg += ",duranation=" + duranation;
-                            myLog(TAG,dbMsg);
-                            sendSongInfo(mIndex);
-                            Player.Listener.super.onMediaItemTransition(mediaItem, reason);
-                        } catch (Exception e) {
-                            myErrorLog(TAG ,  dbMsg + "で" + e);
-                        }
-                    }
-                });
+//                            if (eventList.size() > 2) {
+//                                dbMsg += "、(0)=" + eventList.get(0);
+//                                dbMsg += "、(1)=" + eventList.get(1);
+//                                dbMsg += "、(2)=" + eventList.get(2);
+//                                dbMsg += "、ContentPosition=" + exoPlayer.getContentPosition();
+//                                if (eventList.get(0) == 4 && eventList.get(1) == 7 && eventList.get(2) == 11 && exoPlayer.getContentPosition() == 0) {
+////                                    // SEEK_TO_PREVIOUS
+////                                    Intent intent = new Intent("SEND_MESSAGE");
+////                                    //            intent.putExtra("MUSIC", RWD);
+////                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+//                                }
+//                            }
+////                            if (player.playbackState == Player.STATE_ENDED){
+////                                https://qiita.com/monhiromu/items/315bde9b1a40b41427fb　:
+////                                playbackStateが参照できない
+////                            }
+//                            myLog(TAG,dbMsg);
+//                        } catch (Exception e) {
+//                            myErrorLog(TAG ,  dbMsg + "で" + e);
+//                        }
+//                        Player.Listener.super.onEvents(player, events);
+//                    }
+//
+//                    /**再生が別のメディア項目に移行するときの検出:https://developer.android.com/guide/topics/media/exoplayer/playlists#detecting-when-playback-transitions-to-another-media-item*/
+//                    @Override
+//                    public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
+//                        final String TAG = "onMediaItemTransition";
+//                        String dbMsg="[Player.Listener]";
+//                        try {
+//                            mIndex=exoPlayer.getCurrentMediaItemIndex();
+//                            int endIndex = exoPlayer.getMediaItemCount();
+////                            setPrefInt("nowIndex" , mIndex ,  context);
+//                            dbMsg += "[" + mIndex + "/" + endIndex + "]";               //mediaItemList.size()
+////                            boolean nowPlaying = exoPlayer.isPlaying();
+////                            dbMsg += ",nowPlaying=" + nowPlaying;
+//                            dbMsg += ",reason=" + reason;
+//                            dbMsg += ",artist=" + mediaItem.mediaMetadata.artist;
+//                            dbMsg += ",albumTitle=" + mediaItem.mediaMetadata.albumTitle;
+//                            dbMsg += ",title=" + mediaItem.mediaMetadata.title;
+//                            artistName= (String) mediaItem.mediaMetadata.artist;
+//                            albumName= (String) mediaItem.mediaMetadata.albumTitle;
+//                            songTitol= (String) mediaItem.mediaMetadata.title;
+//                            String description = (String) mediaItem.mediaMetadata.description;
+//                            dbMsg += ",description=" +description;
+//                            Bundle extras = mediaItem.mediaMetadata.extras; //null : extras
+/////playbackProperties.uri
+//                            dbMsg += ",getCurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex();
+//                            if (exoPlayer.getCurrentMediaItemIndex() == 1) {
+////                                Intent intent = new Intent("SEND_MESSAGE");
+////                                //       intent.putExtra("MUSIC", FWD);
+////                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+//                            }
+//                            //
+//                            redrowNotification(mediaItem);
+//
+//                            objMap=plAL.get(mIndex);
+//                            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+//                            dbMsg += ",dataFN=" + dataFN;
+//                            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+//                            dbMsg += ",duranation=" + duranation;
+//                            myLog(TAG,dbMsg);
+//                            sendSongInfo(mIndex);
+//                            Player.Listener.super.onMediaItemTransition(mediaItem, reason);
+//                        } catch (Exception e) {
+//                            myErrorLog(TAG ,  dbMsg + "で" + e);
+//                        }
+//                    }
+//                });
 
                 ////////https://www.jisei-firm.com/android_develop44/#toc2//
 
@@ -2120,82 +2159,82 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
      *     <li> http://yonayona.biz/yonayona/blog/archives/1057945147.html</li>
      * </ul>
      * */
-    private void showMetadata(Uri uri) throws IOException {
-        final String TAG = "showMetadata";
-        String dbMsg="";
-        try {
-            // メディアメタデータにアクセスするクラスをインスタンス化する。
-            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-            dbMsg +=",uri="+uri;
-            /**
-             * メタデータを取得するファイルを指定する。
-             * アクセスするためにはまずMediaMetadataRetriever#setDataSourceを呼ぶ必要があります。
-             * このメソッドはいくつかのオーバーロードがありますが、
-             * URIで指定するかファイルパスを指定する方法がメインかなと思います。
-             */
-            mediaMetadataRetriever.setDataSource(getApplicationContext(), uri);
-
-            /**
-             * メタデータにアクセスします。
-             * 設定されていない場合はnullが返ってきます。
-             */
-            dbMsg +=" \"、アルバム名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-            dbMsg+= "、アルバムアーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
-            dbMsg += "、アーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-            dbMsg += "、著者名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR);
-            dbMsg += "、ビットレート(bits/sec):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-            dbMsg += "、キャプチャフレームレート:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE);
-            dbMsg += "、オーディオデータの順序:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-            dbMsg += "、音楽ファイルの編集状態:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPILATION);
-            dbMsg += "、作曲家情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
-            dbMsg += "、ファイル作成日:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-            dbMsg += "、わからない:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
-            dbMsg += "、再生時間(ms):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            dbMsg += "、カテゴリタイプ・ジャンル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-            dbMsg += "、音声を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO);
-            dbMsg += "、動画を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
-            dbMsg += "、位置情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
-            dbMsg += "、マイムタイプ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-            dbMsg += "、オーディオ/ビデオ/テキストのトラック数:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS);
-            dbMsg += "、タイトル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-            dbMsg += "、作家:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER);
-            dbMsg += "、作成年:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
-
-            /**
-             * 指定した時間(us)の画像(Bitmap)を動画からキャプチャすることができます。
-             * MediaMetadataRetriever#getFrameAtTimeを使います。
-             * このメソッドは複数のオーバーロードがあります。
-             * 今回は時間とオプションを設定するメソッドを使います。
-             *
-             * OPTION_CLOSEST→指定した時間に一番近いフレームを取得する。
-             * OPTION_CLOSEST_SYNC→指定した時間に一番近い同期フレームを取得する。
-             * OPTION_NEXT_SYNC→指定した時間の後の同期フレームを取得する。
-             * OPTION_PREVIOUS_SYNC→指定した時間の前の同期フレームを取得する。
-             *
-             * 注意としては動画の高さ幅の画像を取得するのでメモリと処理時間がかかります。
-             *
-             */
-            dbMsg += "、再生時間:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-//            int count = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-//            bitmapArrayList = new ArrayList<>();
-//            for(int i = 0 ; i < count ; i++) {
-//                bitmapArrayList.add(mediaMetadataRetriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST));
-//            }
-//            ImageViewAdapter imageViewAdapter = new ImageViewAdapter(getApplicationContext() , bitmapArrayList);
-//            gridView.setAdapter(imageViewAdapter);
-
-            dbMsg += "、ビデオの高さ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-            dbMsg += "、ビデオの回転角度:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-            dbMsg += "、ビデオの幅:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-
-            // 使ったファイルを開放する。
-            mediaMetadataRetriever.release();
-            myLog(TAG,dbMsg);
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-    }
-
+//    private void showMetadata(Uri uri) throws IOException {
+//        final String TAG = "showMetadata";
+//        String dbMsg="";
+//        try {
+//            // メディアメタデータにアクセスするクラスをインスタンス化する。
+//            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+//            dbMsg +=",uri="+uri;
+//            /**
+//             * メタデータを取得するファイルを指定する。
+//             * アクセスするためにはまずMediaMetadataRetriever#setDataSourceを呼ぶ必要があります。
+//             * このメソッドはいくつかのオーバーロードがありますが、
+//             * URIで指定するかファイルパスを指定する方法がメインかなと思います。
+//             */
+//            mediaMetadataRetriever.setDataSource(getApplicationContext(), uri);
+//
+//            /**
+//             * メタデータにアクセスします。
+//             * 設定されていない場合はnullが返ってきます。
+//             */
+//            dbMsg +=" \"、アルバム名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+//            dbMsg+= "、アルバムアーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
+//            dbMsg += "、アーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+//            dbMsg += "、著者名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR);
+//            dbMsg += "、ビットレート(bits/sec):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+//            dbMsg += "、キャプチャフレームレート:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE);
+//            dbMsg += "、オーディオデータの順序:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+//            dbMsg += "、音楽ファイルの編集状態:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPILATION);
+//            dbMsg += "、作曲家情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
+//            dbMsg += "、ファイル作成日:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+//            dbMsg += "、わからない:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
+//            dbMsg += "、再生時間(ms):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+//            dbMsg += "、カテゴリタイプ・ジャンル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+//            dbMsg += "、音声を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO);
+//            dbMsg += "、動画を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
+//            dbMsg += "、位置情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+//            dbMsg += "、マイムタイプ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+//            dbMsg += "、オーディオ/ビデオ/テキストのトラック数:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS);
+//            dbMsg += "、タイトル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+//            dbMsg += "、作家:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER);
+//            dbMsg += "、作成年:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+//
+//            /**
+//             * 指定した時間(us)の画像(Bitmap)を動画からキャプチャすることができます。
+//             * MediaMetadataRetriever#getFrameAtTimeを使います。
+//             * このメソッドは複数のオーバーロードがあります。
+//             * 今回は時間とオプションを設定するメソッドを使います。
+//             *
+//             * OPTION_CLOSEST→指定した時間に一番近いフレームを取得する。
+//             * OPTION_CLOSEST_SYNC→指定した時間に一番近い同期フレームを取得する。
+//             * OPTION_NEXT_SYNC→指定した時間の後の同期フレームを取得する。
+//             * OPTION_PREVIOUS_SYNC→指定した時間の前の同期フレームを取得する。
+//             *
+//             * 注意としては動画の高さ幅の画像を取得するのでメモリと処理時間がかかります。
+//             *
+//             */
+//            dbMsg += "、再生時間:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+////            int count = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
+////            bitmapArrayList = new ArrayList<>();
+////            for(int i = 0 ; i < count ; i++) {
+////                bitmapArrayList.add(mediaMetadataRetriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST));
+////            }
+////            ImageViewAdapter imageViewAdapter = new ImageViewAdapter(getApplicationContext() , bitmapArrayList);
+////            gridView.setAdapter(imageViewAdapter);
+//
+//            dbMsg += "、ビデオの高さ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+//            dbMsg += "、ビデオの回転角度:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+//            dbMsg += "、ビデオの幅:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+//
+//            // 使ったファイルを開放する。
+//            mediaMetadataRetriever.release();
+//            myLog(TAG,dbMsg);
+//        } catch (Exception e) {
+//            myErrorLog(TAG ,  dbMsg + "で" + e);
+//        }
+//    }
+//
     ///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
 ///ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 
