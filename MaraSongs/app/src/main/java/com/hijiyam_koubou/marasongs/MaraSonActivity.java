@@ -1019,163 +1019,6 @@ public class MaraSonActivity extends AppCompatActivity
 							}
 							myLog(TAG, dbMsg);
 						}
-
-
-
-//					dbMsg += ",duranationStr=" + duranationStr;
-//					lp_duranation.setText( duranationStr);
-
-//					dbMsg += ",text="+lp_chronometer.getText()+ ",Format="+lp_chronometer.getFormat()+",Base="+lp_chronometer.getBase();
-//					lp_chronometer.setBase(SystemClock.elapsedRealtime());				//”00:00″から開始
-//					chronometerStopTime= lp_chronometer.getBase();
-//					dbMsg += ">>"+lp_chronometer.getBase() + ",text="+lp_chronometer.getText();
-//					dbMsg += ",isPlaying=" + isPlaying;
-//					if(isPlaying){
-//						lp_chronometer.start();
-//					}else{
-//						lp_chronometer.stop();
-//					}
-//					lp_seekBar.setProgress(0);
-//					lp_seekBar.setMax((int) duranationLong);
-//					dbMsg += ",contentPositionLong= " + contentPositionLong;
-//					if(0L < contentPositionLong){
-//						lp_seekBar.setProgress((int) contentPositionLong);
-//					}
-//					dbMsg += ">>seek[" + lp_seekBar.getProgress() + "/" + lp_seekBar.getMax() + "]";
-
-//						if(IsPlaying){
-//							pointKousin(mcPosition);	//再生ポイント更新							//////////http://www.atmarkit.co.jp/ait/articles/1202/16/news130.html	①～　　はクリックした順番
-//							if (! ppPBT.getContentDescription().equals(getResources().getText(R.string.play))) {
-//								dbMsg += ",Description修正＞＞Play";
-//								ppPBT.setImageResource(R.drawable.pousebtn);
-//								ppPBT.setContentDescription(getResources().getText(R.string.play));
-//								myLog(TAG, dbMsg);
-//							}
-//						}else{
-//							if (! ppPBT.getContentDescription().equals(getResources().getText(R.string.pause))) {
-//								dbMsg += ",Description修正＞＞Pouse";
-//								ppPBT.setImageResource(R.drawable.pl_r_btn);
-//								ppPBT.setContentDescription(getResources().getText(R.string.pause));
-//								myLog(TAG, dbMsg);
-//							}
-//						}
-//						String dataFN =intent.getStringExtra(MediaStore.Audio.Playlists.Members.DATA) + "";
-//						dbMsg +=  "以前のファイル=" + b_dataFN +  ">>再生中のファイル名=" + dataFN;
-//						if( dataFN.equals("") || dataFN==null) {
-//						}else{
-//							myPreferences.nowIndex = intent.getIntExtra("nowIndex", 0);
-//							dbMsg += "[nowIndex=" + myPreferences.nowIndex;
-//							listEnd = intent.getIntExtra("listEnd", 9999);
-//							dbMsg += "/" + listEnd + "]";
-//							if(! dataFN.equals(b_dataFN) ){			//曲が変わったら || myPreferences.nowList_id != b_List_id           && ! dataFN.equals("") )         || ! b_titolName.equals(titolName)
-//								b_dataFN = dataFN;
-//								dbMsg += ">曲ごとの更新";
-//								saiseiJikan = getPrefInt("pref_duration" , 0, context);		//sharedPref.getInt("pref_duration" , 0);
-//								dbMsg += ",mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-//								setSeekMax( saiseiJikan );
-//								b_index = Integer.valueOf( String.valueOf(songIDPTF.getText() ));				//前の曲順
-//								t_index = Integer.valueOf( String.valueOf(titolAllPTF.getText() ));				//そのリストの曲数
-//								dbMsg += "[b_index=" + b_index + "/" + t_index  + "]";
-//								if( b_index == t_index && 0< t_index && myPreferences.nowList.equals( getResources().getString(R.string.playlist_namae_randam) )){
-//									randumPlay();			//ランダム再生
-//									songIDPTF.setText("1");
-//								}else{
-//									albumArt=intent.getStringExtra("albumArt");
-//									dbMsg +=",albumArt=" + albumArt;
-//									gamenKakikae = true;
-//								}
-//								b_List_id = Integer.parseInt(myPreferences.nowList_id);			//前のプレイリストID
-//								myPreferences.nowList_id = String.valueOf(intent.getIntExtra("nowList_id", b_List_id));
-//								dbMsg += "[List_id=" + b_List_id + "→" + myPreferences.nowList_id;
-//								rStr = intent.getStringExtra("myPreferences.nowList");
-//								dbMsg +="]" + rStr;
-//								if( rStr != null ){					//|| plHenkou
-//									myPreferences.nowList = rStr;
-//									dbMsg +=">>" + myPreferences.nowList;
-//									if( ! toolbar.getTitle().equals(rStr) ){
-//										myPreferences.nowList = rStr;
-//										dbMsg += ">>" + myPreferences.nowList;/////////////////////////////////////
-//										toolbar.setTitle(myPreferences.nowList);
-//										gamenKakikae = true;
-//									}
-//								}
-////								b_titolName =String.valueOf(MaraSonActivity.this.titol_tv.getText());			//前曲名
-////								dbMsg += "、前の曲名；"+ b_titolName + " を　";
-////								rStr =intent.getStringExtra("titolName");
-////								dbMsg +=",titolName=" + rStr;
-////								if( rStr != null ){
-////									titolName = rStr;
-////								}else{
-////									titolName = b_titolName;
-////								}
-////
-////								b_albumName =String.valueOf(MaraSonActivity.this.alubum_tv.getText());
-////								dbMsg += "、前のアルバム；"+ b_albumName + " を　";
-////								rStr =intent.getStringExtra("albumName");
-////								dbMsg +=",albumName=" + rStr;
-////								if( rStr != null ){
-////									albumName = rStr;
-////								}else{
-////									albumName = b_albumName;
-////								}
-////								albumArtist =intent.getStringExtra("albumArtist");
-////								creditArtistName =intent.getStringExtra("creditArtistName");
-////								dbMsg +=" ,クレジット⁼ " + creditArtistName;
-//								url2FSet(dataFN);		//urlからプレイヤーの書き込みを行う		albumArtist
-//								readLyric( dataFN );					//歌詞の読出し
-//								if( mVisualizer != null ){
-//									mVisualizer.release();
-//									mVisualizer = null;
-//								}
-////								saiseiJikan = intent.getIntExtra("saiseiJikan", 0);		//DURATION;継続;The duration of the audio file, in ms;Type: INTEGER (long)
-//								dbMsg += ",IsPlaying=" + IsPlaying;
-//								if( IsPlaying ){											//起動時
-//									dbMsg += ",mVisualizer=" + mVisualizer;
-//									if( mVisualizer == null){
-//										mVisualizer = (Visualizer) intent.getExtras().get("mVisualizer");
-//										switch(visualizerType) {
-//											case Visualizer_type_wave:			//Visualizerはwave表示
-//											case Visualizer_type_FFT:			//VisualizerはFFT
-//												setupVisualizerFxAndUI();				//Visualizerの設定
-//												break;
-//											case Visualizer_type_none:			//Visualizerを使わない
-//												break;
-//											//												default:
-//											//													break;
-//										}
-//									}
-//								}
-//////								gamenKakikae = true;
-////								if(gamenKakikae){
-////									url2FSet(dataFN);		//urlからプレイヤーの書き込みを行う		albumArtist
-////								}
-//								if (thisCont) {
-//									int retInt = intent.getIntExtra("ruikeikyoku" , 0);
-//									dbMsg +=",累積曲数=" + retInt;
-//									if( retInt >0 ){
-//										ruikeikyoku = retInt;
-//										dbMsg +=">>" + ruikeikyoku;
-//										ruikeiSTTime = intent.getLongExtra("ruikeiSTTime", 0);		//累積時間
-//										dbMsg +=",累積時間=" +ruikeiSTTime;
-//										rusekiKousin();														//再生ポイント更新
-//									}
-//								}
-//								myLog(TAG, dbMsg);
-//							}
-//						}
-
-//						String bLyric = lylicStr;
-//						if( bLyric == null){
-//							bLyric ="";
-//						}
-//						lylicStr = intent.getStringExtra("lylicStr");
-//						if(lylicStr != null){
-//							boolean samelyric = lylicStr.equals(bLyric);
-//							dbMsg += ",samelyric=" + samelyric;
-//							if(! samelyric){
-//								lyric_tv.setText(lylicStr);					//歌詞表示
-//							}
-//						}
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -1758,14 +1601,14 @@ public class MaraSonActivity extends AppCompatActivity
 				String contextTitile = getResources().getString(R.string.lylic_contex_title);								//歌詞表示の操作
 				menu.setHeaderTitle(contextTitile);		//APIL1;リスト操作;コンテキストメニューの設定
 			switch(viewId) {
-			case R.id.lyric_tv:						//2131558448 タイトル
-				menu.add(0, CONTEXT_Lylic2Web, 0, getResources().getString(R.string.lylic_contex_lylic2web));				//webに表示
-	//			menu.add(0, CONTEXT_Lylic_Encord, 0, getResources().getString(R.string.lylic_contex_encord));				//再エンコード
-				menu.add(0, CONTEXT_Lylic_Reload, 0, getResources().getString(R.string.lylic_contex_reload));				//再読み込み
-//				if( ! lyricAri){							//歌詞を取得できていなければ
-//					menu.getItem(1).setEnabled(false);		//グレーアウト
-//				}
-				break;
+//			case R.id.lyric_tv:						//2131558448 タイトル
+//				menu.add(0, CONTEXT_Lylic2Web, 0, getResources().getString(R.string.lylic_contex_lylic2web));				//webに表示
+//	//			menu.add(0, CONTEXT_Lylic_Encord, 0, getResources().getString(R.string.lylic_contex_encord));				//再エンコード
+//				menu.add(0, CONTEXT_Lylic_Reload, 0, getResources().getString(R.string.lylic_contex_reload));				//再読み込み
+////				if( ! lyricAri){							//歌詞を取得できていなければ
+////					menu.getItem(1).setEnabled(false);		//グレーアウト
+////				}
+//				break;
 			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -5748,7 +5591,6 @@ public class MaraSonActivity extends AppCompatActivity
 			pp_vf = findViewById(R.id.pp_vf);									//中心部の表示枠
 			slideInFromLeft = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_left);			//左フリック
 			slideInFromRight = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_right);			//右フリック
-			//		dbMsg +=",pp_vf=" + pp_vf;/////////////////////////////////////
 			LinearLayout jaket_ll = findViewById(R.id.jaket_ll);
 			mpJakeImg = jaket_ll.findViewById(R.id.mpJakeImg);							//ジャケット
 			dbMsg +=",mpJakeImg=" + mpJakeImg;/////////////////////////////////////
@@ -5815,6 +5657,45 @@ public class MaraSonActivity extends AppCompatActivity
 			lp_album_ff_bt.setVisibility(View.GONE);
 			ImageButton quitBt = list_player.findViewById(R.id.quitBt);
 			quitBt.setVisibility(View.GONE);
+
+			ImageButton to_img_bt = findViewById(R.id.to_img_bt);
+			to_img_bt.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {	// クリックされた時の処理を記述
+					final String TAG = "onClick";
+					String dbMsg = "[to_img_bt]";
+					try{
+//						if (velocityX > 0) {
+//							pp_vf.setInAnimation(slideInFromLeft);
+//							pp_vf.showPrevious();
+//						} else {
+						pp_vf.setInAnimation(slideInFromRight);
+						pp_vf.showNext();
+//						}
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
+			ImageButton to_lylic_bt = findViewById(R.id.to_lylic_bt);
+			to_lylic_bt.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {	// クリックされた時の処理を記述
+					final String TAG = "onClick";
+					String dbMsg = "[to_lylic_bt]";
+					try{
+//						if (velocityX > 0) {
+							pp_vf.setInAnimation(slideInFromLeft);
+							pp_vf.showPrevious();
+//						} else {
+//							pp_vf.setInAnimation(slideInFromRight);
+//							pp_vf.showNext();
+//						}
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
 			//スレッド起動確認///////////////////////////////////
 			if( activityManager == null ){
 				kidou_Kakuninn ();							//起動確認;音量設定/前回終了
@@ -5850,19 +5731,9 @@ public class MaraSonActivity extends AppCompatActivity
 //				//Activity破棄と同時にServiceも停止して良いならこれは不要
 //				ComponentName ss = startService(new Intent(this, MusicService.class));
 //				dbMsg +=">startService>" + ss;
-//
-//				//MediaBrowserを初期化
-////				mBrowser = new MediaBrowserCompat(this, new ComponentName(this, MusicService.class), connectionCallback, null);
-////				//接続(サービスをバインド)
-////				mBrowser.connect();
 //			}
 			receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
 			dbMsg += ",toPlaying=" + toPlaying;
-//			mBrowser = new MediaBrowserCompat(this,
-//					new ComponentName(this, MusicService.class),
-//					connectionCallbacks,
-//					null); // optional Bundle
-//			dbMsg += ",mBrowser=" + mBrowser;
 			long end=System.currentTimeMillis();		// 終了時刻の取得
 			dbMsg +=" ,経過=" +(int)((end - start)) + "mS";		//	<string name="">所要時間</string>
 			myLog(TAG, dbMsg);

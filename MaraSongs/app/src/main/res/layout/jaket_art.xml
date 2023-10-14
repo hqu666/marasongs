@@ -1,10 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  xmlns:app="http://schemas.android.com/apk/res-auto"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent"
-			  android:orientation="vertical"
-			  android:gravity="center"
-	>
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:foregroundTint="#00BCD4"
+	android:gravity="center"
+	android:orientation="vertical">
+
 	<TableLayout
 		android:id="@+id/headAria"
 		android:layout_width="match_parent"
@@ -15,8 +16,7 @@
 			android:id="@+id/artisr_row"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="2dp"
-			>
+			android:layout_marginTop="2dp">
 
 			<!--            <LinearLayout-->
 			<!--                android:id="@+id/artistCountLL"-->
@@ -58,7 +58,7 @@
 				android:ellipsize="marquee"
 				android:marqueeRepeatLimit="marquee_forever"
 				android:singleLine="true"
-				android:textAppearance="?android:attr/textAppearanceLarge"/>
+				android:textAppearance="?android:attr/textAppearanceLarge" />
 
 			<ImageButton
 				android:id="@+id/vol_btn"
@@ -68,7 +68,7 @@
 				android:focusableInTouchMode="true"
 				android:longClickable="true"
 				android:scaleType="fitEnd"
-				android:src="@android:drawable/ic_lock_silent_mode_off"/>
+				android:src="@android:drawable/ic_lock_silent_mode_off" />
 
 		</TableRow>
 		<!-- android:ellipsize="marquee" -->
@@ -123,7 +123,7 @@
 				android:ellipsize="marquee"
 				android:marqueeRepeatLimit="marquee_forever"
 				android:singleLine="true"
-				android:textAppearance="?android:attr/textAppearanceLarge"/>
+				android:textAppearance="?android:attr/textAppearanceLarge" />
 
 			<TextView
 				android:id="@+id/vol_tf"
@@ -131,13 +131,14 @@
 				android:layout_height="wrap_content"
 				android:gravity="right"
 				android:text="15"
-				android:textAppearance="?android:attr/textAppearanceSmall"/>
+				android:textAppearance="?android:attr/textAppearanceSmall" />
+
 			<TextView
 				android:id="@+id/textView81"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="/"
-				android:textAppearance="?android:attr/textAppearanceSmall"/>
+				android:textAppearance="?android:attr/textAppearanceSmall" />
 
 			<TextView
 				android:id="@+id/textView82"
@@ -146,93 +147,31 @@
 				android:gravity="top"
 				android:text="15"
 				android:textAppearance="?android:attr/textAppearanceSmall" />
+
+			<ImageButton
+				android:id="@+id/to_lylic_bt"
+				android:contentDescription="lylic"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:backgroundTint="#00FFFFFF"
+				android:rotation="-90"
+				app:srcCompat="@android:drawable/arrow_down_float"
+				/>
+
 		</TableRow>
 
 		<TableRow
-			android:id="@+id/titolLayauto"
+			android:id="@+id/btLayaut"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="2dp">
+			android:layout_marginTop="2dp"
+			android:gravity="right">
 
-			<!--            <LinearLayout-->
-			<!--                android:id="@+id/titolCountLL"-->
-			<!--                android:layout_width="wrap_content"-->
-			<!--                android:layout_height="wrap_content"-->
-			<!--                android:layout_gravity="bottom">-->
 
-			<!--                <TextView-->
-			<!--                    android:id="@+id/nIDPTF"-->
-			<!--                    android:layout_width="wrap_content"-->
-			<!--                    android:layout_height="wrap_content"-->
-			<!--                    android:gravity="right"-->
-			<!--                    android:text="@string/pp_zerozrozero"-->
-			<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 
-			<!--                <TextView-->
-			<!--                    android:id="@+id/nol_tv"-->
-			<!--                    android:layout_width="wrap_content"-->
-			<!--                    android:layout_height="wrap_content"-->
-			<!--                    android:text="@string/srash"-->
-			<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
-
-			<!--                <TextView-->
-			<!--                    android:id="@+id/tIDPTF"-->
-			<!--                    android:layout_width="wrap_content"-->
-			<!--                    android:layout_height="wrap_content"-->
-			<!--                    android:layout_marginRight="5dp"-->
-			<!--                    android:text="@string/pp_zerozrozero"-->
-			<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
-			<!--            </LinearLayout>-->
-
-<!--			<TextView-->
-<!--				android:id="@+id/titol_tv"-->
-<!--				android:layout_width="match_parent"-->
-<!--				android:layout_height="wrap_content"-->
-<!--				android:layout_weight="1"-->
-<!--				android:background="@drawable/color_state"-->
-<!--				android:clickable="true"-->
-<!--				android:ellipsize="marquee"-->
-<!--				android:marqueeRepeatLimit="marquee_forever"-->
-<!--				android:singleLine="true"-->
-<!--				android:textAppearance="?android:attr/textAppearanceLarge"/>-->
-<!--			<LinearLayout-->
-<!--				android:id="@+id/songCountLayout"-->
-<!--				android:layout_width="wrap_content"-->
-<!--				android:layout_height="wrap_content"-->
-<!--				>-->
-
-<!--				<TextView-->
-<!--					android:id="@+id/songIDPTF"-->
-<!--					android:layout_width="wrap_content"-->
-<!--					android:layout_height="wrap_content"-->
-<!--					android:gravity="right"-->
-<!--					android:text="0"-->
-<!--					android:textAppearance="?android:attr/textAppearanceSmall"/>-->
-
-<!--				<TextView-->
-<!--					android:id="@+id/TextView03"-->
-<!--					android:layout_width="wrap_content"-->
-<!--					android:layout_height="wrap_content"-->
-<!--					android:text="@string/srash"-->
-<!--					android:textAppearance="?android:attr/textAppearanceSmall"/>-->
-
-<!--				<TextView-->
-<!--					android:id="@+id/titolAllPTF"-->
-<!--					android:layout_width="wrap_content"-->
-<!--					android:layout_height="wrap_content"-->
-<!--					android:text="0"-->
-<!--					android:textAppearance="?android:attr/textAppearanceSmall"/>-->
-
-<!--				<TextView-->
-<!--					android:id="@+id/pp_start_tf"-->
-<!--					android:layout_width="wrap_content"-->
-<!--					android:layout_height="wrap_content"-->
-<!--					android:layout_weight="0"-->
-<!--					android:text="@string/pp_kyoku"-->
-<!--					android:textSize="10sp" />-->
-<!--			</LinearLayout>-->
 		</TableRow>
 	</TableLayout>
+
 	<ImageView
 		android:id="@+id/mpJakeImg"
 		android:layout_width="match_parent"
@@ -240,7 +179,7 @@
 		android:adjustViewBounds="true"
 		android:scaleType="fitCenter"
 		android:src="@drawable/no_image">
-<!--		https://akira-watson.com/android/imageview_scaletype.html-->
+		<!--		https://akira-watson.com/android/imageview_scaletype.html-->
 		<!--	adjustViewBounds	ImageViewの境界が、表示内容（バナー画像）のアスペクト比に比例する-->
 		<!--		android:cropToPadding="false"-->
 	</ImageView>
