@@ -3817,76 +3817,76 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "onFling";
 		String dbMsg= "";
 		try{
-//			dbMsg += ",velocityX=" + velocityX + ",velocityY=" + velocityY;			//velocityX=10339.762,velocityY=-1579.5083
-			float dx = Math.abs(e1.getX() - e2.getX());
-			float dy = Math.abs(e1.getY() - e2.getY());
-//			dbMsg += ",dx=" + dx + ",dy=" + dy;										//,dx=372.7354,dy=37.109497,
-			if (dx > dy) {
-				String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
-				dbMsg += ",velocityX=" + velocityX;									//velocityX=10339.762,
-				if (velocityX > 0) {
-					pp_vf.setInAnimation(slideInFromLeft);
-					pp_vf.showPrevious();
-				} else {
-					pp_vf.setInAnimation(slideInFromRight);
-					pp_vf.showNext();
-				}
-				int nextVF = pp_vf.getDisplayedChild();
-				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
-				switch( nextVF ) {		//
-				case 0:		//"ジャケット	mpJakeImg.getId();						//2131624054
-					dbMsg +="ジャケット=" + mpJakeImg.getId();		//2131624129
-					break;
-				case 1:		//"ビジュアライザー						//2131624129
-					int checkResalt = checkSelfPermission(Manifest.permission.RECORD_AUDIO);	//許可されていなければ -1 いれば 0
-					dbMsg += "=" + checkResalt;
-					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {  //許可されていなければ
-						if (velocityX > 0) {
-							pp_vf.showPrevious();
-						} else {
-							pp_vf.showNext();
-						}
-					}
-					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
-					if(visualizerType < Visualizer_type_none){
-						visualizerType = Visualizer_type_FFT;
-						myEditor.putInt ("visualizerType", visualizerType);
-					}
-					if( (dataFN != null && ! dataFN.equals("")) ){                                //|| visualizerType == Visualizer_type_none
-//						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
-						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
-						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
-						if( mVisualizerView == null && fftView == null ){
-							makeVisualizer();						//VisualizerのView作成
-							dbMsg +=">>アナログ>>" + mVisualizerView;/////////////////////////////////////
-							dbMsg +=">>FFT>>" + fftView;/////////////////////////////////////
-						}
-						dbMsg +=",mVisualizer=" + mVisualizer;		//2131624129
-						setupVisualizerFxAndUI();				//Visualizerの設定
-						if( mVisualizer != null ){
-						} else {
-							pp_vf.showNext();
-						}
-					} else {
-						pp_vf.showNext();
-					}
-					break;
-				case 2:		//"歌詞表示=" + lyric_tv.getId();							//2131624055
-					dbMsg +=",歌詞表示=" + lyric_tv.getId();
-					dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
-					CharSequence lyricStr = lyric_tv.getText();
-					dbMsg +=",lyricStr=" + lyricStr;		//常に0
-//					if(lyricStr== null || lyricStr.equals("")){
-//						readLyric( dataFN );					//歌詞の読出し
+////			dbMsg += ",velocityX=" + velocityX + ",velocityY=" + velocityY;			//velocityX=10339.762,velocityY=-1579.5083
+//			float dx = Math.abs(e1.getX() - e2.getX());
+//			float dy = Math.abs(e1.getY() - e2.getY());
+////			dbMsg += ",dx=" + dx + ",dy=" + dy;										//,dx=372.7354,dy=37.109497,
+//			if (dx > dy) {
+//				String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
+//				dbMsg += ",velocityX=" + velocityX;									//velocityX=10339.762,
+//				if (velocityX > 0) {
+//					pp_vf.setInAnimation(slideInFromLeft);
+//					pp_vf.showPrevious();
+//				} else {
+//					pp_vf.setInAnimation(slideInFromRight);
+//					pp_vf.showNext();
+//				}
+//				int nextVF = pp_vf.getDisplayedChild();
+//				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
+//				switch( nextVF ) {		//
+//				case 0:		//"ジャケット	mpJakeImg.getId();						//2131624054
+//					dbMsg +="ジャケット=" + mpJakeImg.getId();		//2131624129
+//					break;
+//				case 1:		//"ビジュアライザー						//2131624129
+//					int checkResalt = checkSelfPermission(Manifest.permission.RECORD_AUDIO);	//許可されていなければ -1 いれば 0
+//					dbMsg += "=" + checkResalt;
+//					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {  //許可されていなければ
+//						if (velocityX > 0) {
+//							pp_vf.showPrevious();
+//						} else {
+//							pp_vf.showNext();
+//						}
 //					}
-					break;
-				default:								//最初はここから
-					break;
-				}
-
-				dbMsg +=",getChildAt.getId()=" + pp_vf.getChildAt(pp_vf.getDisplayedChild()).getId();		//2
-			return true;
-			}
+//					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
+//					if(visualizerType < Visualizer_type_none){
+//						visualizerType = Visualizer_type_FFT;
+//						myEditor.putInt ("visualizerType", visualizerType);
+//					}
+//					if( (dataFN != null && ! dataFN.equals("")) ){                                //|| visualizerType == Visualizer_type_none
+////						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
+//						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
+//						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
+//						if( mVisualizerView == null && fftView == null ){
+//							makeVisualizer();						//VisualizerのView作成
+//							dbMsg +=">>アナログ>>" + mVisualizerView;/////////////////////////////////////
+//							dbMsg +=">>FFT>>" + fftView;/////////////////////////////////////
+//						}
+//						dbMsg +=",mVisualizer=" + mVisualizer;		//2131624129
+//						setupVisualizerFxAndUI();				//Visualizerの設定
+//						if( mVisualizer != null ){
+//						} else {
+//							pp_vf.showNext();
+//						}
+//					} else {
+//						pp_vf.showNext();
+//					}
+//					break;
+//				case 2:		//"歌詞表示=" + lyric_tv.getId();							//2131624055
+//					dbMsg +=",歌詞表示=" + lyric_tv.getId();
+//					dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
+//					CharSequence lyricStr = lyric_tv.getText();
+//					dbMsg +=",lyricStr=" + lyricStr;		//常に0
+////					if(lyricStr== null || lyricStr.equals("")){
+////						readLyric( dataFN );					//歌詞の読出し
+////					}
+//					break;
+//				default:								//最初はここから
+//					break;
+//				}
+//
+//				dbMsg +=",getChildAt.getId()=" + pp_vf.getChildAt(pp_vf.getDisplayedChild()).getId();		//2
+//			return true;
+//			}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
