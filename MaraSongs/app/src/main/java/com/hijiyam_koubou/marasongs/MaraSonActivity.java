@@ -282,7 +282,15 @@ public class MaraSonActivity extends AppCompatActivity
 
 	public ImageView mpJakeImg;			//ジャケット
 	public TextView lyric_tv;					//歌詞表示
-//	public SeekBar saiseiSeekMP;		//シークバー
+	public float fontMini;
+	public float fontMax;
+	public float currenFontSize;
+	public SeekBar font_size_sp;
+	public TextView font_mini_tv;
+	public TextView font_max_tv;
+	public TextView current_font_size_tv;
+
+	//	public SeekBar saiseiSeekMP;		//シークバー
 	public LinearLayout pp_pp_ll;						//二点間再生レイアウト
 	public TextView pp_pp_start_tf;					//二点間再生開始点
 	public TextView pp_pp_end_tf;						//二点間再生終了点
@@ -5551,40 +5559,6 @@ public class MaraSonActivity extends AppCompatActivity
 			if(ruikei_titol != null){
 				titolAllPTF.setText( ruikei_titol );			//全タイトルカウント
 			}
-//			saiseiPositionPTF = findViewById(R.id.saiseiPositionPTF);			//再生ポイント
-//			totalTimePTF = findViewById(R.id.totalTimePTF);						//再生時間
-//			saiseiSeekMP = findViewById(R.id.saiseiSeekMP);						//シークバー
-//			saiseiSeekMP.setMax(0);        													//起動フラグ
-////			saiseiSeekMP.setProgress(mcPosition);
-//			dofoltSBDrawable = saiseiSeekMP.getProgressDrawable();					//シークバーの元設定
-//			ruikei_jikan_tv = findViewById(R.id.ruikei_jikan_tv);						//累積時間
-//			ruikei_kyoku_tv = findViewById(R.id.ruikei_kyoku_tv);					//累積曲数
-//			pp_zenkai_ll = findViewById(R.id.pp_zenkai_ll);								//前回の累積レイアウト
-//			zenkai_ruikei_suu_tv = findViewById(R.id.zenkai_ruikei_suu_tv);		//前回の累積曲数
-//			zenkai_ruikei_tv = findViewById(R.id.zenkai_ruikei_tv);					//前回の累積
-//			dviceStyte = findViewById(R.id.dviceStyte);								//デバイスの接続情報
-//			dviceStyteHSV = findViewById(R.id.dviceStyteHSV);					//デバイスの接続情報のスクロール
-//			ppPBT = findViewById(R.id.ppPButton);									//再生ボタン
-//			ppPBT.setContentDescription(getResources().getText(R.string.pause));
-//			ffPBT = findViewById(R.id.ffPButton);									//送りボタン
-//			rewPBT = findViewById(R.id.rewPButton);								//戻しボタン
-			//	lockButton = (ImageButton) findViewById(R.id.lockButton);							//画面ロックボタン
-//			stopPButton = (ImageButton) findViewById(R.id.stopPButton);						//終了ボタン
-//			artistCountLL = findViewById(R.id.artistCountLL);					//アーティストカウント
-//			artistTotalPTF = findViewById(R.id.artistTotalPTF);					//アルバムアーティス合計
-//			artistIDPTF = findViewById(R.id.artistIDPTF);							//アルバムアーティスカウント
-//			albumCountLL = findViewById(R.id.albumCountLL);					//アーティストカウント
-//			alubumTotalPTF = findViewById(R.id.alubumTotalPTF);			//アルバム合計
-//			albumIDPTF = findViewById(R.id.albumIDPTF);						//アルバムカウント
-//			titolCountLL = findViewById(R.id.titolCountLL);					//アーティストカウント
-//			tIDPTF = findViewById(R.id.tIDPTF);										//タイトル合計
-//			nIDPTF = findViewById(R.id.nIDPTF);										//タイトルカウント
-//			pp_pp_ll = findViewById(R.id.pp_pp_ll);								//二点間再生レイアウト
-//			pp_pp_start_tf = findViewById(R.id.pp_pp_start_tf);					//二点間再生開始点
-//			pp_pp_end_tf = findViewById(R.id.pp_pp_end_tf);						//二点間再生終了点
-//			pp_pp_ll.setVisibility(View.GONE);
-//			pp_bt_ll = findViewById(R.id.pp_bt_ll);					//buletooth情報
-//			pp_bt_ll.setVisibility(View.GONE);			//フィールドを非表示
 			vol_tf = findViewById(R.id.vol_tf);												//音量表示
 			vol_btn = findViewById(R.id.vol_btn);								//ボリュームボタン
 
@@ -5696,6 +5670,59 @@ public class MaraSonActivity extends AppCompatActivity
 					}
 				}
 			});
+
+			fontMini = 12;
+			fontMax = 60;
+			currenFontSize = lyric_tv.getTextSize();
+			font_size_sp = findViewById(R.id.font_size_sp);
+			font_mini_tv = findViewById(R.id.font_mini);
+			font_max_tv = findViewById(R.id.font_max);
+			current_font_size_tv = findViewById(R.id.current_font_size);
+			font_mini_tv.setText( String.valueOf(fontMini));
+			font_max_tv.setText(String.valueOf(fontMax));
+			current_font_size_tv.setText(String.valueOf(currenFontSize));
+			font_size_sp.setMin((int) fontMini);
+			font_size_sp.setMax((int) fontMax);
+			font_size_sp.setProgress((int) currenFontSize);
+			font_size_sp.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					final String TAG = "onStopTrackingTouch";
+					String dbMsg= "[font_size_sp]";/////////////////////////////////////
+					try{
+						dbMsg +="currenFontSize=" + currenFontSize + ">Progress>" + seekBar.getProgress();
+						currenFontSize = seekBar.getProgress();
+						lyric_tv.setTextSize(currenFontSize);
+						current_font_size_tv.setText(String.valueOf(currenFontSize));
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					final String TAG = "onProgressChanged";
+					String dbMsg= "[font_size_sp]";/////////////////////////////////////
+					try{
+						dbMsg +="currenFontSize=" + currenFontSize + ">Progress>" + seekBar.getProgress();
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+
+				public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
+					final String TAG = "onProgressChanged";
+					String dbMsg= "[font_size_sp]";/////////////////////////////////////
+					try{
+						dbMsg +="currenFontSize=" + currenFontSize + ">Progress>" + seekBar.getProgress();
+						currenFontSize = seekBar.getProgress();
+						current_font_size_tv.setText(String.valueOf(currenFontSize));
+						myLog(TAG, dbMsg);
+					} catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
+
 			//スレッド起動確認///////////////////////////////////
 			if( activityManager == null ){
 				kidou_Kakuninn ();							//起動確認;音量設定/前回終了
