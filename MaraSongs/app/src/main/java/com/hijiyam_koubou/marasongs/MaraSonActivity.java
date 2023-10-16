@@ -1,9 +1,5 @@
 package com.hijiyam_koubou.marasongs;
 
-import static android.widget.ImageView.ScaleType.CENTER_CROP;
-import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -22,15 +18,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Build;
@@ -62,7 +53,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -79,10 +69,12 @@ import android.widget.ViewFlipper;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
@@ -120,9 +112,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -135,8 +124,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class MaraSonActivity extends AppCompatActivity
-	implements View.OnClickListener  , View.OnLongClickListener , View.OnKeyListener , android.view.GestureDetector.OnGestureListener , PlayerView.ControllerVisibilityListener{
-// ,OnSeekBarChangeListener
+	implements View.OnClickListener  , View.OnLongClickListener , View.OnKeyListener,PlayerView.ControllerVisibilityListener{
+// ,OnSeekBarChangeListener , android.view.GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener
 	/**呼び出し元のサービス*/
 	private MusicService mServiceBinder;
 	public String currentListId = "";
@@ -402,7 +391,7 @@ public class MaraSonActivity extends AppCompatActivity
 	public Handler btHandler = new Handler();
 	public Animation slideInFromLeft;			//左フリック
 	public Animation slideInFromRight;			//右フリック
-	private GestureDetector gestureDetector;
+//	private GestureDetector gestureDetector;
 
 	public DevicePolicyManager mDevicePolicyManager;
 	public ComponentName mDarSample;
@@ -3030,30 +3019,30 @@ public class MaraSonActivity extends AppCompatActivity
 		final String TAG = "makeVisualizer";
 		String dbMsg= "";
 		try{
-			LinearLayout visualizer_ll = findViewById(R.id.visualizer_ll);
-			float VISUALIZER_HEIGHT_DIP =200.0f;
-			switch(visualizerType) {
-			case Visualizer_type_wave:			//Visualizerはwave表示
-				mVisualizerView = new VisualizerView(this);
-				mVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,(int) (VISUALIZER_HEIGHT_DIP  * getResources().getDisplayMetrics().density)));
-				visualizerVG = visualizer_ll.findViewById(R.id.pp_visualizer);		//Visualizerの割付け先
-				dbMsg +=",mVisualizerView=" + mVisualizerView;
-				visualizerVG.addView(mVisualizerView);
-				dbMsg +=",mLinearLayout=" + visualizerVG;
-				break;
-			case Visualizer_type_FFT:			//VisualizerはFFT
-				fftView = new FftView(this);
-				fftView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,(int) (VISUALIZER_HEIGHT_DIP  * getResources().getDisplayMetrics().density)));
-				visualizerVG = visualizer_ll.findViewById(R.id.pp_visualizer);
-				dbMsg +=",fftView_=" + fftView;
-				visualizerVG.addView(fftView);
-				dbMsg +=",mLinearLayout=" + visualizerVG;
-				break;
-			case Visualizer_type_none:			//Visualizerを使わない
-				break;
-//				default:
-//					break;
-				}
+//			LinearLayout visualizer_ll = findViewById(R.id.visualizer_ll);
+//			float VISUALIZER_HEIGHT_DIP =200.0f;
+//			switch(visualizerType) {
+//			case Visualizer_type_wave:			//Visualizerはwave表示
+//				mVisualizerView = new VisualizerView(this);
+//				mVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,(int) (VISUALIZER_HEIGHT_DIP  * getResources().getDisplayMetrics().density)));
+//				visualizerVG = visualizer_ll.findViewById(R.id.pp_visualizer);		//Visualizerの割付け先
+//				dbMsg +=",mVisualizerView=" + mVisualizerView;
+//				visualizerVG.addView(mVisualizerView);
+//				dbMsg +=",mLinearLayout=" + visualizerVG;
+//				break;
+//			case Visualizer_type_FFT:			//VisualizerはFFT
+//				fftView = new FftView(this);
+//				fftView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,(int) (VISUALIZER_HEIGHT_DIP  * getResources().getDisplayMetrics().density)));
+//				visualizerVG = visualizer_ll.findViewById(R.id.pp_visualizer);
+//				dbMsg +=",fftView_=" + fftView;
+//				visualizerVG.addView(fftView);
+//				dbMsg +=",mLinearLayout=" + visualizerVG;
+//				break;
+//			case Visualizer_type_none:			//Visualizerを使わない
+//				break;
+////				default:
+////					break;
+//				}
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3643,19 +3632,20 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	//	@Override
-	public boolean dispatchTouchEvent(MotionEvent event) {
-		final String TAG = "dispatchTouchEvent";
-		String dbMsg= "";
-		try{
-			dbMsg += ORGUT.nowTime(true,true,true);
-			dbMsg += " , Action=" +event.getAction();
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return gestureDetector.onTouchEvent(event)
-				|| super.dispatchTouchEvent(event);
-	}
+//	public boolean dispatchTouchEvent(MotionEvent event) {
+//		final String TAG = "dispatchTouchEvent";
+//		String dbMsg= "";
+//		try{
+//			dbMsg += ORGUT.nowTime(true,true,true);
+//			dbMsg += " , Action=" +event.getAction();
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return super.dispatchTouchEvent(event);
+////		return gestureDetector.onTouchEvent(event)
+////				|| super.dispatchTouchEvent(event);
+//	}
 
 	@Override
 	public void onClick(View v) {																		//操作対応②ⅰ
@@ -3808,171 +3798,294 @@ public class MaraSonActivity extends AppCompatActivity
 		return false;
 	}
 
+
+	private GestureDetector mDetector;
+
+	@Override
+	public boolean onTouchEvent(MotionEvent me){
+		final String TAG = "onTouchEvent";
+		String dbMsg="";
+		try{
+			if(me !=null){
+				dbMsg +=",MotionEvent=" + me.toString();
+				this.mDetector.onTouchEvent(me);
+			}else{
+				dbMsg +=",MotionEvent=null";
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return super.onTouchEvent(me);
+	}
+
+	/**GestureDetectorのイベント取得*/
+	class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+		private static final String DEBUG_TAG = "Gestures";
+
+		@Override
+		public boolean onDown(MotionEvent me) {
+			final String TAG = "onDown";
+			String dbMsg="";
+			try{
+				if(me !=null){
+					dbMsg +=",MotionEvent=" + me.toString();
+				}else{
+					dbMsg +=",MotionEvent=null";
+				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+			return true;
+		}
+
+		@Override
+		public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+			final String TAG = "onFling";
+			String dbMsg="";
+			try{
+				dbMsg +=",velocity(" + velocityX + ","+ velocityY + ")";
+				if(event1 !=null){
+					dbMsg +=",event1=" + event1.toString();
+				}else{
+					dbMsg +=",event1=null";
+				}
+				if(event2 !=null){
+					dbMsg +=",event2=" + event2.toString();
+				}else{
+					dbMsg +=",event2=null";
+				}
+				if(0<velocityY){
+					actionViewFlipper();
+				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+			return true;
+		}
+
+		/**OnDoubleTapListenerのSingleTap*/
+		@Override
+		public boolean onSingleTapConfirmed(@NonNull MotionEvent me) {
+			final String TAG = "onSingleTapConfirmed";
+			String dbMsg="";
+			try{
+				if(me !=null){
+					dbMsg +=",MotionEvent=" + me.toString();
+				}else{
+					dbMsg +=",MotionEvent=null";
+				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+			return false;
+		}
+
+		/**OnDoubleTapListenerのDoubleTap*/
+		@Override
+		public boolean onDoubleTap(@NonNull MotionEvent me) {
+			final String TAG = "onDoubleTap";
+			String dbMsg="";
+			try{
+				if(me !=null){
+					dbMsg +=",MotionEvent=" + me.toString();
+				}else{
+					dbMsg +=",MotionEvent=null";
+				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+			return false;
+		}
+
+		/**OnDoubleTapListenerのDoubleTap*/
+		@Override
+		public boolean onDoubleTapEvent(@NonNull MotionEvent me) {
+			final String TAG = "onDoubleTapEvent";
+			String dbMsg="";
+			try{
+				if(me !=null){
+					dbMsg +=",MotionEvent=" + me.toString();
+					actionViewFlipper();
+				}else{
+					dbMsg +=",MotionEvent=null";
+				}
+				myLog(TAG, dbMsg);
+			} catch (Exception e) {
+				myErrorLog(TAG ,  dbMsg + "で" + e);
+			}
+			return false;
+		}
+	}
 	/**
 	 * ViewFlipperを左右動作させる
 	 * */
-	public int flipper = 0;					//ジャケットを0として右にフリックで++,左にフリックで減算
-	@Override
-	public final boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
-		final String TAG = "onFling";
-		String dbMsg= "";
-		try{
-////			dbMsg += ",velocityX=" + velocityX + ",velocityY=" + velocityY;			//velocityX=10339.762,velocityY=-1579.5083
-//			float dx = Math.abs(e1.getX() - e2.getX());
-//			float dy = Math.abs(e1.getY() - e2.getY());
-////			dbMsg += ",dx=" + dx + ",dy=" + dy;										//,dx=372.7354,dy=37.109497,
-//			if (dx > dy) {
-//				String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
-//				dbMsg += ",velocityX=" + velocityX;									//velocityX=10339.762,
-//				if (velocityX > 0) {
-//					pp_vf.setInAnimation(slideInFromLeft);
-//					pp_vf.showPrevious();
-//				} else {
-//					pp_vf.setInAnimation(slideInFromRight);
-//					pp_vf.showNext();
-//				}
-//				int nextVF = pp_vf.getDisplayedChild();
-//				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
-//				switch( nextVF ) {		//
-//				case 0:		//"ジャケット	mpJakeImg.getId();						//2131624054
-//					dbMsg +="ジャケット=" + mpJakeImg.getId();		//2131624129
-//					break;
-//				case 1:		//"ビジュアライザー						//2131624129
-//					int checkResalt = checkSelfPermission(Manifest.permission.RECORD_AUDIO);	//許可されていなければ -1 いれば 0
-//					dbMsg += "=" + checkResalt;
-//					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {  //許可されていなければ
-//						if (velocityX > 0) {
-//							pp_vf.showPrevious();
-//						} else {
-//							pp_vf.showNext();
-//						}
-//					}
-//					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
-//					if(visualizerType < Visualizer_type_none){
-//						visualizerType = Visualizer_type_FFT;
-//						myEditor.putInt ("visualizerType", visualizerType);
-//					}
-//					if( (dataFN != null && ! dataFN.equals("")) ){                                //|| visualizerType == Visualizer_type_none
-////						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
-//						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
-//						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
-//						if( mVisualizerView == null && fftView == null ){
-//							makeVisualizer();						//VisualizerのView作成
-//							dbMsg +=">>アナログ>>" + mVisualizerView;/////////////////////////////////////
-//							dbMsg +=">>FFT>>" + fftView;/////////////////////////////////////
-//						}
-//						dbMsg +=",mVisualizer=" + mVisualizer;		//2131624129
-//						setupVisualizerFxAndUI();				//Visualizerの設定
-//						if( mVisualizer != null ){
-//						} else {
-//							pp_vf.showNext();
-//						}
-//					} else {
-//						pp_vf.showNext();
-//					}
-//					break;
-//				case 2:		//"歌詞表示=" + lyric_tv.getId();							//2131624055
-//					dbMsg +=",歌詞表示=" + lyric_tv.getId();
-//					dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
-//					CharSequence lyricStr = lyric_tv.getText();
-//					dbMsg +=",lyricStr=" + lyricStr;		//常に0
-////					if(lyricStr== null || lyricStr.equals("")){
-////						readLyric( dataFN );					//歌詞の読出し
+//	public int flipper = 0;					//ジャケットを0として右にフリックで++,左にフリックで減算
+////	@Override
+//	public final boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
+//		final String TAG = "onFling";
+//		String dbMsg= "";
+//		try{
+//////			dbMsg += ",velocityX=" + velocityX + ",velocityY=" + velocityY;			//velocityX=10339.762,velocityY=-1579.5083
+////			float dx = Math.abs(e1.getX() - e2.getX());
+////			float dy = Math.abs(e1.getY() - e2.getY());
+//////			dbMsg += ",dx=" + dx + ",dy=" + dy;										//,dx=372.7354,dy=37.109497,
+////			if (dx > dy) {
+////				String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
+////				dbMsg += ",velocityX=" + velocityX;									//velocityX=10339.762,
+////				if (velocityX > 0) {
+////					pp_vf.setInAnimation(slideInFromLeft);
+////					pp_vf.showPrevious();
+////				} else {
+////					pp_vf.setInAnimation(slideInFromRight);
+////					pp_vf.showNext();
+////				}
+////				int nextVF = pp_vf.getDisplayedChild();
+////				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
+////				switch( nextVF ) {		//
+////				case 0:		//"ジャケット	mpJakeImg.getId();						//2131624054
+////					dbMsg +="ジャケット=" + mpJakeImg.getId();		//2131624129
+////					break;
+////				case 1:		//"ビジュアライザー						//2131624129
+////					int checkResalt = checkSelfPermission(Manifest.permission.RECORD_AUDIO);	//許可されていなければ -1 いれば 0
+////					dbMsg += "=" + checkResalt;
+////					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {  //許可されていなければ
+////						if (velocityX > 0) {
+////							pp_vf.showPrevious();
+////						} else {
+////							pp_vf.showNext();
+////						}
 ////					}
-//					break;
-//				default:								//最初はここから
-//					break;
-//				}
+////					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
+////					if(visualizerType < Visualizer_type_none){
+////						visualizerType = Visualizer_type_FFT;
+////						myEditor.putInt ("visualizerType", visualizerType);
+////					}
+////					if( (dataFN != null && ! dataFN.equals("")) ){                                //|| visualizerType == Visualizer_type_none
+//////						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
+////						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
+////						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
+////						if( mVisualizerView == null && fftView == null ){
+////							makeVisualizer();						//VisualizerのView作成
+////							dbMsg +=">>アナログ>>" + mVisualizerView;/////////////////////////////////////
+////							dbMsg +=">>FFT>>" + fftView;/////////////////////////////////////
+////						}
+////						dbMsg +=",mVisualizer=" + mVisualizer;		//2131624129
+////						setupVisualizerFxAndUI();				//Visualizerの設定
+////						if( mVisualizer != null ){
+////						} else {
+////							pp_vf.showNext();
+////						}
+////					} else {
+////						pp_vf.showNext();
+////					}
+////					break;
+////				case 2:		//"歌詞表示=" + lyric_tv.getId();							//2131624055
+////					dbMsg +=",歌詞表示=" + lyric_tv.getId();
+////					dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
+////					CharSequence lyricStr = lyric_tv.getText();
+////					dbMsg +=",lyricStr=" + lyricStr;		//常に0
+//////					if(lyricStr== null || lyricStr.equals("")){
+//////						readLyric( dataFN );					//歌詞の読出し
+//////					}
+////					break;
+////				default:								//最初はここから
+////					break;
+////				}
+////
+////				dbMsg +=",getChildAt.getId()=" + pp_vf.getChildAt(pp_vf.getDisplayedChild()).getId();		//2
+////			return true;
+////			}
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return false;
+//	}
 //
-//				dbMsg +=",getChildAt.getId()=" + pp_vf.getChildAt(pp_vf.getDisplayedChild()).getId();		//2
-//			return true;
-//			}
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onDown(MotionEvent me) {
-		final String TAG = "onDown";
-		String dbMsg= "";
-		try{
-			dbMsg += "MotionEvent=" + me ;///////////////////////////////////
-//MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0,
-//eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 }
-//			int CFvIDthis = this.getCurrentFocus().getId();
-//			dbMsg +=",getCurrentFocus=" + CFvIDthis;/////////////////////////////////////
-//			dbMsg +="ViewFlipper=" + pp_vf.getId();///////////////////////////////////// = ()
-//			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
-//			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
-//			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
+////	@Override
+//	public boolean onDown(MotionEvent me) {
+//		final String TAG = "onDown";
+//		String dbMsg= "";
+//		try{
+//			dbMsg += "MotionEvent=" + me ;///////////////////////////////////
+////MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0,
+////eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 }
+////			int CFvIDthis = this.getCurrentFocus().getId();
+////			dbMsg +=",getCurrentFocus=" + CFvIDthis;/////////////////////////////////////
+////			dbMsg +="ViewFlipper=" + pp_vf.getId();///////////////////////////////////// = ()
+////			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
+////			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
+////			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
+////
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	return false;
+//	}
 //
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent me) {
-		final String TAG = "onShowPress";
-		String dbMsg= "";
-		try{
-			dbMsg="MotionEvent=" + me ;
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent me) {
-		final String TAG = "onSingleTapUp";
-		String dbMsg= "";
-		try{
-//			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-			dbMsg +="MotionEvent=" + me ;
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,float distanceY) {
-		final String TAG = "onScroll";
-		String dbMsg= "";/////////////////////////////////////
-		try{
-			dbMsg +="MotionEvent1=" + e1 ;/////////////////////////////////////
-			dbMsg +=",MotionEvent2=" + e2 ;/////////////////////////////////////
-			dbMsg +=",distanceX=" + distanceX ;/////distanceX=-49.9375
-///*MotionEvent1=MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
-// *  pointerCount=1, historySize=0, eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 },
-// * MotionEvent2=MotionEvent { action=ACTION_MOVE, id[0]=0, x[0]=354.9375, y[0]=803.18884, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
-// *  pointerCount=1, historySize=1, eventTime=21487435, downTime=21487376, deviceId=5, source=0x1002 },
-//*/
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent me) {
-		final String TAG = "onLongPress";
-		String dbMsg= "";
-		try{
-			dbMsg="MotionEvent=" + me ;
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
+////	@Override
+//	public void onShowPress(MotionEvent me) {
+//		final String TAG = "onShowPress";
+//		String dbMsg= "";
+//		try{
+//			dbMsg="MotionEvent=" + me ;
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
+//
+////	@Override
+//	public boolean onSingleTapUp(MotionEvent me) {
+//		final String TAG = "onSingleTapUp";
+//		String dbMsg= "";
+//		try{
+////			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
+//			dbMsg +="MotionEvent=" + me ;
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return false;
+//	}
+//
+////	@Override
+//	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,float distanceY) {
+//		final String TAG = "onScroll";
+//		String dbMsg= "";/////////////////////////////////////
+//		try{
+//			dbMsg +="MotionEvent1=" + e1 ;/////////////////////////////////////
+//			dbMsg +=",MotionEvent2=" + e2 ;/////////////////////////////////////
+//			dbMsg +=",distanceX=" + distanceX ;/////distanceX=-49.9375
+/////*MotionEvent1=MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
+//// *  pointerCount=1, historySize=0, eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 },
+//// * MotionEvent2=MotionEvent { action=ACTION_MOVE, id[0]=0, x[0]=354.9375, y[0]=803.18884, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
+//// *  pointerCount=1, historySize=1, eventTime=21487435, downTime=21487376, deviceId=5, source=0x1002 },
+////*/
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return false;
+//	}
+//
+////	@Override
+//	public void onLongPress(MotionEvent me) {
+//		final String TAG = "onLongPress";
+//		String dbMsg= "";
+//		try{
+//			dbMsg="MotionEvent=" + me ;
+//			myLog(TAG, dbMsg);
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
 
 //	dbMsg=  "saiseiSeekMP設定";///////	public void onSeekBarChangeListener(SeekBar seekBar) {
 	//	@Override
@@ -4729,6 +4842,7 @@ public class MaraSonActivity extends AppCompatActivity
 					}
 					String rStr = (String) lp_subtitol.getText() + "";
 					dbMsg += ",lp_subtitol=" + rStr;
+
 //					if(rStr.equals("")){
 //						dbMsg += "、呼び出しインデックス[" + mIndex + "]";
 //						getInfoRequest(mIndex);
@@ -5349,6 +5463,41 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
+	/**Flipperの動作*/
+	public void actionViewFlipper() {
+		final String TAG = "actionViewFlipper";
+		String dbMsg= "";
+		try{
+			int currentVF = pp_vf.getFlipInterval();
+			dbMsg +=",currentVF=" + currentVF;		//2		0始まりで何枚目か
+			int nextVF = pp_vf.getDisplayedChild();
+			dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
+			if(nextVF == 0){
+				dbMsg +=",img";
+				pp_vf.setInAnimation(slideInFromRight);
+				pp_vf.showNext();
+				CharSequence retStrs = lyric_tv.getText();
+				if(retStrs == null || retStrs.equals("")){
+					if(lylicStr == null || lylicStr.equals("")) {
+						dbMsg +=",lylicStr未取得";
+					}else {
+						lyric_tv.setText(lylicStr);
+					}
+				}
+				dbMsg +=">>Lylic";
+			}else{
+				dbMsg +=",Lylic";
+				pp_vf.setInAnimation(slideInFromLeft);
+				pp_vf.showPrevious();
+				dbMsg +=">>img";
+			}
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
 	@Override
 	public void onVisibilityChanged(int visibility) {
 		final String TAG = "onVisibilityChanged";
@@ -5571,12 +5720,11 @@ public class MaraSonActivity extends AppCompatActivity
 			//	mpJakeImg.setScaleType(ImageView.ScaleType.FIT_CENTER);				//FIT_CENTER   エリアの縦幅まで画像を拡大し中央に表示
 			LinearLayout lilic_ll = findViewById(R.id.lilic_ll);
 			lyric_tv = lilic_ll.findViewById(R.id.lyric_tv);					//歌詞表示
-			dbMsg +=",lilic_tv=" + lyric_tv;/////////////////////////////////////
-			lyric_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
-			registerForContextMenu(lyric_tv);
+			dbMsg +=",lilic_tv=" + lyric_tv;
+			lyric_tv.setMovementMethod(new ScrollingMovementMethod());			//TextViewを上下フリックでスクロール；ただしonFlingが発生しなくなる
+	//		lyric_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
+//		registerForContextMenu(lyric_tv);
 			//Manifestのアプリケーションテーマで	@style/Base.Theme.AppCompat		@style/Theme.AppCompat
-
-			gestureDetector = new GestureDetector(this, this);			// GestureDetectorの生成
 			artist_tv.setMovementMethod(ScrollingMovementMethod.getInstance());			//ScrollView を使わないで TextView に スクロールバーを表示する	http://kokufu.blogspot.jp/2012/12/scrollview-textview.html
 			alubum_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 			titol_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -5595,11 +5743,6 @@ public class MaraSonActivity extends AppCompatActivity
 			alubum_tv.setOnKeyListener( this);
 			titol_tv.setOnKeyListener( this);
 			vol_btn.setOnKeyListener( this);
-//			rewPBT.setOnKeyListener( this);
-//			ffPBT.setOnKeyListener( this);
-//			saiseiSeekMP.setOnKeyListener( this);
-//			saiseiSeekMP.setOnSeekBarChangeListener (this);
-		//	ppPBT.setOnKeyListener( this);
 			convertFormat = new SimpleDateFormat("HH:mm:ss");
 			convertFormat.setTimeZone(TimeZone.getTimeZone("UTC"));								//時差を抜いた時分秒表示
 
@@ -5638,13 +5781,7 @@ public class MaraSonActivity extends AppCompatActivity
 					final String TAG = "onClick";
 					String dbMsg = "[to_img_bt]";
 					try{
-//						if (velocityX > 0) {
-//							pp_vf.setInAnimation(slideInFromLeft);
-//							pp_vf.showPrevious();
-//						} else {
-						pp_vf.setInAnimation(slideInFromRight);
-						pp_vf.showNext();
-//						}
+						actionViewFlipper();
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5657,13 +5794,7 @@ public class MaraSonActivity extends AppCompatActivity
 					final String TAG = "onClick";
 					String dbMsg = "[to_lylic_bt]";
 					try{
-//						if (velocityX > 0) {
-							pp_vf.setInAnimation(slideInFromLeft);
-							pp_vf.showPrevious();
-//						} else {
-//							pp_vf.setInAnimation(slideInFromRight);
-//							pp_vf.showNext();
-//						}
+						actionViewFlipper();
 						myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5722,6 +5853,7 @@ public class MaraSonActivity extends AppCompatActivity
 					}
 				}
 			});
+			mDetector = new GestureDetector(this, new MyGestureListener());
 
 			//スレッド起動確認///////////////////////////////////
 			if( activityManager == null ){

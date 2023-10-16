@@ -68,7 +68,7 @@
 		android:autoSizeMaxTextSize="36sp"
 		android:autoSizeMinTextSize="12sp"
 		android:autoSizeStepGranularity="2sp"
-		android:scrollbars="horizontal|vertical"
+		android:scrollbars="vertical"
 		android:singleLine="false" />
 	<!--	android:textSize="14sp"-->
 	<!--	android:maxLines="18"-->

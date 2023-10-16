@@ -89,9 +89,9 @@
             android:id="@+id/jaket_ll"
             layout="@layout/jaket_art" />
 
-        <include
-            android:id="@+id/visualizer_ll"
-            layout="@layout/visualizer" />
+<!--        <include-->
+<!--            android:id="@+id/visualizer_ll"-->
+<!--            layout="@layout/visualizer" />-->
 
         <include
             android:id="@+id/lilic_ll"
