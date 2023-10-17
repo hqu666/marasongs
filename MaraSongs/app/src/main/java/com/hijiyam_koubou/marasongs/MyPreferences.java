@@ -150,7 +150,10 @@ public class MyPreferences{
 	/**最近追加 のID*/
 	public long saikintuika_list_id = -1;			//
 	/**最近再生 のID*/
-	public long saikinsisei_list_id = -1;			//
+	public long saikinsisei_list_id = -1;
+	/**歌詞のフォントサイズ*/
+	public float lylicFontSize=24;
+
 
 	public int repeatType;							//リピート再生の種類
 	public boolean rp_pp;							//2点間リピート中
@@ -379,6 +382,17 @@ public class MyPreferences{
 			}else{
 				nowIndex =  Integer.parseInt(keys.get("nowIndex").toString());
 				dbMsg += "[" + nowIndex + "]";
+			}
+
+			dbMsg +=lylicFontSize ;
+			if(keys.get("lylicFontSize") == null ){
+				lylicFontSize = 24;
+				dbMsg += "," + lylicFontSize + "sp";
+				myEditor.putFloat("lylicFontSize", lylicFontSize);
+				myEditor.apply();
+			}else{
+				lylicFontSize =  Float.parseFloat(keys.get("lylicFontSize").toString());
+				dbMsg += "," + lylicFontSize + "sp";
 			}
 
 			if(keys.get("pref_file_in") == null ){

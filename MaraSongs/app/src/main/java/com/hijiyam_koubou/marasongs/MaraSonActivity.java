@@ -273,7 +273,9 @@ public class MaraSonActivity extends AppCompatActivity
 	public TextView lyric_tv;					//歌詞表示
 	public float fontMini;
 	public float fontMax;
-	public float currenFontSize;
+
+	/**歌詞のフォントサイズ*/
+	public float lylicFontSize;
 	public SeekBar font_size_sp;
 	public TextView font_mini_tv;
 	public TextView font_max_tv;
@@ -504,6 +506,8 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += "、ロックスクリーンプレイヤー=" + myPreferences.pref_lockscreen;
 			dbMsg += "、ノティフィケーションプレイヤー=" + myPreferences.pref_notifplayer;
 			dbMsg += "、Bluetoothの接続に連携して一時停止/再開=" + myPreferences.pref_bt_renkei;				//
+			lylicFontSize =myPreferences.lylicFontSize;
+			dbMsg += "、lylicFontSize=" + lylicFontSize;
 
 			file_saisinn= myPreferences.pref_file_saisinn;	//最新更新日
 			b_List =myPreferences.b_List;			//前に再生していたプレイリスト
@@ -2423,22 +2427,6 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	public void kakiutusiArray( List<String> sakiList , List<String> motoList) {	//リストの書き写し
-		final String TAG = "kakiutusiArray[MaraSonActivity]";
-		String dbMsg= "開始";/////////////////////////////////////
-		try{
-			dbMsg=ORGUT.nowTime(true,true,true) + dbMsg;/////////////////////////////////////
-	//		dbMsg +=",motoList=" + motoList.size() +"件";/////////////////////////////////////
-			sakiList = new ArrayList<String>();
-	//		sakiList.clear();
-			sakiList.addAll(motoList);
-			dbMsg +=">>sakiList=" + sakiList.size() +"件";/////////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
 	public Visualizer mVisualizer;
 	public int visualizerType = Visualizer_type_FFT;		//VisualizerはFFT
 	public boolean useWaveFormDataCapture = false;
@@ -2461,12 +2449,9 @@ public class MaraSonActivity extends AppCompatActivity
 	public int bandSum = 0;					//レベル合計
 	public boolean seekFromUser = false;
 	public boolean eqHwnkou = false;			//プリセットから変更したか
-	public boolean td_level_nomal = true;			//自動音量調整
-	public int tone_vol_sum;
 	public int ePosition;											//plNameSL.indexOf(tone_name);
 	public boolean visualizerAri = false;	//Visualizerを実装できた
 	public boolean lyricAri = false;			//歌詞を取得できた
-	public boolean lyricSendWeb = false;		//歌詞をwebKitで表示中
 	public  String lylicStr;					//この曲jの歌詞データ
 	public  String lyricEncord;				//歌詞の再エンコード
 	public  String lylicHTM = null;				//html変換した歌詞のフルパス名
@@ -3340,25 +3325,6 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-	private void readPlaying(int mcPosition) {						//このアクティビティで設定されたデータを渡して再生		<onStopTrackingTouch [aSetei]
-		final String TAG = "readPlaying";
-		String dbMsg= "";
-		try{
-			dbMsg += ",MPSIntent=" + MPSIntent;/////////////////////////////////////
-			if( MPSIntent == null){
-				MPSIntent = new Intent(getApplication(), MusicService.class);
-				dbMsg= ">>" + MPSIntent;/////////////////////////////////////
-			}
-//			MPSIntent.setAction(MusicService.ACTION_PLAY_READ);
-			String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
-//			int myPreferences.nowIndex = getPrefInt("pref_myPreferences.nowIndex" , 0, MaraSonActivity.this);
-			sendPlaying( MPSIntent , dataFN , mcPosition , myPreferences.nowIndex);						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
 	/**リストで選択された曲でプレーヤーを開く*/
 	public void sendPlaying( Intent intent ,String dataFN ,int mcPosition ,int mIndex ) {						//setされたActionを受け取って再生		<onStopTrackingTouch [aSetei]
 		final String TAG = "sendPlaying";
@@ -3921,240 +3887,7 @@ public class MaraSonActivity extends AppCompatActivity
 			return false;
 		}
 	}
-	/**
-	 * ViewFlipperを左右動作させる
-	 * */
-//	public int flipper = 0;					//ジャケットを0として右にフリックで++,左にフリックで減算
-////	@Override
-//	public final boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
-//		final String TAG = "onFling";
-//		String dbMsg= "";
-//		try{
-//////			dbMsg += ",velocityX=" + velocityX + ",velocityY=" + velocityY;			//velocityX=10339.762,velocityY=-1579.5083
-////			float dx = Math.abs(e1.getX() - e2.getX());
-////			float dy = Math.abs(e1.getY() - e2.getY());
-//////			dbMsg += ",dx=" + dx + ",dy=" + dy;										//,dx=372.7354,dy=37.109497,
-////			if (dx > dy) {
-////				String dataFN = getPrefStr( "nowData" ,"" , MaraSonActivity.this);
-////				dbMsg += ",velocityX=" + velocityX;									//velocityX=10339.762,
-////				if (velocityX > 0) {
-////					pp_vf.setInAnimation(slideInFromLeft);
-////					pp_vf.showPrevious();
-////				} else {
-////					pp_vf.setInAnimation(slideInFromRight);
-////					pp_vf.showNext();
-////				}
-////				int nextVF = pp_vf.getDisplayedChild();
-////				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
-////				switch( nextVF ) {		//
-////				case 0:		//"ジャケット	mpJakeImg.getId();						//2131624054
-////					dbMsg +="ジャケット=" + mpJakeImg.getId();		//2131624129
-////					break;
-////				case 1:		//"ビジュアライザー						//2131624129
-////					int checkResalt = checkSelfPermission(Manifest.permission.RECORD_AUDIO);	//許可されていなければ -1 いれば 0
-////					dbMsg += "=" + checkResalt;
-////					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {  //許可されていなければ
-////						if (velocityX > 0) {
-////							pp_vf.showPrevious();
-////						} else {
-////							pp_vf.showNext();
-////						}
-////					}
-////					dbMsg +=",visualizerType=" + visualizerType;		//2131624129
-////					if(visualizerType < Visualizer_type_none){
-////						visualizerType = Visualizer_type_FFT;
-////						myEditor.putInt ("visualizerType", visualizerType);
-////					}
-////					if( (dataFN != null && ! dataFN.equals("")) ){                                //|| visualizerType == Visualizer_type_none
-//////						dbMsg +=",ビジュアライザーベース=" + visualizerVG.getId();		//2131624129
-////						dbMsg +=",アナログビジュアライザー=" + mVisualizerView;/////////////////////////////////////
-////						dbMsg +=",FFTビジュアライザー=" + fftView;/////////////////////////////////////
-////						if( mVisualizerView == null && fftView == null ){
-////							makeVisualizer();						//VisualizerのView作成
-////							dbMsg +=">>アナログ>>" + mVisualizerView;/////////////////////////////////////
-////							dbMsg +=">>FFT>>" + fftView;/////////////////////////////////////
-////						}
-////						dbMsg +=",mVisualizer=" + mVisualizer;		//2131624129
-////						setupVisualizerFxAndUI();				//Visualizerの設定
-////						if( mVisualizer != null ){
-////						} else {
-////							pp_vf.showNext();
-////						}
-////					} else {
-////						pp_vf.showNext();
-////					}
-////					break;
-////				case 2:		//"歌詞表示=" + lyric_tv.getId();							//2131624055
-////					dbMsg +=",歌詞表示=" + lyric_tv.getId();
-////					dbMsg +=",isShown=" + lyric_tv.isShown();		//常に0
-////					CharSequence lyricStr = lyric_tv.getText();
-////					dbMsg +=",lyricStr=" + lyricStr;		//常に0
-//////					if(lyricStr== null || lyricStr.equals("")){
-//////						readLyric( dataFN );					//歌詞の読出し
-//////					}
-////					break;
-////				default:								//最初はここから
-////					break;
-////				}
-////
-////				dbMsg +=",getChildAt.getId()=" + pp_vf.getChildAt(pp_vf.getDisplayedChild()).getId();		//2
-////			return true;
-////			}
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		return false;
-//	}
-//
-////	@Override
-//	public boolean onDown(MotionEvent me) {
-//		final String TAG = "onDown";
-//		String dbMsg= "";
-//		try{
-//			dbMsg += "MotionEvent=" + me ;///////////////////////////////////
-////MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0,
-////eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 }
-////			int CFvIDthis = this.getCurrentFocus().getId();
-////			dbMsg +=",getCurrentFocus=" + CFvIDthis;/////////////////////////////////////
-////			dbMsg +="ViewFlipper=" + pp_vf.getId();///////////////////////////////////// = ()
-////			dbMsg +="ジャケット=" + mpJakeImg.getId();/////////////////////////////////////
-////			dbMsg +="歌詞表示=" + lyric_tv.getId();/////////////////////////////////////
-////			dbMsg +="ビジュアライザーベース=" + visualizerVG.getId();/////////////////////////////////////
-////
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	return false;
-//	}
-//
-////	@Override
-//	public void onShowPress(MotionEvent me) {
-//		final String TAG = "onShowPress";
-//		String dbMsg= "";
-//		try{
-//			dbMsg="MotionEvent=" + me ;
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-//
-////	@Override
-//	public boolean onSingleTapUp(MotionEvent me) {
-//		final String TAG = "onSingleTapUp";
-//		String dbMsg= "";
-//		try{
-////			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-//			dbMsg +="MotionEvent=" + me ;
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		return false;
-//	}
-//
-////	@Override
-//	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,float distanceY) {
-//		final String TAG = "onScroll";
-//		String dbMsg= "";/////////////////////////////////////
-//		try{
-//			dbMsg +="MotionEvent1=" + e1 ;/////////////////////////////////////
-//			dbMsg +=",MotionEvent2=" + e2 ;/////////////////////////////////////
-//			dbMsg +=",distanceX=" + distanceX ;/////distanceX=-49.9375
-/////*MotionEvent1=MotionEvent { action=ACTION_DOWN, id[0]=0, x[0]=305.0, y[0]=805.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
-//// *  pointerCount=1, historySize=0, eventTime=21487376, downTime=21487376, deviceId=5, source=0x1002 },
-//// * MotionEvent2=MotionEvent { action=ACTION_MOVE, id[0]=0, x[0]=354.9375, y[0]=803.18884, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0,
-//// *  pointerCount=1, historySize=1, eventTime=21487435, downTime=21487376, deviceId=5, source=0x1002 },
-////*/
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//		return false;
-//	}
-//
-////	@Override
-//	public void onLongPress(MotionEvent me) {
-//		final String TAG = "onLongPress";
-//		String dbMsg= "";
-//		try{
-//			dbMsg="MotionEvent=" + me ;
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
 
-//	dbMsg=  "saiseiSeekMP設定";///////	public void onSeekBarChangeListener(SeekBar seekBar) {
-	//	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {		// トラッキング開始時に呼び出されます
-		final String TAG = "onStartTrackingTouch[saiseiSeekMP]";
-		String dbMsg= "";/////////////////////////////////////
-		try{//戻し操作
-//			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-			dbMsg +=",seekBar=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
-			if (ppPBT.getContentDescription().equals(getResources().getText(R.string.play))) {			//isPlaying
-				dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
-		//		receiverHaki();															//レシーバーを破棄
-				paused();
-			}
-			receiverHaki();
-			dbMsg += ">>"+ ppPBT.getContentDescription().toString();///////////////////////////////////
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-//	@Override
-//	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {	// トラッキング中に呼び出されます☆ここが呼ばれる//☆キー操作為操作以外でも動いてしまえば発生
-//		final String TAG = "onProgressChanged[saiseiSeekMP]";
-//		String dbMsg= "";/////////////////////////////////////
-//		try{
-//			dbMsg +="再生ポジション=" + seekBar.getProgress()+"/"+saiseiJikan +"mS]";//////////////////////////////////////
-//			dbMsg +="progress"+ progress + ",fromTouch=" + fromTouch;/////////////////////////////////////
-////			saiseiPositionPTF.setText(ORGUT.sdf_mss.format(saiseiSeekMP.getProgress()));	   		//再生画面の経過時間枠
-////			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}
-
-	/**
-	 * トラッキング終了時に呼び出されます
-	 * レシーバ生成
-	 * */
-//	@Override
-//	public void onStopTrackingTouch(SeekBar seekBar) {
-//		final String TAG = "onStopTrackingTouch";
-//		String dbMsg= "";/////////////////////////////////////
-//		try{
-//			receiverSeisei();		//レシーバーを生成☆onStopで破棄しないとleaked発生
-//			dbMsg += "getKeyDispatcherState=" + seekBar.getKeyDispatcherState().toString();//////////////////////////////////////
-////			int mcPosition = saiseiSeekMP.getProgress();					///seekBar.getProgress();
-////			int saiseiJikan  = saiseiSeekMP.getMax();
-////			dbMsg +=" ,mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-////			setPrefInt("pref_position" ,  mcPosition , MaraSonActivity.this);
-//
-//			CharSequence btStre = ppPBT.getContentDescription();
-//			dbMsg +=",ppPBT=" + btStre;
-//			dbMsg += " 、Description="+ ppPBT.getContentDescription();/////////////////////////////////////
-//			if (ppPBT.getContentDescription().equals(getResources().getText(R.string.pause))) {	//isPlaying
-//	//			receiverSeisei();	//レシーバーを生成
-//				readPlaying( mcPosition );						//このアクティビティで設定されたデータを渡して再生
-//			}
-//			dbMsg += ">>"+ ppPBT.getContentDescription().toString();
-//			myLog(TAG, dbMsg);
-//		} catch (Exception e) {
-//			myErrorLog(TAG ,  dbMsg + "で" + e);
-//		}
-//	}			//onStopTrackingTouch(SeekBar seekBar)
-
-	int b_focusItemID = 0;
-	int b_Action = 9;
-	public int renzoku;
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		final String TAG = "onKey";
@@ -4393,26 +4126,6 @@ public class MaraSonActivity extends AppCompatActivity
 			    }
 			});
 			volDog.create().show();			// 表示
-			myLog(TAG, dbMsg);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	private void reSetVol() {				//設定されたミュートを解除
-		final String TAG = "reSetVol";
-		String dbMsg= "";/////////////////////////////////////
-		try{
-			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-			dbMsg= "nowVol=" + nowVol;//0～15/////////////////////////////
-			if( nowVol == 0 ){
-				audioManage.setStreamMute(AudioManager.STREAM_MUSIC, false);			//解除して
-				audioManage.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);				//最少音量に
-				vol_btn.setImageResource(android.R.drawable.ic_lock_silent_mode);			//消音中
-			}
-			nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-			dbMsg= ">>" + nowVol;//0～15/////////////////////////////
-			MaraSonActivity.this.vol_tf.setText(String.valueOf(MaraSonActivity.this.nowVol));										//音量表示
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5024,143 +4737,13 @@ public class MaraSonActivity extends AppCompatActivity
 /**
  * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
  * */
-	private Tracks lastSeenTracks;
-	private boolean startAutoPlay;
-	private int startItemIndex;
-	private long startPosition;
-	private DebugTextViewHelper debugViewHelper;
-	private TrackSelectionParameters trackSelectionParameters;
-	private DataSource.Factory dataSourceFactory;
 	private ImaServerSideAdInsertionMediaSource.AdsLoader.@MonotonicNonNull State
 			serverSideAdsLoaderState;
 	public List<MediaItem> mediaItemList;
 	@Nullable private AdsLoader clientSideAdsLoader;
 
-	private void showToast(int messageId) {
-		final String TAG = "showToast";
-		String dbMsg="";
-		try {
-			showToast(getString(messageId));
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	private void showToast(String message) {
-		final String TAG = "showToast";
-		String dbMsg="";
-		try {
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
 	@Nullable
 	private ImaServerSideAdInsertionMediaSource.AdsLoader serverSideAdsLoader;
-
-	private void showControls() {
-		final String TAG = "showControls";
-		String dbMsg="";
-		try {
-
-			//	debugRootView.setVisibility(View.VISIBLE);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	private class PlayerEventListener implements Player.Listener {
-
-		@Override
-		public void onPlaybackStateChanged(@Player.State int playbackState) {
-			final String TAG = "onPlaybackStateChanged";
-			String dbMsg="[PlayerEventListener]";
-			try {
-
-				if (playbackState == Player.STATE_ENDED) {
-					showControls();
-				}
-				updateButtonVisibility();
-			} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
-		}
-
-
-		@Override
-		public void onPlayerError(PlaybackException error) {
-			final String TAG = "onPlayerError";
-			String dbMsg="[PlayerEventListener]";
-			try {
-
-				if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
-					exoPlayer.seekToDefaultPosition();
-					exoPlayer.prepare();
-				} else {
-					updateButtonVisibility();
-					showControls();
-				}
-			} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
-		}
-
-		@Override
-		@SuppressWarnings("ReferenceEquality")
-		public void onTracksChanged(Tracks tracks) {
-			final String TAG = "onTracksChanged";
-			String dbMsg="[PlayerEventListener]";
-			try {
-
-				updateButtonVisibility();
-				if (tracks == lastSeenTracks) {
-					return;
-				}
-				if (tracks.containsType(C.TRACK_TYPE_VIDEO)
-						&& !tracks.isTypeSupported(C.TRACK_TYPE_VIDEO, /* allowExceedsCapabilities= */ true)) {
-					showToast("Media includes video tracks, but none are playable by this device");
-				}
-				if (tracks.containsType(C.TRACK_TYPE_AUDIO)
-						&& !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {
-					showToast("Media includes audio tracks, but none are playable by this device");
-				}
-				lastSeenTracks = tracks;	} catch (Exception e) {
-				myErrorLog(TAG ,  dbMsg + "で" + e);
-			}
-
-		}
-	}
-
-	@OptIn(markerClass = UnstableApi.class)
-	private void configurePlayerWithServerSideAdsLoader() {
-		final String TAG = "configurePlayerWithServerSideAdsLoader";
-		String dbMsg="";
-		try {
-
-			serverSideAdsLoader.setPlayer(exoPlayer);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
-
-	private static List<MediaItem> createMediaItems(Intent intent, DownloadTracker downloadTracker) {
-		final String TAG = "createMediaItems";
-		String dbMsg="";
-		try {
-
-			List<MediaItem> mediaItems = new ArrayList<>();
-			for (MediaItem item : IntentUtil.createMediaItemsFromIntent(intent)) {
-				mediaItems.add(
-						maybeSetDownloadProperties(
-								item, downloadTracker.getDownloadRequest(item.localConfiguration.uri)));
-			}
-			return mediaItems;
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return null;
-	}
 
 	@OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
 	private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
@@ -5191,266 +4774,6 @@ public class MaraSonActivity extends AppCompatActivity
 		return null;
 	}
 
-	/**
-	 * 指定されたプレイリストの曲情報をList<MediaItem>に返す
-	 * **/
-	private List<MediaItem> createMediaItems(Intent intent) {
-		final String TAG = "createMediaItems";
-		String dbMsg="";
-		List<MediaItem> retList = new ArrayList<MediaItem>();
-		try {
-			dbMsg += "選択されたプレイリスト[ID=" + myPreferences.nowList_id + "]" + myPreferences.nowList ;
-//			final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", Long.parseLong(myPreferences.nowList_id));
-//			final String[] columns = null;			//{ idKey, nameKey };
-//			String c_orderBy = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-//			Cursor rCursor= this.getContentResolver().query(uri, columns, null, null, c_orderBy );
-//			dbMsg += ",rCursor=" + rCursor.getCount() + "件";
-//			if( rCursor.moveToFirst() ) {
-//				int rPosi = rCursor.getPosition();
-//				dbMsg= "[" + rPosi +"/" + rCursor.getCount() +"曲]";		//MuList.this.rCount
-//				String subText = null;
-//				String ArtistName = null;
-//				String AlbumArtistName = null;
-//				String AlbumName = null;
-//				String songTitol = null;
-//				String Dur = null;
-//				objMap = new HashMap<String, Object>();
-//				for(int i = 0 ; i < rCursor.getColumnCount() ; i++ ){				//MuList.this.koumoku
-//					String cName = rCursor.getColumnName(i);
-//					dbMsg += "[" + i +"/" + rCursor.getColumnCount() +"項目]"+ cName;
-//					if(
-////					cName.equals(MediaStore.Audio.Playlists.Members.INSTANCE_ID) ||	//[1/66]instance_id
-////					cName.equals(MediaStore.Audio.Playlists.Members.TITLE_KEY) ||	//[13/37]title_key
-////					cName.equals(MediaStore.Audio.Playlists.Members.SIZE) ||			//[7/37]_size=4071748
-////					cName.equals(MediaStore.Audio.Playlists.Members.IS_RINGTONE) ||	//[20/37]is_ringtone=0
-////					cName.equals(MediaStore.Audio.Playlists.Members.IS_MUSIC) ||			//[21/37]is_music=1
-////					cName.equals(MediaStore.Audio.Playlists.Members.IS_ALARM) ||			//[22/37]is_alarm=0
-////					cName.equals(MediaStore.Audio.Playlists.Members.IS_NOTIFICATION) ||	//[23/37]is_notification=0
-////					cName.equals(MediaStore.Audio.Playlists.Members.IS_PODCAST) ||			//[24/37]is_podcast=
-////				 	cName.equals(MediaStore.Audio.Playlists.Members.ARTIST_KEY) ||		//
-////					cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_KEY) ||		//[35/37]album_key
-//							cName.equals(MediaStore.Audio.Playlists.Members.XMP)){		//[31/66項目]xmp=【Blob】[32/37]artist_key
-//						dbMsg += "は読み込めない";
-//					}else{
-//						if( cName.equals("album_artist")){		//[26/37]
-//							String cVal = rCursor.getString(i);
-//							if(cVal != null){
-//								cVal = cVal;
-//							}
-//							dbMsg +=  "="+cVal;
-//							AlbumArtistName = cVal;
-//							objMap.put(cName ,cVal );
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.ARTIST)){		//[33/37]artist=Santana
-//							String cVal = rCursor.getString(i);
-//							if(cVal != null){
-//								cVal = cVal;
-//							}else{
-//								cVal = getResources().getString(R.string.bt_unknown);			//不明
-//							}
-//							dbMsg +=  "="+cVal;
-//							ArtistName = cVal;
-//							objMap.put(cName ,cVal );
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM)){		//[33/37]artist=Santana
-//							String cVal = rCursor.getString(i);
-//							if(cVal != null){
-//								cVal = cVal;
-//							}else{
-//								cVal = getResources().getString(R.string.bt_unknown);			//不明
-//							}
-//							dbMsg +=  "="+cVal;
-//							AlbumName = cVal;
-//							objMap.put(cName ,cVal );
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.TITLE)){		//[12/37]title=Just Feel Better
-//							String cVal = rCursor.getString(i);
-//							if(cVal != null){
-//								cVal = cVal;
-//							}else{
-//								cVal = getResources().getString(R.string.bt_unknown);			//不明
-//							}
-//							objMap.put(cName ,cVal );
-//							objMap.put("main" ,cVal );
-//							dbMsg +=  "="+cVal;
-//						//	MuList.this.plSL.add(cVal);
-//							songTitol = cVal;
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.DURATION)){	//[14/37]duration=252799>>04:12 799
-//							String cVal = rCursor.getString(i);
-//							dbMsg +=  "="+cVal;
-//							if(cVal != null){
-//								cVal = cVal;
-//							}
-//							objMap.put(cName ,cVal );
-//							Dur = "["+ ORGUT.sdf_mss.format(Long.valueOf(cVal)) + "]";
-//							dbMsg +=  ">>"+Dur;
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.DATA)){	//[5/37]_data=/storage/sdcard0/external_sd/Music/Santana/All That I Am/05 Just Feel Better.wma
-//							String cVal = rCursor.getString(i);
-//							if(cVal != null){
-//								cVal = cVal;
-//							}
-//							objMap.put(cName ,cVal );
-//						//	MuList.this.saisei_fnameList.add(cVal);
-//						//	MuList.this.plSL.add(cVal);
-//						//	dbMsg +=  "="+cVal;
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.TRACK)){
-//							String cVal = rCursor.getString(i);
-//							//	cVal = MyUtil.checKTrack( cVal);
-//							objMap.put(cName ,cVal );
-//						}else if( cName.equals(MediaStore.Audio.Playlists.Members.ALBUM_ID)){
-//							String cVal = String.valueOf(rCursor.getInt(i));
-//							objMap.put(cName ,cVal );
-//							dbMsg +=  "="+cVal;
-//						}else{
-//							int cPosition = rCursor.getColumnIndex(cName);
-//							dbMsg += "『" + cPosition+"』";
-//							String cVal ="";
-//							if(0<cPosition){
-//								int colType = rCursor.getType(cPosition);
-//								//		dbMsg += ",Type=" + colType + ",";
-//								switch (colType){
-//									case Cursor.FIELD_TYPE_NULL:          //0
-//										cVal ="【null】" ;
-//										break;
-//									case Cursor.FIELD_TYPE_INTEGER:         //1
-//										@SuppressLint("Range") int cInt = rCursor.getInt(cPosition);
-//										dbMsg += cInt+"【int】";
-//										cVal=String.valueOf(cInt);
-//										break;
-//									case Cursor.FIELD_TYPE_FLOAT:         //2
-//										@SuppressLint("Range") float cFlo = rCursor.getFloat(cPosition);
-//										dbMsg += cFlo+"【float】";
-//										cVal=String.valueOf(cFlo);
-//										break;
-//									case Cursor.FIELD_TYPE_STRING:          //3
-//										cVal = rCursor.getString(cPosition);
-//										dbMsg +=  cVal+"【String】";
-//										break;
-//									case Cursor.FIELD_TYPE_BLOB:         //4
-//										//@SuppressLint("Range") String cBlob = String.valueOf(cursor.getBlob(cPosition));
-//										cVal ="【Blob】";
-//										break;
-//									default:
-//										cVal = String.valueOf(rCursor.getString(cPosition));
-//										dbMsg +=  cVal;
-//										break;
-//								}
-//							}
-//							dbMsg += "="+cVal;
-//							objMap.put(cName ,cVal );
-//						}
-//					}
-//					MediaItem mItem =  new MediaItem.Builder().setUri((String) objMap.get(MediaStore.Audio.Playlists.Members.DATA)).build();
-//				//20Aip
-
-//				}
-//			}else{
-//				retList = Collections.emptyList();
-//			}
-
-			String action = intent.getAction();
-			boolean actionIsListView = IntentUtil.ACTION_VIEW_LIST.equals(action);
-			if (!actionIsListView && !IntentUtil.ACTION_VIEW.equals(action)) {
-				showToast("action");			//R.string.unexpected_intent_action,
-				finish();
-				return Collections.emptyList();
-			}
-
-			List<MediaItem> mediaItems = mediaItemList;
-//			List<MediaItem> mediaItems = createMediaItems(intent, DemoUtil.getDownloadTracker(this));
-			dbMsg += ",mediaItems=" + mediaItems.size() + "件";
-			for (int i = 0; i < mediaItems.size(); i++) {
-				MediaItem mediaItem = mediaItems.get(i);
-
-				if (!Util.checkCleartextTrafficPermitted(mediaItem)) {
-					showToast("Cleartext HTTP traffic not permitted. See https://exoplayer.dev/issues/cleartext-not-permitted");			//R.string.error_cleartext_not_permitted
-					finish();
-					return Collections.emptyList();
-				}
-				if (Util.maybeRequestReadExternalStoragePermission(/* activity= */ this, mediaItem)) {
-					// The player will be reinitialized if the permission is granted.
-					return Collections.emptyList();
-				}
-
-				MediaItem.DrmConfiguration drmConfiguration = mediaItem.localConfiguration.drmConfiguration;
-				if (drmConfiguration != null) {
-					if (Build.VERSION.SDK_INT < 18) {
-						showToast("DRM content not supported on API levels below 18");		//R.string.error_drm_unsupported_before_api_18
-						finish();
-						return Collections.emptyList();
-					} else if (!FrameworkMediaDrm.isCryptoSchemeSupported(drmConfiguration.scheme)) {
-						showToast("This device does not support the required DRM scheme");			//R.string.error_drm_unsupported_scheme
-						finish();
-						return Collections.emptyList();
-					}
-				}
-			}
-			dbMsg += ",最終" + retList.size() + "件";
-			return mediaItems;
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return retList;
-	}
-
-	private AdsLoader getClientSideAdsLoader(MediaItem.AdsConfiguration adsConfiguration) {
-		final String TAG = "getClientSideAdsLoader";
-		String dbMsg="";
-		try {
-			// The ads loader is reused for multiple playbacks, so that ad playback can resume.
-			if (clientSideAdsLoader == null) {
-				clientSideAdsLoader = new ImaAdsLoader.Builder(/* context= */ this).build();
-			}
-			clientSideAdsLoader.setPlayer(exoPlayer);
-			return clientSideAdsLoader;
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return null;
-	}
-
-
-	@OptIn(markerClass = UnstableApi.class) // SSAI configuration
-	private MediaSource.Factory createMediaSourceFactory() {
-		final String TAG = "createMediaSourceFactory";
-		String dbMsg="";
-		try {
-			DefaultDrmSessionManagerProvider drmSessionManagerProvider = new DefaultDrmSessionManagerProvider();
-			drmSessionManagerProvider.setDrmHttpDataSourceFactory(
-					DemoUtil.getHttpDataSourceFactory(/* context= */ this));
-			ImaServerSideAdInsertionMediaSource.AdsLoader.Builder serverSideAdLoaderBuilder =
-					new ImaServerSideAdInsertionMediaSource.AdsLoader.Builder(/* context= */ this, playerView);
-			if (serverSideAdsLoaderState != null) {
-				serverSideAdLoaderBuilder.setAdsLoaderState(serverSideAdsLoaderState);
-			}
-			serverSideAdsLoader = serverSideAdLoaderBuilder.build();
-			ImaServerSideAdInsertionMediaSource.Factory imaServerSideAdInsertionMediaSourceFactory =
-					new ImaServerSideAdInsertionMediaSource.Factory(
-							serverSideAdsLoader,
-							new DefaultMediaSourceFactory(/* context= */ this)
-									.setDataSourceFactory(dataSourceFactory));
-			return new DefaultMediaSourceFactory(/* context= */ this)
-					.setDataSourceFactory(dataSourceFactory)
-					.setDrmSessionManagerProvider(drmSessionManagerProvider)
-					.setLocalAdInsertionComponents(
-							this::getClientSideAdsLoader, /* adViewProvider= */ playerView)
-					.setServerSideAdInsertionMediaSourceFactory(imaServerSideAdInsertionMediaSourceFactory);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return null;
-	}
-
-	@OptIn(markerClass = UnstableApi.class)
-	private void setRenderersFactory(ExoPlayer.Builder playerBuilder, boolean preferExtensionDecoders) {
-		final String TAG = "setRenderersFactory";
-		String dbMsg="";
-		try {
-
-			RenderersFactory renderersFactory =
-					DemoUtil.buildRenderersFactory(/* context= */ this, preferExtensionDecoders);
-			playerBuilder.setRenderersFactory(renderersFactory);
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
 
 	private void updateButtonVisibility() {
 		final String TAG = "updateButtonVisibility";
@@ -5625,8 +4948,6 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 
 			musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
-//			NotificationManager mNotificationManager = (NotificationManager)this.getSystemService(Activity.NOTIFICATION_SERVICE);
-//			dbMsg += ",NotificationManager="+ mNotificationManager.toString() ;
 			//スレッド起動確認の元の位置
 			Intent intent = getIntent();
 			reqCode = intent.getIntExtra("reqCode", 0);
@@ -5638,18 +4959,6 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg += ",nowData=" + myPreferences.nowData;
 			toPlaying=intent.getBooleanExtra("IsPlaying",true);
 			dbMsg += ",toPlaying=" + toPlaying;
-//			mediaItemList = (List<MediaItem>) intent.getSerializableExtra("mediaItemList");
-//			dbMsg += ",mediaItemList=" + mediaItemList.size() + "件";
-//
-//			MobileAds.initialize(this, new OnInitializationCompleteListener() {
-//				@Override
-//				public void onInitializationComplete(InitializationStatus initializationStatus) {
-//				}
-//			});
-			//			dbMsg += ",found="+ found ;/////////////////////////////////////
-////			Bundle extras = getIntent().getExtras();				//起動されたアクティビティからデータを受け取る
-////			dbMsg += ",extras="+ extras ;/////////////////////////////////////
-
 			receiverHaki();		//レシーバーを破棄
 
 			dbMsg += ",kidou_jyoukyou=" + kidou_jyoukyou;//100:
@@ -5669,9 +4978,6 @@ public class MaraSonActivity extends AppCompatActivity
 			/////Bluetooth///////////////////////////////////////////ロックスクリーン//
 			b_stateStr = "";
 			/////////////////////////////////////////////Bluetooth//
-			//				if(Integer.valueOf(pref_apiLv) >10){
-			//					this.getWindow().requestFeature(Window.FEATURE_ACTION_MODE_OVERLAY);			//、コンテンツの上に、ActionBarをオーバーレイ表示することを許可	APIL11;☆setContentView でコンテントビューを設定する前に行います。
-			//				}
 			dbMsg +=",playerBGColor_w=" + playerBGColor_w;/////////////////////////////////////
 			if(playerBGColor_w){
 				setTheme(R.style.MyLightTheme);		//Theme_Light 16973836 	白　タイトルなし   //タイトルバー(アクションバー)なし	Theme_Light_NoTitleBar
@@ -5679,9 +4985,6 @@ public class MaraSonActivity extends AppCompatActivity
 			}else{
 				setTheme(android.R.style.Theme_Black);		//Theme_Black6973832；；	黒　タイトルなし   //タイトルバー(アクションバー)なし	Theme_Black_NoTitleBar
 			}
-//			}
-			//		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-
 			setContentView(R.layout.activity_mara_son);
 			toolbar = findViewById(R.id.pp_tool_bar);							//このアクティビティのtoolBar
 			toolbar.setContentInsetsAbsolute(0,0);								//左と上の余白を無くす
@@ -5700,7 +5003,6 @@ public class MaraSonActivity extends AppCompatActivity
 			headAria_ll = findViewById(R.id.headAria);
 			headAria_ll.setOnClickListener(this);
 			artist_tv = findViewById(R.id.artist_tv);									//アルバムアーティスト
-			//		creditArtistName_tf = (TextView) findViewById(R.id.creditArtistName_tf);	//クレジットされているアーティスト名
 			alubum_tv = findViewById(R.id.alubum_tv);								//アルバムー
 			titol_tv = findViewById(R.id.titol_tv);										//タイトルスピナー
 			songIDPTF = findViewById(R.id.songIDPTF);							//リスト中の何曲目か
@@ -5722,18 +5024,17 @@ public class MaraSonActivity extends AppCompatActivity
 			lyric_tv = lilic_ll.findViewById(R.id.lyric_tv);					//歌詞表示
 			dbMsg +=",lilic_tv=" + lyric_tv;
 			lyric_tv.setMovementMethod(new ScrollingMovementMethod());			//TextViewを上下フリックでスクロール；ただしonFlingが発生しなくなる
-	//		lyric_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
-//		registerForContextMenu(lyric_tv);
+			lyric_tv.setTextSize(lylicFontSize);
 			//Manifestのアプリケーションテーマで	@style/Base.Theme.AppCompat		@style/Theme.AppCompat
 			artist_tv.setMovementMethod(ScrollingMovementMethod.getInstance());			//ScrollView を使わないで TextView に スクロールバーを表示する	http://kokufu.blogspot.jp/2012/12/scrollview-textview.html
 			alubum_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 			titol_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
+			vol_btn.setOnClickListener(this);
+			vol_btn.setOnLongClickListener(this);
 //			dviceStyte.setMovementMethod(ScrollingMovementMethod.getInstance());
 //			ppPBT.setOnClickListener(this);
 //			ffPBT.setOnClickListener(this);
 //			rewPBT.setOnClickListener(this);
-			vol_btn.setOnClickListener(this);
-			vol_btn.setOnLongClickListener(this);
 //			artist_tv.setOnClickListener(this);															//アルバムアーティスト
 //			alubum_tv.setOnClickListener(this);														//アルバムー
 //			titol_tv.setOnClickListener(this);															//タイトル
@@ -5754,16 +5055,9 @@ public class MaraSonActivity extends AppCompatActivity
 			//////////////////////////////////////
 			shigot_bangou =  syoki_activty_set ;			//	onWindowFocusChangedを経てaSetei； ;ボタンなどへのイベント割付け
 
-/*
-			LinearLayout playPanel = findViewById(R.id.playPanel);
-			playPanel.setVisibility(View.GONE);
-*/
-
 			list_player = findViewById(R.id.remote_controll);		//プレイヤーのインクルード
 			playerView = list_player.findViewById(R.id.player_view);
 			pv_bt = list_player.findViewById(R.id.pv_bt);
-		//	pv_bt.setArtworkDisplayMode(PlayerView.ARTWORK_DISPLAY_MODE_OFF);
-
 			TextView lp_title = list_player.findViewById(R.id.titol_tv);
 			lp_title.setVisibility(View.GONE);
 			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
@@ -5804,26 +5098,30 @@ public class MaraSonActivity extends AppCompatActivity
 
 			fontMini = 12;
 			fontMax = 60;
-			currenFontSize = lyric_tv.getTextSize();
+//			lylicFontSize = lyric_tv.getTextSize();
+			dbMsg +="lylicFontSize=" + lylicFontSize + "sp";
 			font_size_sp = findViewById(R.id.font_size_sp);
 			font_mini_tv = findViewById(R.id.font_mini);
 			font_max_tv = findViewById(R.id.font_max);
 			current_font_size_tv = findViewById(R.id.current_font_size);
 			font_mini_tv.setText( String.valueOf(fontMini));
 			font_max_tv.setText(String.valueOf(fontMax));
-			current_font_size_tv.setText(String.valueOf(currenFontSize));
+			current_font_size_tv.setText(String.valueOf(lylicFontSize));
 			font_size_sp.setMin((int) fontMini);
 			font_size_sp.setMax((int) fontMax);
-			font_size_sp.setProgress((int) currenFontSize);
+			font_size_sp.setProgress((int) lylicFontSize);
 			font_size_sp.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 				public void onStopTrackingTouch(SeekBar seekBar) {
 					final String TAG = "onStopTrackingTouch";
 					String dbMsg= "[font_size_sp]";/////////////////////////////////////
 					try{
-						dbMsg +="currenFontSize=" + currenFontSize + ">Progress>" + seekBar.getProgress();
-						currenFontSize = seekBar.getProgress();
-						lyric_tv.setTextSize(currenFontSize);
-						current_font_size_tv.setText(String.valueOf(currenFontSize));
+						dbMsg +="lylicFontSize=" + lylicFontSize + ">Progress>" + seekBar.getProgress();
+						lylicFontSize = seekBar.getProgress();
+						lyric_tv.setTextSize(lylicFontSize);
+						current_font_size_tv.setText(String.valueOf(lylicFontSize));
+						myEditor.putFloat( "lylicFontSize", lylicFontSize);
+						boolean kakikomi = myEditor.commit();
+						dbMsg +=",書き込み=" + kakikomi;
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5833,8 +5131,8 @@ public class MaraSonActivity extends AppCompatActivity
 					final String TAG = "onProgressChanged";
 					String dbMsg= "[font_size_sp]";/////////////////////////////////////
 					try{
-						dbMsg +="currenFontSize=" + currenFontSize + ">Progress>" + seekBar.getProgress();
-						myLog(TAG, dbMsg);
+						dbMsg +="lylicFontSize=" + lylicFontSize + ">Progress>" + seekBar.getProgress();
+			//			myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -5844,10 +5142,10 @@ public class MaraSonActivity extends AppCompatActivity
 					final String TAG = "onProgressChanged";
 					String dbMsg= "[font_size_sp]";/////////////////////////////////////
 					try{
-						dbMsg +="currenFontSize=" + currenFontSize + ">Progress>" + seekBar.getProgress();
-						currenFontSize = seekBar.getProgress();
-						current_font_size_tv.setText(String.valueOf(currenFontSize));
-						myLog(TAG, dbMsg);
+						dbMsg +="lylicFontSize=" + lylicFontSize + ">Progress>" + seekBar.getProgress();
+						lylicFontSize = seekBar.getProgress();
+						current_font_size_tv.setText(String.valueOf(lylicFontSize));
+//						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
