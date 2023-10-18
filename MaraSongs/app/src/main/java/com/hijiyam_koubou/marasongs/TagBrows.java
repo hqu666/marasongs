@@ -4954,7 +4954,8 @@ private byte majorVersion = (byte) 0;
 		return retStr;
 	}
 
-	public String makeSammry() {			//戻り値を作る
+	/**戻り値を作る*/
+	public String makeSammry() {
 		String retStr= null;
 		final String TAG = "makeSammry";
 		String dbMsg= "";

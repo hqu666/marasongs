@@ -3764,7 +3764,6 @@ public class MaraSonActivity extends AppCompatActivity
 		return false;
 	}
 
-
 	private GestureDetector mDetector;
 
 	@Override
@@ -4745,46 +4744,45 @@ public class MaraSonActivity extends AppCompatActivity
 	@Nullable
 	private ImaServerSideAdInsertionMediaSource.AdsLoader serverSideAdsLoader;
 
-	@OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
-	private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
-		final String TAG = "maybeSetDownloadProperties";
-		String dbMsg="";
-		try {
+//	@OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
+//	private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
+//		final String TAG = "maybeSetDownloadProperties";
+//		String dbMsg="";
+//		try {
+//
+//			if (downloadRequest == null) {
+//				return item;
+//			}
+//			MediaItem.Builder builder = item.buildUpon();
+//			builder
+//					.setMediaId(downloadRequest.id)
+//					.setUri(downloadRequest.uri)
+//					.setCustomCacheKey(downloadRequest.customCacheKey)
+//					.setMimeType(downloadRequest.mimeType)
+//					.setStreamKeys(downloadRequest.streamKeys);
+//			@Nullable
+//			MediaItem.DrmConfiguration drmConfiguration = item.localConfiguration.drmConfiguration;
+//			if (drmConfiguration != null) {
+//				builder.setDrmConfiguration(
+//						drmConfiguration.buildUpon().setKeySetId(downloadRequest.keySetId).build());
+//			}
+//			return builder.build();
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//		return null;
+//	}
 
-			if (downloadRequest == null) {
-				return item;
-			}
-			MediaItem.Builder builder = item.buildUpon();
-			builder
-					.setMediaId(downloadRequest.id)
-					.setUri(downloadRequest.uri)
-					.setCustomCacheKey(downloadRequest.customCacheKey)
-					.setMimeType(downloadRequest.mimeType)
-					.setStreamKeys(downloadRequest.streamKeys);
-			@Nullable
-			MediaItem.DrmConfiguration drmConfiguration = item.localConfiguration.drmConfiguration;
-			if (drmConfiguration != null) {
-				builder.setDrmConfiguration(
-						drmConfiguration.buildUpon().setKeySetId(downloadRequest.keySetId).build());
-			}
-			return builder.build();
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-		return null;
-	}
-
-
-	private void updateButtonVisibility() {
-		final String TAG = "updateButtonVisibility";
-		String dbMsg="";
-		try {
-				ppPBT.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
-			//	selectTracksButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
-		} catch (Exception e) {
-			myErrorLog(TAG ,  dbMsg + "で" + e);
-		}
-	}
+//	private void updateButtonVisibility() {
+//		final String TAG = "updateButtonVisibility";
+//		String dbMsg="";
+//		try {
+//				ppPBT.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+//			//	selectTracksButton.setEnabled(exoPlayer != null && TrackSelectionDialog.willHaveContent(exoPlayer));
+//		} catch (Exception e) {
+//			myErrorLog(TAG ,  dbMsg + "で" + e);
+//		}
+//	}
 
 	/**Flipperの動作*/
 	public void actionViewFlipper() {
@@ -4799,15 +4797,18 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg +=",img";
 				pp_vf.setInAnimation(slideInFromRight);
 				pp_vf.showNext();
-				CharSequence retStrs = lyric_tv.getText();
-				if(retStrs == null || retStrs.equals("")){
+				CharSequence retStrs = lyric_tv.getText() +"";				//CharSequenceで空白だとequalsに反応しない
+				dbMsg +=",retStrs=\n"+retStrs;
+				if(retStrs == null || retStrs.equals("")){				//
+					dbMsg +=",lylicStr=\n" + lylicStr;
 					if(lylicStr == null || lylicStr.equals("")) {
 						dbMsg +=",lylicStr未取得";
 					}else {
 						lyric_tv.setText(lylicStr);
 					}
+				}else{
+					dbMsg +=",lylic設定済み";
 				}
-				dbMsg +=">>Lylic";
 			}else{
 				dbMsg +=",Lylic";
 				pp_vf.setInAnimation(slideInFromLeft);
@@ -4820,7 +4821,6 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 
-
 	@Override
 	public void onVisibilityChanged(int visibility) {
 		final String TAG = "onVisibilityChanged";
@@ -4831,37 +4831,37 @@ public class MaraSonActivity extends AppCompatActivity
 		}
 	}
 	///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
-	public  ImageView playPause;
-	void buildTransportControls(){
-		// Grab the view for the play/pause button
-//		ImageView playPause = (ImageView) findViewById(R.id.play_pause);
-//
-//		// Attach a listener to the button
-//		playPause.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				// Since this is a play/pause button, you'll need to test the current state
-//				// and choose the action accordingly
-//
-//				int pbState = MediaControllerCompat.getMediaController(MaraSonActivity.this).getPlaybackState().getState();
-//				if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-//					MediaControllerCompat.getMediaController(MaraSonActivity.this).getTransportControls().pause();
-//				} else {
-//					MediaControllerCompat.getMediaController(MaraSonActivity.this).getTransportControls().play();
-//				}
-//			}
-//	//		);
-//
-//			MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(MaraSonActivity.this);
-//
-//			// Display the initial state
-//			MediaMetadataCompat metadata = mediaController.getMetadata();
-//			PlaybackStateCompat pbState = mediaController.getPlaybackState();
-//
-//			// Register a Callback to stay in sync
-//      		mediaController.registerCallback(controllerCallback);
-//		}
-	}
+//	public  ImageView playPause;
+//	void buildTransportControls(){
+//		// Grab the view for the play/pause button
+////		ImageView playPause = (ImageView) findViewById(R.id.play_pause);
+////
+////		// Attach a listener to the button
+////		playPause.setOnClickListener(new View.OnClickListener() {
+////			@Override
+////			public void onClick(View v) {
+////				// Since this is a play/pause button, you'll need to test the current state
+////				// and choose the action accordingly
+////
+////				int pbState = MediaControllerCompat.getMediaController(MaraSonActivity.this).getPlaybackState().getState();
+////				if (pbState == PlaybackStateCompat.STATE_PLAYING) {
+////					MediaControllerCompat.getMediaController(MaraSonActivity.this).getTransportControls().pause();
+////				} else {
+////					MediaControllerCompat.getMediaController(MaraSonActivity.this).getTransportControls().play();
+////				}
+////			}
+////	//		);
+////
+////			MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(MaraSonActivity.this);
+////
+////			// Display the initial state
+////			MediaMetadataCompat metadata = mediaController.getMetadata();
+////			PlaybackStateCompat pbState = mediaController.getPlaybackState();
+////
+////			// Register a Callback to stay in sync
+////      		mediaController.registerCallback(controllerCallback);
+////		}
+//	}
 
 	private ServiceConnection myConnection = new ServiceConnection() {
 		@Override
@@ -4883,6 +4883,8 @@ public class MaraSonActivity extends AppCompatActivity
 				nowData = mServiceBinder.nowData;
 				dbMsg +=",nowData=" + nowData;
 				lp_subtitol.setText(nowData);
+				lylicStr=mServiceBinder.lylicStr;
+				dbMsg +=",lylicStr=\n" + lylicStr;
 				url2FSet(nowData);
 				myLog(TAG, dbMsg);
 			}catch (Exception e) {
@@ -5373,11 +5375,11 @@ public class MaraSonActivity extends AppCompatActivity
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
-	public void pendeingMessege() {
-		String titolStr = "制作中です";
-		String mggStr = "最終リリースをお待ちください";
-		messageShow(titolStr , mggStr);
-	}
+//	public void pendeingMessege() {
+//		String titolStr = "制作中です";
+//		String mggStr = "最終リリースをお待ちください";
+//		messageShow(titolStr , mggStr);
+//	}
 
 	public static String getPrefStr(String keyNmae , String defaultVal,Context context) {        //プリファレンスの読込み
 		String retStr = "";

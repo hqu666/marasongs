@@ -72,12 +72,12 @@ public class MusicService extends MediaBrowserService {
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
     public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
-   // public EventLogger eventLogger;
-    public AnalyticsListener.EventTime eventTime = null;
     public Metadata metadata = null;
     public String lylicStr = null;
+    // public EventLogger eventLogger;
+//    public AnalyticsListener.EventTime eventTime = null;
 
-    public Metadata.Entry[] metaEntrys = null;
+//    public Metadata.Entry[] metaEntrys = null;
 //    public MediaStyleNotificationHelper.MediaStyle mediaStyle;           //androidx.media3.session.MediaStyleNotificationHelper.
     //    private MediaSessionCompat.Token sessionToken;
 //    private PlaybackStateCompat.Builder stateBuilder;
@@ -133,11 +133,11 @@ public class MusicService extends MediaBrowserService {
     public NotificationCompat.Builder notificationBuilder;
     private String channelId = "default";
     public final int NOTIFICATION_ID = 1;						//☆生成されないので任意の番号を設定する	 The ID we use for the notification (the onscreen alert that appears at the notification area at the top of the screen as an icon -- and as text as well if the user expands the notification area).
-    public PendingIntent prevPendingIntent = null;
-    public PendingIntent pausePendingIntent = null;
-    public PendingIntent nextPendingIntent = null;
-    public PendingIntent quitPendingIntent = null;
-    public PendingIntent repatPendingIntent = null;
+//    public PendingIntent prevPendingIntent = null;
+//    public PendingIntent pausePendingIntent = null;
+//    public PendingIntent nextPendingIntent = null;
+//    public PendingIntent quitPendingIntent = null;
+//    public PendingIntent repatPendingIntent = null;
 
     /**MusicServiceの開始
      * List<MediaItem>の初期化
@@ -149,7 +149,7 @@ public class MusicService extends MediaBrowserService {
     public static final String ACTION_MAKE_LIST= "MAKE_LIST";
     /** ListにuriListからMediaItemを呼び込む */
     public static final int MS_MAKE_ALBUM_LIST = MS_MAKE_LIST + 1;
-    public static final String ACTION_MAKE_ALBUM_LIST= "MAKE_LIST";
+//    public static final String ACTION_MAKE_ALBUM_LIST= "MAKE_LIST";
     /** 選曲された楽曲を読み込ませたプレイヤーを作製 */
     public static final String ACTION_SET_SONG= "SET_SONG";
     public static final int MS_SET_SONG = MS_MAKE_ALBUM_LIST + 1;
@@ -194,13 +194,13 @@ public class MusicService extends MediaBrowserService {
     //public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.intent.action.BLUETOOTH_INFO";
     public static final String ACTION_STOP = "com.example.android.remotecontrol.ACTION_STOP";
     public static final String ACTION_REQUEST_STATE = "com.example.android.remotecontrol.ACTION_REQUEST_STATE";
-    public static final String ACTION_LISTSEL = "LISTSEL";					//追加3	；リストで選択された曲の処理
+//    public static final String ACTION_LISTSEL = "LISTSEL";					//追加3	；リストで選択された曲の処理
     public static final String ACTION_SYUURYOU = "SYUURYOU";					//追加１	；
     public static final String ACTION_SYUURYOU_NOTIF = "SYUURYOU_NOTIF";					//追加3	；
-    public static final String ACTION_ACT_CLOSE = "ACT_CLOSE";					//追加4	；
-    public static final String ACTION_KEIZOKU = "KEIZOKU";					//追加2	；
+//    public static final String ACTION_ACT_CLOSE = "ACT_CLOSE";					//追加4	；
+//    public static final String ACTION_KEIZOKU = "KEIZOKU";					//追加2	；
+//    public static final String ACTION_PLAY_READ = "PLAY_READ";
     public static final String ACTION_REQUEST = "REQUEST";					//次はリクエスト開始
-    public static final String ACTION_PLAY_READ = "PLAY_READ";
     public static final String ACTION_EQUALIZER = "EQUALIZER";
     public static final String ACTION_BASS_BOOST = "BASS_BOOST";
     public static final String ACTION_REVERB = "REVERB";
@@ -311,7 +311,8 @@ public class MusicService extends MediaBrowserService {
         }
     }																	//設定読込・旧バージョン設定の消去
 
-    private static final int[] REQUEST_CODE = { 0, 1, 2 };
+//    private static final int[] REQUEST_CODE = { 0, 1, 2 };
+
     /////////////////////プレイヤーの状態をクライアントに通知する//
     ///通知の作成////////////////////
     //通知を作成、サービスをForegroundにする
@@ -1263,17 +1264,17 @@ public class MusicService extends MediaBrowserService {
     }
 
     //   @Override
-    public MediaSession onGetSession(MediaSession.ControllerInfo info) {
-        final String TAG = "onGetSession";
-        String dbMsg="";
-        try{
-            dbMsg += ",info=" + info.toString();
-            myLog(TAG,dbMsg);
-        } catch (Exception e) {
-            myErrorLog(TAG,dbMsg+"で"+e);
-        }
-        return mediaSession;
-    }
+//    public MediaSession onGetSession(MediaSession.ControllerInfo info) {
+//        final String TAG = "onGetSession";
+//        String dbMsg="";
+//        try{
+//            dbMsg += ",info=" + info.toString();
+//            myLog(TAG,dbMsg);
+//        } catch (Exception e) {
+//            myErrorLog(TAG,dbMsg+"で"+e);
+//        }
+//        return mediaSession;
+//    }
 
     /**
      * https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
@@ -1284,25 +1285,25 @@ public class MusicService extends MediaBrowserService {
 
     public static final String ACTION_PLAY_PAUSE = "com.example.android.notification.action.PLAY_PAUSE";
     private boolean startAutoPlay;
-    private int startItemIndex;
-    private long startPosition;
-    private DebugTextViewHelper debugViewHelper;
-    private TrackSelectionParameters trackSelectionParameters;
-    private DataSource.Factory dataSourceFactory;
-    private ImaServerSideAdInsertionMediaSource.AdsLoader.@MonotonicNonNull State
-            serverSideAdsLoaderState;
+//    private int startItemIndex;
+//    private long startPosition;
+//    private DebugTextViewHelper debugViewHelper;
+//    private TrackSelectionParameters trackSelectionParameters;
+//    private DataSource.Factory dataSourceFactory;
+//    private ImaServerSideAdInsertionMediaSource.AdsLoader.@MonotonicNonNull State
+//            serverSideAdsLoaderState;
     @Nullable
     private AdsLoader clientSideAdsLoader;
 
-    private void showToast(int messageId) {
-        final String TAG = "showToast";
-        String dbMsg="";
-        try {
-            showToast(getString(messageId));
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-    }
+//    private void showToast(int messageId) {
+//        final String TAG = "showToast";
+//        String dbMsg="";
+//        try {
+//            showToast(getString(messageId));
+//        } catch (Exception e) {
+//            myErrorLog(TAG ,  dbMsg + "で" + e);
+//        }
+//    }
 
     private void showToast(String message) {
         final String TAG = "showToast";
@@ -1381,23 +1382,23 @@ public class MusicService extends MediaBrowserService {
         }
     }
 
-    private static List<MediaItem> createMediaItems(Intent intent, DownloadTracker downloadTracker) {
-        final String TAG = "createMediaItems";
-        String dbMsg="";
-        try {
-
-            List<MediaItem> mediaItems = new ArrayList<>();
-            for (MediaItem item : IntentUtil.createMediaItemsFromIntent(intent)) {
-                mediaItems.add(
-                        maybeSetDownloadProperties(
-                                item, downloadTracker.getDownloadRequest(item.localConfiguration.uri)));
-            }
-            return mediaItems;
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-        return null;
-    }
+//    private static List<MediaItem> createMediaItems(Intent intent, DownloadTracker downloadTracker) {
+//        final String TAG = "createMediaItems";
+//        String dbMsg="";
+//        try {
+//
+//            List<MediaItem> mediaItems = new ArrayList<>();
+//            for (MediaItem item : IntentUtil.createMediaItemsFromIntent(intent)) {
+//                mediaItems.add(
+//                        maybeSetDownloadProperties(
+//                                item, downloadTracker.getDownloadRequest(item.localConfiguration.uri)));
+//            }
+//            return mediaItems;
+//        } catch (Exception e) {
+//            myErrorLog(TAG ,  dbMsg + "で" + e);
+//        }
+//        return null;
+//    }
 
     @OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
     private static MediaItem maybeSetDownloadProperties(MediaItem item, @Nullable DownloadRequest downloadRequest) {
@@ -1430,36 +1431,36 @@ public class MusicService extends MediaBrowserService {
     }
 
 
-    private AdsLoader getClientSideAdsLoader(MediaItem.AdsConfiguration adsConfiguration) {
-        final String TAG = "getClientSideAdsLoader";
-        String dbMsg="";
-        try {
-            // The ads loader is reused for multiple playbacks, so that ad playback can resume.
-            if (clientSideAdsLoader == null) {
-                clientSideAdsLoader = new ImaAdsLoader.Builder(/* context= */ this).build();
-            }
-            clientSideAdsLoader.setPlayer(exoPlayer);
-            return clientSideAdsLoader;
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-        return null;
-    }
+//    private AdsLoader getClientSideAdsLoader(MediaItem.AdsConfiguration adsConfiguration) {
+//        final String TAG = "getClientSideAdsLoader";
+//        String dbMsg="";
+//        try {
+//            // The ads loader is reused for multiple playbacks, so that ad playback can resume.
+//            if (clientSideAdsLoader == null) {
+//                clientSideAdsLoader = new ImaAdsLoader.Builder(/* context= */ this).build();
+//            }
+//            clientSideAdsLoader.setPlayer(exoPlayer);
+//            return clientSideAdsLoader;
+//        } catch (Exception e) {
+//            myErrorLog(TAG ,  dbMsg + "で" + e);
+//        }
+//        return null;
+//    }
 
 
-    @OptIn(markerClass = UnstableApi.class)
-    private void setRenderersFactory(ExoPlayer.Builder playerBuilder, boolean preferExtensionDecoders) {
-        final String TAG = "setRenderersFactory";
-        String dbMsg="";
-        try {
-
-            RenderersFactory renderersFactory =
-                    DemoUtil.buildRenderersFactory(/* context= */ this, preferExtensionDecoders);
-            playerBuilder.setRenderersFactory(renderersFactory);
-        } catch (Exception e) {
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-    }
+//    @OptIn(markerClass = UnstableApi.class)
+//    private void setRenderersFactory(ExoPlayer.Builder playerBuilder, boolean preferExtensionDecoders) {
+//        final String TAG = "setRenderersFactory";
+//        String dbMsg="";
+//        try {
+//
+//            RenderersFactory renderersFactory =
+//                    DemoUtil.buildRenderersFactory(/* context= */ this, preferExtensionDecoders);
+//            playerBuilder.setRenderersFactory(renderersFactory);
+//        } catch (Exception e) {
+//            myErrorLog(TAG ,  dbMsg + "で" + e);
+//        }
+//    }
 
     private void updateButtonVisibility() {
         final String TAG = "updateButtonVisibility";
@@ -1631,7 +1632,7 @@ public class MusicService extends MediaBrowserService {
             }
         }
 
-    @Override
+        @Override
         public void onPlaybackStateChanged(@Player.State int playbackState) {
             final String TAG = "onPlaybackStateChanged";
             String dbMsg="[PlayerEventListener]";
