@@ -10172,7 +10172,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				 retBool= false;			//指定したキー以外はデフォルト動作
 //				break;
 			}
-			retBool= setKeyDousa( focusItemID , event.getKeyCode() ,  event.getAction());				//d-padの操作反応	event.getKeyCode,event.getAction()
+//			retBool= setKeyDousa( focusItemID , event.getKeyCode() ,  event.getAction());				//d-padの操作反応	event.getKeyCode,event.getAction()
 			dbMsg += "retBool=" + retBool;///////////////////////////////////////////////////////////////////
 			myLog(TAG, dbMsg);
 		} catch (NullPointerException e) {

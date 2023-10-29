@@ -137,6 +137,7 @@ public class MaraSonActivity extends AppCompatActivity
 	/**呼び出し元のサービスで再生している曲のインデックス*/
 	public int mIndex = -1;
 	/**呼び出し元のサービスで再生している曲のuri*/
+//	String dataStr;
 	public String nowData="";
 	public Intent MPSIntent;
 	public String psSarviceUri;
@@ -936,7 +937,6 @@ public class MaraSonActivity extends AppCompatActivity
 					try{
 						boolean isPlaying;
 						String nowList_id = null;
-						String dataStr;
 						long contentPositionLong = 0L;
 						SimpleDateFormat sdf_time = new SimpleDateFormat("mm:ss:SS");
 						String artistName = null;
@@ -952,8 +952,8 @@ public class MaraSonActivity extends AppCompatActivity
 							dbMsg += ",現在[" + currentListId + "]" + currentListName;
 							toolbar.setTitle(currentListName);
 
-							dataStr = intent.getStringExtra("nowData");
-							dbMsg += ",dataStr= " + dataStr;
+							nowData = intent.getStringExtra("nowData");
+							dbMsg += ",dataStr= " + nowData;
 
 							currentIndex = intent.getIntExtra("currentIndex", 0);
 							dbMsg += ",currentIndex=" + currentIndex;
@@ -970,7 +970,7 @@ public class MaraSonActivity extends AppCompatActivity
 							titleStr = intent.getStringExtra("title");
 							if(myPreferences.nowList.equals(getResources().getString(R.string.listmei_zemkyoku))){
 								dbMsg +=",読み込んでいるartist＝" + currentArtistName + "の" + currentAlbumName;
-								String[] passNames = dataStr.split("/");
+								String[] passNames = nowData.split("/");
 								String artistFolder = passNames[passNames.length - 3];
 								String albumFolder = passNames[passNames.length - 2];
 								if(! currentArtistName.equals(artistFolder)){
@@ -1000,13 +1000,16 @@ public class MaraSonActivity extends AppCompatActivity
 							String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
 							list_player.setVisibility(View.VISIBLE);
 //							lp_title.setText(titleStr);
-							lp_subtitol.setText(dataStr);
-							url2FSet(dataStr);
+							lp_subtitol.setText(nowData);
+							url2FSet(nowData);
 							lylicStr=intent.getStringExtra("lylicStr");
 							dbMsg += "\n" + lylicStr ;
+							if(lylicStr.equals(getResources().getString(R.string.lylics_not_set))){
+								readLyric( nowData );					//歌詞の読出し
+								dbMsg += ">>" + lylicStr ;
+							}
 							lyric_tv.setText(lylicStr);
 
-							//readLyric( dataStr );					//歌詞の読出し
 
 							dbMsg += ",wStr=" + wStr ;
 //							lp_title.setText(wStr);
@@ -1244,7 +1247,6 @@ public class MaraSonActivity extends AppCompatActivity
 							alubum_tv.setText(albumName);											//アルバム
 							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 							titol_tv.setText(titolName);					//タイトル
-		//					lyric_tv.setText(lylicStr);					//歌詞表示
 							OrgUtil.setArt(getApplicationContext(),mpJakeImg,urlStr,albumId);
 						} catch (Exception e) {
 							myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
@@ -3147,24 +3149,24 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg= ",filepath=" + filepath;
 			if(filepath != null){
 				if(! filepath.equals(b_filePath)){
-					lylicStr = getResources().getString(R.string.yomikomi_hunou);		//e="">この曲はタグ情報を読み込めませんでした。</string>
+//					lylicStr = getResources().getString(R.string.yomikomi_hunou);		//e="">この曲はタグ情報を読み込めませんでした。</string>
 					lyricAri = false;			//歌詞を取得できた
 					dbMsg= "filepath=" + filepath;
-//					Intent intentTB = new Intent(getApplication(),TagBrows.class);
-//					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
-//					intentTB.putExtra("filePath",filepath);
-//					lyricAri = false;			//歌詞を取得できた
-//					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
-//					resultLauncher.launch(intentTB);
-					/*		クラスとしての読出し
+					Intent intentTB = new Intent(getApplication(),TagBrows.class);
+					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
+					intentTB.putExtra("filePath",filepath);
+					lyricAri = false;			//歌詞を取得できた
+					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
+					resultLauncher.launch(intentTB);
+					//		クラスとしての読出し
 					//					File sdFile = new File(Environment.getExternalStorageDirectory(), dataFN);
-										TagBrows mp3file = new TagBrows(dataFN ,this);
-										String wrStr = mp3file.getSongLyric();
-										if( wrStr != null){
-											lylicStr = wrStr;
-										}
-										lyric_tv.setText(lylicStr);
-					*/
+									//	TagBrows mp3file = new TagBrows(filepath ,this);
+//										String wrStr = mp3file.getSongLyric();
+//										if( wrStr != null){
+//											lylicStr = wrStr;
+//										}
+//										lyric_tv.setText(lylicStr);
+
 				}
 				b_filePath = filepath;
 			}
@@ -3777,7 +3779,7 @@ public class MaraSonActivity extends AppCompatActivity
 			}else{
 				dbMsg +=",MotionEvent=null";
 			}
-			myLog(TAG, dbMsg);
+//			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
@@ -4480,12 +4482,12 @@ public class MaraSonActivity extends AppCompatActivity
 //							break;
 								case LyricCheck:						//192 歌詞の有無確認
 								case LyricEnc:							//歌詞の再エンコード
-									String wrStr =intent.getStringExtra("lylicStr");
+									String wrStr =intent.getStringExtra("songLyric");
 									if( wrStr != null){
 										lylicStr = wrStr;
 									}
-									dbMsg += ",lylicStr=" + lylicStr;
-				//					lyric_tv.setText(lylicStr);
+									dbMsg += ",lylicStr=\n" + lylicStr;
+									lyric_tv.setText(lylicStr);
 									lyricAri = intent.getBooleanExtra("lyricAri",false);			//歌詞を取得できた
 									wrStr =intent.getStringExtra("lyricEncord");
 									if( wrStr != null){
@@ -4784,7 +4786,12 @@ public class MaraSonActivity extends AppCompatActivity
 //		}
 //	}
 
-	/**Flipperの動作*/
+	/**
+	 * Flipperの動作
+	 * <ul>
+	 *     <li>lyric_tvが開かれていない時は書き込まれないので、開いた時に再取得する</li>
+	 * </ul>
+	 * */
 	public void actionViewFlipper() {
 		final String TAG = "actionViewFlipper";
 		String dbMsg= "";
@@ -4794,15 +4801,16 @@ public class MaraSonActivity extends AppCompatActivity
 			int nextVF = pp_vf.getDisplayedChild();
 			dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
 			if(nextVF == 0){
-				dbMsg +=",img";
+				dbMsg +=",img>>lylic";
 				pp_vf.setInAnimation(slideInFromRight);
 				pp_vf.showNext();
-				CharSequence retStrs = lyric_tv.getText() +"";				//CharSequenceで空白だとequalsに反応しない
+				String retStrs = lyric_tv.getText() +"";				//CharSequenceで空白だとequalsに反応しない
 				dbMsg +=",retStrs=\n"+retStrs;
-				if(retStrs == null || retStrs.equals("")){				//
+				if(retStrs == null || retStrs.equals("")||retStrs.contains(getResources().getString(R.string.lylics_not_set))){				//
 					dbMsg +=",lylicStr=\n" + lylicStr;
-					if(lylicStr == null || lylicStr.equals("")) {
-						dbMsg +=",lylicStr未取得";
+					if(lylicStr == null || lylicStr.equals("")||retStrs.contains(getResources().getString(R.string.lylics_not_set))){
+						dbMsg +=",lylicStr未取得,nowData= " + nowData;
+						readLyric(nowData);
 					}else {
 						lyric_tv.setText(lylicStr);
 					}

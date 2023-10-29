@@ -227,7 +227,9 @@ public class TagBrows  extends Activity{
 	public String stock_acc_meta_xml  =null;		//XML					QuickTime Tags.QuickTime Meta Tags.xml 			ID3ｖ2；--	ID3ｖ3；--
 
 	static final int read_FILE = 1000;					//ファイル読込
-	static final int read_USLT = read_FILE + 1;		// 歌詞読み込み
+
+	/**歌詞読み込み*/
+	static final int read_USLT = read_FILE + 1;
 	static final int SAI_ENCORD = read_USLT + 1;		//再エンコード
 	static final int read_AAC_PRE = SAI_ENCORD + 1;						//最小限の設定読取り
 	static final int read_AAC_LYRIC = read_AAC_PRE + 1;						//@Lyrだけを読めるか試みる
@@ -500,8 +502,7 @@ private byte majorVersion = (byte) 0;
 				initResult();								//戻り値の初期化
 				lyricAri = false;				//歌詞が取得できた
 				raf2Str(file, true);			//RandomAccessFileをString変換
-//				}
-		//		myLog(TAG,dbMsg);
+				myLog(TAG,dbMsg);
 			}catch (Exception e) {
 				myErrorLog(TAG,dbMsg + "で"+e.toString());
 			}
@@ -898,25 +899,23 @@ private byte majorVersion = (byte) 0;
 			dbMsg +=",file=" + file;
 			newFile.seek(0);
 			newFile.read(buffer, 0, 10);							// read the tag if it exists
-			//	newFile.seek(0);
-			//	newFile.read(buffer, 0, 3);					// newFile.read(buffer, 0, 3);
-				dbMsg += ",buffer[0]=" + buffer[0];		//.mp3は=3,	.wmaは117	,宇多田ヒカルは2
-				dbMsg += ",[1]=" + buffer[1];		//.mp3は=0,	.wmaは-114	,宇多田ヒカルは0
-				dbMsg += ",[2]=" + buffer[2];		//.mp3は=0,	.wmaは102	,宇多田ヒカルは0
-				dbMsg += ",[3]=" + buffer[3];		//ID3v2 バージョン			はじめの１バイトは、メジャーバージョンを示し、	$03 00			Hex	2バイト
-				dbMsg += ",[4]=" + buffer[4];		//							２バイト目は改訂番号
-				dbMsg += ",[5]=" + buffer[5];		//ID3v2 フラグ				%abc00000		１バイトのID3v2フラグ	a - 非同期化 / b - 拡張ヘッダ / c - 実験中
-				dbMsg += ",[6]=" + buffer[6];		//ID3v2 サイズ				4 * %0xxxxxxx
-				dbMsg += ",[7]=" + buffer[7];		//
-				dbMsg += ",[8]=" + buffer[8];		//
-				dbMsg += ",[9]=" + buffer[9];		//
+			dbMsg += ",buffer[0]=" + buffer[0];		//.mp3は=3,	.wmaは117	,宇多田ヒカルは2
+			dbMsg += ",[1]=" + buffer[1];		//.mp3は=0,	.wmaは-114	,宇多田ヒカルは0
+			dbMsg += ",[2]=" + buffer[2];		//.mp3は=0,	.wmaは102	,宇多田ヒカルは0
+			dbMsg += ",[3]=" + buffer[3];		//ID3v2 バージョン			はじめの１バイトは、メジャーバージョンを示し、	$03 00			Hex	2バイト
+			dbMsg += ",[4]=" + buffer[4];		//							２バイト目は改訂番号
+			dbMsg += ",[5]=" + buffer[5];		//ID3v2 フラグ				%abc00000		１バイトのID3v2フラグ	a - 非同期化 / b - 拡張ヘッダ / c - 実験中
+			dbMsg += ",[6]=" + buffer[6];		//ID3v2 サイズ				4 * %0xxxxxxx
+			dbMsg += ",[7]=" + buffer[7];		//
+			dbMsg += ",[8]=" + buffer[8];		//
+			dbMsg += ",[9]=" + buffer[9];		//
 			final String tag = new String(buffer, 0, 9);		//参照ID3v2_3.seek
 			dbMsg +=",tag=" + tag;
 			if (tag.startsWith("ID3")) {
 				result_Tag ="ID3v2";			//	タグ名
 				this.majorVersion = buffer[3];	//AbstractID3v2.setMajorVersion(buffer[0]);
 				this.revision = buffer[4];		//AbstractID3v2.setRevision(buffer[1]);
-				result_Tag =result_Tag + "." + this.majorVersion + "." + this.revision ;			//	タグ名
+				result_Tag =result_Tag + ".(majorVersion)" + this.majorVersion + ".(revision)" + this.revision ;			//	タグ名
 				dbMsg +=",result_Tag=" + result_Tag;				//+ ",info_TagT=" + info_TagT;
 				switch (this.majorVersion) {
 				case 2:
@@ -1063,7 +1062,7 @@ private byte majorVersion = (byte) 0;
 			}
 			newFile.close();
 			buffer = null;
-	//		myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		}catch(FileNotFoundException e){
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}catch(IOException e){
@@ -3448,6 +3447,7 @@ private byte majorVersion = (byte) 0;
 		try{
 			if( result != null){
 				dbMsg +=",result=" + result.length() +"文字";
+				TagBrows.this.result=result;				/////20231029
 				makeSyougouList();	//フィールド名リストをList<String> syougouに作成
 				tagData = new ArrayList<Object>();
 				tagData.clear();
@@ -4274,7 +4274,7 @@ private byte majorVersion = (byte) 0;
 					dbMsg +=retStr;
 				}
 			}
-		//	myLog(TAG,dbMsg);
+			myLog(TAG,dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG,dbMsg + "で"+e.toString());
 		}
@@ -5398,7 +5398,7 @@ private byte majorVersion = (byte) 0;
 			}
 			dbMsg += ",backCode=" + backCode;
 			bundle.putInt("reqCode", backCode);	//192
-			bundle.putString("songLyric", retStr);
+			bundle.putString("songLyric", this.result_USLT);
 			bundle.putBoolean("lyricAri", lyricAri);			//歌詞を取得できた
 			bundle.putString("lyricEncord", saiEncrod);
 			bundle.putString("lylicHTM", lylicHTM);			//html変換した歌詞のフルパス名
@@ -5627,8 +5627,8 @@ private byte majorVersion = (byte) 0;
 
 			@Override
 			public void run() {
-				final String TAG = "run[ploglessTask]";
-				String dbMsg="";
+				final String TAG = "run_TaskRun";
+				String dbMsg="[TaskRun]";
 				try {
 					dbMsg +="["+ reqCode + "]";
 					long id = 0;
@@ -5644,33 +5644,42 @@ private byte majorVersion = (byte) 0;
 						default:
 							if(TagBrows.this.result != null){
 								dbMsg +=", result = " + TagBrows.this.result.substring(0, 20) +"～"  + TagBrows.this.result.length() +"文字" ;
+							}else{
+								dbMsg +=", result = null";
+				//				TagBrows.this.result="";
 							}
 							pdMaxVal = kensaku.size();
 							dbMsg +=", kensaku = " + pdMaxVal + "項目" ;
 							for(int i = 0; i < pdMaxVal ; i++){
-								dbMsg= reqCode + ";" + i + "/ " + pdMaxVal +")" ;
+								dbMsg += reqCode + ";" + i + "/ " + pdMaxVal +")" ;
 								String freamName = kensaku.get(i);
 								dbMsg +=freamName + ";";
-								int sInt = TagBrows.this.result.length();
-								dbMsg +="残り" + sInt + "文字";
-								if(freamName.equals("USLT") || freamName.equals("USLT")){
-									pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
-								} else {
-									pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+								if(TagBrows.this.result != null){
+									int sInt = TagBrows.this.result.length();
+									dbMsg +="残り" + sInt + "文字";
+									if(freamName.equals("USLT") || freamName.equals("USLT")){
+										pdMessage =getApplicationContext().getString(R.string.tag_prog_msg1) + " ; " + freamName;		//歌詞を探しています。
+									} else {
+										pdMessage =getApplicationContext().getString(R.string.tag_prog_msg2) + " ; " + freamName;		//その他の書き込みを検索しています。
+									}
+									TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
+									pdCoundtVal = i + 1 ;
+									if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
+										pdCoundtVal = pdMaxVal ;																//ループ中断
+										i = pdMaxVal;
+									}
+									int eInt = TagBrows.this.result.length();
+									dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
 								}
-								TagBrows.this.result = getTargetFream( TagBrows.this.result , freamName , reqCode);			//<UNSYNCED LYRICS>	非同期 歌詞/文書のコピー	渡された文字列から指定されたフレームを切り出す
-								pdCoundtVal = i + 1 ;
-								if( TagBrows.this.result_USLT != null ||  TagBrows.this.result_SYLT != null){			//歌詞情報が取得できたところで
-									pdCoundtVal = pdMaxVal ;																//ループ中断
-									i = pdMaxVal;
-								}
-								int eInt = TagBrows.this.result.length();
-								dbMsg += ">>" + eInt + "文字(処理" + (sInt - eInt ) + "文字)";
-								myLog(TAG,dbMsg);
+								myLog(TAG,dbMsg );
 //								publishProgress( pdCoundtVal );		//progressDialog.progBar1.setProgress(step1);
+								back2Activty();		///20231029:onPostExecuteが発生しないので
+
 							}
+
 							break;
 					}
+					///20231029:onPostExecuteが発生しない？
 					new Handler(Looper.getMainLooper())
 							.post(() -> onPostExecute());
 					myLog(TAG,dbMsg );
@@ -5684,8 +5693,8 @@ private byte majorVersion = (byte) 0;
 		 * ploglessTaskの入口
 		 * */
 		void execute(int reqCode,List<String> kensaku,String result,File file) {
-			final String TAG = "execute[ploglessTask]";
-			String dbMsg="";
+			final String TAG = "execute";
+			String dbMsg="[TaskRun]";
 			try {
 				onPreExecute(reqCode , kensaku,result,file);
 				executorService.submit(new TagBrows.ploglessTask.TaskRun());
@@ -5701,7 +5710,7 @@ private byte majorVersion = (byte) 0;
 		 * */
 		void onPreExecute(int req_code ,List<String> kensaku,String result,File file) {           //,SQLiteDatabase write_db
 			final String TAG = "onPreExecute";
-			String dbMsg="[ploglessTask]";
+			String dbMsg="[TaskRun]";
 			try {
 				this.reqCode = req_code;
 				dbMsg += "[" + this.reqCode + "]";
@@ -5726,7 +5735,7 @@ private byte majorVersion = (byte) 0;
 		 * */
 		void onPostExecute() {
 			final String TAG = "onPostExecute";
-			String dbMsg = "";
+			String dbMsg = "[TaskRun]";
 			try{
 				dbMsg +=  "reqCode=" + reqCode;/////////////////////////////////////
 				switch(reqCode) {
