@@ -3155,8 +3155,8 @@ public class MaraSonActivity extends AppCompatActivity
 					Intent intentTB = new Intent(getApplication(),TagBrows.class);
 					intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
 					intentTB.putExtra("filePath",filepath);
-					lyricAri = false;			//歌詞を取得できた
 					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
+					lyricAri = false;			//歌詞を取得できた
 					resultLauncher.launch(intentTB);
 					//		クラスとしての読出し
 					//					File sdFile = new File(Environment.getExternalStorageDirectory(), dataFN);

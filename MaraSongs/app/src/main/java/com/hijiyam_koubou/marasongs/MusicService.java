@@ -73,6 +73,7 @@ public class MusicService extends MediaBrowserService {
     public ExoPlayer exoPlayer;				//音楽プレイヤーの実体
     public MediaSession mediaSession;            //MediaSessionCompat ？　MediaSession
     public Metadata metadata = null;
+    /**歌詞*/
     public String lylicStr = null;
     // public EventLogger eventLogger;
 //    public AnalyticsListener.EventTime eventTime = null;
@@ -186,8 +187,11 @@ public class MusicService extends MediaBrowserService {
     /**REPEAT**/
     public static final String ACTION_REPEAT_MODE = "REPEAT_MODE";
     public static final int MS_REPEAT_MODE = MS_FORWARD_ALBUM + 1;
+    /**歌詞設定**/
+    public static final String ACTION_LYLIC_SET = "LYLIC_SET";
+    public static final int MS_LYLIC_SET = MS_REPEAT_MODE + 1;
     /**Quit**/
-    public static final int MS_QUIT = MS_REPEAT_MODE + 1;
+    public static final int MS_QUIT = MS_LYLIC_SET + 1;
     public static final String ACTION_QUIT = "QUIT";
 
     public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
@@ -1103,6 +1107,14 @@ public class MusicService extends MediaBrowserService {
                 }
             }else if(action.equals(ACTION_REPEAT_MODE)){
                 dbMsg +="、リピート、シャフル切り替え";
+            }else if(action.equals(ACTION_LYLIC_SET)){
+                dbMsg +="、歌詞設定";
+                MediaItem currentMediaItem = exoPlayer.getCurrentMediaItem();
+                String mediaId = currentMediaItem.mediaId;
+                dbMsg += "[" + mediaId + "]" + currentMediaItem.mediaMetadata.title;
+                lylicStr = intent.getStringExtra("songLyric");
+                dbMsg +="、lylicStr\n" + lylicStr;
+        //        sendSongInfo(mIndex);
             }else if(action.equals(ACTION_QUIT)){
                 dbMsg +="、終了";
             }
@@ -1542,6 +1554,16 @@ public class MusicService extends MediaBrowserService {
                             oneMeta.add(objMap);
                         }
                         dbMsg += ",oneMeta=" + oneMeta.size()+"件";
+                        if(lylicStr == null || lylicStr.equals("")){
+                            Intent intentTB = new Intent(getApplication(), TagBrows.class);
+                            intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
+                            intentTB.putExtra("filePath",nowData);
+                            intentTB.putExtra("backCode",TagBrows.back2sarvice_lylyic);								// 歌詞読み込み
+                            PendingIntent pendingIntent = PendingIntent.getActivity(getApplication(), TagBrows.read_USLT, intentTB, PendingIntent.FLAG_MUTABLE);
+                            pendingIntent.send();
+                            lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
+                        }
+
                     }
                 }else{
                     dbMsg += ",metadata=null";
@@ -1608,6 +1630,9 @@ public class MusicService extends MediaBrowserService {
                 songTitol= (String) mediaItem.mediaMetadata.title;
                 String description = (String) mediaItem.mediaMetadata.description;
                 dbMsg += ",description=" +description;
+
+
+
                 Bundle extras = mediaItem.mediaMetadata.extras; //null : extras
 ///playbackProperties.uri
                 dbMsg += ",getCurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex();
@@ -1713,6 +1738,15 @@ public class MusicService extends MediaBrowserService {
                         && !tracks.isTypeSupported(C.TRACK_TYPE_AUDIO, /* allowExceedsCapabilities= */ true)) {        //TRACK_TYPE_VIDEO:1
                 }
                 lastSeenTracks = tracks;
+                mIndex=exoPlayer.getCurrentMediaItemIndex();
+//                int endIndex = exoPlayer.getMediaItemCount();
+//                objMap=plAL.get(mIndex);
+                String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
+                dbMsg += ",dataFN[" + mIndex + "]" + dataFN;
+                String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
+                dbMsg += ",duranation=" + duranation;
+                String mod = sdffiles.format(new Date(Long.valueOf(duranation) * 1000));
+                dbMsg += ">>" + mod;
                 ///EventLogger.onTracksChangedから ////////////////////////////////////////
                 ImmutableList<Tracks.Group> trackGroups = tracks.getGroups();
                 boolean loggedMetadata = false;
@@ -1726,24 +1760,21 @@ public class MusicService extends MediaBrowserService {
                                 ReadMetadata(metadata);
                             }
                             loggedMetadata = true;
-                            if(lylicStr == null || lylicStr.equals("")){
-                                lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
-                            }
+//                            if(lylicStr == null || lylicStr.equals("")){
+//                                Intent intentTB = new Intent(getApplication(), TagBrows.class);
+//                                intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
+//                                intentTB.putExtra("filePath",dataFN);
+//                                intentTB.putExtra("backCode",TagBrows.back2sarvice_lylyic);								// 歌詞読み込み
+//                                PendingIntent pendingIntent = PendingIntent.getActivity(getApplication(), TagBrows.read_USLT, intentTB, PendingIntent.FLAG_MUTABLE);
+//                                pendingIntent.send();
+//                                lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
+//                            }
                             sendSongInfo(mIndex);
 
                         }
                     }
                 }
                 //////////////////////////////////////////////////////////////////////////
-                mIndex=exoPlayer.getCurrentMediaItemIndex();
-//                int endIndex = exoPlayer.getMediaItemCount();
-//                objMap=plAL.get(mIndex);
-                String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-                dbMsg += ",dataFN[" + mIndex + "]" + dataFN;
-                String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
-                dbMsg += ",duranation=" + duranation;
-                String mod = sdffiles.format(new Date(Long.valueOf(duranation) * 1000));
-                dbMsg += ">>" + mod;
 //                MediaItem mediaItem = mediaItemList.get(mIndex);
                 myEditor.putString( "nowIndex", String.valueOf(mIndex));
                 myEditor.putString( "nowData", dataFN);
