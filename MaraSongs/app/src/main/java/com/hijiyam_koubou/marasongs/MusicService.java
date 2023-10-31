@@ -1550,7 +1550,7 @@ public class MusicService extends MediaBrowserService {
                             intentTB.putExtra("backCode",TagBrows.back2sarvice_lylyic);								// 歌詞読み込み
                             PendingIntent pendingIntent = PendingIntent.getActivity(getApplication(), TagBrows.read_USLT, intentTB, PendingIntent.FLAG_MUTABLE);
                             pendingIntent.send();
-                            lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
+              //              lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
                         }
 
                     }
@@ -1728,8 +1728,6 @@ public class MusicService extends MediaBrowserService {
                 }
                 lastSeenTracks = tracks;
                 mIndex=exoPlayer.getCurrentMediaItemIndex();
-//                int endIndex = exoPlayer.getMediaItemCount();
-//                objMap=plAL.get(mIndex);
                 String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
                 dbMsg += ",dataFN[" + mIndex + "]" + dataFN;
                 String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
@@ -1749,29 +1747,16 @@ public class MusicService extends MediaBrowserService {
                                 ReadMetadata(metadata);
                             }
                             loggedMetadata = true;
-//                            if(lylicStr == null || lylicStr.equals("")){
-//                                Intent intentTB = new Intent(getApplication(), TagBrows.class);
-//                                intentTB.putExtra("reqCode",TagBrows.read_USLT);								// 歌詞読み込み
-//                                intentTB.putExtra("filePath",dataFN);
-//                                intentTB.putExtra("backCode",TagBrows.back2sarvice_lylyic);								// 歌詞読み込み
-//                                PendingIntent pendingIntent = PendingIntent.getActivity(getApplication(), TagBrows.read_USLT, intentTB, PendingIntent.FLAG_MUTABLE);
-//                                pendingIntent.send();
-//                                lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
-//                            }
                             sendSongInfo(mIndex);
 
                         }
                     }
                 }
                 //////////////////////////////////////////////////////////////////////////
-//                MediaItem mediaItem = mediaItemList.get(mIndex);
                 myEditor.putString( "nowIndex", String.valueOf(mIndex));
                 myEditor.putString( "nowData", dataFN);
                 myEditor.putString( "pref_position", String.valueOf(0));
                 boolean kakikomi = myEditor.commit();
-
-                //        showMetadata(Uri.parse(dataFN));
-//                sendSongInfo(myPreferences.nowList_id,mIndex,dataFN,mediaItem,duranation);
                 myLog(TAG,dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2213,6 +2198,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
             MRIintent.putExtra("isPlaying",  nowPlay);
 //            MRIintent.putExtra("contentPosition",contentPosition);
             String rStr = lylicStr;
+            rStr=lylicNewLine(rStr);
             dbMsg += ",lylicStr=" + rStr;
             MRIintent.putExtra("lylicStr",  rStr);
 
@@ -2231,6 +2217,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
         try {
             Intent MRIintent = new Intent();
             MRIintent.setAction(ACTION_LYLIC_SET);
+            lylicStr=lylicNewLine(lylicStr);
             dbMsg += ",lylicStr\n" + lylicStr;
             MRIintent.putExtra("lylicStr",  lylicStr);
             getBaseContext().sendBroadcast(MRIintent);
@@ -2239,6 +2226,43 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
+    }
+
+    /**歌詞の改行修正*/
+    public String lylicNewLine(String retStr) {       // String dataFN,,MediaItem mediaItem,String duranatione
+        final String TAG = "lylicNewLine";
+        String dbMsg="";
+        try {
+            if(retStr==null) {
+                dbMsg += ",nullを渡された";
+            }else if(retStr.equals("")) {
+                dbMsg += ",空白を渡された";
+            }else if(retStr.contains("\r\n")) {
+                dbMsg += ",rとｎ";
+            }else if(retStr.contains("\r")) {
+                dbMsg += ",rのみ";
+                retStr = retStr.replaceAll("\r", "\n");
+            }else if(retStr.contains("\n")) {
+                dbMsg += ",nのみ";
+            }else if(retStr.contains("\u200B")) {
+                retStr = retStr.replaceAll("\u200B", "\n");
+                dbMsg += ",改行されないu200B有り\n" + retStr;
+            }else if(retStr.contains("\u00A0")) {
+                retStr = retStr.replaceAll("\u00A0", "\n");
+                dbMsg += ",改行されないu00A0有り\n" + retStr;
+            }else if(retStr.contains("$0\u200b")) {
+                retStr=retStr.replaceAll("$0\u200b", "\n");         //スペースを Unicode のノーブレークスペース文字 (U+00A0) に置き換える
+                //          lylicStr=cVal.replaceAll(".(?!$)", "$0\u200b");     //非表示の幅ゼロのスペース (「\u200b」)
+                dbMsg += ",改行されない$0\u200B有り\n" + retStr;
+//            }else{
+//                lylicStr=cVal;
+            }
+
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return retStr;
     }
 
 

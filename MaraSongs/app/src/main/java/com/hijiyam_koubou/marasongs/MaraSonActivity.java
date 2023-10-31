@@ -1010,9 +1010,7 @@ public class MaraSonActivity extends AppCompatActivity
 								readLyric( nowData );					//歌詞の読出し
 								dbMsg += ">>" + lylicStr ;
 							}
-							lyric_tv.setText(lylicStr);
-
-
+							setLylicTF(lylicStr);
 							dbMsg += ",wStr=" + wStr ;
 //							lp_title.setText(wStr);
 							dbMsg += ",exoPlayer=" + exoPlayer;
@@ -1026,7 +1024,7 @@ public class MaraSonActivity extends AppCompatActivity
 						}else if(receiveAction.equals(MusicService.ACTION_LYLIC_SET)) {
 							lylicStr=intent.getStringExtra("lylicStr");
 							dbMsg += ",lylicStr="+lylicStr.substring(0, 20) + "～" + lylicStr.substring(lylicStr.length()-20) ;
-							lyric_tv.setText(lylicStr);
+							setLylicTF(lylicStr);
 						}
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
@@ -1194,6 +1192,24 @@ public class MaraSonActivity extends AppCompatActivity
 
 	public Handler handler = new Handler();
 	public int audioId;
+
+	/**歌詞を書き込む*/
+	public void setLylicTF(String wStr){		//レシーバーを破棄
+		final String TAG = "setLylicTF";
+		String dbMsg= "";/////////////////////////////////////
+		try{
+			if(wStr == null || wStr.equals("")){
+				dbMsg += ",nullか空白を渡された" ;
+				wStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
+			}else{
+				dbMsg += ",lylicStr="+wStr.substring(0, 20) + "～" + wStr.substring(wStr.length()-20) ;
+			}
+			lyric_tv.setText(wStr);
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
 
 	/**
 	 * urlからプレイヤーの書き込みを行う
@@ -3165,15 +3181,6 @@ public class MaraSonActivity extends AppCompatActivity
 					intentTB.putExtra("backCode",LyricCheck);								// 歌詞読み込み
 					lyricAri = false;			//歌詞を取得できた
 					resultLauncher.launch(intentTB);
-					//		クラスとしての読出し
-					//					File sdFile = new File(Environment.getExternalStorageDirectory(), dataFN);
-									//	TagBrows mp3file = new TagBrows(filepath ,this);
-//										String wrStr = mp3file.getSongLyric();
-//										if( wrStr != null){
-//											lylicStr = wrStr;
-//										}
-//										lyric_tv.setText(lylicStr);
-
 				}
 				b_filePath = filepath;
 			}
@@ -3234,15 +3241,6 @@ public class MaraSonActivity extends AppCompatActivity
 						String saiEncrod = items[which].toString();				//追加先のリスト名
 						dbMsg +=saiEncrod + "に" ;/////////////////////////////////////
 						dbMsg +=",lylicStr=" + MaraSonActivity.this.lylicStr.substring(0, 40)  + "～" + MaraSonActivity.this.lylicStr.substring(MaraSonActivity.this.lylicStr.length()-24) ;/////////////////////////////////////
-//						String eucjpStr = new String(MaraSonActivity.this.lylicStr.getBytes(MaraSonActivity.this.lyricEncord), saiEncrod);
-////						dbMsg +=",eucjpStr=" + eucjpStr.substring(0, 40)  + "～" + eucjpStr.substring(eucjpStr.length()-40, eucjpStr.length()) ;/////////////////////////////////////
-//						byte[] dataBuffer = lylicStr.getBytes(MaraSonActivity.this.lyricEncord);			//lylicStr.substring(0, lylicStr.length()).getBytes(motoEncrod);									//データ部分を抜出			ISO-8859-1		"EUC_JP"
-//						if( dataBuffer != null ){
-//							dbMsg +=",dataBuffer= "+ dataBuffer.length + "バイト";
-//							lylicStr = new String(dataBuffer, saiEncrod);
-//			//				lyric_tv.setText(lylicStr);
-//							MaraSonActivity.this.lyricEncord = saiEncrod;
-//						}
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -4494,7 +4492,7 @@ public class MaraSonActivity extends AppCompatActivity
 										lylicStr = wrStr;
 									}
 									dbMsg += ",lylicStr=\n" + lylicStr;
-									lyric_tv.setText(lylicStr);
+									setLylicTF(lylicStr);
 									lyricAri = intent.getBooleanExtra("lyricAri",false);			//歌詞を取得できた
 									wrStr =intent.getStringExtra("lyricEncord");
 									if( wrStr != null){
@@ -4819,7 +4817,7 @@ public class MaraSonActivity extends AppCompatActivity
 						dbMsg +=",lylicStr未取得,nowData= " + nowData;
 						readLyric(nowData);
 					}else {
-						lyric_tv.setText(lylicStr);
+						setLylicTF(lylicStr);
 					}
 				}else{
 					dbMsg +=",lylic設定済み";
