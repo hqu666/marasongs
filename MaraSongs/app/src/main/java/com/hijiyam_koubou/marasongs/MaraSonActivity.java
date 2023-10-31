@@ -935,18 +935,20 @@ public class MaraSonActivity extends AppCompatActivity
 					final String TAG = "onReceive";
 					String dbMsg="[MusicReceiver]";
 					try{
-						boolean isPlaying;
-						String nowList_id = null;
-						long contentPositionLong = 0L;
-						SimpleDateFormat sdf_time = new SimpleDateFormat("mm:ss:SS");
-						String artistName = null;
-						String albumTitle = null;
-						String titleStr = null;
+						String receiveAction = intent.getAction();
+						dbMsg += ",Action= " + receiveAction;
+						if(receiveAction.equals(MusicService.ACTION_SET_SONG)) {
+							boolean isPlaying;
+							String nowList_id = null;
+							long contentPositionLong = 0L;
+							SimpleDateFormat sdf_time = new SimpleDateFormat("mm:ss:SS");
+							String artistName = null;
+							String albumTitle = null;
+							String titleStr = null;
 
-						dbMsg += ",Action= " + intent.getAction() ;
-						isPlaying = intent.getBooleanExtra("isPlaying", false);
-						dbMsg += ",isPlaying=" + isPlaying;
-						if(intent.getAction().equals(MusicService.ACTION_SET_SONG)) {
+							isPlaying = intent.getBooleanExtra("isPlaying", false);
+							dbMsg += ",isPlaying=" + isPlaying;
+
 							currentListId = intent.getStringExtra("nowList_id");
 							currentListName = intent.getStringExtra("currentListName");
 							dbMsg += ",現在[" + currentListId + "]" + currentListName;
@@ -1021,8 +1023,12 @@ public class MaraSonActivity extends AppCompatActivity
 								dbMsg += ",subTitol=" + subTitol;
 								lp_subtitol.setText(subTitol);									//プレイヤーのアーティスト表示
 							}
-							myLog(TAG, dbMsg);
+						}else if(receiveAction.equals(MusicService.ACTION_LYLIC_SET)) {
+							lylicStr=intent.getStringExtra("lylicStr");
+							dbMsg += ",lylicStr="+lylicStr.substring(0, 20) + "～" + lylicStr.substring(lylicStr.length()-20) ;
+							lyric_tv.setText(lylicStr);
 						}
+						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -1115,6 +1121,7 @@ public class MaraSonActivity extends AppCompatActivity
 				mFilter.addAction(MusicService.ACTION_SET_SONG);
 				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				mFilter.addAction(MusicService.ACTION_GET_SONG);
+				mFilter.addAction(MusicService.ACTION_LYLIC_SET);
 				mReceiver = new MusicReceiver();
 				registerReceiver(mReceiver, mFilter);
 				dbMsg +=">生成>=" + mReceiver;////////////////////////

@@ -958,16 +958,6 @@ public class MusicService extends MediaBrowserService {
                         boolean kakikomi = myEditor.commit();
                         dbMsg +=",書き込み=" + kakikomi;	////////////////
                     }
-//                }else if(action.equals(ACTION_GET_SONG)){
-//                    dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
-//                    int reqIndex = intent.getIntExtra("mIndex", 0);
-//                    dbMsg += ",reqIndex=" + reqIndex + "曲目";
-//                    if(reqIndex != mIndex){
-//                        dbMsg += ",mIndex=" + mIndex;
-//                        mIndex = reqIndex;
-//                        dbMsg += ">>" + mIndex + "曲目";
-//                    }
-//                    sendSongInfo(mIndex);
                 }else{
                     dbMsg += "汎用リスト" ;
                     currentArtistName = "";         //全曲のパラメータ初期化
@@ -1027,7 +1017,6 @@ public class MusicService extends MediaBrowserService {
                     exoPlayer.pause();
                 }
                 sendSongInfo(mIndex);
-       //         sendStateChasng();
                 dbMsg += ">>" + exoPlayer.isPlaying();
             }else if(action.equals(ACTION_GET_SONG)){
                 dbMsg +="、選曲された楽曲の情報をブロードキャストさせる";
@@ -1114,7 +1103,7 @@ public class MusicService extends MediaBrowserService {
                 dbMsg += "[" + mediaId + "]" + currentMediaItem.mediaMetadata.title;
                 lylicStr = intent.getStringExtra("songLyric");
                 dbMsg +="、lylicStr\n" + lylicStr;
-        //        sendSongInfo(mIndex);
+                sendLylic();
             }else if(action.equals(ACTION_QUIT)){
                 dbMsg +="、終了";
             }
@@ -2235,7 +2224,26 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
         }
     }
 
-    /**exoPlayerのContentPositionとisPlayingを送る*/
+    @OptIn(markerClass = UnstableApi.class)
+    public void sendLylic() {       // String dataFN,,MediaItem mediaItem,String duranatione
+        final String TAG = "sendLylic";
+        String dbMsg="";
+        try {
+            Intent MRIintent = new Intent();
+            MRIintent.setAction(ACTION_LYLIC_SET);
+            dbMsg += ",lylicStr\n" + lylicStr;
+            MRIintent.putExtra("lylicStr",  lylicStr);
+            getBaseContext().sendBroadcast(MRIintent);
+
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+
+
+            /**exoPlayerのContentPositionとisPlayingを送る*/
     public void sendStateChasng() {
         final String TAG = "sendStateChasng";
         String dbMsg="";

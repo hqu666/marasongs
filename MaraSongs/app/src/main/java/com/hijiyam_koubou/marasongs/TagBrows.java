@@ -5441,6 +5441,7 @@ public class TagBrows  extends Activity{
 			Intent MPSIntent = new Intent(getApplication(), MusicService.class);
 			dbMsg +=  ">>" + MPSIntent;
 			MPSIntent.setAction(MusicService.ACTION_LYLIC_SET);
+			dbMsg += ",retStr="+this.result_USLT.substring(0, 20) + "～" + this.result_USLT.substring(this.result_USLT.length()-20) ;
 			MPSIntent.putExtra("songLyric",this.result_USLT);
 			ComponentName MPSName = startService(MPSIntent);    //ボタンフェイスの変更はサービスからの戻りで更新
 			dbMsg +=  ">>" + MPSIntent;
