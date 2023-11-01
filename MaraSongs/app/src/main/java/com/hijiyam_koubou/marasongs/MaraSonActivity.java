@@ -1205,6 +1205,8 @@ public class MaraSonActivity extends AppCompatActivity
 				dbMsg += ",lylicStr="+wStr.substring(0, 20) + "～" + wStr.substring(wStr.length()-20) ;
 			}
 			lyric_tv.setText(wStr);
+			lyric_tv.scrollTo(0,0);
+
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -5113,7 +5115,6 @@ public class MaraSonActivity extends AppCompatActivity
 
 			fontMini = 12;
 			fontMax = 60;
-//			lylicFontSize = lyric_tv.getTextSize();
 			dbMsg +="lylicFontSize=" + lylicFontSize + "sp";
 			font_size_sp = findViewById(R.id.font_size_sp);
 			font_mini_tv = findViewById(R.id.font_mini);
