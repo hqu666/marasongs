@@ -272,6 +272,9 @@ public class MaraSonActivity extends AppCompatActivity
 
 	public ImageView mpJakeImg;			//ジャケット
 	public TextView lyric_tv;					//歌詞表示
+
+	public View lyric_sv;
+
 	public float fontMini;
 	public float fontMax;
 
@@ -1206,7 +1209,7 @@ public class MaraSonActivity extends AppCompatActivity
 			}
 			lyric_tv.setText(wStr);
 			lyric_tv.scrollTo(0,0);
-
+			lyric_sv.setScrollY(0);
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -3741,24 +3744,8 @@ public class MaraSonActivity extends AppCompatActivity
 		try{
 			dbMsg= "View=" + v.getId();
 			if (v == vol_btn) {
-//				nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-//				dbMsg= "nowVol=" + nowVol;//0～15/////////////////////////////
-////				vol_btn.setSelected(false);					//TextView,ImageButton,Spinnerは.setSelected(true);
-//////			vol_btn.setFocusable(false);					//TextView,ImageButton,Spinnerは.setSelected(true);
-//////			vol_btn.setFocusableInTouchMode(false);
-////			vol_btn.requestFocus();
-//		//		vol_btn.clearFocus();			//これだけではフォーカスが飛ぶ
 				setVol();				//音量設定
-//				audioManage.setStreamVolume(AudioManager.STREAM_MUSIC, nowVol, AudioManager.FLAG_SHOW_UI);
-//				Thread.sleep(4000); // 4秒待つ
-//				nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
-//				dbMsg +=">>" + nowVol;//0～15/////////////////////////////
-//				myLog(TAG,dbMsg);
-//				vol_tf.setText(String.valueOf(nowVol));;												//音量表示
 				return true;
-//			} else if (v == lyric_tv) {										//歌詞表示
-//				lyric2web( lylicStr );				//歌詞をwebKitに送る
-//				return true;
 			}else if(v == pp_pp_start_tf){				//二点間再生開始点
 				ppSet(R.id.pp_start_rd);								//二点間リピートの調整
 				return true;
@@ -5038,9 +5025,10 @@ public class MaraSonActivity extends AppCompatActivity
 			dbMsg +=",mpJakeImg=" + mpJakeImg;/////////////////////////////////////
 			//	mpJakeImg.setScaleType(ImageView.ScaleType.FIT_CENTER);				//FIT_CENTER   エリアの縦幅まで画像を拡大し中央に表示
 			LinearLayout lilic_ll = findViewById(R.id.lilic_ll);
+			lyric_sv = lilic_ll.findViewById(R.id.lyric_sv);                    //歌詞表示
 			lyric_tv = lilic_ll.findViewById(R.id.lyric_tv);					//歌詞表示
 			dbMsg +=",lilic_tv=" + lyric_tv;
-			lyric_tv.setMovementMethod(new ScrollingMovementMethod());			//TextViewを上下フリックでスクロール；ただしonFlingが発生しなくなる
+		//***	lyric_tv.setMovementMethod(new ScrollingMovementMethod());	でTextViewを上下フリックでスクロール；ただしonFlingが発生しなくなるのでScrollViewに組み込む
 			lyric_tv.setTextSize(lylicFontSize);
 			//Manifestのアプリケーションテーマで	@style/Base.Theme.AppCompat		@style/Theme.AppCompat
 			artist_tv.setMovementMethod(ScrollingMovementMethod.getInstance());			//ScrollView を使わないで TextView に スクロールバーを表示する	http://kokufu.blogspot.jp/2012/12/scrollview-textview.html
