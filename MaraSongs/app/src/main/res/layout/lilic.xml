@@ -62,10 +62,11 @@
 
 
 	<ScrollView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
 		android:id="@+id/lyric_sv"
-		>
+		android:layout_width="match_parent"
+
+		android:layout_height="match_parent">
+
 		<TextView
 			android:id="@+id/lyric_tv"
 			android:layout_width="match_parent"
@@ -75,10 +76,10 @@
 			android:autoSizeMinTextSize="12sp"
 			android:autoSizeStepGranularity="2sp"
 			android:singleLine="false" />
-<!--			android:scrollbars="vertical"-->
-			<!--	android:textSize="14sp"-->
-			<!--	android:maxLines="18"-->
-			<!--	android:autoSizeTextType="uniform"-->
+		<!--			android:scrollbars="vertical"-->
+		<!--	android:textSize="14sp"-->
+		<!--	android:maxLines="18"-->
+		<!--	android:autoSizeTextType="uniform"-->
 	</ScrollView>
 
 </LinearLayout>
