@@ -10105,21 +10105,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 	public int SelID;
 	View currentFo;					//選択されているアイテム
 
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		final String TAG = "onKeyDown";
-//		String dbMsg = "";
-//		dbMsg += ORGUT.nowTime(true,true,true);/////////////////////////////////////
-//		dbMsg += " , keyCode=" +keyCode;
-//		myLog(TAG, dbMsg);
-//		if(keyCode != KeyEvent.KEYCODE_BACK){
-//				headClickAction();	//ヘッドが クリックされた時の処理
-//
-//				return super.onKeyDown(keyCode, event);
-//			}else{
-//				return false;
-//			}
-//	}
-
 	private float m_LastX;
 	private float m_LastY;
 	private int m_TouchSlop;
@@ -10161,6 +10146,22 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							dbMsg += "右フリック";
 						}else if(dX<0){
 							dbMsg += "左フリック";
+							if( MPSIntent != null || exoPlayer != null){
+								MPSIntent = new Intent(getApplication(), MusicService.class);
+								dbMsg +=  ">>" + MPSIntent;
+								MPSIntent.setAction(MusicService.ACTION_RE_DISPlay);
+//								MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+//								MPSIntent.putExtra("nowList",listName);
+//								MPSIntent.putExtra("nowData",dataFN);
+//								MPSIntent.putExtra("nowArtist",sousa_artist);
+//								MPSIntent.putExtra("nowAlbum",sousa_alubm);
+//								MPSIntent.putExtra("mIndex",mIndex);
+//								MPSIntent.putExtra("saiseiJikan",saiseiJikan);
+//								dbMsg += " , IsPlaying=" + IsPlaying;
+//								MPSIntent.putExtra("IsPlaying",IsPlaying);
+								MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+								dbMsg += " ,MPSName=" + MPSName + "でstartService";
+							}
 						}
 						float xDelta = x - m_LastX;
 						dbMsg += ",xDelta="+ xDelta;
@@ -10194,11 +10195,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				}
 				dbMsg += ",retBool=" + retBool;
 				dbMsg +=",Event="+mEvent.toString();
+				if(mAction != MotionEvent.ACTION_MOVE){
+					myLog(TAG, dbMsg);
+				}
 			}else{
 				dbMsg +=",MotionEvent=null";
 			}
-
-			myLog(TAG, dbMsg);
 		} catch (NullPointerException e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}catch (Exception e) {

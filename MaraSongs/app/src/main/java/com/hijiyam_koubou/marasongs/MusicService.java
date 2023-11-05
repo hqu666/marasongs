@@ -190,8 +190,13 @@ public class MusicService extends MediaBrowserService {
     /**歌詞設定**/
     public static final String ACTION_LYLIC_SET = "LYLIC_SET";
     public static final int MS_LYLIC_SET = MS_REPEAT_MODE + 1;
+    /**歌詞設定**/
+    public static final String ACTION_RE_DISPlay = "RE_DISPlay";
+    public static final int MS_RE_DISPlay = MS_LYLIC_SET + 1;
+
+
     /**Quit**/
-    public static final int MS_QUIT = MS_LYLIC_SET + 1;
+    public static final int MS_QUIT = MS_RE_DISPlay + 1;
     public static final String ACTION_QUIT = "QUIT";
 
     public static final String ACTION_BLUETOOTH_INFO= "com.hijiyam_koubou.action.BLUETOOTH_INFO";
@@ -314,8 +319,6 @@ public class MusicService extends MediaBrowserService {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }																	//設定読込・旧バージョン設定の消去
-
-//    private static final int[] REQUEST_CODE = { 0, 1, 2 };
 
     /////////////////////プレイヤーの状態をクライアントに通知する//
     ///通知の作成////////////////////
@@ -1104,6 +1107,9 @@ public class MusicService extends MediaBrowserService {
                 lylicStr = intent.getStringExtra("songLyric");
                 dbMsg +="、lylicStr\n" + lylicStr;
                 sendLylic();
+            }else if(action.equals(ACTION_RE_DISPlay)){
+                dbMsg +="、プレイヤー再表示";
+                initializePlayer();
             }else if(action.equals(ACTION_QUIT)){
                 dbMsg +="、終了";
             }
@@ -1550,7 +1556,6 @@ public class MusicService extends MediaBrowserService {
                             intentTB.putExtra("backCode",TagBrows.back2sarvice_lylyic);								// 歌詞読み込み
                             PendingIntent pendingIntent = PendingIntent.getActivity(getApplication(), TagBrows.read_USLT, intentTB, PendingIntent.FLAG_MUTABLE);
                             pendingIntent.send();
-              //              lylicStr = getResources().getString(R.string.lylics_not_set);               //"歌詞未設定";
                         }
 
                     }
@@ -1936,6 +1941,17 @@ public class MusicService extends MediaBrowserService {
 //        }
 //    }
 
+    /**再生しているセッションでプレーヤーを再表示*/
+    protected void RedisplayPlayrt() {
+        final String TAG = "RedisplayPlayrt";
+        String dbMsg="";
+        try {
+            myLog(TAG,dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
 
     /**
      * exoPlayerを生成する
@@ -2002,8 +2018,7 @@ public class MusicService extends MediaBrowserService {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
                 //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
             // プレイヤーを表示
-               pendingIntent.send();
-         //       getApplication().startActivity(intent);           //では表示した挽回で何も表示されていない
+            pendingIntent.send();
 
             exoPlayer.prepare();
             updateButtonVisibility();
@@ -2011,7 +2026,6 @@ public class MusicService extends MediaBrowserService {
             mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
             // Notification作成//////////////////////////////////////////////////////////////
             MediaStyleNotificationHelper.MediaStyle mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
-//            PendingIntent pendingIntentList = PendingIntent.getActivity(context, REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE);
 //              https://developer.android.com/topic/security/risks/pending-intent?hl=ja
 
             notificationBuilder = new NotificationCompat.Builder(context, channelId);
