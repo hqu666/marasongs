@@ -28,14 +28,12 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.OnScanCompletedListener;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -43,6 +41,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -52,7 +51,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
@@ -66,7 +64,6 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -10122,6 +10119,93 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				return false;
 //			}
 //	}
+
+	private float m_LastX;
+	private float m_LastY;
+	private int m_TouchSlop;
+	private float m_StartX;
+	/**
+	 * 通常のタッチイベントより先に呼ばれる
+	 * */
+	@Override
+	public boolean dispatchTouchEvent(final MotionEvent mEvent) {
+		boolean retBool= super.dispatchTouchEvent(mEvent);
+		final String TAG = "dispatchTouchEvent";
+		String dbMsg = "";
+		dbMsg += ORGUT.nowTime(true,true,true);
+		try{
+			if(mEvent !=null){
+				int mAction = mEvent.getAction();
+				dbMsg += ",mAction="+ mAction;
+				switch (mAction)
+				{
+					case MotionEvent.ACTION_DOWN:
+						dbMsg += ":DOWN";
+						m_LastX = mEvent.getX();
+						m_LastY = mEvent.getY();
+						dbMsg += ",m_Last("+ m_LastX+ ","+ m_LastY + ")";
+						m_StartX = mEvent.getX();
+						dbMsg += ",m_StartX="+ m_StartX;
+						break;
+					// MotionEventActions.UpのときにOnTouchEvent()を呼ぶとスナップが機能してしまうので、
+					// 呼ばないように変えた
+					case MotionEvent.ACTION_UP:
+						dbMsg += ":UP";
+						float x = mEvent.getX();
+						float y = mEvent.getY();
+						dbMsg += "("+ x + ","+ y + ")";
+						float dX = m_LastX-x;
+						float dY = m_LastY-y;
+						dbMsg += ",変化("+ dX + ","+ dY + ")";
+						if(0<dX){
+							dbMsg += "右フリック";
+						}else if(dX<0){
+							dbMsg += "左フリック";
+						}
+						float xDelta = x - m_LastX;
+						dbMsg += ",xDelta="+ xDelta;
+						float xDeltaAbs = Math.abs(xDelta);
+						float yDeltaAbs = Math.abs(y - m_LastY);
+						dbMsg += ",DeltaAbs("+ xDeltaAbs + ","+ yDeltaAbs + ")";
+
+						float xDeltaTotal = x - m_StartX;
+						dbMsg += ",xDeltaTotal="+ xDeltaTotal;
+//						if (Math.abs(xDeltaTotal) > m_TouchSlop && xDeltaAbs > yDeltaAbs)
+//						{
+//							return onTouchEvent(mEvent);
+//						}
+//						myLog(TAG, dbMsg);
+						break;
+					case MotionEvent.ACTION_MOVE:
+						dbMsg += ":MOVE";
+						break;
+					case MotionEvent.ACTION_CANCEL:
+						dbMsg += ":CANCEL";
+						break;
+					case MotionEvent.ACTION_POINTER_UP:
+						dbMsg += ":POINTER_UP";
+						break;
+					case MotionEvent.AXIS_VSCROLL:
+						dbMsg += ":VSCROLL";
+						break;
+					case MotionEvent.AXIS_HSCROLL:
+						dbMsg += ":HSCROLL";
+						break;
+				}
+				dbMsg += ",retBool=" + retBool;
+				dbMsg +=",Event="+mEvent.toString();
+			}else{
+				dbMsg +=",MotionEvent=null";
+			}
+
+			myLog(TAG, dbMsg);
+		} catch (NullPointerException e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+	}
 
 	/**
 	 *  ハードウェアキーを取得

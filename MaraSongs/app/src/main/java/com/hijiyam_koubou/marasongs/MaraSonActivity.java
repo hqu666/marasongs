@@ -3566,7 +3566,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 			switch (keyCode) {
 				case KeyEvent.KEYCODE_BACK:	//4；KEYCODE_BACK :keyCode；09SH: keyCode；4,event=KeyEvent{action=0 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
 					if(event.getAction() == KeyEvent.ACTION_DOWN){					//0;二重発生の防止
-						actionViewFlipper();
+		//				actionViewFlipper();
 					}
 					break;
 				case KeyEvent.KEYCODE_DPAD_UP:		//マルチガイド上；19
@@ -3747,11 +3747,73 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 
 	@Override
 	public boolean onTouchEvent(MotionEvent mEvent){
+		boolean retBool=  super.onTouchEvent(mEvent);
 		final String TAG = "onTouchEvent";
 		String dbMsg="";
 		try{
 			if(mEvent !=null){
-				dbMsg +=",MotionEvent=" + mEvent.toString();
+				int nextVF = pp_vf.getDisplayedChild();
+				dbMsg +=",表示" + nextVF + "/" + pp_vf.getChildCount()+ "枚目";		//2		0始まりで何枚目か
+				int mAction = mEvent.getAction();
+				dbMsg += ",mAction="+ mAction;
+				switch (mAction)
+				{
+					case MotionEvent.ACTION_DOWN:
+						dbMsg += ":DOWN";
+						m_LastX = mEvent.getX();
+						m_LastY = mEvent.getY();
+						dbMsg += ",m_Last("+ m_LastX+ ","+ m_LastY + ")";
+						m_StartX = mEvent.getX();
+						dbMsg += ",m_StartX="+ m_StartX;
+						break;
+					// MotionEventActions.UpのときにOnTouchEvent()を呼ぶとスナップが機能してしまうので、
+					// 呼ばないように変えた
+					case MotionEvent.ACTION_UP:
+						dbMsg += ":UP";
+						float x = mEvent.getX();
+						float y = mEvent.getY();
+						dbMsg += "("+ x + ","+ y + ")";
+						float dX = m_LastX-x;
+						float dY = m_LastY-y;
+						dbMsg += ",変化("+ dX + ","+ dY + ")";
+						if(0<dX && 0==nextVF){
+							dbMsg += "右フリック";
+							actionViewFlipper();
+						}else if(dX<0 && 0<nextVF){
+							dbMsg += "左フリック";
+							actionViewFlipper();
+						}
+						float xDelta = x - m_LastX;
+						dbMsg += ",xDelta="+ xDelta;
+						float xDeltaAbs = Math.abs(xDelta);
+						float yDeltaAbs = Math.abs(y - m_LastY);
+						dbMsg += ",DeltaAbs("+ xDeltaAbs + ","+ yDeltaAbs + ")";
+
+						float xDeltaTotal = x - m_StartX;
+						dbMsg += ",xDeltaTotal="+ xDeltaTotal;
+//						if (Math.abs(xDeltaTotal) > m_TouchSlop && xDeltaAbs > yDeltaAbs)
+//						{
+//							return onTouchEvent(mEvent);
+//						}
+//						myLog(TAG, dbMsg);
+						break;
+					case MotionEvent.ACTION_MOVE:
+						dbMsg += ":MOVE";
+						break;
+					case MotionEvent.ACTION_CANCEL:
+						dbMsg += ":CANCEL";
+						break;
+					case MotionEvent.ACTION_POINTER_UP:
+						dbMsg += ":POINTER_UP";
+						break;
+					case MotionEvent.AXIS_VSCROLL:
+						dbMsg += ":VSCROLL";
+						break;
+					case MotionEvent.AXIS_HSCROLL:
+						dbMsg += ":HSCROLL";
+						break;
+				}
+				dbMsg += ",retBool=" + retBool;
 				this.mDetector.onTouchEvent(mEvent);
 				if( scalegesture != null ) {
 					dbMsg +=",scalegesture" ;
@@ -3764,14 +3826,16 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 				}else{
 					return false;
 				}
+				dbMsg +=",Event="+mEvent.toString();
 			}else{
 				dbMsg +=",MotionEvent=null";
 			}
+
 	 		myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
 		}
-		return super.onTouchEvent(mEvent);
+		return retBool;
 	}
 
 	/**GestureDetectorのイベント取得*/
@@ -3812,7 +3876,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 					dbMsg +=",event2=null";
 				}
 //				if(0<velocityY){
-					actionViewFlipper();
+		//			actionViewFlipper();
 //				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
@@ -3865,7 +3929,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 			try{
 				if(me !=null){
 					dbMsg +=",MotionEvent=" + me.toString();
-					actionViewFlipper();
+			//		actionViewFlipper();
 				}else{
 					dbMsg +=",MotionEvent=null";
 				}
@@ -3877,7 +3941,89 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 		}
 	}
 
-	///OnScaleGestureListener/////////////////////////////////////////////////////
+
+	private float m_LastX;
+	private float m_LastY;
+	private int m_TouchSlop;
+	private float m_StartX;
+	/**
+	 * 通常のタッチイベントより先に呼ばれる
+	 * */
+	@Override
+	public boolean dispatchTouchEvent(final MotionEvent mEvent) {
+		boolean retBool= super.dispatchTouchEvent(mEvent);
+		final String TAG = "dispatchTouchEvent";
+		String dbMsg = "";
+		dbMsg += ORGUT.nowTime(true,true,true);
+		try{
+			int mAction = mEvent.getAction();
+			dbMsg += ",mAction="+ mAction;
+			switch (mAction)
+			{
+				case MotionEvent.ACTION_DOWN:
+					dbMsg += ":DOWN";
+					m_LastX = mEvent.getX();
+					m_LastY = mEvent.getY();
+					dbMsg += ",m_Last("+ m_LastX+ ","+ m_LastY + ")";
+					m_StartX = mEvent.getX();
+					dbMsg += ",m_StartX="+ m_StartX;
+					break;
+				// MotionEventActions.UpのときにOnTouchEvent()を呼ぶとスナップが機能してしまうので、
+				// 呼ばないように変えた
+				case MotionEvent.ACTION_UP:
+					dbMsg += ":UP";
+					float x = mEvent.getX();
+					float y = mEvent.getY();
+					dbMsg += "("+ x + ","+ y + ")";
+					float dX = m_LastX-x;
+					float dY = m_LastY-y;
+					dbMsg += "("+ dX + ","+ dY + ")";
+					if(0<dX){
+						dbMsg += "右フリック";
+					}else if(dX<0){
+						dbMsg += "左フリック";
+					}
+					float xDelta = x - m_LastX;
+					dbMsg += ",xDelta="+ xDelta;
+					float xDeltaAbs = Math.abs(xDelta);
+					float yDeltaAbs = Math.abs(y - m_LastY);
+					dbMsg += ",DeltaAbs("+ xDeltaAbs + ","+ yDeltaAbs + ")";
+
+					float xDeltaTotal = x - m_StartX;
+					dbMsg += ",xDeltaTotal="+ xDeltaTotal;
+					if (Math.abs(xDeltaTotal) > m_TouchSlop && xDeltaAbs > yDeltaAbs)
+					{
+						return onTouchEvent(mEvent);
+					}
+					myLog(TAG, dbMsg);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					dbMsg += ":MOVE";
+					break;
+				case MotionEvent.ACTION_CANCEL:
+					dbMsg += ":CANCEL";
+					break;
+				case MotionEvent.ACTION_POINTER_UP:
+					dbMsg += ":POINTER_UP";
+					break;
+				case MotionEvent.AXIS_VSCROLL:
+					dbMsg += ":VSCROLL";
+					break;
+				case MotionEvent.AXIS_HSCROLL:
+					dbMsg += ":HSCROLL";
+					break;
+			}
+			dbMsg += ",retBool=" + retBool;
+//			myLog(TAG, dbMsg);
+		} catch (NullPointerException e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+	}
+
+			///OnScaleGestureListener/////////////////////////////////////////////////////
 	/**
 	 *
 	 * <ul>
