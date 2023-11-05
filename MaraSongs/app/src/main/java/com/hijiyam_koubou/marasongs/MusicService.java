@@ -2016,49 +2016,39 @@ public class MusicService extends MediaBrowserService {
             intent.putExtra("nowData",nowData);             //nowData
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
-                //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
+            //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
             // プレイヤーを表示
             pendingIntent.send();
 
             exoPlayer.prepare();
             updateButtonVisibility();
       //      	exoPlayer.playWhenReady = true;
-            mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
-            // Notification作成//////////////////////////////////////////////////////////////
-            MediaStyleNotificationHelper.MediaStyle mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
+            if(mediaSession ==null){
+                mediaSession = new MediaSession.Builder(context,exoPlayer).build();           // MusicService.this
+                // Notification作成//////////////////////////////////////////////////////////////
+                MediaStyleNotificationHelper.MediaStyle mediaStyle = new MediaStyleNotificationHelper.MediaStyle(mediaSession);         //
 //              https://developer.android.com/topic/security/risks/pending-intent?hl=ja
 
-            notificationBuilder = new NotificationCompat.Builder(context, channelId);
-            notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-            notificationBuilder.setSmallIcon(R.drawable.media_session_service_notification_ic_music_note);
+                notificationBuilder = new NotificationCompat.Builder(context, channelId);
+                notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                notificationBuilder.setSmallIcon(R.drawable.media_session_service_notification_ic_music_note);
 ////                    // setShowActionsInCompactView に該当するボタンが必要。アイコンは指定のリソースは無視される
-            //addActionは無視される
-//            notificationBuilder.addAction(R.drawable.media3_notification_seek_back, "Previous", prevPendingIntent); // #0
-//            notificationBuilder.addAction(R.drawable.media3_notification_pause, "Pause", pausePendingIntent);  // #1
-//            notificationBuilder.addAction(R.drawable.media3_notification_seek_forward, "Next", nextPendingIntent);     // #2
-////                    .addAction(android.R.drawable.stat_notify_sync_noanim, "Repeat", repatPendingIntent)     // #3
-////                    .addAction(android.R.drawable.ic_lock_power_off, "Quity", quitPendingIntent)     // #4
-////                    // Apply the media style template
+                //addActionは無視される
 
-            notificationBuilder.setStyle(mediaStyle);                   // NotificationCompat.Style
-            notificationBuilder .setContentTitle(songTitol);
-            notificationBuilder.setContentText(artistName+" - "+ albumName);
-            notificationBuilder.setSound(null);         //通知音を消す
-            notificationBuilder.setSilent(true);
+                notificationBuilder.setStyle(mediaStyle);                   // NotificationCompat.Style
+                notificationBuilder .setContentTitle(songTitol);
+                notificationBuilder.setContentText(artistName+" - "+ albumName);
+                notificationBuilder.setSound(null);         //通知音を消す
+                notificationBuilder.setSilent(true);
 
-            notificationBuilder.setContentIntent(pendingIntent);
-            //        notificationBuilder.setLargeIcon(albumArtBitmap);
+                notificationBuilder.setContentIntent(pendingIntent);
+                //        notificationBuilder.setLargeIcon(albumArtBitmap);
 
-            notification = notificationBuilder.build();
-            startForeground(NOTIFICATION_ID, notification);
-            ////////////////////////////////////////////////////////////// Notification作成
-//            objMap=plAL.get(mIndex);
-//            String dataFN = (String) objMap.get(MediaStore.Audio.Playlists.Members.DATA);
-//            dbMsg += ",dataFN=" + dataFN;
-//            String duranation = (String) objMap.get(MediaStore.Audio.Playlists.Members.DURATION);
-//            dbMsg += ",duranation=" + duranation;
-//            MediaItem mediaItem = mediaItemList.get(mIndex);
-            sendSongInfo(mIndex);
+                notification = notificationBuilder.build();
+                startForeground(NOTIFICATION_ID, notification);
+                ////////////////////////////////////////////////////////////// Notification作成
+                sendSongInfo(mIndex);
+            }
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
