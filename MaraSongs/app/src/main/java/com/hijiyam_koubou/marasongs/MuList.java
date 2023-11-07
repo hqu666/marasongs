@@ -10142,14 +10142,22 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						float dX = m_LastX-x;
 						float dY = m_LastY-y;
 						dbMsg += ",変化("+ dX + ","+ dY + ")";
-						if(0<dX){
-							dbMsg += "右フリック";
-						}else if(dX<0){
-							dbMsg += "左フリック";
-							if( MPSIntent != null || exoPlayer != null){
-								MPSIntent = new Intent(getApplication(), MusicService.class);
-								dbMsg +=  ">>" + MPSIntent;
-								MPSIntent.setAction(MusicService.ACTION_RE_DISPlay);
+						float xDelta = x - m_LastX;
+						dbMsg += ",xDelta="+ xDelta;
+						float xDeltaAbs = Math.abs(xDelta);
+						float yDeltaAbs = Math.abs(y - m_LastY);
+						dbMsg += ",DeltaAbs("+ xDeltaAbs + ","+ yDeltaAbs + ")";
+						float xDeltaTotal = x - m_StartX;
+						dbMsg += ",xDeltaTotal="+ xDeltaTotal;
+						if(yDeltaAbs<xDeltaAbs){
+							if(0<dX){
+								dbMsg += "右フリック";
+							}else if(dX<0){
+								dbMsg += "左フリック";
+								if( MPSIntent != null || exoPlayer != null){
+									MPSIntent = new Intent(getApplication(), MusicService.class);
+									dbMsg +=  ">>" + MPSIntent;
+									MPSIntent.setAction(MusicService.ACTION_RE_DISPlay);
 //								MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
 //								MPSIntent.putExtra("nowList",listName);
 //								MPSIntent.putExtra("nowData",dataFN);
@@ -10159,18 +10167,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //								MPSIntent.putExtra("saiseiJikan",saiseiJikan);
 //								dbMsg += " , IsPlaying=" + IsPlaying;
 //								MPSIntent.putExtra("IsPlaying",IsPlaying);
-								MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-								dbMsg += " ,MPSName=" + MPSName + "でstartService";
+									MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+									dbMsg += " ,MPSName=" + MPSName + "でstartService";
+								}
 							}
+						}else{
+							dbMsg += "、縦フリック";
 						}
-						float xDelta = x - m_LastX;
-						dbMsg += ",xDelta="+ xDelta;
-						float xDeltaAbs = Math.abs(xDelta);
-						float yDeltaAbs = Math.abs(y - m_LastY);
-						dbMsg += ",DeltaAbs("+ xDeltaAbs + ","+ yDeltaAbs + ")";
-
-						float xDeltaTotal = x - m_StartX;
-						dbMsg += ",xDeltaTotal="+ xDeltaTotal;
 //						if (Math.abs(xDeltaTotal) > m_TouchSlop && xDeltaAbs > yDeltaAbs)
 //						{
 //							return onTouchEvent(mEvent);

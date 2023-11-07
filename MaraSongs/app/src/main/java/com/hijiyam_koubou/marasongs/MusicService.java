@@ -2077,90 +2077,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
     ]
     */
 
-    /**
-     * MediaMetadataRetrieverを使ってファイルのメタデータを取得
-     * <ul>
-     *     <li>旧Mediaでの取得例</li>
-     *     <li> http://yonayona.biz/yonayona/blog/archives/1057945147.html</li>
-     * </ul>
-     * */
-//    private void showMetadata(Uri uri) throws IOException {
-//        final String TAG = "showMetadata";
-//        String dbMsg="";
-//        try {
-//            // メディアメタデータにアクセスするクラスをインスタンス化する。
-//            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-//            dbMsg +=",uri="+uri;
-//            /**
-//             * メタデータを取得するファイルを指定する。
-//             * アクセスするためにはまずMediaMetadataRetriever#setDataSourceを呼ぶ必要があります。
-//             * このメソッドはいくつかのオーバーロードがありますが、
-//             * URIで指定するかファイルパスを指定する方法がメインかなと思います。
-//             */
-//            mediaMetadataRetriever.setDataSource(getApplicationContext(), uri);
-//
-//            /**
-//             * メタデータにアクセスします。
-//             * 設定されていない場合はnullが返ってきます。
-//             */
-//            dbMsg +=" \"、アルバム名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-//            dbMsg+= "、アルバムアーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
-//            dbMsg += "、アーティスト名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-//            dbMsg += "、著者名:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR);
-//            dbMsg += "、ビットレート(bits/sec):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-//            dbMsg += "、キャプチャフレームレート:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE);
-//            dbMsg += "、オーディオデータの順序:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-//            dbMsg += "、音楽ファイルの編集状態:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPILATION);
-//            dbMsg += "、作曲家情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER);
-//            dbMsg += "、ファイル作成日:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-//            dbMsg += "、わからない:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
-//            dbMsg += "、再生時間(ms):" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-//            dbMsg += "、カテゴリタイプ・ジャンル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-//            dbMsg += "、音声を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO);
-//            dbMsg += "、動画を含むか:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
-//            dbMsg += "、位置情報:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
-//            dbMsg += "、マイムタイプ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-//            dbMsg += "、オーディオ/ビデオ/テキストのトラック数:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS);
-//            dbMsg += "、タイトル:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-//            dbMsg += "、作家:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_WRITER);
-//            dbMsg += "、作成年:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
-//
-//            /**
-//             * 指定した時間(us)の画像(Bitmap)を動画からキャプチャすることができます。
-//             * MediaMetadataRetriever#getFrameAtTimeを使います。
-//             * このメソッドは複数のオーバーロードがあります。
-//             * 今回は時間とオプションを設定するメソッドを使います。
-//             *
-//             * OPTION_CLOSEST→指定した時間に一番近いフレームを取得する。
-//             * OPTION_CLOSEST_SYNC→指定した時間に一番近い同期フレームを取得する。
-//             * OPTION_NEXT_SYNC→指定した時間の後の同期フレームを取得する。
-//             * OPTION_PREVIOUS_SYNC→指定した時間の前の同期フレームを取得する。
-//             *
-//             * 注意としては動画の高さ幅の画像を取得するのでメモリと処理時間がかかります。
-//             *
-//             */
-//            dbMsg += "、再生時間:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-////            int count = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-////            bitmapArrayList = new ArrayList<>();
-////            for(int i = 0 ; i < count ; i++) {
-////                bitmapArrayList.add(mediaMetadataRetriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST));
-////            }
-////            ImageViewAdapter imageViewAdapter = new ImageViewAdapter(getApplicationContext() , bitmapArrayList);
-////            gridView.setAdapter(imageViewAdapter);
-//
-//            dbMsg += "、ビデオの高さ:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-//            dbMsg += "、ビデオの回転角度:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-//            dbMsg += "、ビデオの幅:" + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-//
-//            // 使ったファイルを開放する。
-//            mediaMetadataRetriever.release();
-//            myLog(TAG,dbMsg);
-//        } catch (Exception e) {
-//            myErrorLog(TAG ,  dbMsg + "で" + e);
-//        }
-//    }
-//
-    ///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
+///////// https://github.com/androidx/media/blob/release/demos/main/src/main/java/androidx/media3/demo/main/PlayerActivity.java
 ///ゆるプログラミング日記 〈kotlin〉ExoPlayer////// https://mtnmr.hatenablog.com/entry/2022/09/30/113118
 
     /**再生曲情報をBroadcastする*/
@@ -2271,7 +2188,7 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
 
 
 
-            /**exoPlayerのContentPositionとisPlayingを送る*/
+   /**exoPlayerのContentPositionとisPlayingを送る*/
     public void sendStateChasng() {
         final String TAG = "sendStateChasng";
         String dbMsg="";

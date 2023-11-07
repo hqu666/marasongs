@@ -32,10 +32,12 @@
 			<ImageButton
 				android:id="@+id/rc_rewButton"
 				android:layout_width="48dp"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:layout_gravity="left"
 				android:layout_marginLeft="0dp"
-				android:src="@drawable/rewbtn" />
+				android:background="#05FFFFFF"
+				android:scaleType="fitXY"
+				android:src="@android:drawable/ic_media_rew" />
 
 			<androidx.media3.ui.PlayerView
 				android:id="@+id/player_view"
@@ -63,8 +65,10 @@
 			<ImageButton
 				android:id="@+id/rc_ffButton"
 				android:layout_width="48dp"
-				android:layout_height="wrap_content"
-				android:src="@drawable/ffbtn" />
+				android:layout_height="match_parent"
+				android:background="#00FFFFFF"
+				android:scaleType="fitXY"
+				android:src="@android:drawable/ic_media_ff" />
 
 			<LinearLayout
 				android:layout_width="wrap_content"

@@ -40,7 +40,8 @@
                 style="@style/ExoMediaButton.Previous"
                 android:layout_margin="2dp"
                 android:layout_weight="2"
-                android:maxWidth="44dp" />
+                android:maxWidth="44dp"
+                android:scaleType="fitXY" />
 
             <!--        <ImageButton-->
             <!--            android:id="@id/exo_rew"-->
@@ -98,7 +99,8 @@
                 style="@style/ExoMediaButton.Next"
                 android:layout_margin="2dp"
                 android:layout_weight="2"
-                android:gravity="right" />
+                android:gravity="right"
+                android:scaleType="fitXY" />
 
         </LinearLayout>
     </LinearLayout>
