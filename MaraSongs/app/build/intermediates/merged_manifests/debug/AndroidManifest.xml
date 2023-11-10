@@ -30,15 +30,14 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- BluetoothA2dpの取得も兼ねる -->
     <!-- 未使用 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 20160409&lt;!&ndash;ロック画面　廃止&ndash;&gt; -->
-    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
-    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" /> <!-- ALIL33 -->
+    <!-- <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" /> -->
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="31" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="33" />
+        android:maxSdkVersion="34" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <!-- Android package visibility setting -->
@@ -94,6 +93,7 @@
             android:permission="TODO" >
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
@@ -142,9 +142,12 @@
         <activity
             android:name="com.hijiyam_koubou.marasongs.MaraSonActivity"
             android:excludeFromRecents="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/AppTheme" >
+
+            <!-- android:screenOrientation="fullSensor"で回転追従 -->
+
 
             <!-- <meta-data -->
             <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
@@ -194,6 +197,14 @@
         <!-- Android 12から   android:exported="false"　で外部アプリに公開するか　を明示的に宣言 -->
         <receiver
             android:name="com.hijiyam_koubou.marasongs.MuList$SongSelectReceiver"
+            android:exported="false" >
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+            <!-- </intent-filter> -->
+        </receiver>
+        <receiver
+            android:name="com.hijiyam_koubou.marasongs.MaraSonActivity$MusicReceiver"
             android:exported="false" >
 
             <!-- <intent-filter> -->

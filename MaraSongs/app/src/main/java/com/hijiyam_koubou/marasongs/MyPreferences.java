@@ -553,8 +553,10 @@ public class MyPreferences{
 					dbMsg += "\n" + i + "/" + keys.size() + ")" + key + " は " + keys.get(key);
 					try {
 						if (String.valueOf(keys.get(key)) != null) {
-
-							if (key.equals("nowData")) {
+							if (key.startsWith("myPreferences")) {
+								dbMsg += "　は誤記";
+								myEditor.remove(key).commit();
+							}else if (key.equals("nowData")) {
 								saisei_fname = String.valueOf(keys.get(key));
 								dbMsg += "　は再生中のファイル";
 								nowData = saisei_fname;

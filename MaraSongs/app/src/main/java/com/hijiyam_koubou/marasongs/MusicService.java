@@ -184,9 +184,13 @@ public class MusicService extends MediaBrowserService {
     public static final String ACTION_FORWARD_ALBUM = "ACTION_FORWARD_ALBUM";
     public static final int MS_FORWARD_ALBUM = MS_REWIND + 1;
 
+    /**前のアルバムへ*/
+    public static final String ACTION_REWIND_ALBUM = "ACTION_REWIND_ALBUM";
+    public static final int MS_REWIND_ALBUM = MS_FORWARD_ALBUM + 1;
+
     /**REPEAT**/
     public static final String ACTION_REPEAT_MODE = "REPEAT_MODE";
-    public static final int MS_REPEAT_MODE = MS_FORWARD_ALBUM + 1;
+    public static final int MS_REPEAT_MODE = MS_REWIND_ALBUM + 1;
     /**歌詞設定**/
     public static final String ACTION_LYLIC_SET = "LYLIC_SET";
     public static final int MS_LYLIC_SET = MS_REPEAT_MODE + 1;
@@ -352,6 +356,7 @@ public class MusicService extends MediaBrowserService {
         String dbMsg="";
         try {
             dbMsg += ",mIndex=" + mIndex;
+
             dbMsg += "(CurrentMediaItemIndex=" + exoPlayer.getCurrentMediaItemIndex() +")";
             dbMsg += ">>" + sIndex;
             dbMsg += ",ContentPosition=" + exoPlayer.getContentPosition();
@@ -857,7 +862,6 @@ public class MusicService extends MediaBrowserService {
             dbMsg +="、nowPlay=" + nowPlay;
             dbMsg +=",action=" + action;
             dbMsg += ",現在[" + currentListId + "]" + currentListName;
-            dbMsg +=",現在[" +currentListId + "]" + currentListName;              // + "で"+mediaItemList.size() + "件";
             dbMsg +="、選曲された楽曲を読み込ませたプレイヤーを作製";
             String setListId = intent.getStringExtra("nowList_id");
             String setListName = intent.getStringExtra("nowList");
@@ -1097,6 +1101,11 @@ public class MusicService extends MediaBrowserService {
                 }else{
                     dbMsg +="、exoPlayer== null";
                 }
+            }else if(action.equals(ACTION_FORWARD_ALBUM)){
+                dbMsg +="、次のアルバム";
+                forwardNextAlbum();
+            }else if(action.equals(ACTION_REWIND_ALBUM)){
+                dbMsg +="、前のアルバム";
             }else if(action.equals(ACTION_REPEAT_MODE)){
                 dbMsg +="、リピート、シャフル切り替え";
             }else if(action.equals(ACTION_LYLIC_SET)){
@@ -1236,7 +1245,6 @@ public class MusicService extends MediaBrowserService {
         /*START_STICKY	サービスが強制終了した場合、サービスは再起動するonStartCommand()が再度呼び出され、Intentにnullが渡される
          */
     }
-
 
     private final IBinder mBinder = new MyBinder();
     /**バインドを許可する*/
@@ -2010,10 +2018,10 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",Preferences[" + myPreferences.nowIndex + "]" + myPreferences.nowData;
             Intent intent = new Intent(this, MaraSonActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra("nowList_id",myPreferences.nowList_id);
-            intent.putExtra("nowList",myPreferences.nowList);             //currentListName
-            intent.putExtra("mIndex",mIndex);
-            intent.putExtra("nowData",nowData);             //nowData
+            intent.putExtra("nowList_id",currentListId);
+            intent.putExtra("nowList",currentListName);             //currentListName
+            intent.putExtra("nowIndex",mIndex);
+            intent.putExtra("nowData",myPreferences.nowData);             //nowData
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
             //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
@@ -2091,7 +2099,6 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
             myEditor.putString( "nowList_id", currentListId);
             myEditor.putString( "nowList", currentListName);
             mIndex = exoPlayer.getCurrentMediaItemIndex();
-//            String data_url = (String) plAL.get(mIndex).get(MediaStore.Audio.Playlists.Members.DATA);
             dbMsg += "の[" + currentIndex + "]" + nowData;
             myEditor.putString( "nowIndex", String.valueOf(currentIndex));
             objMap=plAL.get(currentIndex);            //mIndex?
@@ -2106,8 +2113,8 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
             //      Intent MRIintent = new Intent(getApplicationContext(), MusicPlayerReceiver.class);
             MRIintent.setAction(ACTION_SET_SONG);
             MRIintent.putExtra("nowList_id",currentListId);
-            MRIintent.putExtra("currentListName",currentListName);
-            MRIintent.putExtra("currentIndex",currentIndex);
+            MRIintent.putExtra("nowList",currentListName);
+            MRIintent.putExtra("nowIndex",currentIndex);
             MediaItem mediaItem = mediaItemList.get(currentIndex);
             MRIintent.putExtra("nowData",nowData);
             MRIintent.putExtra("artist",mediaItem.mediaMetadata.artist);
@@ -2141,6 +2148,12 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
             lylicStr=lylicNewLine(lylicStr);
             dbMsg += ",lylicStr\n" + lylicStr;
             MRIintent.putExtra("lylicStr",  lylicStr);
+            dbMsg += ",currentList[" + currentListId + "]" + currentListName;
+            MRIintent.putExtra( "nowList_id", currentListId);
+            MRIintent.putExtra("nowList", currentListName);
+            int currentIndex = exoPlayer.getCurrentMediaItemIndex();
+            dbMsg += "の[" + currentIndex + "]" + nowData;
+            MRIintent.putExtra( "nowIndex", String.valueOf(currentIndex));
             getBaseContext().sendBroadcast(MRIintent);
 
             myLog(TAG,dbMsg);
@@ -2185,8 +2198,6 @@ tracks [eventTime=1.43, mediaPos=0.00, window=6, period=6
         }
         return retStr;
     }
-
-
 
    /**exoPlayerのContentPositionとisPlayingを送る*/
     public void sendStateChasng() {
