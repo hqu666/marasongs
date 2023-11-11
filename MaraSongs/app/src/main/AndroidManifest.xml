@@ -109,7 +109,8 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:taskAffinity=""
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
 <!--            android:screenOrientation="fullSensor"で回転追従-->
 
             <!--            <meta-data-->
@@ -118,6 +119,12 @@
 <!--            <meta-data-->
 <!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
 <!--                android:value="@string/banner_ad_unit_id" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".AllSongs"

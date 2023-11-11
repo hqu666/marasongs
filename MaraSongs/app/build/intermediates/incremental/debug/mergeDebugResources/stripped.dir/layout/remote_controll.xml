@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/titol_tv"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:text="exo_titol"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="horizontal">
+
+			<androidx.media3.ui.PlayerView
+				android:id="@+id/pv_bt"
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				app:show_timeout="10000"
+				/>
+<!--				android:layout_width="match_parent"-->
+<!--				android:layout_height="match_parent">-->
+
+				<!--        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
+				<!--		https://qiita.com/emusute1212/items/81061b3de48f2b0f51e6-->
+				<!--		https://tech.gamewith.co.jp/entry/2019/03/25/103300-->
+			<ImageButton
+				android:id="@+id/rc_rewButton"
+				android:layout_width="48dp"
+				android:layout_height="match_parent"
+				android:layout_gravity="left"
+				android:layout_marginLeft="0dp"
+				android:background="#05FFFFFF"
+				android:scaleType="fitXY"
+				android:src="@android:drawable/ic_media_rew" />
+
+			<androidx.media3.ui.PlayerView
+				android:id="@+id/player_view"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				app:controller_layout_id="@layout/exo_controller_view"
+				app:show_timeout="10000"
+				app:use_artwork="false"
+				app:use_controller="true" />
+				<!--
+					app:artwork_display_mode="off"
+			List下部のプレイヤー実装
+				高さをsewrap_contentにするとListViewが表示されなくなりItemLayout.bindViewでnull参照が発生する
+				デフォルトのUIコントローラー
+
+					app:use_controller="false"
+					app:controller_layout_id="@layout/exo_controller_view"
+
+					app:use_controller="true"-->
+				<!--		app:auto_show="true"-->
+				<!--		app:show_subtitle_button="true"-->
+				<!--		app:show_vr_button="true"-->
+
+			<ImageButton
+				android:id="@+id/rc_ffButton"
+				android:layout_width="48dp"
+				android:layout_height="match_parent"
+				android:background="#00FFFFFF"
+				android:scaleType="fitXY"
+				android:src="@android:drawable/ic_media_ff" />
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_gravity="bottom|right"
+				android:orientation="vertical">
+
+				<ImageButton
+					android:id="@+id/quitBt"
+					android:layout_width="48dp"
+					android:layout_height="48dp"
+					android:layout_gravity="bottom|right"
+					android:background="#00FFFFFF"
+					app:srcCompat="@android:drawable/ic_lock_power_off" />
+
+			</LinearLayout>
+
+		</LinearLayout>
+		<TextView
+			android:id="@+id/subtitle_tv"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="exo_subtitle" />
+
+
+<!--		</LinearLayout>-->
+
+
+
+	<!--    <LinearLayout-->
+	<!--        android:id="@+id/rc_fbace"-->
+	<!--        android:layout_width="match_parent"-->
+	<!--        android:layout_height="match_parent"-->
+	<!--        android:layout_marginLeft="2dp"-->
+	<!--        android:layout_weight="0.70"-->
+	<!--        android:orientation="vertical" >-->
+
+	<!--		<TextView-->
+	<!--			android:id="@+id/title"-->
+	<!--			android:layout_width="match_parent"-->
+	<!--			android:layout_height="match_parent"-->
+	<!--			android:layout_weight="1"-->
+	<!--			android:ellipsize="marquee"-->
+	<!--			android:fadingEdge="horizontal"-->
+	<!--			android:focusable="true"-->
+	<!--			android:focusableInTouchMode="true"-->
+	<!--			android:gravity="bottom"-->
+	<!--			android:marqueeRepeatLimit="marquee_forever"-->
+	<!--			android:scrollHorizontally="true"-->
+	<!--			android:singleLine="true" />-->
+
+	<!--		<SeekBar-->
+	<!--			android:id="@+id/seekBar"-->
+	<!--			android:layout_width="match_parent"-->
+	<!--			android:layout_height="wrap_content"-->
+	<!--			/>-->
+
+	<!--		<LinearLayout-->
+	<!--			android:layout_width="match_parent"-->
+	<!--			android:layout_height="match_parent"-->
+	<!--			android:layout_weight="1"-->
+	<!--			android:layout_marginLeft="2dp"-->
+	<!--			android:gravity="bottom"-->
+	<!--			android:orientation="horizontal" >-->
+
+	<!--			<Chronometer-->
+	<!--				android:id="@+id/chronometer"-->
+	<!--				android:layout_width="match_parent"-->
+	<!--				android:layout_height="match_parent"-->
+	<!--				android:layout_weight="1"-->
+	<!--				android:format="%s"-->
+	<!--				android:textSize="14sp" />-->
+	<!--			<TextView-->
+	<!--				android:id="@+id/duranation"-->
+	<!--				android:layout_width="match_parent"-->
+	<!--				android:layout_height="match_parent"-->
+	<!--				android:layout_weight="1"-->
+	<!--				android:ellipsize="marquee"-->
+	<!--				android:fadingEdge="horizontal"-->
+	<!--				android:gravity="right"-->
+	<!--				android:marqueeRepeatLimit="marquee_forever"-->
+	<!--				android:scrollHorizontally="true"-->
+	<!--				android:focusable="true"-->
+	<!--				android:focusableInTouchMode="true"-->
+	<!--				android:singleLine="true" />-->
+	<!--		</LinearLayout>-->
+	<!--    </LinearLayout>-->
+	<!--    </LinearLayout>-->
+
+</LinearLayout>

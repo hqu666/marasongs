@@ -12560,7 +12560,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					dbMsg += ",渡されたnowList["  + nowList_id + "]";
 					String nowList = intent.getStringExtra("nowList");
 					dbMsg += nowList;
-					currentIndex = intent.getIntExtra("nowIndex", 0);
+					int rIndex = intent.getIntExtra("nowIndex", 0);
+					dbMsg += ",rIndex[" + rIndex + "]";
+					if(0 <rIndex) {
+						currentIndex= rIndex;
+					}else if(exoPlayer != null){
+						currentIndex= exoPlayer.getCurrentMediaItemIndex();
+					}
 					dbMsg += ",currentIndex[" + currentIndex + "]";
 					dataStr = intent.getStringExtra("nowData");
 					dbMsg += dataStr;

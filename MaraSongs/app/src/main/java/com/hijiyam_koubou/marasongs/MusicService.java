@@ -2018,6 +2018,7 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",Preferences[" + myPreferences.nowIndex + "]" + myPreferences.nowData;
             Intent intent = new Intent(this, MaraSonActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setAction("android.intent.action.SEND");
             intent.putExtra("nowList_id",currentListId);
             intent.putExtra("nowList",currentListName);             //currentListName
             intent.putExtra("nowIndex",mIndex);

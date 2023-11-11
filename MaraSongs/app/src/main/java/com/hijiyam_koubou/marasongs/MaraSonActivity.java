@@ -139,7 +139,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 	public Context rContext ;
 	OrgUtil ORGUT;		//自作関数集
 	OrgUtilFile OGFil;	//ファイル関連関数
-	MusicPlaylist musicPlaylist ;
+//	MusicPlaylist musicPlaylist ;
 	
 	public SimpleDateFormat convertFormat;						//時差抜き時分秒表示フォーマット
 	public WindowManager wm;			// ウィンドウマネージャのインスタンス取得
@@ -945,8 +945,14 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							dbMsg += ",渡されたnowList[" + currentListId + "]" + currentListName;
 							toolbar.setTitle(currentListName);
 
-							currentIndex = intent.getIntExtra("nowIndex", 0);
-							dbMsg += ",currentIndex[" + currentIndex + "]";
+							int rIndex = intent.getIntExtra("nowIndex", 0);
+							dbMsg += ",rIndex[" + rIndex + "]";
+							if(0 <rIndex) {
+								currentIndex= rIndex;
+							}else if(exoPlayer != null){
+								currentIndex= exoPlayer.getCurrentMediaItemIndex();
+							}
+							dbMsg += ">>currentIndex[" + currentIndex + "]";
 							nowData = intent.getStringExtra("nowData");
 							dbMsg += nowData;
 
@@ -5017,7 +5023,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 				}
 			}
 
-			musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
+//			musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
 			//スレッド起動確認の元の位置
 			Intent intent = getIntent();
 			reqCode = intent.getIntExtra("reqCode", 0);
