@@ -2025,9 +2025,11 @@ public class MusicService extends MediaBrowserService {
             intent.putExtra("nowData",myPreferences.nowData);             //nowData
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+            // 可変:変更が可能となり、先程のパラメータを追加したときに、起動された側で取得することが出来ます。
+            //※FLAG_IMMUTABLE:不変 を指定すると、パラメータを追加をしたとしても、元々のIntentは変更はされず、起動された側でも取得できずにnullになります。
             //FLAGの意味は　https://qiita.com/ryo_mm2d/items/77cf4e6da7add219c75c
-            // プレイヤーを表示
-            pendingIntent.send();
+//            // プレイヤーを表示
+//            pendingIntent.send();
 
             exoPlayer.prepare();
             updateButtonVisibility();
@@ -2056,6 +2058,8 @@ public class MusicService extends MediaBrowserService {
                 notification = notificationBuilder.build();
                 startForeground(NOTIFICATION_ID, notification);
                 ////////////////////////////////////////////////////////////// Notification作成
+                // プレイヤーを表示
+                pendingIntent.send();
                 sendSongInfo(mIndex);
             }
             myLog(TAG,dbMsg);

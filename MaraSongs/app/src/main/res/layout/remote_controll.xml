@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
@@ -29,23 +30,27 @@
 				<!--        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
 				<!--		https://qiita.com/emusute1212/items/81061b3de48f2b0f51e6-->
 				<!--		https://tech.gamewith.co.jp/entry/2019/03/25/103300-->
-			<ImageButton
-				android:id="@+id/rc_rewButton"
-				android:layout_width="48dp"
-				android:layout_height="match_parent"
-				android:layout_gravity="left"
-				android:layout_marginLeft="0dp"
-				android:background="#05FFFFFF"
-				android:scaleType="fitXY"
-				android:src="@android:drawable/ic_media_rew" />
+
+<!--			<ImageButton-->
+<!--				android:id="@+id/rc_rewButton"-->
+<!--				android:layout_width="40dp"-->
+<!--				android:layout_height="match_parent"-->
+<!--				android:layout_marginTop="16pt"-->
+<!--				app:tint="#FF0303"-->
+<!--				android:background="#00000000"-->
+<!--				android:scaleType="fitXY"-->
+<!--				android:src="@android:drawable/ic_media_previous">-->
+<!--			</ImageButton>-->
 
 			<androidx.media3.ui.PlayerView
 				android:id="@+id/player_view"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
+				android:layout_marginTop="10pt"
+				android:background="@color/base_actionbar"
 				android:layout_weight="1"
 				app:controller_layout_id="@layout/exo_controller_view"
-				app:show_timeout="10000"
+				app:show_timeout="100000"
 				app:use_artwork="false"
 				app:use_controller="true" />
 				<!--
@@ -62,13 +67,16 @@
 				<!--		app:show_subtitle_button="true"-->
 				<!--		app:show_vr_button="true"-->
 
-			<ImageButton
-				android:id="@+id/rc_ffButton"
-				android:layout_width="48dp"
-				android:layout_height="match_parent"
-				android:background="#00FFFFFF"
-				android:scaleType="fitXY"
-				android:src="@android:drawable/ic_media_ff" />
+<!--			<ImageButton-->
+<!--				android:id="@+id/rc_ffButton"-->
+<!--				android:layout_width="40dp"-->
+<!--				android:layout_height="match_parent"-->
+<!--				android:layout_marginTop="16pt"-->
+<!--				android:background="#00000000"-->
+<!--				android:scaleType="fitXY"-->
+<!--				android:src="@drawable/media3_notification_seek_to_next"-->
+<!--				app:tint="#FF0303"-->
+<!--				/>-->
 
 			<LinearLayout
 				android:layout_width="wrap_content"

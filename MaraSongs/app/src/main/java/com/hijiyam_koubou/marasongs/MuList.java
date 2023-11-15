@@ -12005,10 +12005,10 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			pv_bt = list_player.findViewById(R.id.pv_bt);
 			lp_title = list_player.findViewById(R.id.titol_tv);
 			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
-			ImageButton lp_album_rew_bt = list_player.findViewById(R.id.rc_rewButton);
-			ImageButton lp_album_ff_bt = list_player.findViewById(R.id.rc_ffButton);
-			lp_album_rew_bt.setVisibility(View.GONE);
-			lp_album_ff_bt.setVisibility(View.GONE);
+//			ImageButton lp_album_rew_bt = list_player.findViewById(R.id.rc_rewButton);
+//			ImageButton lp_album_ff_bt = list_player.findViewById(R.id.rc_ffButton);
+//			lp_album_rew_bt.setVisibility(View.GONE);
+//			lp_album_ff_bt.setVisibility(View.GONE);
 //			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
 ////			playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
 //			playerView.requestFocus();

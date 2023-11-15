@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-227:12
-INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-227:12
-INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-227:12
-INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-227:12
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-235:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-235:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-235:12
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:2:1-235:12
 MERGED from [androidx.databinding:viewbinding:8.1.1] C:\Users\hqu66\.gradle\caches\transforms-3\923d54be1ac77736946a85bf536e1ea8\transformed\jetified-viewbinding-8.1.1\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.navigation:navigation-ui:2.5.3] C:\Users\hqu66\.gradle\caches\transforms-3\193376006d92f173bbc6619215b59933\transformed\navigation-ui-2.5.3\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.material:material:1.9.0] C:\Users\hqu66\.gradle\caches\transforms-3\008bcc2ac37c45e0b6c2af0ef0e4f592\transformed\material-1.9.0\AndroidManifest.xml:17:1-26:12
@@ -224,8 +224,8 @@ ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:
 	android:name
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:36:9-66
 application
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:5-225:19
-INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:5-225:19
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:5-233:19
+INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:5-233:19
 MERGED from [com.google.android.material:material:1.9.0] C:\Users\hqu66\.gradle\caches\transforms-3\008bcc2ac37c45e0b6c2af0ef0e4f592\transformed\material-1.9.0\AndroidManifest.xml:24:5-20
 MERGED from [com.google.android.material:material:1.9.0] C:\Users\hqu66\.gradle\caches\transforms-3\008bcc2ac37c45e0b6c2af0ef0e4f592\transformed\material-1.9.0\AndroidManifest.xml:24:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\hqu66\.gradle\caches\transforms-3\658eeb8089f59ec9aaceb176bc125398\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -293,7 +293,7 @@ ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:
 	android:name
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:50:17-73
 service#com.hijiyam_koubou.marasongs.MusicService
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:55:9-65:19
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:55:9-66:19
 	android:enabled
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:58:13-35
 	android:exported
@@ -304,8 +304,8 @@ ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:57:13-58
 	android:name
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:56:13-41
-intent-filter#action:name:android.media.browse.MediaBrowserService+action:name:androidx.media3.session.MediaSessionService
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:61:13-64:29
+intent-filter#action:name:android.media.browse.MediaBrowserService+action:name:androidx.media3.session.MediaSessionService+action:name:com.hijiyam_koubou.marasongs.ACTION_FORWARD_ALBUM
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:61:13-65:29
 action#androidx.media3.session.MediaSessionService
 ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:62:17-85
 	android:name
@@ -314,184 +314,200 @@ action#android.media.browse.MediaBrowserService
 ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:63:17-83
 	android:name
 		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:63:25-80
+action#com.hijiyam_koubou.marasongs.ACTION_FORWARD_ALBUM
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:64:17-92
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:64:25-89
 meta-data#com.google.android.gms.version
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:87:9-89:69
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:9-106:69
 MERGED from [androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:28:9-30:69
 MERGED from [androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:28:9-30:69
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\8b75acfd8025367c20069b0884a03be7\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
 MERGED from [com.google.android.gms:play-services-basement:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\8b75acfd8025367c20069b0884a03be7\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
 	android:value
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:89:13-66
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:106:13-66
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:88:13-58
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:105:13-58
 meta-data#NendDebuggable
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:90:9-92:37
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:107:9-109:37
 	android:value
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:92:13-34
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:109:13-34
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:91:13-42
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:108:13-42
 activity#com.hijiyam_koubou.marasongs.MuList
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:95:9-106:20
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:112:9-123:20
 	android:screenOrientation
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:99:13-49
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:116:13-49
 	android:excludeFromRecents
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:97:13-46
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:114:13-46
 	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:98:13-36
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:115:13-36
 	android:theme
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:101:13-44
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:118:13-44
 	android:taskAffinity
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:100:13-36
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:117:13-36
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:96:13-35
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:113:13-35
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:102:13-105:29
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:119:13-122:29
 action#android.intent.action.MAIN
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:103:17-69
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:120:17-69
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:103:25-66
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:120:25-66
 category#android.intent.category.LAUNCHER
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:17-77
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:121:17-77
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:27-74
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:121:27-74
 activity#com.hijiyam_koubou.marasongs.MaraSonActivity
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:107:9-121:20
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:124:9-145:20
 	android:screenOrientation
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:110:13-49
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:127:13-49
 	android:excludeFromRecents
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:109:13-46
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:13-46
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:13-36
 	android:theme
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:112:13-44
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:13-44
 	android:taskAffinity
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:111:13-36
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:128:13-36
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:108:13-44
-activity#com.hijiyam_koubou.marasongs.AllSongs
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:122:9-125:59
-	android:multiprocess
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:124:13-40
-	android:theme
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:125:13-56
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:125:13-44
+intent-filter#action:name:android.intent.action.SEND+category:name:android.intent.category.DEFAULT+data:mimeType:image/*+data:mimeType:text/plain
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:139:13-144:29
+action#android.intent.action.SEND
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:140:17-68
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:123:13-37
-activity#com.hijiyam_koubou.marasongs.CreditNameHensyuu
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:9-55
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:19-52
-activity#com.hijiyam_koubou.marasongs.SettingActivity
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:127:9-129:40
-	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:13-37
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:128:13-44
-activity#com.hijiyam_koubou.marasongs.wKit
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:9-132:54
-	android:screenOrientation
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:132:13-51
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:131:13-33
-receiver#com.hijiyam_koubou.marasongs.MuList$SongSelectReceiver
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:159:9-164:20
-	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:160:13-37
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:159:19-60
-receiver#com.hijiyam_koubou.marasongs.MaraSonActivity$MusicReceiver
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:165:9-170:20
-	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:166:13-37
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:165:19-64
-receiver#com.hijiyam_koubou.marasongs.MusicPlayerReceiver
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:171:9-176:28
-	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:172:21-45
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:171:19-54
-receiver#com.hijiyam_koubou.marasongs.NotifRecever
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:178:9-186:20
-	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:180:13-36
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:179:13-41
-intent-filter#action:name:jp.test.tryforegroundservicesample.action.SEND+category:name:android.intent.category.DEFAULT
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:181:13-185:29
-action#jp.test.tryforegroundservicesample.action.SEND
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:182:17-89
-	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:182:25-86
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:140:25-66
 category#android.intent.category.DEFAULT
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:184:17-76
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:141:17-75
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:184:27-73
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:141:27-73
+data
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:17-54
+	android:mimeType
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:23-52
+activity#com.hijiyam_koubou.marasongs.AllSongs
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:146:9-149:59
+	android:multiprocess
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:148:13-40
+	android:theme
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:149:13-56
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:147:13-37
+activity#com.hijiyam_koubou.marasongs.CreditNameHensyuu
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:150:9-55
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:150:19-52
+activity#com.hijiyam_koubou.marasongs.SettingActivity
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:151:9-153:40
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:153:13-37
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:152:13-44
+activity#com.hijiyam_koubou.marasongs.wKit
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:154:9-156:54
+	android:screenOrientation
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:156:13-51
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:155:13-33
+receiver#com.hijiyam_koubou.marasongs.MuList$SongSelectReceiver
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:167:9-172:20
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:168:13-37
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:167:19-60
+receiver#com.hijiyam_koubou.marasongs.MaraSonActivity$MusicReceiver
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:173:9-178:20
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:174:13-37
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:173:19-64
+receiver#com.hijiyam_koubou.marasongs.MusicPlayerReceiver
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:179:9-184:28
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:180:21-45
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:179:19-54
+receiver#com.hijiyam_koubou.marasongs.NotifRecever
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:186:9-194:20
+	android:exported
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:188:13-36
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:187:13-41
+intent-filter#action:name:jp.test.tryforegroundservicesample.action.SEND+category:name:android.intent.category.DEFAULT
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:189:13-193:29
+action#jp.test.tryforegroundservicesample.action.SEND
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:190:17-89
+	android:name
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:190:25-86
 receiver#com.hijiyam_koubou.marasongs.BuletoohtReceiver
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:187:9-202:20
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:195:9-210:20
 	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:189:13-36
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:197:13-36
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:188:13-46
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:196:13-46
 intent-filter#action:name:android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED+action:name:android.bluetooth.adapter.action.STATE_CHANGED+action:name:android.bluetooth.device.action.FOUND+action:name:android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED+action:name:android.bluetoothA2dp.action.PLAYING_STATE_CHANGED+action:name:android.intent.action.MEDIA_BUTTON+action:name:android.intent.action.PACKAGE_ADDED+action:name:android.media.AUDIO_BECOMING_NOISY
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:190:13-201:29
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:198:13-209:29
 action#android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:191:17-97
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:199:17-97
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:191:25-94
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:199:25-94
 action#android.bluetooth.adapter.action.STATE_CHANGED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:192:17-89
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:200:17-89
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:192:25-86
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:200:25-86
 action#android.bluetooth.device.action.FOUND
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:193:17-80
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:201:17-80
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:193:25-77
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:201:25-77
 action#android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:194:17-96
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:202:17-96
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:194:25-93
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:202:25-93
 action#android.bluetoothA2dp.action.PLAYING_STATE_CHANGED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:195:17-93
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:203:17-93
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:195:25-90
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:203:25-90
 action#android.media.AUDIO_BECOMING_NOISY
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:196:17-77
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:204:17-77
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:196:25-74
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:204:25-74
 action#android.intent.action.MEDIA_BUTTON
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:197:17-77
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:205:17-77
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:197:25-74
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:205:25-74
 action#android.intent.action.PACKAGE_ADDED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:198:17-200:46
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:206:17-208:46
 	android:priority
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:200:21-43
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:208:21-43
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:199:21-71
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:207:21-71
 receiver#com.hijiyam_koubou.marasongs.lsRecever
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:203:9-216:20
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:211:9-224:20
 	android:label
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:207:13-56
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:215:13-56
 	android:exported
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:206:13-36
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:214:13-36
 	android:permission
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:208:13-70
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:216:13-70
 	android:description
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:205:13-74
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:213:13-74
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:204:13-38
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:212:13-38
 meta-data#android.app.device_admin
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:209:13-211:55
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:217:13-219:55
 	android:resource
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:211:17-52
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:219:17-52
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:210:17-56
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:218:17-56
 intent-filter#action:name:android.app.action.DEVICE_ADMIN_ENABLED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:213:13-215:29
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:221:13-223:29
 action#android.app.action.DEVICE_ADMIN_ENABLED
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:214:17-82
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:222:17-82
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:214:25-79
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:222:25-79
 activity#com.google.android.gms.ads.AdActivity
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:218:9-221:64
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:226:9-229:64
 MERGED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:53:9-58:43
 MERGED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:53:9-58:43
 	android:exported
@@ -499,17 +515,17 @@ MERGED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu6
 	tools:ignore
 		ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:58:13-40
 	android:configChanges
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:220:13-122
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:228:13-122
 	android:theme
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:221:13-61
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:229:13-61
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:219:13-65
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:227:13-65
 activity#com.hijiyam_koubou.marasongs.TagBrows
-ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:222:9-224:66
+ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:230:9-232:66
 	android:theme
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:224:13-63
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:232:13-63
 	android:name
-		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:223:13-37
+		ADDED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:231:13-37
 uses-sdk
 INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml
@@ -715,10 +731,6 @@ category#android.intent.category.BROWSABLE
 ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:38:13-74
 	android:name
 		ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:38:23-71
-data
-ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:40:13-44
-	android:scheme
-		ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:40:19-41
 intent#action:name:android.support.customtabs.action.CustomTabsService
 ADDED from [com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:44:9-46:18
 action#android.support.customtabs.action.CustomTabsService

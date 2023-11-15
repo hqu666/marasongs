@@ -34,12 +34,11 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-
             <ImageButton
                 android:id="@id/exo_prev"
                 style="@style/ExoMediaButton.Previous"
                 android:layout_margin="2dp"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:maxWidth="44dp"
                 android:scaleType="fitXY" />
 
@@ -98,7 +97,7 @@
                 android:id="@id/exo_next"
                 style="@style/ExoMediaButton.Next"
                 android:layout_margin="2dp"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="right"
                 android:scaleType="fitXY" />
 

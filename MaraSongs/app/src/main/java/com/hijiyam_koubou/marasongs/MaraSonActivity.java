@@ -1276,13 +1276,13 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							lp_album_ff_bt.setVisibility(View.GONE);
 							if(currentListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
 								dbMsg +=",全曲リストの";
-								if (trackNo == 1) {
-									dbMsg +=",最初の曲";
+//								if (trackNo == 1) {
+//									dbMsg +=",最初の曲";
 									lp_album_rew_bt.setVisibility(View.VISIBLE);
-								}else if(trackNo == songIDTotal){
-									dbMsg +=",最後の曲";
+//								}else if(trackNo == songIDTotal){
+//									dbMsg +=",最後の曲";
 									lp_album_ff_bt.setVisibility(View.VISIBLE);
-								}
+//								}
 							}
 							dbMsg +=" ,クレジット⁼ " + creditArtistName;
 							artist_tv.setText(creditArtistName);
@@ -3506,34 +3506,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 			} else if (v == headAria_ll) {
 				dbMsg += "]headAria";
 				MaraSonActivity.this.finish ();
-
-//			} else if (v == ffPBT) {
-//				if( pp_start != 0 ){				// || MaraSonActivity.this.requestCode ==rp_point
-//					mcPosition = pp_start;
-//				}else{
-//					mcPosition =0;									//前に再生していた曲の再生ポジションを消去
-//				}
-////				 saiseiSeekMP.setProgress(mcPosition);
-////				 saiseiSeekMP.setMax(saiseiJikan);
-////			//	ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
-//				imanoJyoutai =  MuList.chyangeSong;
-//				MPSIntent.setAction(MusicService.ACTION_SKIP);
-//				MPSName = startService(MPSIntent);		//onStartCommandへ
-//				dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
-////			} else if (v == rewPBT) {				//mButtonRewind
-//////				dbMsg += ",rewPBT(" + myPreferences.nowIndex +")";
-////				if( pp_start != 0 ){				// || MaraSonActivity.this.requestCode ==rp_point
-////					mcPosition = pp_start;
-////				}else{
-////					mcPosition =0;									//前に再生していた曲の再生ポジションを消去
-////				}
-//////				saiseiSeekMP.setProgress(mcPosition);
-//////				saiseiSeekMP.setMax(saiseiJikan);
-//////		//		ppPBT.setContentDescription(getResources().getText(R.string.play));			//処理後は再生
-////				imanoJyoutai =  MuList.chyangeSong;
-////				MPSIntent.setAction(MusicService.ACTION_REWIND);
-////				MPSName = startService(MPSIntent);
-////				dbMsg +=" ,ComponentName=" + MPSName.toString();/////////////////////////////////////
 			} else if (v == vol_btn) {								//ボリュームボタン
 				dbMsg += ",vol_btn";
 				nowVol = audioManage.getStreamVolume(AudioManager.STREAM_MUSIC);			//現在の音楽音量
@@ -5106,6 +5078,53 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 			//Manifestのアプリケーションテーマで	@style/Base.Theme.AppCompat		@style/Theme.AppCompat
 			artist_tv.setMovementMethod(ScrollingMovementMethod.getInstance());			//ScrollView を使わないで TextView に スクロールバーを表示する	http://kokufu.blogspot.jp/2012/12/scrollview-textview.html
 			alubum_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
+			lp_album_rew_bt = findViewById(R.id.rc_rewButton);			//<<list_player
+			lp_album_rew_bt.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {	// クリックされた時の処理を記述
+					final String TAG = "onClick";
+					String dbMsg = "[lp_album_rew_bt]";
+					try{
+						dbMsg += ",nowData= " + nowData;
+						dbMsg += ",Index=" + currentIndex;
+						dbMsg +="/" + songIDTotal +"曲]";
+						//	if(MPSIntent !=null){
+						Intent MPSI = new Intent(getApplication(), MusicService.class);
+						MPSI.setAction(MusicService.ACTION_REWIND_ALBUM);
+						MPSI.putExtra("nowData",nowData);
+						MPSName = startService(MPSI);
+						dbMsg += " ,MPSName=" + MPSName + "でstartService";
+						//	}
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
+//			lp_album_rew_bt.setVisibility(View.GONE);
+
+			lp_album_ff_bt = findViewById(R.id.rc_ffButton);			//<<list_player
+			lp_album_ff_bt.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {	// クリックされた時の処理を記述
+					final String TAG = "onClick";
+					String dbMsg = "[lp_album_ff_bt]";
+					try{
+						dbMsg += ",nowData= " + nowData;
+						dbMsg += ",Index=" + currentIndex;
+						dbMsg +="/" + songIDTotal +"曲]";
+						//	使い捨てのインテントなら送信できた
+						Intent MPSI = new Intent(getApplication(), MusicService.class);
+						MPSI.setAction(MusicService.ACTION_FORWARD_ALBUM);
+						dbMsg += " ,Action=" + MPSI.getAction();
+						MPSName = startService(MPSI);	//ボタンフェイスの変更はサービスからの戻りで更新
+						dbMsg += " ,MPSName=" + MPSName + "でstartService";
+						myLog(TAG, dbMsg);
+					}catch (Exception e) {
+						myErrorLog(TAG ,  dbMsg + "で" + e);
+					}
+				}
+			});
+			//	lp_album_ff_bt.setVisibility(View.GONE);
+
 			titol_tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 			vol_btn.setOnClickListener(this);
 			vol_btn.setOnLongClickListener(this);
@@ -5140,52 +5159,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 			lp_title.setVisibility(View.GONE);
 			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
 			lp_subtitol.setText("");
-			lp_album_rew_bt = list_player.findViewById(R.id.rc_rewButton);
-			lp_album_rew_bt.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {	// クリックされた時の処理を記述
-					final String TAG = "onClick";
-					String dbMsg = "[lp_album_rew_bt]";
-					try{
-						dbMsg += ",dataStr= " + nowData;
-						dbMsg += ",Index=" + currentIndex;
-						dbMsg +="/" + songIDTotal +"曲]";
-						if(MPSIntent ==null){
-							MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
-						}
-						MPSIntent.setAction(MusicService.ACTION_REWIND_ALBUM);
-						MPSName = startService(MPSIntent);
-						dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-			});
-			lp_album_rew_bt.setVisibility(View.GONE);
-
-			lp_album_ff_bt = list_player.findViewById(R.id.rc_ffButton);
-			lp_album_ff_bt.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {	// クリックされた時の処理を記述
-					final String TAG = "onClick";
-					String dbMsg = "[lp_album_ff_bt]";
-					try{
-						dbMsg += ",dataStr= " + nowData;
-						dbMsg += ",Index=" + currentIndex;
-						dbMsg +="/" + songIDTotal +"曲]";
-						if(MPSIntent ==null){
-							MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる
-						}
-						MPSIntent.setAction(MusicService.ACTION_FORWARD_ALBUM);
-						MPSName = startService(MPSIntent);
-						dbMsg +=" ,ComponentName=" + MPSName;/////////////////////////////////////
-						myLog(TAG, dbMsg);
-					}catch (Exception e) {
-						myErrorLog(TAG ,  dbMsg + "で" + e);
-					}
-				}
-			});
-			lp_album_ff_bt.setVisibility(View.GONE);
-
 
 			ImageButton quitBt = list_player.findViewById(R.id.quitBt);
 			quitBt.setVisibility(View.GONE);

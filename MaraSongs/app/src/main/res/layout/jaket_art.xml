@@ -60,6 +60,22 @@
 				android:singleLine="true"
 				android:textAppearance="?android:attr/textAppearanceLarge" />
 
+			<TextView
+				android:id="@+id/vol_tf"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="right"
+				android:text="15"
+				android:textAppearance="?android:attr/textAppearanceSmall" />
+
+			<TextView
+				android:id="@+id/textView82"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="end"
+				android:text="/15"
+				android:textAppearance="?android:attr/textAppearanceSmall" />
+
 			<ImageButton
 				android:id="@+id/vol_btn"
 				android:layout_width="40dp"
@@ -114,6 +130,17 @@
 			<!--                    android:textAppearance="?android:attr/textAppearanceSmall"/>-->
 			<!--            </LinearLayout>-->
 
+			<ImageButton
+				android:id="@+id/rc_rewButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="#00000000"
+				android:maxWidth="40dp"
+				android:maxHeight="40dp"
+				android:scaleType="fitXY"
+				android:src="@android:drawable/ic_media_previous"
+				app:tint="#FF0303"></ImageButton>
+
 			<TextView
 				android:id="@+id/alubum_tv"
 				android:layout_width="match_parent"
@@ -125,28 +152,17 @@
 				android:singleLine="true"
 				android:textAppearance="?android:attr/textAppearanceLarge" />
 
-			<TextView
-				android:id="@+id/vol_tf"
+			<ImageButton
+				android:id="@+id/rc_ffButton"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:gravity="right"
-				android:text="15"
-				android:textAppearance="?android:attr/textAppearanceSmall" />
-
-			<TextView
-				android:id="@+id/textView81"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="/"
-				android:textAppearance="?android:attr/textAppearanceSmall" />
-
-			<TextView
-				android:id="@+id/textView82"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:gravity="top"
-				android:text="15"
-				android:textAppearance="?android:attr/textAppearanceSmall" />
+				android:maxWidth="40dp"
+				android:maxHeight="40dp"
+				android:background="#00000000"
+				android:scaleType="fitXY"
+				android:src="@drawable/media3_notification_seek_to_next"
+				app:tint="#FF0303"
+				/>
 
 			<ImageButton
 				android:id="@+id/to_lylic_bt"

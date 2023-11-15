@@ -101,8 +101,7 @@
 50-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:38:23-71
 51
 52            <data android:scheme="https" />
-52-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:40:13-44
-52-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:40:19-41
+52-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:17-54
 53        </intent>
 54        <!-- End of browser content -->
 55        <!-- For CustomTabsService -->
@@ -127,7 +126,7 @@
 66-->[androidx.core:core:1.9.0] C:\Users\hqu66\.gradle\caches\transforms-3\932d3a5bfa228eca10b2b24a0d8c086c\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
 67
 68    <application
-68-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:5-225:19
+68-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:39:5-233:19
 69        android:name="com.hijiyam_koubou.marasongs.MyApp"
 69-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:40:9-30
 70        android:allowTaskReparenting="true"
@@ -159,7 +158,7 @@
 86        <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
 87        <!-- android:value="@string/banner_ad_unit_id" /> -->
 88        <service
-88-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:55:9-65:19
+88-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:55:9-66:19
 89            android:name="com.hijiyam_koubou.marasongs.MusicService"
 89-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:56:13-41
 90            android:enabled="true"
@@ -171,554 +170,576 @@
 93            android:permission="TODO" >
 93-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:60:13-38
 94            <intent-filter>
-94-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:61:13-64:29
+94-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:61:13-65:29
 95                <action android:name="androidx.media3.session.MediaSessionService" />
 95-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:62:17-85
 95-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:62:25-83
 96                <action android:name="android.media.browse.MediaBrowserService" />
 96-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:63:17-83
 96-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:63:25-80
-97            </intent-filter>
-98        </service>
-99
-100        <!-- java.lang.IllegalStateException: Expected 1 broadcast receiver that handles android.intent.action.MEDIA_BUTTON, found 3 -->
-101        <!-- <receiver -->
-102        <!-- android:name=".MusicPlayerReceiver" -->
+97                <action android:name="com.hijiyam_koubou.marasongs.ACTION_FORWARD_ALBUM" />
+97-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:64:17-92
+97-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:64:25-89
+98            </intent-filter>
+99        </service>
+100
+101        <!-- <service -->
+102        <!-- android:name=".MusicPlayerService" -->
 103        <!-- android:exported="true"> -->
 104        <!-- <intent-filter> -->
-105
-106
-107        <!-- &lt;!&ndash; action android:name="android.media.AUDIO_BECOMING_NOISY" /> &ndash;&gt; -->
-108        <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
-109        <!-- </intent-filter> -->
-110        <!-- </receiver> -->
-111        <!-- <meta-data -->
-112        <!-- android:name="com.google.android.gms.ads.AD_MANAGER_APP" -->
-113        <!-- android:value="true" /> -->
-114        <!--
-115   ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
-116		<meta-data
-117        -->
-118        <!-- android:requestLegacyExternalStorage="true" Android Q -->
-119        <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
-120        <!-- android:value="@string/banner_ad_unit_id"/> -->
-121        <meta-data
-121-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:87:9-89:69
-122            android:name="com.google.android.gms.version"
-122-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:88:13-58
-123            android:value="@integer/google_play_services_version" />
-123-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:89:13-66
-124        <meta-data
-124-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:90:9-92:37
-125            android:name="NendDebuggable"
-125-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:91:13-42
-126            android:value="false" />
-126-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:92:13-34
-127
-128        <!-- android:screenOrientation="fullSensor" -->
-129        <activity
-129-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:95:9-106:20
-130            android:name="com.hijiyam_koubou.marasongs.MuList"
-130-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:96:13-35
-131            android:excludeFromRecents="true"
-131-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:97:13-46
-132            android:exported="true"
-132-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:98:13-36
-133            android:screenOrientation="portrait"
-133-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:99:13-49
-134            android:taskAffinity=""
-134-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:100:13-36
-135            android:theme="@style/AppTheme" >
-135-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:101:13-44
-136            <intent-filter>
-136-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:102:13-105:29
-137                <action android:name="android.intent.action.MAIN" />
-137-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:103:17-69
-137-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:103:25-66
-138
-139                <category android:name="android.intent.category.LAUNCHER" />
-139-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:17-77
-139-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:27-74
-140            </intent-filter>
-141        </activity>
-142        <activity
-142-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:107:9-121:20
-143            android:name="com.hijiyam_koubou.marasongs.MaraSonActivity"
-143-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:108:13-44
-144            android:excludeFromRecents="true"
-144-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:109:13-46
-145            android:screenOrientation="portrait"
-145-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:110:13-49
-146            android:taskAffinity=""
-146-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:111:13-36
-147            android:theme="@style/AppTheme" >
-147-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:112:13-44
-148
-149            <!-- android:screenOrientation="fullSensor"で回転追従 -->
-150
-151
-152            <!-- <meta-data -->
-153            <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
-154            <!-- android:value="@string/banner_test_id" /> -->
-155            <!-- <meta-data -->
-156            <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
-157            <!-- android:value="@string/banner_ad_unit_id" /> -->
-158        </activity>
-159        <activity
-159-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:122:9-125:59
-160            android:name="com.hijiyam_koubou.marasongs.AllSongs"
-160-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:123:13-37
-161            android:multiprocess="true"
-161-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:124:13-40
-162            android:theme="@android:style/Theme.Dialog" />
-162-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:125:13-56
-163        <activity android:name="com.hijiyam_koubou.marasongs.CreditNameHensyuu" />
-163-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:9-55
-163-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:19-52
-164        <activity
-164-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:127:9-129:40
-165            android:name="com.hijiyam_koubou.marasongs.SettingActivity"
-165-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:128:13-44
-166            android:exported="false" />
-166-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:13-37
-167        <activity
-167-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:9-132:54
-168            android:name="com.hijiyam_koubou.marasongs.wKit"
-168-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:131:13-33
-169            android:screenOrientation="fullSensor" />
-169-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:132:13-51
+105        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" /> -->
+106        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" /> -->
+107        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" /> -->
+108        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" /> -->
+109        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" /> -->
+110        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" /> -->
+111        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" /> -->
+112        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" /> -->
+113        <!-- <action android:name="android.media.browse.MediaBrowserService" /> -->
+114        <!-- </intent-filter> -->
+115        <!-- </service> -->
+116
+117
+118        <!-- java.lang.IllegalStateException: Expected 1 broadcast receiver that handles android.intent.action.MEDIA_BUTTON, found 3 -->
+119        <!-- <receiver -->
+120        <!-- android:name=".MusicPlayerReceiver" -->
+121        <!-- android:exported="true"> -->
+122        <!-- <intent-filter> -->
+123
+124
+125        <!-- &lt;!&ndash; action android:name="android.media.AUDIO_BECOMING_NOISY" /> &ndash;&gt; -->
+126        <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+127        <!-- </intent-filter> -->
+128        <!-- </receiver> -->
+129        <!-- <meta-data -->
+130        <!-- android:name="com.google.android.gms.ads.AD_MANAGER_APP" -->
+131        <!-- android:value="true" /> -->
+132        <!--
+133   ここだと  Unable to get provider com.google.android.gms.ads.MobileAdsInitProvider: java.lang.IllegalStateException:
+134		<meta-data
+135        -->
+136        <!-- android:requestLegacyExternalStorage="true" Android Q -->
+137        <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
+138        <!-- android:value="@string/banner_ad_unit_id"/> -->
+139        <meta-data
+139-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:104:9-106:69
+140            android:name="com.google.android.gms.version"
+140-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:105:13-58
+141            android:value="@integer/google_play_services_version" />
+141-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:106:13-66
+142        <meta-data
+142-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:107:9-109:37
+143            android:name="NendDebuggable"
+143-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:108:13-42
+144            android:value="false" />
+144-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:109:13-34
+145
+146        <!-- android:screenOrientation="fullSensor" -->
+147        <activity
+147-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:112:9-123:20
+148            android:name="com.hijiyam_koubou.marasongs.MuList"
+148-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:113:13-35
+149            android:excludeFromRecents="true"
+149-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:114:13-46
+150            android:exported="true"
+150-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:115:13-36
+151            android:screenOrientation="portrait"
+151-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:116:13-49
+152            android:taskAffinity=""
+152-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:117:13-36
+153            android:theme="@style/AppTheme" >
+153-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:118:13-44
+154            <intent-filter>
+154-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:119:13-122:29
+155                <action android:name="android.intent.action.MAIN" />
+155-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:120:17-69
+155-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:120:25-66
+156
+157                <category android:name="android.intent.category.LAUNCHER" />
+157-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:121:17-77
+157-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:121:27-74
+158            </intent-filter>
+159        </activity>
+160        <activity
+160-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:124:9-145:20
+161            android:name="com.hijiyam_koubou.marasongs.MaraSonActivity"
+161-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:125:13-44
+162            android:excludeFromRecents="true"
+162-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:126:13-46
+163            android:exported="true"
+163-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:130:13-36
+164            android:screenOrientation="portrait"
+164-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:127:13-49
+165            android:taskAffinity=""
+165-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:128:13-36
+166            android:theme="@style/AppTheme" >
+166-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:129:13-44
+167
+168            <!-- android:screenOrientation="fullSensor"で回転追従 -->
+169
 170
-171        <!-- <service -->
-172        <!-- android:name=".MusicPlayerService" -->
-173        <!-- android:exported="true"> -->
-174        <!-- <intent-filter> -->
-175        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" /> -->
-176        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" /> -->
-177        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" /> -->
-178        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" /> -->
-179        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" /> -->
-180        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" /> -->
-181        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" /> -->
-182        <!-- <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" /> -->
-183        <!-- <action android:name="android.media.browse.MediaBrowserService" /> -->
-184        <!-- </intent-filter> -->
-185        <!-- </service> -->
-186
-187
-188        <!-- <receiver -->
-189        <!-- android:name="androidx.media.session.MediaButtonReceiver" -->
-190        <!-- android:exported="true"> -->
-191        <!-- <intent-filter> -->
-192        <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
-193        <!-- </intent-filter> -->
-194        <!-- </receiver> -->
-195
-196
-197        <!-- Android 12から   android:exported="false"　で外部アプリに公開するか　を明示的に宣言 -->
-198        <receiver
-198-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:159:9-164:20
-199            android:name="com.hijiyam_koubou.marasongs.MuList$SongSelectReceiver"
-199-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:159:19-60
-200            android:exported="false" >
-200-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:160:13-37
-201
-202            <!-- <intent-filter> -->
-203            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
-204            <!-- </intent-filter> -->
-205        </receiver>
-206        <receiver
-206-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:165:9-170:20
-207            android:name="com.hijiyam_koubou.marasongs.MaraSonActivity$MusicReceiver"
-207-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:165:19-64
-208            android:exported="false" >
-208-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:166:13-37
-209
-210            <!-- <intent-filter> -->
-211            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
-212            <!-- </intent-filter> -->
-213        </receiver>
-214        <receiver
-214-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:171:9-176:28
-215            android:name="com.hijiyam_koubou.marasongs.MusicPlayerReceiver"
-215-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:171:19-54
-216            android:exported="false" >
-216-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:172:21-45
-217
-218            <!-- <intent-filter> -->
-219            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
-220            <!-- </intent-filter> -->
-221        </receiver>
-222        <receiver
-222-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:178:9-186:20
-223            android:name="com.hijiyam_koubou.marasongs.NotifRecever"
-223-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:179:13-41
-224            android:exported="true" >
-224-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:180:13-36
-225            <intent-filter>
-225-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:181:13-185:29
-226                <action android:name="jp.test.tryforegroundservicesample.action.SEND" />
-226-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:182:17-89
-226-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:182:25-86
+171            <!-- <meta-data -->
+172            <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
+173            <!-- android:value="@string/banner_test_id" /> -->
+174            <!-- <meta-data -->
+175            <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
+176            <!-- android:value="@string/banner_ad_unit_id" /> -->
+177            <intent-filter>
+177-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:139:13-144:29
+178                <action android:name="android.intent.action.SEND" />
+178-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:140:17-68
+178-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:140:25-66
+179
+180                <category android:name="android.intent.category.DEFAULT" />
+180-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:141:17-75
+180-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:141:27-73
+181
+182                <data android:mimeType="text/plain" />
+182-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:17-54
+182-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:23-52
+183                <data android:mimeType="image/*" />
+183-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:17-54
+183-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:142:23-52
+184            </intent-filter>
+185        </activity>
+186        <activity
+186-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:146:9-149:59
+187            android:name="com.hijiyam_koubou.marasongs.AllSongs"
+187-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:147:13-37
+188            android:multiprocess="true"
+188-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:148:13-40
+189            android:theme="@android:style/Theme.Dialog" />
+189-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:149:13-56
+190        <activity android:name="com.hijiyam_koubou.marasongs.CreditNameHensyuu" />
+190-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:150:9-55
+190-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:150:19-52
+191        <activity
+191-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:151:9-153:40
+192            android:name="com.hijiyam_koubou.marasongs.SettingActivity"
+192-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:152:13-44
+193            android:exported="false" />
+193-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:153:13-37
+194        <activity
+194-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:154:9-156:54
+195            android:name="com.hijiyam_koubou.marasongs.wKit"
+195-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:155:13-33
+196            android:screenOrientation="fullSensor" />
+196-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:156:13-51
+197
+198        <!-- <receiver -->
+199        <!-- android:name="androidx.media.session.MediaButtonReceiver" -->
+200        <!-- android:exported="true"> -->
+201        <!-- <intent-filter> -->
+202        <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+203        <!-- </intent-filter> -->
+204        <!-- </receiver> -->
+205
+206
+207        <!-- Android 12から   android:exported="false"　で外部アプリに公開するか　を明示的に宣言 -->
+208        <receiver
+208-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:167:9-172:20
+209            android:name="com.hijiyam_koubou.marasongs.MuList$SongSelectReceiver"
+209-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:167:19-60
+210            android:exported="false" >
+210-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:168:13-37
+211
+212            <!-- <intent-filter> -->
+213            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+214            <!-- </intent-filter> -->
+215        </receiver>
+216        <receiver
+216-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:173:9-178:20
+217            android:name="com.hijiyam_koubou.marasongs.MaraSonActivity$MusicReceiver"
+217-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:173:19-64
+218            android:exported="false" >
+218-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:174:13-37
+219
+220            <!-- <intent-filter> -->
+221            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+222            <!-- </intent-filter> -->
+223        </receiver>
+224        <receiver
+224-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:179:9-184:28
+225            android:name="com.hijiyam_koubou.marasongs.MusicPlayerReceiver"
+225-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:179:19-54
+226            android:exported="false" >
+226-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:180:21-45
 227
-228                <category android:name="android.intent.category.DEFAULT" />
-228-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:184:17-76
-228-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:184:27-73
-229            </intent-filter>
-230        </receiver>
-231        <receiver
-231-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:187:9-202:20
-232            android:name="com.hijiyam_koubou.marasongs.BuletoohtReceiver"
-232-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:188:13-46
-233            android:exported="true" >
-233-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:189:13-36
-234            <intent-filter>
-234-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:190:13-201:29
-235                <action android:name="android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED" />
-235-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:191:17-97
-235-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:191:25-94
-236                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-236-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:192:17-89
-236-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:192:25-86
-237                <action android:name="android.bluetooth.device.action.FOUND" />
-237-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:193:17-80
-237-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:193:25-77
-238                <action android:name="android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED" />
-238-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:194:17-96
-238-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:194:25-93
-239                <action android:name="android.bluetoothA2dp.action.PLAYING_STATE_CHANGED" />
-239-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:195:17-93
-239-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:195:25-90
-240                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
-240-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:196:17-77
-240-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:196:25-74
-241                <action android:name="android.intent.action.MEDIA_BUTTON" /> <!-- 操作ボタン対応？ -->
-241-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:197:17-77
-241-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:197:25-74
-242                <action
-242-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:198:17-200:46
-243                    android:name="android.intent.action.PACKAGE_ADDED"
-243-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:199:21-71
-244                    android:priority="200" />
-244-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:200:21-43
-245            </intent-filter>
-246        </receiver>
-247        <receiver
-247-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:203:9-216:20
-248            android:name="com.hijiyam_koubou.marasongs.lsRecever"
-248-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:204:13-38
-249            android:description="@string/sample_device_admin_description"
-249-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:205:13-74
-250            android:exported="true"
-250-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:206:13-36
-251            android:label="@string/sample_device_admin"
-251-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:207:13-56
-252            android:permission="android.permission.BIND_DEVICE_ADMIN" >
-252-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:208:13-70
-253            <meta-data
-253-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:209:13-211:55
-254                android:name="android.app.device_admin"
-254-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:210:17-56
-255                android:resource="@xml/ls_resource" />
-255-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:211:17-52
-256
-257            <intent-filter>
-257-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:213:13-215:29
-258                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-258-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:214:17-82
-258-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:214:25-79
-259            </intent-filter>
-260        </receiver>
-261
-262        <activity
-262-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:218:9-221:64
-263            android:name="com.google.android.gms.ads.AdActivity"
-263-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:219:13-65
-264            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-264-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:220:13-122
-265            android:exported="false"
-265-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:56:13-37
-266            android:theme="@android:style/Theme.Translucent" />
-266-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:221:13-61
-267        <activity
-267-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:222:9-224:66
-268            android:name="com.hijiyam_koubou.marasongs.TagBrows"
-268-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:223:13-37
-269            android:theme="@style/Theme.TranslucentBackground" />
-269-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:224:13-63
-270
-271        <meta-data
-271-->[androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:25:9-27:36
-272            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-272-->[androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:26:13-69
-273            android:value="true" />
-273-->[androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:27:13-33
-274
-275        <provider
-275-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:60:9-65:43
-276            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
-276-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:61:13-76
-277            android:authorities="com.hijiyam_koubou.marasongs.mobileadsinitprovider"
-277-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:62:13-73
-278            android:exported="false"
-278-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:63:13-37
-279            android:initOrder="100" />
-279-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:64:13-36
+228            <!-- <intent-filter> -->
+229            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
+230            <!-- </intent-filter> -->
+231        </receiver>
+232        <receiver
+232-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:186:9-194:20
+233            android:name="com.hijiyam_koubou.marasongs.NotifRecever"
+233-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:187:13-41
+234            android:exported="true" >
+234-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:188:13-36
+235            <intent-filter>
+235-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:189:13-193:29
+236                <action android:name="jp.test.tryforegroundservicesample.action.SEND" />
+236-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:190:17-89
+236-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:190:25-86
+237
+238                <category android:name="android.intent.category.DEFAULT" />
+238-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:141:17-75
+238-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:141:27-73
+239            </intent-filter>
+240        </receiver>
+241        <receiver
+241-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:195:9-210:20
+242            android:name="com.hijiyam_koubou.marasongs.BuletoohtReceiver"
+242-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:196:13-46
+243            android:exported="true" >
+243-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:197:13-36
+244            <intent-filter>
+244-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:198:13-209:29
+245                <action android:name="android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED" />
+245-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:199:17-97
+245-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:199:25-94
+246                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+246-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:200:17-89
+246-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:200:25-86
+247                <action android:name="android.bluetooth.device.action.FOUND" />
+247-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:201:17-80
+247-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:201:25-77
+248                <action android:name="android.bluetoothA2dp.action.CONNECTION_STATE_CHANGED" />
+248-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:202:17-96
+248-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:202:25-93
+249                <action android:name="android.bluetoothA2dp.action.PLAYING_STATE_CHANGED" />
+249-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:203:17-93
+249-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:203:25-90
+250                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+250-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:204:17-77
+250-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:204:25-74
+251                <action android:name="android.intent.action.MEDIA_BUTTON" /> <!-- 操作ボタン対応？ -->
+251-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:205:17-77
+251-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:205:25-74
+252                <action
+252-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:206:17-208:46
+253                    android:name="android.intent.action.PACKAGE_ADDED"
+253-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:207:21-71
+254                    android:priority="200" />
+254-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:208:21-43
+255            </intent-filter>
+256        </receiver>
+257        <receiver
+257-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:211:9-224:20
+258            android:name="com.hijiyam_koubou.marasongs.lsRecever"
+258-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:212:13-38
+259            android:description="@string/sample_device_admin_description"
+259-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:213:13-74
+260            android:exported="true"
+260-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:214:13-36
+261            android:label="@string/sample_device_admin"
+261-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:215:13-56
+262            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+262-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:216:13-70
+263            <meta-data
+263-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:217:13-219:55
+264                android:name="android.app.device_admin"
+264-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:218:17-56
+265                android:resource="@xml/ls_resource" />
+265-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:219:17-52
+266
+267            <intent-filter>
+267-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:221:13-223:29
+268                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+268-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:222:17-82
+268-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:222:25-79
+269            </intent-filter>
+270        </receiver>
+271
+272        <activity
+272-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:226:9-229:64
+273            android:name="com.google.android.gms.ads.AdActivity"
+273-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:227:13-65
+274            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+274-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:228:13-122
+275            android:exported="false"
+275-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:56:13-37
+276            android:theme="@android:style/Theme.Translucent" />
+276-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:229:13-61
+277        <activity
+277-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:230:9-232:66
+278            android:name="com.hijiyam_koubou.marasongs.TagBrows"
+278-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:231:13-37
+279            android:theme="@style/Theme.TranslucentBackground" />
+279-->H:\develop\2022\marasongs\MaraSongs\app\src\main\AndroidManifest.xml:232:13-63
 280
-281        <service
-281-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:67:9-71:43
-282            android:name="com.google.android.gms.ads.AdService"
-282-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:68:13-64
-283            android:enabled="true"
-283-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:69:13-35
-284            android:exported="false" />
-284-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:70:13-37
-285
-286        <activity
-286-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:73:9-77:43
-287            android:name="com.google.android.gms.ads.OutOfContextTestingActivity"
-287-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:74:13-82
-288            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-288-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:75:13-122
-289            android:exported="false" />
-289-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:76:13-37
-290        <activity
-290-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:9-22:45
-291            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-291-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:19-85
-292            android:exported="false"
-292-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:22:19-43
-293            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-293-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:21:19-78
-294
-295        <provider
-295-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
-296            android:name="androidx.startup.InitializationProvider"
-296-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
-297            android:authorities="com.hijiyam_koubou.marasongs.androidx-startup"
-297-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
-298            android:exported="false" >
-298-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
-299            <meta-data
-299-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
-300                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-300-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
-301                android:value="androidx.startup" />
-301-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
-302            <meta-data
-302-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:36:13-38:52
-303                android:name="androidx.work.WorkManagerInitializer"
-303-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:37:17-68
-304                android:value="androidx.startup" />
-304-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:38:17-49
-305            <meta-data
-305-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\hqu66\.gradle\caches\transforms-3\78d3c2aa8dfccd704ee93532120c5e33\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
-306                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-306-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\hqu66\.gradle\caches\transforms-3\78d3c2aa8dfccd704ee93532120c5e33\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
-307                android:value="androidx.startup" />
-307-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\hqu66\.gradle\caches\transforms-3\78d3c2aa8dfccd704ee93532120c5e33\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
-308        </provider>
-309
-310        <service
-310-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:41:9-46:35
-311            android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"
-311-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:42:13-88
-312            android:directBootAware="false"
-312-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:43:13-44
-313            android:enabled="@bool/enable_system_alarm_service_default"
-313-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:44:13-72
-314            android:exported="false" />
-314-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:45:13-37
-315        <service
-315-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:47:9-53:35
-316            android:name="androidx.work.impl.background.systemjob.SystemJobService"
-316-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:48:13-84
-317            android:directBootAware="false"
-317-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:49:13-44
-318            android:enabled="@bool/enable_system_job_service_default"
-318-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:50:13-70
-319            android:exported="true"
-319-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:51:13-36
-320            android:permission="android.permission.BIND_JOB_SERVICE" />
-320-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:52:13-69
-321        <service
-321-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:54:9-59:35
-322            android:name="androidx.work.impl.foreground.SystemForegroundService"
-322-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:55:13-81
-323            android:directBootAware="false"
-323-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:56:13-44
-324            android:enabled="@bool/enable_system_foreground_service_default"
-324-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:57:13-77
-325            android:exported="false" />
-325-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:58:13-37
-326
-327        <receiver
-327-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:61:9-66:35
-328            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
-328-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:62:13-88
-329            android:directBootAware="false"
-329-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:63:13-44
-330            android:enabled="true"
-330-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:64:13-35
-331            android:exported="false" />
-331-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:65:13-37
-332        <receiver
-332-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:67:9-77:20
-333            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
-333-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:68:13-106
-334            android:directBootAware="false"
-334-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:69:13-44
-335            android:enabled="false"
-335-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:70:13-36
-336            android:exported="false" >
-336-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:71:13-37
-337            <intent-filter>
-337-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:73:13-76:29
-338                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-338-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:74:17-87
-338-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:74:25-84
-339                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-339-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:75:17-90
-339-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:75:25-87
-340            </intent-filter>
-341        </receiver>
+281        <meta-data
+281-->[androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:25:9-27:36
+282            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+282-->[androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:26:13-69
+283            android:value="true" />
+283-->[androidx.media3:media3-exoplayer-ima:1.0.1] C:\Users\hqu66\.gradle\caches\transforms-3\1cfe09aaa8d92a71e756b44a2283b3e0\transformed\jetified-media3-exoplayer-ima-1.0.1\AndroidManifest.xml:27:13-33
+284
+285        <provider
+285-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:60:9-65:43
+286            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
+286-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:61:13-76
+287            android:authorities="com.hijiyam_koubou.marasongs.mobileadsinitprovider"
+287-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:62:13-73
+288            android:exported="false"
+288-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:63:13-37
+289            android:initOrder="100" />
+289-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:64:13-36
+290
+291        <service
+291-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:67:9-71:43
+292            android:name="com.google.android.gms.ads.AdService"
+292-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:68:13-64
+293            android:enabled="true"
+293-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:69:13-35
+294            android:exported="false" />
+294-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:70:13-37
+295
+296        <activity
+296-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:73:9-77:43
+297            android:name="com.google.android.gms.ads.OutOfContextTestingActivity"
+297-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:74:13-82
+298            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+298-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:75:13-122
+299            android:exported="false" />
+299-->[com.google.android.gms:play-services-ads-lite:22.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\be9573bc970945c18429a1f8f33a2a26\transformed\jetified-play-services-ads-lite-22.0.0\AndroidManifest.xml:76:13-37
+300        <activity
+300-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:9-22:45
+301            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+301-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:20:19-85
+302            android:exported="false"
+302-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:22:19-43
+303            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+303-->[com.google.android.gms:play-services-base:18.1.0] C:\Users\hqu66\.gradle\caches\transforms-3\9db0b10e2adbaca7e094f1e139dad6c3\transformed\jetified-play-services-base-18.1.0\AndroidManifest.xml:21:19-78
+304
+305        <provider
+305-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+306            android:name="androidx.startup.InitializationProvider"
+306-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+307            android:authorities="com.hijiyam_koubou.marasongs.androidx-startup"
+307-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+308            android:exported="false" >
+308-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+309            <meta-data
+309-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+310                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+310-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+311                android:value="androidx.startup" />
+311-->[androidx.emoji2:emoji2:1.2.0] C:\Users\hqu66\.gradle\caches\transforms-3\c0ce69211c48bb93d7d1ac51ab0d9094\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+312            <meta-data
+312-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:36:13-38:52
+313                android:name="androidx.work.WorkManagerInitializer"
+313-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:37:17-68
+314                android:value="androidx.startup" />
+314-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:38:17-49
+315            <meta-data
+315-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\hqu66\.gradle\caches\transforms-3\78d3c2aa8dfccd704ee93532120c5e33\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+316                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+316-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\hqu66\.gradle\caches\transforms-3\78d3c2aa8dfccd704ee93532120c5e33\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+317                android:value="androidx.startup" />
+317-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\hqu66\.gradle\caches\transforms-3\78d3c2aa8dfccd704ee93532120c5e33\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+318        </provider>
+319
+320        <service
+320-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:41:9-46:35
+321            android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"
+321-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:42:13-88
+322            android:directBootAware="false"
+322-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:43:13-44
+323            android:enabled="@bool/enable_system_alarm_service_default"
+323-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:44:13-72
+324            android:exported="false" />
+324-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:45:13-37
+325        <service
+325-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:47:9-53:35
+326            android:name="androidx.work.impl.background.systemjob.SystemJobService"
+326-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:48:13-84
+327            android:directBootAware="false"
+327-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:49:13-44
+328            android:enabled="@bool/enable_system_job_service_default"
+328-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:50:13-70
+329            android:exported="true"
+329-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:51:13-36
+330            android:permission="android.permission.BIND_JOB_SERVICE" />
+330-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:52:13-69
+331        <service
+331-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:54:9-59:35
+332            android:name="androidx.work.impl.foreground.SystemForegroundService"
+332-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:55:13-81
+333            android:directBootAware="false"
+333-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:56:13-44
+334            android:enabled="@bool/enable_system_foreground_service_default"
+334-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:57:13-77
+335            android:exported="false" />
+335-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:58:13-37
+336
+337        <receiver
+337-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:61:9-66:35
+338            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
+338-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:62:13-88
+339            android:directBootAware="false"
+339-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:63:13-44
+340            android:enabled="true"
+340-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:64:13-35
+341            android:exported="false" />
+341-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:65:13-37
 342        <receiver
-342-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:78:9-88:20
-343            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
-343-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:79:13-104
+342-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:67:9-77:20
+343            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
+343-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:68:13-106
 344            android:directBootAware="false"
-344-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:80:13-44
+344-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:69:13-44
 345            android:enabled="false"
-345-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:81:13-36
+345-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:70:13-36
 346            android:exported="false" >
-346-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:82:13-37
+346-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:71:13-37
 347            <intent-filter>
-347-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:84:13-87:29
-348                <action android:name="android.intent.action.BATTERY_OKAY" />
-348-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:85:17-77
-348-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:85:25-74
-349                <action android:name="android.intent.action.BATTERY_LOW" />
-349-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:86:17-76
-349-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:86:25-73
+347-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:73:13-76:29
+348                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+348-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:74:17-87
+348-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:74:25-84
+349                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+349-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:75:17-90
+349-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:75:25-87
 350            </intent-filter>
 351        </receiver>
 352        <receiver
-352-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:89:9-99:20
-353            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
-353-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:90:13-104
+352-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:78:9-88:20
+353            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
+353-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:79:13-104
 354            android:directBootAware="false"
-354-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:91:13-44
+354-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:80:13-44
 355            android:enabled="false"
-355-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:92:13-36
+355-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:81:13-36
 356            android:exported="false" >
-356-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:93:13-37
+356-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:82:13-37
 357            <intent-filter>
-357-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:95:13-98:29
-358                <action android:name="android.intent.action.DEVICE_STORAGE_LOW" />
-358-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:96:17-83
-358-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:96:25-80
-359                <action android:name="android.intent.action.DEVICE_STORAGE_OK" />
-359-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:97:17-82
-359-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:97:25-79
+357-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:84:13-87:29
+358                <action android:name="android.intent.action.BATTERY_OKAY" />
+358-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:85:17-77
+358-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:85:25-74
+359                <action android:name="android.intent.action.BATTERY_LOW" />
+359-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:86:17-76
+359-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:86:25-73
 360            </intent-filter>
 361        </receiver>
 362        <receiver
-362-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:100:9-109:20
-363            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy"
-363-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:101:13-103
+362-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:89:9-99:20
+363            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
+363-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:90:13-104
 364            android:directBootAware="false"
-364-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:102:13-44
+364-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:91:13-44
 365            android:enabled="false"
-365-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:103:13-36
+365-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:92:13-36
 366            android:exported="false" >
-366-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:104:13-37
+366-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:93:13-37
 367            <intent-filter>
-367-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:106:13-108:29
-368                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-368-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:107:17-79
-368-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:107:25-76
-369            </intent-filter>
-370        </receiver>
-371        <receiver
-371-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:110:9-121:20
-372            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
-372-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:111:13-88
-373            android:directBootAware="false"
-373-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:112:13-44
-374            android:enabled="false"
-374-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:113:13-36
-375            android:exported="false" >
-375-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:114:13-37
-376            <intent-filter>
-376-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:116:13-120:29
-377                <action android:name="android.intent.action.BOOT_COMPLETED" />
-377-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:117:17-79
-377-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:117:25-76
-378                <action android:name="android.intent.action.TIME_SET" />
-378-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:118:17-73
-378-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:118:25-70
-379                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
-379-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:119:17-81
-379-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:119:25-78
-380            </intent-filter>
-381        </receiver>
-382        <receiver
-382-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:122:9-131:20
-383            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
-383-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:123:13-99
-384            android:directBootAware="false"
-384-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:124:13-44
-385            android:enabled="@bool/enable_system_alarm_service_default"
-385-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:125:13-72
-386            android:exported="false" >
-386-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:126:13-37
-387            <intent-filter>
-387-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:128:13-130:29
-388                <action android:name="androidx.work.impl.background.systemalarm.UpdateProxies" />
-388-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:129:17-98
-388-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:129:25-95
-389            </intent-filter>
-390        </receiver>
-391        <receiver
-391-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:132:9-142:20
-392            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
-392-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:133:13-78
-393            android:directBootAware="false"
-393-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:134:13-44
-394            android:enabled="true"
-394-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:135:13-35
-395            android:exported="true"
-395-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:136:13-36
-396            android:permission="android.permission.DUMP" >
-396-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:137:13-57
+367-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:95:13-98:29
+368                <action android:name="android.intent.action.DEVICE_STORAGE_LOW" />
+368-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:96:17-83
+368-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:96:25-80
+369                <action android:name="android.intent.action.DEVICE_STORAGE_OK" />
+369-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:97:17-82
+369-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:97:25-79
+370            </intent-filter>
+371        </receiver>
+372        <receiver
+372-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:100:9-109:20
+373            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy"
+373-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:101:13-103
+374            android:directBootAware="false"
+374-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:102:13-44
+375            android:enabled="false"
+375-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:103:13-36
+376            android:exported="false" >
+376-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:104:13-37
+377            <intent-filter>
+377-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:106:13-108:29
+378                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+378-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:107:17-79
+378-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:107:25-76
+379            </intent-filter>
+380        </receiver>
+381        <receiver
+381-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:110:9-121:20
+382            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+382-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:111:13-88
+383            android:directBootAware="false"
+383-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:112:13-44
+384            android:enabled="false"
+384-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:113:13-36
+385            android:exported="false" >
+385-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:114:13-37
+386            <intent-filter>
+386-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:116:13-120:29
+387                <action android:name="android.intent.action.BOOT_COMPLETED" />
+387-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:117:17-79
+387-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:117:25-76
+388                <action android:name="android.intent.action.TIME_SET" />
+388-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:118:17-73
+388-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:118:25-70
+389                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+389-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:119:17-81
+389-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:119:25-78
+390            </intent-filter>
+391        </receiver>
+392        <receiver
+392-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:122:9-131:20
+393            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
+393-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:123:13-99
+394            android:directBootAware="false"
+394-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:124:13-44
+395            android:enabled="@bool/enable_system_alarm_service_default"
+395-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:125:13-72
+396            android:exported="false" >
+396-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:126:13-37
 397            <intent-filter>
-397-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:139:13-141:29
-398                <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
-398-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:140:17-88
-398-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:140:25-85
+397-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:128:13-130:29
+398                <action android:name="androidx.work.impl.background.systemalarm.UpdateProxies" />
+398-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:129:17-98
+398-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:129:25-95
 399            </intent-filter>
 400        </receiver>
-401
-402        <uses-library
-402-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:25:9-27:40
-403            android:name="androidx.window.extensions"
-403-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:26:13-54
-404            android:required="false" />
-404-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:27:13-37
-405        <uses-library
-405-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:28:9-30:40
-406            android:name="androidx.window.sidecar"
-406-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:29:13-51
-407            android:required="false" />
-407-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:30:13-37
-408
-409        <service
-409-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:25:9-28:40
-410            android:name="androidx.room.MultiInstanceInvalidationService"
-410-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:26:13-74
-411            android:directBootAware="true"
-411-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:27:13-43
-412            android:exported="false" />
-412-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:28:13-37
-413    </application>
-414
-415</manifest>
+401        <receiver
+401-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:132:9-142:20
+402            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
+402-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:133:13-78
+403            android:directBootAware="false"
+403-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:134:13-44
+404            android:enabled="true"
+404-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:135:13-35
+405            android:exported="true"
+405-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:136:13-36
+406            android:permission="android.permission.DUMP" >
+406-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:137:13-57
+407            <intent-filter>
+407-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:139:13-141:29
+408                <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
+408-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:140:17-88
+408-->[androidx.work:work-runtime:2.7.0] C:\Users\hqu66\.gradle\caches\transforms-3\cf2dd68f150f2329f76a9047f179e327\transformed\work-runtime-2.7.0\AndroidManifest.xml:140:25-85
+409            </intent-filter>
+410        </receiver>
+411
+412        <uses-library
+412-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:25:9-27:40
+413            android:name="androidx.window.extensions"
+413-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:26:13-54
+414            android:required="false" />
+414-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:27:13-37
+415        <uses-library
+415-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:28:9-30:40
+416            android:name="androidx.window.sidecar"
+416-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:29:13-51
+417            android:required="false" />
+417-->[androidx.window:window:1.0.0] C:\Users\hqu66\.gradle\caches\transforms-3\bd5c150e0e3d9d7bedaa135138757af1\transformed\jetified-window-1.0.0\AndroidManifest.xml:30:13-37
+418
+419        <service
+419-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:25:9-28:40
+420            android:name="androidx.room.MultiInstanceInvalidationService"
+420-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:26:13-74
+421            android:directBootAware="true"
+421-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:27:13-43
+422            android:exported="false" />
+422-->[androidx.room:room-runtime:2.2.5] C:\Users\hqu66\.gradle\caches\transforms-3\058ede7a57bd3066c82fdfb195481db7\transformed\room-runtime-2.2.5\AndroidManifest.xml:28:13-37
+423    </application>
+424
+425</manifest>

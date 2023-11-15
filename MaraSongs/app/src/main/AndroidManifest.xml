@@ -61,8 +61,25 @@
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService"/>
                 <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="com.hijiyam_koubou.marasongs.ACTION_FORWARD_ALBUM" />
             </intent-filter>
         </service>
+
+        <!--        <service-->
+        <!--            android:name=".MusicPlayerService"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" />-->
+        <!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" />-->
+        <!--                <action android:name="android.media.browse.MediaBrowserService" />-->
+        <!--            </intent-filter>-->
+        <!--        </service>-->
 
         <!--        java.lang.IllegalStateException: Expected 1 broadcast receiver that handles android.intent.action.MEDIA_BUTTON, found 3-->
         <!--        <receiver-->
@@ -137,22 +154,6 @@
         <activity
             android:name=".wKit"
             android:screenOrientation="fullSensor" />
-
-<!--        <service-->
-<!--            android:name=".MusicPlayerService"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAYPAUSE" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PLAY" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_PAUSE" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SKIP" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REWIND" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_STOP" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_REQUEST_STATE" />-->
-<!--                <action android:name="com.hijiyam_koubou.marasongs.ACTION_SYUURYOU" />-->
-<!--                <action android:name="android.media.browse.MediaBrowserService" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
 
 <!--        <receiver-->
 <!--            android:name="androidx.media.session.MediaButtonReceiver"-->
