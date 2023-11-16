@@ -1279,6 +1279,9 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 //								if (trackNo == 1) {
 //									dbMsg +=",最初の曲";
 									lp_album_rew_bt.setVisibility(View.VISIBLE);
+//								lp_album_rew_bt.setLayoutParams(new LinearLayout.LayoutParams(
+//										LinearLayout.LayoutParams.WRAP_CONTENT,
+//										LinearLayout.LayoutParams.WRAP_CONTENT));
 //								}else if(trackNo == songIDTotal){
 //									dbMsg +=",最後の曲";
 									lp_album_ff_bt.setVisibility(View.VISIBLE);
@@ -1291,6 +1294,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 							titol_tv.setText(titolName);					//タイトル
 							OrgUtil.setArt(getApplicationContext(),mpJakeImg,urlStr,albumId);
+					//		lp_album_ff_bt.setMaxWidth(40);
 							myLog(TAG, dbMsg);
 						} catch (Exception e) {
 							myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
@@ -5050,8 +5054,8 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 				toolbar.setPopupTheme(R.style.PopupMenu_b); 			//inflateMenuでViewの更新が入ってるっぽいのでinflateMenuより前で
 			}
 			setSupportActionBar(toolbar);
-			headAria_ll = findViewById(R.id.headAria);
-			headAria_ll.setOnClickListener(this);
+//			headAria_ll = findViewById(R.id.headAria);
+//			headAria_ll.setOnClickListener(this);
 			artist_tv = findViewById(R.id.artist_tv);									//アルバムアーティスト
 			alubum_tv = findViewById(R.id.alubum_tv);								//アルバムー
 			titol_tv = findViewById(R.id.titol_tv);										//タイトルスピナー
