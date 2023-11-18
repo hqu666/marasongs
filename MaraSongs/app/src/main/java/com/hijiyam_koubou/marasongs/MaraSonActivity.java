@@ -930,7 +930,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 						dbMsg += ",Action= " + receiveAction;
 						if(receiveAction.equals(MusicService.ACTION_SET_SONG)) {
 							boolean isPlaying;
-							String nowList_id = null;
 							long contentPositionLong = 0L;
 							SimpleDateFormat sdf_time = new SimpleDateFormat("mm:ss:SS");
 							String artistName = null;
@@ -940,21 +939,21 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							isPlaying = intent.getBooleanExtra("isPlaying", false);
 							dbMsg += ",isPlaying=" + isPlaying;
 
-							currentListId = intent.getStringExtra("nowList_id");
-							currentListName = intent.getStringExtra("nowList");
-							dbMsg += ",渡されたnowList[" + currentListId + "]" + currentListName;
-							toolbar.setTitle(currentListName);
+							MaraSonActivity.this.currentListId = intent.getStringExtra("nowList_id");
+							MaraSonActivity.this.currentListName = intent.getStringExtra("nowList");
+							dbMsg += ",渡されたnowList[" + MaraSonActivity.this.currentListId + "]" + MaraSonActivity.this.currentListName;
+							toolbar.setTitle(MaraSonActivity.this.currentListName);
 
 							int rIndex = intent.getIntExtra("nowIndex", 0);
 							dbMsg += ",rIndex[" + rIndex + "]";
 							if(0 <rIndex) {
-								currentIndex= rIndex;
+								MaraSonActivity.this.currentIndex= rIndex;
 							}else if(exoPlayer != null){
-								currentIndex= exoPlayer.getCurrentMediaItemIndex();
+								MaraSonActivity.this.currentIndex= exoPlayer.getCurrentMediaItemIndex();
 							}
-							dbMsg += ">>currentIndex[" + currentIndex + "]";
-							nowData = intent.getStringExtra("nowData");
-							dbMsg += nowData;
+							dbMsg += ">>currentIndex[" + MaraSonActivity.this.currentIndex + "]";
+							MaraSonActivity.this.nowData = intent.getStringExtra("nowData");
+							dbMsg += MaraSonActivity.this.nowData;
 
 							String dStr = intent.getStringExtra("duranation");
 							dbMsg += ".dStr" + dStr;
@@ -993,12 +992,9 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 								mcPosition = rInt;
 							}
 							dbMsg += ",mcPosition=" + mcPosition + "/" + saiseiJikan + "[ms]";
-
-							dbMsg += ",nowList_id= " + nowList_id;
 							dbMsg += ",currentIndex=" + currentIndex ;
 							String wStr = "[" + currentIndex + "]" + titleStr;			//"[" + nowList_id +"]の"+"[" + mIndex + "]"
 							list_player.setVisibility(View.VISIBLE);
-//							lp_title.setText(titleStr);
 							lp_subtitol.setText(nowData);
 							url2FSet(nowData);
 							lylicStr=intent.getStringExtra("lylicStr");
@@ -1009,7 +1005,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							}
 							setLylicTF(lylicStr);
 							dbMsg += ",wStr=" + wStr ;
-//							lp_title.setText(wStr);
 							dbMsg += ",exoPlayer=" + exoPlayer;
 							if(exoPlayer != null){
 								playerView.setPlayer(exoPlayer);
@@ -1019,15 +1014,35 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 								lp_subtitol.setText(subTitol);									//プレイヤーのアーティスト表示
 							}
 						}else if(receiveAction.equals(MusicService.ACTION_LYLIC_SET)) {
-							currentListId = intent.getStringExtra("nowList_id");
-							currentListName = intent.getStringExtra("nowList");
-							dbMsg += ",渡されたnowList[" + currentListId + "]" + currentListName;
-							toolbar.setTitle(currentListName);
-							currentIndex = intent.getIntExtra("nowIndex", 0);
-							dbMsg += ",currentIndex=" + currentIndex;
+							//この時点ででないと書き込まれないことがある
+							MaraSonActivity.this.currentListId = intent.getStringExtra("nowList_id");
+							MaraSonActivity.this.currentListName = intent.getStringExtra("nowList");
+							dbMsg += ",渡されたnowList[" + MaraSonActivity.this.currentListId + "]" + MaraSonActivity.this.currentListName;
+							MaraSonActivity.this.currentIndex = intent.getIntExtra("nowIndex", 0);
+							dbMsg += ",currentIndex=" + MaraSonActivity.this.currentIndex;
 							lylicStr=intent.getStringExtra("lylicStr");
 							dbMsg += ",lylicStr="+lylicStr.substring(0, 20) + "～" + lylicStr.substring(lylicStr.length()-20) ;
 							setLylicTF(lylicStr);
+						}
+						if(MaraSonActivity.this.currentListName==null|| MaraSonActivity.this.currentListName.equals("")){
+							dbMsg += ",リスト名渡されず";
+						}else{
+							toolbar.setTitle(currentListName);
+							lp_album_rew_bt.setVisibility(View.GONE);
+							lp_album_ff_bt.setVisibility(View.GONE);
+							if(MaraSonActivity.this.currentListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+								dbMsg +=",全曲リストの" + MaraSonActivity.this.currentIndex + "曲目";
+//								if (trackNo == 1) {
+//									dbMsg +=",最初の曲";
+								lp_album_rew_bt.setVisibility(View.VISIBLE);
+//								lp_album_rew_bt.setLayoutParams(new LinearLayout.LayoutParams(
+//										LinearLayout.LayoutParams.WRAP_CONTENT,
+//										LinearLayout.LayoutParams.WRAP_CONTENT));
+//								}else if(trackNo == songIDTotal){
+//									dbMsg +=",最後の曲";
+								lp_album_ff_bt.setVisibility(View.VISIBLE);
+//								}
+							}
 						}
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
@@ -1225,7 +1240,9 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 		final String TAG = "url2FSet";
 		String dbMsg= "";
 		try{
-			dbMsg += "検索対象；" + urlStr;
+			dbMsg += ",渡されたnowList[" + MaraSonActivity.this.currentListId + "]" + MaraSonActivity.this.currentListName;
+			dbMsg += "　のIndex=" + MaraSonActivity.this.currentIndex;
+			dbMsg += "、検索対象；" + urlStr;
 			ContentResolver resolver = getApplicationContext().getContentResolver();	//c.getContentResolver();
 			Uri cUri;
 			if ( Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
@@ -1238,7 +1255,7 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 			String c_orderBy=MediaStore.Audio.Media.ARTIST; 			//⑧引数orderByには、orderBy句を指定します。	降順はDESC
 			String[] c_selectionArgs= { String.valueOf(urlStr) };		//"%" + albumArtist + "%"
 			Cursor cursor = resolver.query( cUri , c_columns , c_selection , c_selectionArgs, c_orderBy);
-			dbMsg +=cursor.getCount() +"曲";/////////////////////////////////////
+			dbMsg += "," + cursor.getCount() +"曲";
 			if(cursor.moveToFirst()){
 				@SuppressLint("Range") String tStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 				dbMsg +=tStr;/////////////////////////////////////
@@ -1254,39 +1271,24 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 				@SuppressLint("Range") String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 				dbMsg +="、albumId=" + albumId ;
 
-				if(handler == null){
-					handler = new Handler();
-				}
-				handler.post(new Runnable() {
-					public void run() {
-						final String TAG = "run";
-						String dbMsg="[url2FSet]";
-						try {
+//				if(handler == null){
+//					handler = new Handler();
+//				}
+//				handler.post(new Runnable() {
+//					public void run() {
+//						final String TAG = "run";
+//						String dbMsg="[url2FSet]";
+//						try {
 							dbMsg += "Preferences[" + myPreferences.nowList_id +"]" + myPreferences.nowList ;
-							dbMsg += ",渡されたnowList[" + currentListId + "]" + currentListName;
-							toolbar.setTitle(currentListName);
-							dbMsg += "のIndex=" + currentIndex;
-							int trackNo =currentIndex+1;
+							dbMsg += ",渡されたnowList[" + MaraSonActivity.this.currentListId + "]" + MaraSonActivity.this.currentListName;
+							toolbar.setTitle(MaraSonActivity.this.currentListName);
+							dbMsg += "のIndex=" + MaraSonActivity.this.currentIndex;
+							int trackNo =MaraSonActivity.this.currentIndex+1;
 							dbMsg += "で[" + trackNo;
 							songIDPTF.setText(String.valueOf(trackNo));			//リスト中の何曲目か (myPreferences.nowIndex+1))
 							songIDTotal=listEnd;		//plSL.size();
 							dbMsg +="/" + songIDTotal +"曲]";
 							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
-							lp_album_rew_bt.setVisibility(View.GONE);
-							lp_album_ff_bt.setVisibility(View.GONE);
-							if(currentListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-								dbMsg +=",全曲リストの";
-//								if (trackNo == 1) {
-//									dbMsg +=",最初の曲";
-									lp_album_rew_bt.setVisibility(View.VISIBLE);
-//								lp_album_rew_bt.setLayoutParams(new LinearLayout.LayoutParams(
-//										LinearLayout.LayoutParams.WRAP_CONTENT,
-//										LinearLayout.LayoutParams.WRAP_CONTENT));
-//								}else if(trackNo == songIDTotal){
-//									dbMsg +=",最後の曲";
-									lp_album_ff_bt.setVisibility(View.VISIBLE);
-//								}
-							}
 							dbMsg +=" ,クレジット⁼ " + creditArtistName;
 							artist_tv.setText(creditArtistName);
 							dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
@@ -1294,13 +1296,12 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
 							titol_tv.setText(titolName);					//タイトル
 							OrgUtil.setArt(getApplicationContext(),mpJakeImg,urlStr,albumId);
-					//		lp_album_ff_bt.setMaxWidth(40);
-							myLog(TAG, dbMsg);
-						} catch (Exception e) {
-							myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
-						}
-					}		//run
-				});			//handler.post(new Runnable() {
+//							myLog(TAG, dbMsg);
+//						} catch (Exception e) {
+//							myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
+//						}
+//					}		//run
+//				});			//handler.post(new Runnable() {
 			}
 			cursor.close();
 
@@ -5001,18 +5002,18 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 
 //			musicPlaylist = new MusicPlaylist(MaraSonActivity.this);
 			//スレッド起動確認の元の位置
-			Intent intent = getIntent();
-			reqCode = intent.getIntExtra("reqCode", 0);
-			dbMsg += ",reqCode=" + reqCode;
-			myPreferences.nowList_id = String.valueOf(intent.getIntExtra("nowList_id", 0));
-			myPreferences.nowList=intent.getStringExtra("nowList");
-			dbMsg += "、渡されたのは[" + myPreferences.nowList_id +"]"+ myPreferences.nowList ;
-			currentIndex =intent.getIntExtra("currentIndex",-1);
-			dbMsg += "の[" + currentIndex +"]";
-			myPreferences.nowData=intent.getStringExtra("nowData");
-			dbMsg += ",nowData=" + myPreferences.nowData;
-			toPlaying=intent.getBooleanExtra("IsPlaying",true);
-			dbMsg += ",toPlaying=" + toPlaying;
+//			Intent intent = getIntent();
+//			reqCode = intent.getIntExtra("reqCode", 0);
+//			dbMsg += ",reqCode=" + reqCode;
+//			myPreferences.nowList_id = String.valueOf(intent.getIntExtra("nowList_id", 0));
+//			myPreferences.nowList=intent.getStringExtra("nowList");
+//			dbMsg += "、渡されたのは[" + myPreferences.nowList_id +"]"+ myPreferences.nowList ;
+//			currentIndex =intent.getIntExtra("currentIndex",-1);
+//			dbMsg += "の[" + currentIndex +"]";
+//			myPreferences.nowData=intent.getStringExtra("nowData");
+//			dbMsg += ",nowData=" + myPreferences.nowData;
+//			toPlaying=intent.getBooleanExtra("IsPlaying",true);
+//			dbMsg += ",toPlaying=" + toPlaying;
 			receiverHaki();		//レシーバーを破棄
 
 			dbMsg += ",kidou_jyoukyou=" + kidou_jyoukyou;//100:
@@ -5298,18 +5299,18 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 					kidou_jyoukyou = kidou_notif ;						//ノティフィケーションからの起動
 					imanoJyoutai = MuList.sonomama;
 
-					MPSIntent = getIntent();
-					dbMsg += ",現在[" + currentListId + "]" + currentListName;
-					currentListId = MPSIntent.getStringExtra("nowList_id");
-					currentListName = MPSIntent.getStringExtra("nowList");
-					mIndex = MPSIntent.getIntExtra("mIndex",0);
-					dbMsg +="、渡されたのは[" + currentListId + "]" + currentListName + "の"+ mIndex +"番目";
-					toolbar.setTitle(currentListName);
-					nowData = MPSIntent.getStringExtra("nowData");
-					dbMsg +="=" + nowData;
-					if(nowData != null){
-						url2FSet( nowData);
-					}
+//					MPSIntent = getIntent();
+//					dbMsg += ",現在[" + currentListId + "]" + currentListName;
+//					currentListId = MPSIntent.getStringExtra("nowList_id");
+//					currentListName = MPSIntent.getStringExtra("nowList");
+//					mIndex = MPSIntent.getIntExtra("mIndex",0);
+//					dbMsg +="、渡されたのは[" + currentListId + "]" + currentListName + "の"+ mIndex +"番目";
+//					toolbar.setTitle(currentListName);
+//					nowData = MPSIntent.getStringExtra("nowData");
+//					dbMsg +="=" + nowData;
+//					if(nowData != null){
+//						url2FSet( nowData);
+//					}
 					break;
 				}
 			}
