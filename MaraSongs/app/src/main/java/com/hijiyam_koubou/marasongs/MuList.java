@@ -12239,6 +12239,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				mFilter.addAction(MusicService.ACTION_SET_SONG);
 				mFilter.addAction(MusicService.ACTION_STATE_CHANGED);
 				mFilter.addAction(MusicService.ACTION_FORWARD_ALBUM);
+				mFilter.addAction(MusicService.ACTION_REWIND_ALBUM);
 				mReceiver = new SongSelectReceiver();
 				registerReceiver(mReceiver, mFilter);                        //レシーバーを指定する旨を記述すれば、Android 8.0端末でもOK?
 				//that was originally registered here. Are you missing a call to unregisterReceiver()?
@@ -12480,9 +12481,9 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		});
 	}
 
-	/**次のアルバムに進む*/
-	private void forwardNextAlbum(String bData) {
-		final String TAG = "forwardNextAlbum";
+	/**全曲中で再生アルバムを変更*/
+	private void changeAlbum(String bData,boolean isForward) {
+		final String TAG = "changeAlbum";
 		String dbMsg="";
 		try {
 			dbMsg += bData + "終了";
@@ -12505,30 +12506,58 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			String titleFileName = passNames[passNames.length - 1];
 			dbMsg += "の" + titleFileName;
 			Map<String, Object> nextAlbumObj = null;
-			albumIndex = albumIndex + 1;
-			if(albumIndex<albumList.size()){
-				dbMsg += ",次のアルバム[" + albumIndex + "/" + albumList.size() + "]>>";
-				nextAlbumObj =albumAL.get(albumIndex);
-			}else{
-				artistIndex = artistIndex + 1;
-				dbMsg +=">次のアーティスト[" + artistIndex+"]";
-				if(artistAL.size()<= artistIndex){
-					artistIndex = 0;
-					dbMsg +=">先頭に戻す";
+			if(isForward){
+				dbMsg += ",進む";
+				albumIndex = albumIndex + 1;
+				if(albumIndex<albumList.size()){
+					dbMsg += ",次のアルバム[" + albumIndex + "/" + albumList.size() + "]>>";
+					nextAlbumObj =albumAL.get(albumIndex);
+				}else{
+					artistIndex = artistIndex + 1;
+					dbMsg +=">次のアーティスト[" + artistIndex+"]";
+					if(artistAL.size()<= artistIndex){
+						artistIndex = 0;
+						dbMsg +=">先頭に戻す";
+					}
+					Map<String, Object> nextArtist = artistAL.get(artistIndex);
+					artistFolder = (String) nextArtist.get("folderArtist");
+					dbMsg +=artistFolder;
+					int retInt = albumDB2ListBody(artistFolder);
+					dbMsg +=">albumAL>" + retInt + "件";
+					nextAlbumObj =albumAL.get(0);
 				}
-				Map<String, Object> nextArtist = artistAL.get(artistIndex);
-				artistFolder = (String) nextArtist.get("folderArtist");
-				dbMsg +=artistFolder;
-				int retInt = albumDB2ListBody(artistFolder);
-				dbMsg +=">albumAL>" + retInt + "件";
-				nextAlbumObj =albumAL.get(0);
+			}else{
+				dbMsg += "、戻す";
+				albumIndex = albumIndex - 1;
+				if(-1< albumIndex){
+					dbMsg += ",前のアルバム[" + albumIndex + "/" + albumList.size() + "]>>";
+					nextAlbumObj =albumAL.get(albumIndex);
+				}else{
+					artistIndex = artistIndex - 1;
+					dbMsg +=">前のアーティスト[" + artistIndex+"]";
+					if(artistIndex < 0 ){
+						artistIndex = artistAL.size()-1;
+						dbMsg +=">末尾に移動";
+					}
+					Map<String, Object> nextArtist = artistAL.get(artistIndex);
+					artistFolder = (String) nextArtist.get("folderArtist");
+					dbMsg +=artistFolder;
+					int retInt = albumDB2ListBody(artistFolder);
+					dbMsg +=">albumAL>" + retInt + "件";
+					nextAlbumObj =albumAL.get(albumAL.size()-1);
+				}
 			}
 			String albumId = (String) nextAlbumObj.get("album_id");
 			String albumName = (String) nextAlbumObj.get("album");
 			dbMsg +="[" + albumId + "]"+albumName;
 			titolAL = CreateTitleList(artistFolder , albumName , null,albumId);
 			dbMsg +=">titolAL>" + titolAL.size() + "件";
-			mIndex=0;
+			if(isForward){
+				mIndex=0;
+			}else{
+				mIndex=titolAL.size()-1;
+			}
+			dbMsg +=">mIndex>" + mIndex + "曲目";
 			Map<String, Object> nextTitol = titolAL.get(mIndex);
 			String readFile = (String) nextTitol.get(MediaStore.Audio.Playlists.Members.DATA);
 			myPreferences.nowList_id = String.valueOf(myPreferences.pref_zenkyoku_list_id);
@@ -12612,12 +12641,17 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 						selectListyInfo();
 					}
 					b_isPlaying = isPlaying;
-				}else if(intent.getAction().equals(MusicService.ACTION_FORWARD_ALBUM)) {
+				}else if(intent.getAction().equals(MusicService.ACTION_FORWARD_ALBUM) ||
+						intent.getAction().equals(MusicService.ACTION_REWIND_ALBUM)) {
 					String bData = intent.getStringExtra("dataFN");
 					dbMsg += bData + "終了";
 					isPlaying = intent.getBooleanExtra("isPlaying", false);
 					dbMsg += ",isPlaying=" + b_isPlaying + ">>" + isPlaying;
-					forwardNextAlbum(bData);
+					if(intent.getAction().equals(MusicService.ACTION_FORWARD_ALBUM)) {
+						changeAlbum(bData,true);
+					}else if(intent.getAction().equals(MusicService.ACTION_REWIND_ALBUM)) {
+						changeAlbum(bData,false);
+					}
 				}
 
 				myLog(TAG, dbMsg);

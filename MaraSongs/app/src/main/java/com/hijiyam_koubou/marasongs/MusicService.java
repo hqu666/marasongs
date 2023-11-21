@@ -1103,9 +1103,10 @@ public class MusicService extends MediaBrowserService {
                 }
             }else if(action.equals(ACTION_FORWARD_ALBUM)){
                 dbMsg +="、次のアルバム";
-                forwardNextAlbum();
+                changeAlbum(true);
             }else if(action.equals(ACTION_REWIND_ALBUM)){
                 dbMsg +="、前のアルバム";
+                changeAlbum(false);
             }else if(action.equals(ACTION_REPEAT_MODE)){
                 dbMsg +="、リピート、シャフル切り替え";
             }else if(action.equals(ACTION_LYLIC_SET)){
@@ -1346,8 +1347,8 @@ public class MusicService extends MediaBrowserService {
     }
 
     /**次のアルバムに進む*/
-    private void forwardNextAlbum() {
-        final String TAG = "forwardNextAlbum";
+    private void changeAlbum(boolean isForward) {
+        final String TAG = "changeAlbum";
         String dbMsg="";
         try {
             int nIndex = exoPlayer.getCurrentMediaItemIndex();
@@ -1361,17 +1362,15 @@ public class MusicService extends MediaBrowserService {
             dbMsg += ",dataFN=" + dataFN;          //  nowMediaItem.mediaMetadata.
 
             Intent MRIintent = new Intent();
-            dbMsg += ",exoPlayer=" + exoPlayer;
-            MRIintent.setAction(ACTION_FORWARD_ALBUM);
-//            long contentPosition = 0l;
-//            if(exoPlayer != null){
-//                contentPosition = exoPlayer.getContentPosition();
-//            }
-//            dbMsg += ",isPlaying=" +  exoPlayer.isPlaying() + ",isPlaying=" +  contentPosition;
+            dbMsg += ",exoPlayer=" + exoPlayer + ",isForward=" + isForward;
+            if(isForward){
+                MRIintent.setAction(ACTION_FORWARD_ALBUM);
+            }else{
+                MRIintent.setAction(ACTION_REWIND_ALBUM);
+            }
             MRIintent.putExtra("isPlaying",  nowPlay);
             MRIintent.putExtra("dataFN",dataFN);
             getBaseContext().sendBroadcast(MRIintent);
-
             myLog(TAG,dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1677,8 +1676,7 @@ public class MusicService extends MediaBrowserService {
                     dbMsg += "=STATE_READY";
                 }else if (playbackState == Player.STATE_ENDED) {          //4
                     dbMsg += "=STATE_ENDED;MediaItemのすべてが終了";
-                    forwardNextAlbum();
-//                    showControls();
+                    changeAlbum(true);
                 }else if (playbackState == Player.EVENT_PLAY_WHEN_READY_CHANGED) {          //5
                     dbMsg += "=EVENT_PLAY_WHEN_READY_CHANGED";
                 }else if (playbackState == Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM) {          //6
