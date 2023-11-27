@@ -4563,7 +4563,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			boolean kakikomi = myEditor.commit();
 			dbMsg +=",書き込み=" + kakikomi;
 
-
 			if( MPSIntent == null){
 				MPSIntent = new Intent(getApplication(), MusicService.class);
 				dbMsg +=  ">>" + MPSIntent;
@@ -11889,37 +11888,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
 			dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
 
-			//						MPSIntent.putExtra("nowList_id","-1");
-//						MPSIntent.putExtra("nowList",getResources().getString(R.string.listmei_zemkyoku));
-//						MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
-//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
-//						dbMsg +=  ",MPSIntent=" + MPSIntent;
-//						MPSIntent.setAction(MusicService.ACTION_MAKE_LIST);
-//						dbMsg +=  ",sousa_artist=" + sousa_artist + ",sousa_alubm=" + sousa_alubm;
-//						MPSIntent.putExtra("sousa_artist",sousa_artist);
-//						MPSIntent.putExtra("sousa_alubm",sousa_alubm);
-//						MPSName = startService(MPSIntent);
-//						dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
-
-			//スレッド起動確認///////////////////////////////////
-//			ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
-//			dbMsg +=  ",ActivityManager="+ am ;/////////////////////////////////////
-//			List<android.app.ActivityManager.RunningServiceInfo> listServiceInfo = am.getRunningServices(Integer.MAX_VALUE);
-//			for (android.app.ActivityManager.RunningServiceInfo curr : listServiceInfo) {	// クラス名を比較
-//				dbMsg += curr.getClass().getName();/////////////////////////////////////
-//				if (curr.service.getClassName().equals(MusicService.class.getName())) {
-//					dbMsg += ">>実行中のサービス="+ MusicService.class.getName() +"と一致";/////////////////////////////////////
-//					if( extras== null ){
-////						MuList.this.finish();
-//						Intent intent = new Intent(getApplication(), MaraSonActivity.class);
-//						intent.putExtra("kidou_jyoukyou",MaraSonActivity.kidou_notif);
-//						resultLauncher.launch(intent);
-////						startActivity(intent);		//プレイやのみ起動
-//					}
-//					break;
-//				}
-//			}
-			///////////////////////////////////スレッド起動確認//
 			CharSequence[] list = new CharSequence[activities.length / 2];
 			for (int i = 0; i < list.length; i++) {
 				list[i] = (String) activities[i * 2];
@@ -12005,15 +11973,6 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			pv_bt = list_player.findViewById(R.id.pv_bt);
 			lp_title = list_player.findViewById(R.id.titol_tv);
 			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
-//			ImageButton lp_album_rew_bt = list_player.findViewById(R.id.rc_rewButton);
-//			ImageButton lp_album_ff_bt = list_player.findViewById(R.id.rc_ffButton);
-//			lp_album_rew_bt.setVisibility(View.GONE);
-//			lp_album_ff_bt.setVisibility(View.GONE);
-//			playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) this);
-////			playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
-//			playerView.requestFocus();
-////			playerView.setVisibility(View.GONE);
-
 			lp_quitButton = list_player.findViewById(R.id.quitBt);
 			lp_quitButton.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
 				public void onClick(View v) {	// クリックされた時の処理を記述
@@ -12473,6 +12432,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							currentItemLayout.pouseBt.setVisibility(View.GONE);
 						}
 					}
+					registerForContextMenu(currentItemLayout);							//コンテキストメニュー
 				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {

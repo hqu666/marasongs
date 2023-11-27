@@ -1024,26 +1024,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							dbMsg += ",lylicStr="+lylicStr.substring(0, 20) + "～" + lylicStr.substring(lylicStr.length()-20) ;
 							setLylicTF(lylicStr);
 						}
-						if(MaraSonActivity.this.currentListName==null|| MaraSonActivity.this.currentListName.equals("")){
-							dbMsg += ",リスト名渡されず";
-						}else{
-							toolbar.setTitle(currentListName);
-							lp_album_rew_bt.setVisibility(View.GONE);
-							lp_album_ff_bt.setVisibility(View.GONE);
-							if(MaraSonActivity.this.currentListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
-								dbMsg +=",全曲リストの" + MaraSonActivity.this.currentIndex + "曲目";
-//								if (trackNo == 1) {
-//									dbMsg +=",最初の曲";
-								lp_album_rew_bt.setVisibility(View.VISIBLE);
-//								lp_album_rew_bt.setLayoutParams(new LinearLayout.LayoutParams(
-//										LinearLayout.LayoutParams.WRAP_CONTENT,
-//										LinearLayout.LayoutParams.WRAP_CONTENT));
-//								}else if(trackNo == songIDTotal){
-//									dbMsg +=",最後の曲";
-								lp_album_ff_bt.setVisibility(View.VISIBLE);
-//								}
-							}
-						}
 						myLog(TAG, dbMsg);
 					} catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1271,39 +1251,44 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 				@SuppressLint("Range") String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 				dbMsg +="、albumId=" + albumId ;
 
-//				if(handler == null){
-//					handler = new Handler();
-//				}
-//				handler.post(new Runnable() {
-//					public void run() {
-//						final String TAG = "run";
-//						String dbMsg="[url2FSet]";
-//						try {
-							dbMsg += "Preferences[" + myPreferences.nowList_id +"]" + myPreferences.nowList ;
-							dbMsg += ",渡されたnowList[" + MaraSonActivity.this.currentListId + "]" + MaraSonActivity.this.currentListName;
-							toolbar.setTitle(MaraSonActivity.this.currentListName);
-							dbMsg += "のIndex=" + MaraSonActivity.this.currentIndex;
-							int trackNo =MaraSonActivity.this.currentIndex+1;
-							dbMsg += "で[" + trackNo;
-							songIDPTF.setText(String.valueOf(trackNo));			//リスト中の何曲目か (myPreferences.nowIndex+1))
-							songIDTotal=listEnd;		//plSL.size();
-							dbMsg +="/" + songIDTotal +"曲]";
-							titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
-							dbMsg +=" ,クレジット⁼ " + creditArtistName;
-							artist_tv.setText(creditArtistName);
-							dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
-							alubum_tv.setText(albumName);											//アルバム
-							dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
-							titol_tv.setText(titolName);					//タイトル
-							OrgUtil.setArt(getApplicationContext(),mpJakeImg,urlStr,albumId);
-//							myLog(TAG, dbMsg);
-//						} catch (Exception e) {
-//							myErrorLog(TAG, dbMsg + "でエラー発生；"+e.toString());
-//						}
-//					}		//run
-//				});			//handler.post(new Runnable() {
+				dbMsg += "Preferences[" + myPreferences.nowList_id +"]" + myPreferences.nowList ;
+				dbMsg += ",渡されたnowList[" + MaraSonActivity.this.currentListId + "]" + MaraSonActivity.this.currentListName;
+				dbMsg += "のIndex=" + MaraSonActivity.this.currentIndex;
+				int trackNo =MaraSonActivity.this.currentIndex+1;
+				dbMsg += "で[" + trackNo;
+				songIDPTF.setText(String.valueOf(trackNo));			//リスト中の何曲目か (myPreferences.nowIndex+1))
+				songIDTotal=listEnd;		//plSL.size();
+				dbMsg +="/" + songIDTotal +"曲]";
+				titolAllPTF.setText(String.valueOf(songIDTotal));		//全タイトルカウント
+				dbMsg +=" ,クレジット⁼ " + creditArtistName;
+				artist_tv.setText(creditArtistName);
+				dbMsg +=" , アルバム⁼" + albumName;/////////////////////////////////////	this.album = album;
+				alubum_tv.setText(albumName);											//アルバム
+				dbMsg +=" ,タイトル= " + titolName;/////////////////////////////////////		this.title = title;
+				titol_tv.setText(titolName);					//タイトル
+				OrgUtil.setArt(getApplicationContext(),mpJakeImg,urlStr,albumId);
 			}
 			cursor.close();
+			if(MaraSonActivity.this.currentListName==null|| MaraSonActivity.this.currentListName.equals("")){
+				dbMsg += ",リスト名渡されず";
+			}else{
+				toolbar.setTitle(currentListName);
+				lp_album_rew_bt.setVisibility(View.GONE);
+				lp_album_ff_bt.setVisibility(View.GONE);
+				if(MaraSonActivity.this.currentListName.equals(getResources().getString(R.string.listmei_zemkyoku))){
+					dbMsg +=",全曲リストの" + MaraSonActivity.this.currentIndex + "曲目";
+//								if (trackNo == 1) {
+//									dbMsg +=",最初の曲";
+					lp_album_rew_bt.setVisibility(View.VISIBLE);
+//								lp_album_rew_bt.setLayoutParams(new LinearLayout.LayoutParams(
+//										LinearLayout.LayoutParams.WRAP_CONTENT,
+//										LinearLayout.LayoutParams.WRAP_CONTENT));
+//								}else if(trackNo == songIDTotal){
+//									dbMsg +=",最後の曲";
+					lp_album_ff_bt.setVisibility(View.VISIBLE);
+//								}
+				}
+			}
 
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
@@ -4258,50 +4243,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 							int reqCode = intent.getIntExtra("reqCode" , 0);
 							dbMsg += ",reqCode="+reqCode;
 							switch(reqCode) {
-		//						case syoki_start_up:			//100;onCreate、jyoukyouBunki→preRead→　ここ　→終了後、onCreateまで戻る
-		//							ruikei_titol = String.valueOf( bundle.getInt("key.retInt"));		//全タイトルカウント//MediaStore.Audio.Mediaのレコード数
-		//							dbMsg +="、ファイル数=" + ruikei_titol;
-		//							if(Integer.parseInt(ruikei_titol) >0 ){
-		//								MaraSonActivity.this.finish();											//reStart
-		//								startActivity(new Intent(getApplication(),MaraSonActivity.class));
-		//							}else{
-		//								AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-		//								alertDialogBuilder.setTitle(getResources().getString(R.string.saisinnFileKakuninn_f_titol));		//音楽ファイルを確認できません
-		//								alertDialogBuilder.setMessage(getResources().getString(R.string.saisinnFileKakuninn_f_meg));		//この端末に再生できる音楽ファイルが見つかりません。\nメモリーカードの装着や音楽ファイルの有無を確認してください
-		//								alertDialogBuilder.setPositiveButton(getResources().getString(R.string.saisinnFileKakuninn_f_btn),	//一旦終了
-		//										new DialogInterface.OnClickListener() {			// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
-		//											@Override
-		//											public void onClick(DialogInterface dialog, int which) {
-		//												quitMe();		//このアプリを終了する
-		//											}
-		//										});
-		//								alertDialogBuilder.setCancelable(true);			// アラートダイアログのキャンセルが可能かどうかを設定します
-		//								AlertDialog alertDialog = alertDialogBuilder.create();
-		//								alertDialog.show();			// アラートダイアログを表示します
-		//							}
-		//							break;
-		//						case syoki_start_up2:			//100;初回起動とプリファレンスリセット後;全レコードチェック後、・アーティスト名などの補足
-		//							artistList_yomikomi();
-		//							shigot_bangou =  syoki_activty_set ;		//	onWindowFocusChangedを経てaSetei； ;ボタンなどへのイベント割付け
-		//							break;
-		//
-		//						case syoki_Yomikomi:
-		//							String retStr = String.valueOf(bundle.getString("key.retStr"));
-		//							dbMsg += ",retStr=" + retStr ;//////////////////
-		//							if( retStr != null ){
-		//								Intent intentZL = new Intent(getApplication(),ZenkyokuList.class);						//parsonalPBook.thisではメモリーリークが起こる
-		//								intentZL.putExtra("reqCode",syoki_Yomi_syuusei);														//処理コード
-		//								intentZL.putExtra("pdMessage_stok",retStr);														//処理コード
-		//								startActivityForResult(intentZL , syoki_Yomi_syuusei);
-		//							}
-		//							break;
-		//						case syoki_alist2redium:							//129;artistListを作った後でレジューム機能に戻す
-		//							artistList_yomikomi();		//アーティストリストを読み込む(db未作成時は-)
-		//							dbMsg +="レジュームに戻す前のアーティスト="+ artistList.size() +"人";		/////////////////////////////////////////////////////////////
-		//							if(dataFN != null){
-		//								url2FSet(dataFN ,myPreferences.nowIndex);		//urlからプレイヤーの書き込みを行う		albumArtist
-		//							}
-		//							break;
 		//						case MuList.MENU_MUSCK_PLIST:			//プレイリスト選択中
 		//						case CONTEXT_runum_sisei:				//184 ランダム再生
 		//						case v_artist:							//アーティストリスト表示
@@ -4932,6 +4873,21 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 				lp_subtitol.setText(nowData);
 				lylicStr=mServiceBinder.lylicStr;
 				dbMsg +=",lylicStr=\n" + lylicStr;
+				String rListId = mServiceBinder.currentListId;
+				dbMsg +="\nnowList[" + rListId + "]";
+				if(rListId != null || rListId.equals("")){
+					MaraSonActivity.this.currentListId = rListId;
+				}
+				String rListName = mServiceBinder.currentListName;
+				dbMsg +=rListName ;
+				if(rListName != null || rListName.equals("")){
+					MaraSonActivity.this.currentListName = rListName;
+				}
+				int rIndex = mServiceBinder.mIndex;
+				dbMsg +="の" + rIndex+"番目";
+				if(-1 < rIndex){
+					MaraSonActivity.this.currentIndex = rIndex;
+				}
 				url2FSet(nowData);
 				myLog(TAG, dbMsg);
 			}catch (Exception e) {
@@ -5298,19 +5254,6 @@ public class MaraSonActivity extends AppCompatActivity implements View.OnClickLi
 					found = true;
 					kidou_jyoukyou = kidou_notif ;						//ノティフィケーションからの起動
 					imanoJyoutai = MuList.sonomama;
-
-//					MPSIntent = getIntent();
-//					dbMsg += ",現在[" + currentListId + "]" + currentListName;
-//					currentListId = MPSIntent.getStringExtra("nowList_id");
-//					currentListName = MPSIntent.getStringExtra("nowList");
-//					mIndex = MPSIntent.getIntExtra("mIndex",0);
-//					dbMsg +="、渡されたのは[" + currentListId + "]" + currentListName + "の"+ mIndex +"番目";
-//					toolbar.setTitle(currentListName);
-//					nowData = MPSIntent.getStringExtra("nowData");
-//					dbMsg +="=" + nowData;
-//					if(nowData != null){
-//						url2FSet( nowData);
-//					}
 					break;
 				}
 			}

@@ -726,25 +726,35 @@ public class MusicPlaylist {
                 contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, poSetteiti + 1);
                 contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
 //                contentvalues.put(MediaStore.Audio.Playlists.Members.DATA, data);
-                if (isGalaxy()) {
-                    int data_hash = 0;              //内容不明
-                    kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
-                    contentvalues.put("audio_data", data);
-                    dbMsg += ",data_hash=" + data_hash;
-                    contentvalues.put("audio_data_hashcode", data_hash);
-                } else {
+//                if (isGalaxy()) {
+//                    int data_hash = 0;              //内容不明
+//                    kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
+//                    contentvalues.put("audio_data", data);
+//                    dbMsg += ",data_hash=" + data_hash;
+//                    contentvalues.put("audio_data_hashcode", data_hash);
+//                } else {
                     dbMsg += ",SDK_INT= " + Build.VERSION.SDK_INT;
                     if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
-                        dbMsg += "=Pai" ;
+                        dbMsg += "=Pai以降" ;
                         //						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
                         kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
 // MuList は.VOLUME_EXTERNAL　でもOK　：content://media/external_primary/audio/playlists/18140/members,
                     }else{
                         kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist_id);
                     }
-                }
+//                }
                 dbMsg += ",uri= " + kakikomiUri;
+                String mimeType = cContext.getContentResolver().getType(kakikomiUri);
+                dbMsg += ",mimeType= " + mimeType;
+                String path = kakikomiUri.getPath();
+                File file = new File(path);
+                dbMsg += ",file= " + file;
+                dbMsg += ",exists= " + file.exists();
                 dbMsg += ",contentvalues( " + contentvalues.toString() + " )";
+                int numInserted = 0;
+//                for (int offSet = 0; offSet < size; offSet += 1000) {
+//                    numInserted += contentResolver.bulkInsert(kakikomiUri, makeInsertItems(songs, offSet, 1000, base));
+//                }
                 result_uri = contentResolver.insert(kakikomiUri, contentvalues);                //追加
                 dbMsg += ",result_uri=" + result_uri;
                 if(result_uri == null){					//NG
@@ -756,7 +766,7 @@ public class MusicPlaylist {
                 }
             }
             if(dbMsg != null){
-//                myLog(TAG, dbMsg);
+                myLog(TAG, dbMsg);
             }
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
