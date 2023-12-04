@@ -9,9 +9,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class MusicPlaylist {
@@ -701,6 +705,22 @@ public class MusicPlaylist {
         return listId;
     }
 
+    // 既存ファイルへ追記保存
+    public void appendTextToFile(String fileName, String text) {
+        FileOutputStream fos = null;
+        final String TAG = "appendTextToFile";
+        String dbMsg = "[MusicPlaylist]";
+        try {
+            dbMsg +=  ",fileName=" + fileName;
+            dbMsg +=  " に　" + text + "　を追記";
+            //fos = openFileOutput(fileName, Context.MODE_PRIVATE|Context.MODE_APPEND);
+            fos = new FileOutputStream(new File(fileName), true);
+            fos .write(text.getBytes());
+            myLog(TAG, dbMsg);
+        } catch (IOException ioE) {
+            myErrorLog(TAG ,  dbMsg + "で" + ioE);
+        }
+    }
     
     /**
      * プレイリストへ曲を追加する	 */
@@ -725,7 +745,8 @@ public class MusicPlaylist {
                 contentvalues.put(MediaStore.Audio.Playlists.Members._ID, poSetteiti + 1);
                 contentvalues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, poSetteiti + 1);
                 contentvalues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, Integer.valueOf(audio_id));
-//                contentvalues.put(MediaStore.Audio.Playlists.Members.DATA, data);
+                contentvalues.put(MediaStore.Audio.Playlists.Members.DATA, data);
+                dbMsg += ",contentvalues( " + contentvalues.toString() + " )";
 //                if (isGalaxy()) {
 //                    int data_hash = 0;              //内容不明
 //                    kakikomiUri = Uri.parse("content://media/external/audio/music_playlists/" + playlist_id + "/members");
@@ -737,6 +758,7 @@ public class MusicPlaylist {
                     if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ) { //Andrid10以降
                         dbMsg += "=Pai以降" ;
                         //						//  https://codechacha.com/ja/android-mediastore-insert-media-files/
+                 //       kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
                         kakikomiUri = MediaStore.Audio.Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY,playlist_id);
 // MuList は.VOLUME_EXTERNAL　でもOK　：content://media/external_primary/audio/playlists/18140/members,
                     }else{
@@ -746,28 +768,38 @@ public class MusicPlaylist {
                 dbMsg += ",uri= " + kakikomiUri;
                 String mimeType = cContext.getContentResolver().getType(kakikomiUri);
                 dbMsg += ",mimeType= " + mimeType;
-                String path = kakikomiUri.getPath();
-                File file = new File(path);
-                dbMsg += ",file= " + file;
-                dbMsg += ",exists= " + file.exists();
-                dbMsg += ",contentvalues( " + contentvalues.toString() + " )";
-                int numInserted = 0;
-//                for (int offSet = 0; offSet < size; offSet += 1000) {
-//                    numInserted += contentResolver.bulkInsert(kakikomiUri, makeInsertItems(songs, offSet, 1000, base));
+                File kakikomiFile = new File(kakikomiUri.getPath());
+                dbMsg += ",exists= " + kakikomiFile.exists();
+                String kakikomiFileName = kakikomiFile.getName();
+                dbMsg += ",Name= " + kakikomiFileName;
+
+                final String directoryMusic = Environment.DIRECTORY_MUSIC;
+                dbMsg += ",directoryMusic= " + directoryMusic;
+                appendTextToFile(kakikomiFileName, "\n\r" + data);
+//                try {
+//                    result_uri = contentResolver.insert(kakikomiUri, contentvalues);                //追加
+//                    dbMsg += ",result_uri=" + result_uri;
+//                    if(result_uri == null){					//NG
+//                        dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
+//                    }else if(((int)ContentUris.parseId(result_uri)) == -1){					//NG
+//                        dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
+//                    }else{					//OK
+//                        dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
+//                    }
+//                } catch (SecurityException se) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+////                        val recoverableSecurityException =
+////                                se as? RecoverableSecurityException ?: throw se
+////                        // RecoverableSecurityExceptionからintendSenderを取得
+////                        // intentSenderを利用して、ポップアップを出してファイルアクセス許可をユーザに求める
+////                        activityResultLauncher.launch(
+////                                IntentSenderRequest.Builder(recoverableSecurityException.userAction.actionIntent.intentSender).build();
+//                    } else {
+//                        throw se;
+//                    }
 //                }
-                result_uri = contentResolver.insert(kakikomiUri, contentvalues);                //追加
-                dbMsg += ",result_uri=" + result_uri;
-                if(result_uri == null){					//NG
-                    dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", is null";
-                }else if(((int)ContentUris.parseId(result_uri)) == -1){					//NG
-                    dbMsg += "失敗 add music : " + playlist_id + ", " + audio_id + ", " + result_uri.toString();
-                }else{					//OK
-                    dbMsg +=">>成功list_id=" + playlist_id + ", audio_id=" + audio_id + ",result_uri= " + result_uri.toString();
-                }
             }
-            if(dbMsg != null){
-                myLog(TAG, dbMsg);
-            }
+            myLog(TAG, dbMsg);
         }catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }

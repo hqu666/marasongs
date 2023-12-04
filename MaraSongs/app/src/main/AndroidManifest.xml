@@ -6,14 +6,16 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<!--  連絡先  <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+<!--    <uses-permission android:name="android.permission.WRITE_CONTACTS" />-->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<!--  Android 13（API レベル 33）以上  広告 ID-->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+<!--    Android 13 以上のメディア権限-->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -28,8 +30,8 @@
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--    android:maxSdkVersion="34"-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<!--    android:maxSdkVersion="31"-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+<!--    android:maxSdkVersion="31" 以降のバージョンだとopen failed: EACCES (Permission denied)-->
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -42,6 +44,7 @@
         android:largeHeap="true"
         android:theme="@style/Theme.AppCompat"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning">
         <!-- TODO: Replace with your real AdMob app ID をactivityに置くとUnable to get providernなのでapplication直下へ-->
             <meta-data

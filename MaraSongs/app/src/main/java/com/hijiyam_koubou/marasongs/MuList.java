@@ -1,5 +1,7 @@
 package com.hijiyam_koubou.marasongs;
 
+import static android.os.Environment.DIRECTORY_MUSIC;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -84,6 +86,7 @@ import com.hijiyam_koubou.marasongs.BaseTreeAdapter.TreeEntry;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -100,6 +103,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -500,12 +504,14 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		final String TAG = "checkMyPermission";
 		String dbMsg = "";
 		try {
+			dbMsg += ",SDK=" + Build.VERSION.SDK_INT;
 			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {                //(初回起動で)全パーミッションの許諾を取る
-				dbMsg += "許諾確認";
 				List<String> permissionArray = new ArrayList<String>();
 				List<String> unPermissionArray = new ArrayList<String>();
-				permissionArray.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-				//Android 10(Q)でMediaStoreを介してデータを読み取るときは、 READ_EXTERNAL_STORAGE権限を要求し、書くとき何の権限を必要としません。
+				permissionArray.add(Manifest.permission.READ_EXTERNAL_STORAGE);	//Android 10(Q)でMediaStoreを介してデータを読み取るときは、 READ_EXTERNAL_STORAGE権限を要求し、書くとき何の権限を必要としません。
+				if (Build.VERSION.SDK_INT <=18) {		//API レベル 18 以前では必須
+					permissionArray.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+				}
 				permissionArray.add(Manifest.permission.INTERNET);
 				permissionArray.add(Manifest.permission.ACCESS_NETWORK_STATE);
 				permissionArray.add(Manifest.permission.BLUETOOTH);
@@ -516,77 +522,56 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 //				if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ) {                //(初回起動で)全パーミッションの許諾を取る
 //					permissionArray.add(Manifest.permission.MEDIA_CONTENT_CONTROL);   //フラグが変わらない；再生中メディアへのアクセス許可
 //				}
-				if ( Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
-					permissionArray.add(Manifest.permission.READ_CONTACTS);
-					permissionArray.add(Manifest.permission.WRITE_CONTACTS);
-				}
-				if ( 33<= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
-					permissionArray.add(Manifest.permission.READ_MEDIA_AUDIO);
-				}
-				if ( 29<= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
-					permissionArray.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-				}
-				if ( 32<= Build.VERSION.SDK_INT) {                //(初回起動で)全パーミッションの許諾を取る
+//				if ( Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {                //連絡先
+//					permissionArray.add(Manifest.permission.READ_CONTACTS);
+//					permissionArray.add(Manifest.permission.WRITE_CONTACTS);
+//				}
+				if ( 32<= Build.VERSION.SDK_INT) {				//Android 11 では、アプリ固有のディレクトリと MediaStore の外にあるファイルへの書き込みアクセスを実現
 					permissionArray.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
 				}
-				dbMsg += "," + permissionArray.size() + "件";
+				if ( 33<= Build.VERSION.SDK_INT) {
+					permissionArray.add(Manifest.permission.READ_MEDIA_AUDIO);	//Android 13 以上のメディア権限
+					permissionArray.add(Manifest.permission.READ_MEDIA_IMAGES);
+				}
+				dbMsg += ",許諾確認" + permissionArray.size() + "件";
 				final String[] PERMISSIONS = permissionArray.toArray(new String[permissionArray.size()]);
 				dbMsg += ">>" + PERMISSIONS.length + "件";
-
+				boolean showRequest = false;
 			//	boolean isNeedParmissionReqest = false;
 				for ( String permissionName : PERMISSIONS ) {
 					int checkResalt = ActivityCompat.checkSelfPermission(this,permissionName);	//許可されていなければ -1 いれば 0
-					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
-						dbMsg += "," + permissionName;
+					if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {			//0;許可済み
+						dbMsg += "\n" + permissionName;
 						dbMsg += "=" + checkResalt;
-						requestPermissionsLauncher.launch(PERMISSIONS);
+				//		requestPermissionsLauncher.launch(PERMISSIONS);
 						unPermissionArray.add(permissionName);
-						boolean showRequest = shouldShowRequestPermissionRationale(permissionName);
-						dbMsg += ",showRequest=" + showRequest;
-//						if (showRequest) {
-							ActivityCompat.requestPermissions(MuList.this,  new String[]{permissionName}, REQUEST_PREF);
-//						}
-
+//						showRequest = shouldShowRequestPermissionRationale(permissionName);		//「今後表示しない」を選択されたか
+//						dbMsg += ",showRequest=" + showRequest;
+				//		requestPermissions( new String[]{permissionName}, REQUEST_PREF);
 					}
 				}
+//				if (showRequest) {
+//					requestPermissions( PERMISSIONS, REQUEST_PREF);
+//				//	ActivityCompat.requestPermissions(MuList.this,  new String[]{permissionName}, REQUEST_PREF);
+//				}
 		//		dbMsg += "、isNeedParmissionReqest=" + isNeedParmissionReqest;
-				dbMsg += "、unPermissionArray=" + unPermissionArray.size() + "件";
+				dbMsg += "、未許可" + unPermissionArray.size() + "件";
 				if ( 0 < unPermissionArray.size() ) {
 					dbMsg += "::許諾処理へ";
 					final String[] unPERMISSIONS = unPermissionArray.toArray(new String[unPermissionArray.size()]);
-//					// 通知		https://www.jisei-firm.com/android_develop43/
-//					if (Build.VERSION.SDK_INT > 32) {
-//						if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//							requestPermissions.add(Manifest.permission.POST_NOTIFICATIONS);
-//						}
-//					}
-//					if (!requestPermissions.isEmpty()) {
-//						ActivityCompat.requestPermissions(this, requestPermissions.toArray(new String[0]), REQUEST_MULTI_PERMISSIONS);
-//					}
-//					//https://www.jisei-firm.com/android_develop43/
 					dbMsg += "、unPERMISSIONS=" + unPERMISSIONS.length + "件";
-					ActivityCompat.requestPermissions(MuList.this, unPERMISSIONS, REQUEST_PREF);
-				//	}
-//									for ( String permissionName : unPERMISSIONS ) {
-//										int checkResalt = checkSelfPermission(permissionName);	//許可されていなければ -1 いれば 0
-//										if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {
-//											dbMsg += "," + permissionName;
-//											dbMsg += "=" + checkResalt;
-//										}
-//									}
-//									myLog(TAG , dbMsg);
-//								}
-//							})
-//							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//								@Override
-//								public void onClick(DialogInterface dialog , int which) {
-//									quitMe();
-//								}
-//							})
-//							.create().show();
+					requestPermissionsLauncher.launch(unPERMISSIONS);
+////					requestPermissions( unPERMISSIONS, REQUEST_PREF);
+//					for ( String permissionName : unPERMISSIONS ) {
+//						requestPermissionsLauncher.launch(new String[]{permissionName});
+//					}
 				}else{
 					dbMsg += "::許諾済み";
+					createBody();
 				}
+			}else{
+				dbMsg += ":許諾確認不要";
+				createBody();
 			}
 			myLog(TAG , dbMsg);
 		} catch (Exception er) {
@@ -594,18 +579,34 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
+	/**複数パーミッションの処理
+	 * <ul>
+	 *     <li>
+	 *         https://akira-watson.com/android/multi-runtime-permission.html
+	 *     </li>
+	 * </ul>
+	 * */
 	private final ActivityResultLauncher<String[]>
 			requestPermissionsLauncher = registerForActivityResult(
 			new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
-				if (isGranted.containsValue(false)) {
-				//	Toast.makeText(this, R.string.message2, Toast.LENGTH_SHORT).show();
-				} else {
-				//	fusedLocation();
+				final String TAG = "requestPermissionsLauncher";
+				String dbMsg = "";
+				try {
+					dbMsg += "isGranted.containsValue(false)=" + isGranted.containsValue(false);
+					if (isGranted.containsValue(false)) {
+						//	Toast.makeText(this, R.string.message2, Toast.LENGTH_SHORT).show();
+					} else {
+						//	fusedLocation();
+					}
+					myLog(TAG , dbMsg);
+					createBody();
+				} catch (Exception er) {
+					myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
 				}
 			});
 
 	/**
-	  * パーミッションが通った時点でstartLocalStream 	 */
+	  * パーミッションが通った時点でstartLocalStream ;非推奨	 */
 	@SuppressLint("MissingSuperCall")
 	@Override
 	public void onRequestPermissionsResult(int requestCode , String[] permissions , int[] grantResults) {
@@ -627,6 +628,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		//			readPref();
 					break;
 			}
+			createBody();
 		} catch (Exception er) {
 			myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
 		}
@@ -7339,13 +7341,13 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 				@Override public void onClick(DialogInterface dialog, int which) {
 					final String TAG = "makePlaylist";
 					String dbMsg =  "選択した楽曲からプレイリストを新規作成する" ;/////////////////////////////////////
-					try{
-						MuList.this.tuikaItemName =  editText.getText().toString();
-						dbMsg +=  "listName=" + MuList.this.tuikaItemName;
-						makePlaylistBody( MuList.this.tuikaItemName , MuList.this.itemStr);			//選択した楽曲からプレイリストを新規作成する
-					}catch (Exception e) {
-						myErrorLog(TAG,dbMsg +"で"+e.toString());
-					}
+						try{
+							MuList.this.tuikaItemName =  editText.getText().toString();
+							dbMsg +=  "listName=" + MuList.this.tuikaItemName;
+							makePlaylistBody( MuList.this.tuikaItemName , MuList.this.itemStr);			//選択した楽曲からプレイリストを新規作成する
+						}catch (Exception e) {
+							myErrorLog(TAG,dbMsg +"で"+e.toString());
+						}
 					}
 				});
 			Dlg.setNegativeButton(getResources().getString(R.string.comon_cyusi),	//中止</string>
@@ -7388,25 +7390,26 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			}
 			dbMsg += ",audio_id=" + audio_id;
 			String resMseg = listName + "\n" + getResources().getString(R.string.make_playlist_msg_f);		//作成できませんでした。
-			if(0 < audio_id){
-				result_uri = musicPlaylist.addPlaylist(listName, null, null);		//プレイリストを新規作成する
-				dbMsg += ",result_uri=" + result_uri;			//fastItemeFn=/storage/sdcard0/Music/Jimmy Cliff/Follow My Mind/07 Remake The World.wma
-				MuList.this.tuikaSakiListID = (int)ContentUris.parseId(result_uri);
-				dbMsg += ",追加先[" + MuList.this.tuikaSakiListID + "]" + result_uri;			//[42529]content://media/external/audio/playlists/42529
-				int data_hash = 0;
-				if(result_uri != null && 0 < MuList.this.tuikaSakiListID){		// musicPlaylist.
-					result_uri = musicPlaylist.addMusicToPlaylist( MuList.this.tuikaSakiListID, audio_id, fastItemeFn);	//プレイリストへ曲を追加する
-					MuList.this.sousalistID = MuList.this.tuikaSakiListID;
-					MuList.this.sousalistName = MuList.this.tuikaItemName;
-					MuList.this.sousalistUri = result_uri;
-					dbMsg += ",作成したリスト=[" + sousalistID + "]" + sousalistName;			//fastIteme=Remake The World,reqCode=2131558448
-				}else{
-					Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
-				}
-				dbMsg += ">追加結果>"  + result_uri;			//>>content://media/external/audio/playlists/42529
-			}else{
-				Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
-			}
+			addMusicToPlaylist(listName, fastItemeFn);
+//			if(0 < audio_id){
+////				result_uri = musicPlaylist.addPlaylist(listName, null, null);		//プレイリストを新規作成する
+////				dbMsg += ",result_uri=" + result_uri;			//fastItemeFn=/storage/sdcard0/Music/Jimmy Cliff/Follow My Mind/07 Remake The World.wma
+////				MuList.this.tuikaSakiListID = (int)ContentUris.parseId(result_uri);
+////				dbMsg += ",追加先[" + MuList.this.tuikaSakiListID + "]" + result_uri;			//[42529]content://media/external/audio/playlists/42529
+////				int data_hash = 0;
+////				if(result_uri != null && 0 < MuList.this.tuikaSakiListID){		// musicPlaylist.
+////					result_uri = musicPlaylist.addMusicToPlaylist( MuList.this.tuikaSakiListID, audio_id, fastItemeFn);	//プレイリストへ曲を追加する
+////					MuList.this.sousalistID = MuList.this.tuikaSakiListID;
+////					MuList.this.sousalistName = MuList.this.tuikaItemName;
+////					MuList.this.sousalistUri = result_uri;
+////					dbMsg += ",作成したリスト=[" + sousalistID + "]" + sousalistName;			//fastIteme=Remake The World,reqCode=2131558448
+////				}else{
+////					Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
+////				}
+//			//	dbMsg += ">追加結果>"  + result_uri;			//>>content://media/external/audio/playlists/42529
+//			}else{
+//				Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
+//			}
 			headImgIV.setVisibility(View.GONE);
 			mainHTF.setVisibility(View.GONE);
 			artistHTF.setVisibility(View.GONE);			//ヘッダーのアーティスト名表示枠
@@ -7415,6 +7418,113 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			plNameSL = null;
 			myLog(TAG,dbMsg);
 			makePlayListSPN(sousalistName);		//プレイリストスピナーを作成する
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
+    /** external storageに書き込み可能か
+	 * <ul>
+	 *    <li>追記の共通メソッド</li>
+	 * </ul>
+	 * */
+    public boolean isExternalStorageWritable() {
+		final String TAG = "isExternalStorageWritable";
+		String dbMsg = "";
+		boolean retBool =false;
+		try{
+			String state = Environment.getExternalStorageState();
+			retBool=Environment.MEDIA_MOUNTED.equals(state);
+			dbMsg += ",retBool=" + retBool;
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retBool;
+    }
+	public String getExternalStorageName(String checkFilename) {
+		final String TAG = "getExternalStorageName";
+		String dbMsg = "";
+		String retStr ="";
+		try{
+			dbMsg += ",checkFilename=" + checkFilename;
+			if(isExternalStorageWritable()) {
+				ContentValues values = new ContentValues();
+				// コンテンツ クエリの列名
+				// ファイル名
+				values.put(MediaStore.Audio.Playlists.NAME, checkFilename);
+//				values.put(MediaStore.Images.Media.DISPLAY_NAME, "TestSampeImage.jpg");
+				// マイムの設定
+				values.put(MediaStore.Audio.Playlists.MIME_TYPE, "text/text");
+//				values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+//				// 書込み時にメディア ファイルに排他的にアクセスする
+//				values.put(MediaStore.Images.Media.IS_PENDING, 1);
+//
+				ContentResolver resolver = getApplicationContext().getContentResolver();
+				Uri collection = MediaStore.Audio.Playlists.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+				Uri item = resolver.insert(collection, values);
+
+//				try (OutputStream outstream = getContentResolver().openOutputStream(item)) {
+//					bmp.compress(Bitmap.CompressFormat.JPEG, 70, outstream);
+//					textView.setText(R.string.saved);
+//					imageView.setImageBitmap(bmp);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//				values.clear();
+//				//　排他的にアクセスの解除
+//				values.put(MediaStore.Images.Media.IS_PENDING, 0);
+//				resolver.update(item, values, null, null);
+				dbMsg += ",retStr=" + retStr;
+			}else{
+				dbMsg += ",書込み許可無し";
+			}
+			myLog(TAG, dbMsg);
+		}catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+		return retStr;
+	}
+
+	/**
+	 * プレイリストへ曲を追加する
+	 * <ul>
+	 *    <li>追記の共通メソッド</li>
+	 * </ul>
+	 * */
+	public void addMusicToPlaylist(String playlistName, String data){		//プレイリストへ曲を追加する
+		final String TAG = "addMusicToPlaylist";
+		String dbMsg = "";
+		try{
+			dbMsg +=  ",playlistName=" + playlistName;
+			dbMsg += ",追加する曲=" + data;
+
+			final String directoryMusic = DIRECTORY_MUSIC;
+			dbMsg += ",directoryMusic= " + directoryMusic;
+			String firstVolumeName = Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC).getPath();
+			dbMsg += ",firstVolumeName= " + firstVolumeName;
+			String playlistFileName = firstVolumeName + File.separator + playlistName + ".m3u";			// "/storage/emulated/0/Music/" + playlistName + ".m3u"  + "/"
+			dbMsg += ",playlistFileName= " +playlistFileName;
+			File kakikomiFile = new File(playlistFileName);
+			dbMsg += ",exists= " + kakikomiFile.exists();
+			if(kakikomiFile.exists()){
+				try {
+					dbMsg +=  ",playlistFileName=" + playlistFileName;
+					dbMsg +=  " に　" + data + "　を追記";
+					data = data + "\n\r";
+					//fos = openFileOutput(fileName, Context.MODE_PRIVATE|Context.MODE_APPEND);
+					FileOutputStream fos = new FileOutputStream(new File(playlistFileName), true);
+					fos .write(data.getBytes());
+				} catch (IOException ioE) {
+					myErrorLog(TAG ,  dbMsg + "で" + ioE);
+				}
+			}else{
+				dbMsg +=  " 書込み先が見つからない";
+			}
+
 			myLog(TAG, dbMsg);
 		}catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -7598,15 +7708,21 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			dbMsg += "," + tuiukaItemeFn;
 			dbMsg += ",audio_id=" + audio_id;
 			dbMsg += "[" + sousalistID + "]" + sousalistName;			// + tuikasakiUri;		//[42529]content://media/external/audio/playlists/42529
-			int data_hash = 0;
-			Uri result_uri = null;
-			if(0 < sousalistID){			//		musicPlaylist.
-				 result_uri = musicPlaylist.addMusicToPlaylist( sousalistID, audio_id, tuiukaItemeFn);	//プレイリストへ曲を追加する
-			}else{
-				String resMseg = tuikaItemName + "\n" + getResources().getString(R.string.make_playlist_tuika_msg_f);		//追加できませんでした。
-				Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
-			}
-			dbMsg += ">addMusicToPlaylist>"  + result_uri;			//>>content://media/external/audio/playlists/42529
+
+//			String sousalistPass = getExternalStorageName(sousalistName);
+//			dbMsg += ",sousalistPass=" + sousalistPass;
+
+			addMusicToPlaylist(sousalistName, tuiukaItemeFn);
+
+//			int data_hash = 0;
+//			Uri result_uri = null;
+//			if(0 < sousalistID){			//		musicPlaylist.
+//				 result_uri = musicPlaylist.addMusicToPlaylist( sousalistID, audio_id, tuiukaItemeFn);	//プレイリストへ曲を追加する
+//			}else{
+//				String resMseg = tuikaItemName + "\n" + getResources().getString(R.string.make_playlist_tuika_msg_f);		//追加できませんでした。
+//				Toast.makeText(this, resMseg, Toast.LENGTH_LONG).show();
+//			}
+//			dbMsg += ">addMusicToPlaylist>"  + result_uri;			//>>content://media/external/audio/playlists/42529
 
 			MuList.this.plSL =  new ArrayList<String>();				//プレイリスト用簡易リスト
 			MuList.this.saisei_fnameList = new ArrayList<String>();		//uri配列
@@ -11783,36 +11899,12 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 		}
 	}
 
-//Permission確認、レシーバー破棄、起動中のサービス確認、スレッド起動確認、リスト画面の構成物読み込み、getPList()	へ
-	@Override
-	public void onCreate(Bundle savedInstanceState) {									//①起動
-		super.onCreate(savedInstanceState);
-		final String TAG = "onCreate";
+
+	/** パーミッション通過後の起動処理*/
+	public void createBody() {									//①起動
+		final String TAG = "createBody";
 		String dbMsg = "";
 		try{
-			long start = System.currentTimeMillis();	// 開始時刻の取得
-			dbMsg +=  ",start="+ start ;/////////////////////////////////////
-			NowSavedInstanceState = savedInstanceState;
-			MyConstants.PREFS_NAME = this.getResources().getString(R.string.pref_main_file);
-			ORGUT = new OrgUtil();		//自作関数集
-			MyUtil = new MyUtil();
-			myApp = (MyApp) MuList.this.getApplication();
-			myPreferences = new MyPreferences(this);
-			dbMsg +="、PREFS_NAME=" + MyConstants.PREFS_NAME;
-			if (31 <= android.os.Build.VERSION.SDK_INT ) {
-				sharedPref = getSharedPreferences(MyConstants.PREFS_NAME, MODE_PRIVATE);
-				myEditor = sharedPref.edit();
-			}else{
-				sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());			//	this.getSharedPreferences(this, MODE_PRIVATE);		//
-				myEditor = sharedPref.edit();
-			}
-			shigot_bangou = 0;
-			IsPlaying = false;
-		//	CONST = new MyConstants();
-
-			musicPlaylist = new MusicPlaylist(MuList.this);
-			//Permission確認
-			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
 //			dbMsg += "::readPrefへ";
 			readPref();
 			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
@@ -11838,7 +11930,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								MPSIntent = new Intent(getApplication(), MusicService.class);
 								dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
 							}
-				//			MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
+							//			MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
 							startService(MPSIntent);
 							stopService(MPSIntent);
 						}else if(serviceName.contains("NotifRecever")){
@@ -11938,7 +12030,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 								break;
 						}
 						b_scrollState = scrollState;
-			//			myLog(TAG, dbMsg);
+						//			myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -11948,7 +12040,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 					final String TAG = "onScroll";
 					String dbMsg = "[setOnScrollListener]";
 					try{
-				//		dbMsg += ORGUT.nowTime(true,true,true);
+						//		dbMsg += ORGUT.nowTime(true,true,true);
 						//		dbMsg +=",view="+view;//lvID
 						dbMsg +="[b_firstVisibleItem="+firstVisibleItem;
 						dbMsg +=">>firstVisibleItem="+firstVisibleItem;
@@ -11959,7 +12051,7 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							selectListyInfo();
 							b_firstVisibleItem=firstVisibleItem;
 						}
-			//			myLog(TAG, dbMsg);
+						//			myLog(TAG, dbMsg);
 					}catch (Exception e) {
 						myErrorLog(TAG ,  dbMsg + "で" + e);
 					}
@@ -12041,9 +12133,277 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 			if( myPreferences.nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){
 				reqCode = MyConstants.v_artist;
 			}
-			long end=System.currentTimeMillis();		// 終了時刻の取得
-			dbMsg += ":"+ ORGUT.sdf_mss.format(end - start) +"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;
+//			long end=System.currentTimeMillis();		// 終了時刻の取得
+//			dbMsg += ":"+ ORGUT.sdf_mss.format(end - start) +"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;
 			jyoukyouBunki();
+			myLog(TAG, dbMsg);
+		} catch (Exception e) {
+			myErrorLog(TAG ,  dbMsg + "で" + e);
+		}
+	}
+
+
+
+
+	//Permission確認、レシーバー破棄、起動中のサービス確認、スレッド起動確認、リスト画面の構成物読み込み、getPList()	へ
+	@Override
+	public void onCreate(Bundle savedInstanceState) {									//①起動
+		super.onCreate(savedInstanceState);
+		final String TAG = "onCreate";
+		String dbMsg = "";
+		try{
+			long start = System.currentTimeMillis();	// 開始時刻の取得
+			dbMsg +=  ",start="+ start ;/////////////////////////////////////
+			NowSavedInstanceState = savedInstanceState;
+			MyConstants.PREFS_NAME = this.getResources().getString(R.string.pref_main_file);
+			ORGUT = new OrgUtil();		//自作関数集
+			MyUtil = new MyUtil();
+			myApp = (MyApp) MuList.this.getApplication();
+			myPreferences = new MyPreferences(this);
+			dbMsg +="、PREFS_NAME=" + MyConstants.PREFS_NAME;
+			if (31 <= android.os.Build.VERSION.SDK_INT ) {
+				sharedPref = getSharedPreferences(MyConstants.PREFS_NAME, MODE_PRIVATE);
+				myEditor = sharedPref.edit();
+			}else{
+				sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());			//	this.getSharedPreferences(this, MODE_PRIVATE);		//
+				myEditor = sharedPref.edit();
+			}
+			shigot_bangou = 0;
+			IsPlaying = false;
+			musicPlaylist = new MusicPlaylist(MuList.this);
+			//Permission確認
+			checkMyPermission();      //初回起動はパーミッション後にプリファレンス読込み
+////			dbMsg += "::readPrefへ";
+//			readPref();
+//			setPrefbool( "rp_pp" ,  false , MuList.this);   							//2点間リピート中
+//			setPrefInt( "repeatType" ,  0 , MuList.this);   							//リピート再生の種類
+//			setPrefStr( "pp_start" ,  "0" , MuList.this);   							//リピート区間開始点
+//			setPrefStr( "pp_end" ,  "0" , MuList.this);   							//リピート区間開始点
+//			//レシーバー破棄、
+//			receiverHaki();		//レシーバーを破棄
+//
+//			dbMsg += "=" + ORGUT.nowTime(true,true,true) ;/////////////////////////////////////
+//			//起動中のサービス確認
+//			Bundle extras = getIntent().getExtras();
+//			dbMsg +=  ",extras="+ extras ;/////////////////////////////////////
+//			if( extras== null ){
+//				ArrayList<String> serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+//				dbMsg +=  "起動時serviceList="+ serviceList ;/////////////////////////////////////
+//				if( 0 < serviceList.size() ){
+//					dbMsg += ",MPSIntent="+ MPSIntent;//////////////////
+//					for(String serviceName : serviceList){
+//						if(serviceName.contains("MusicService")){
+//							dbMsg +=  ",MPSIntent=" + MPSIntent;/////////////////////////////////////
+//							if( MPSIntent == null){
+//								MPSIntent = new Intent(getApplication(), MusicService.class);
+//								dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+//							}
+//				//			MPSIntent.setAction(MusicService.ACTION_SYUURYOU);					//service内のquitMe
+//							startService(MPSIntent);
+//							stopService(MPSIntent);
+//						}else if(serviceName.contains("NotifRecever")){
+//							MPSIntent = new Intent(getApplication(), NotifRecever.class);
+//							dbMsg += ",NotifRecever="+ MPSIntent;//////////////////
+//							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+//							dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+//						}else if(serviceName.contains("BuletoohtReceiver")){
+//							MPSIntent = new Intent(getApplication(), BuletoohtReceiver.class);
+//							dbMsg = ",BuletoohtReceiver="+ MPSIntent;//////////////////
+//							stopService(MPSIntent);	//		MPSName = startService(MPSIntent);
+//							dbMsg +=  ">>" + MPSIntent;/////////////////////////////////////
+//						}
+//					}
+//					serviceList = ORGUT.getMyService( this , getApplicationContext().getPackageName());			//起動しているサービスを取得
+//					dbMsg +=  "破棄後serviceList="+ serviceList ;/////////////////////////////////////
+//				}
+//				imanoJyoutai = veiwPlayer ;												//プレイヤーを表示;起動直後
+////				shigot_bangou = jyoukyou_bunki ;			//ファイルに変更が有れば全曲リスト更新の警告/無ければURiリストの読み込みに
+//			}else{
+//				imanoJyoutai = chyangeSong ;												//プレイヤーから戻って曲変更
+//				shigot_bangou = make_list_head ;			//500；ヘッド作成
+//			}
+//			dbMsg += ",imanoJyoutai="+ imanoJyoutai ;/////////////////////////////////////
+//			yobidashiMoto = imanoJyoutai;													//起動直後=veiwPlayer;プレイヤーからの呼出し = chyangeSong
+//
+//			dbMsg +=  ",MPSIntent=" + MPSIntent;
+//			if( MPSIntent == null){
+//			}else{
+//				stopService(MPSIntent);
+//			}
+//			MPSIntent = new Intent(getApplication(),MusicService.class);	//parsonalPBook.thisではメモリーリークが起こる		getApplication()
+//			dbMsg +=  ",MPSIntent=" + MPSIntent;
+//			MPSIntent.setAction(MusicService.ACTION_START_SERVICE);
+//			MPSIntent.putExtra("nowList_id",myPreferences.nowList_id);
+//			MPSIntent.putExtra("nowList",myPreferences.nowList);
+//			dbMsg +=  "["+ myPreferences.nowIndex + "]";
+//			MPSIntent.putExtra("mIndex",myPreferences.nowIndex);
+//			dbMsg +=  ",Uri="+ myPreferences.nowData;
+//			MPSIntent.putExtra("uriStr",myPreferences.nowData);
+//			String[] passNames = myPreferences.nowData.split("/");
+//			String artistFolder = passNames[passNames.length - 3];
+//			String albumFolder = passNames[passNames.length - 2];
+//			dbMsg += ",sousa_artist="+ artistFolder + ",sousa_alubm="+ albumFolder;
+//			MPSIntent.putExtra("sousa_artist",artistFolder);
+//			MPSIntent.putExtra("sousa_alubm",albumFolder);
+//			MPSName = startService(MPSIntent);	//ボタンフェイスの変更はサービスからの戻りで更新
+//			dbMsg += " ,MPSName=" + MPSName + "で" + MPSIntent.getAction();
+//
+//			CharSequence[] list = new CharSequence[activities.length / 2];
+//			for (int i = 0; i < list.length; i++) {
+//				list[i] = (String) activities[i * 2];
+//			}
+//			//リスト画面の構成物読み込み
+//			locale = Locale.getDefault();		// アプリで使用されているロケール情報を取得
+//			setContentView(R.layout.mu_list);				//			setContentView(R.layout.main);
+//			toolbar = findViewById(R.id.list_tool_bar);						//このアクティビティのtoolBar
+//			toolbar.setTitle("");				//何かを設定しなければアプリ名が表示される		☆.setDisplayShowTitleEnabled(false);　はtoolbarに無い？
+//			toolbar.setContentInsetsAbsolute(0,0);								//左と上の余白を無くす
+//			View tbContainer = LayoutInflater.from(this).inflate(R.layout.list_toolbar,  toolbar, false);
+//			ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//			toolbar.addView(tbContainer, lp);
+//			pl_sp = tbContainer.findViewById(R.id.list_pl_sp);		//プレイリスト選択	pl_sp = (Spinner) findViewById(R.id.pl_sp);	から置換え
+//			headImgIV = tbContainer.findViewById(R.id.headImg);			//ヘッダーのアイコン表示枠				headImgIV = (ImageView)findViewById(R.id.headImg);		//ヘッダーのアイコン表示枠
+//			dbMsg +=",headImgIV="+headImgIV;
+//			headImgIV.setVisibility(View.VISIBLE);
+//			mainHTF = tbContainer.findViewById(R.id.mainHTF);			//				mainHTF = (TextView)findViewById(R.id.mainHTF);			//ヘッダーのメインテキスト表示枠
+//			subHTF = tbContainer.findViewById(R.id.subHTF);				//ヘッダーのサブテキスト表示枠			subHTF = (TextView)findViewById(R.id.subHTF);				//ヘッダーのサブテキスト表示枠
+//			artistHTF = tbContainer.findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠			artistHTF = (TextView)findViewById(R.id.artistHTF);			//ヘッダーのアーティスト名表示枠
+//			headLayout = tbContainer.findViewById(R.id.headLayout);			//ツールバーのカスタムレイアウト
+//			setSupportActionBar(toolbar);
+//			lvID = findViewById(R.id.pllist);	//　作成したリストアダプターをリストビューにセットする	 Id	@id/android:list
+//			lvID.setTextFilterEnabled(true);						//ListViewにフォーカスを移して「a」を入力すると、以下の図のように先頭に「a」の文字がある項目だけが表示されます。
+//			lvID.setFocusableInTouchMode(true);
+//			// スクロール検知 https://teratail.com/questions/96850
+//			lvID.setOnScrollListener(new AbsListView.OnScrollListener() {
+//				@Override
+//				public void onScrollStateChanged(AbsListView view, int scrollState) {
+//					final String TAG = "onScrollStateChanged";
+//					String dbMsg = "[setOnScrollListener]";
+//					try{
+//						dbMsg +=",scrollState="+b_scrollState;
+//						dbMsg +=">>scrollState="+scrollState;
+//						switch (scrollState){
+//							case SCROLL_STATE_IDLE:
+//								dbMsg +="=IDLE";
+//								if(b_scrollState == SCROLL_STATE_FLING){
+//									dbMsg +="=IDLE：選択されているリストアイテムの操作へ";
+//									selectListyInfo();
+//								}
+//								break;
+//							case SCROLL_STATE_TOUCH_SCROLL:
+//								dbMsg +="=TOUCH_SCROLL";
+//								break;
+//							case SCROLL_STATE_FLING:
+//								dbMsg +="=FLING";
+//								break;
+//						}
+//						b_scrollState = scrollState;
+//			//			myLog(TAG, dbMsg);
+//					}catch (Exception e) {
+//						myErrorLog(TAG ,  dbMsg + "で" + e);
+//					}
+//				}
+//				@Override
+//				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//					final String TAG = "onScroll";
+//					String dbMsg = "[setOnScrollListener]";
+//					try{
+//				//		dbMsg += ORGUT.nowTime(true,true,true);
+//						//		dbMsg +=",view="+view;//lvID
+//						dbMsg +="[b_firstVisibleItem="+firstVisibleItem;
+//						dbMsg +=">>firstVisibleItem="+firstVisibleItem;
+//						dbMsg +="/totalItemCount="+totalItemCount;
+//						dbMsg +="]visibleItemCount="+visibleItemCount;
+//						if(0<firstVisibleItem && b_firstVisibleItem != firstVisibleItem){
+//							dbMsg +="=IDLE：選択されているリストアイテムの操作へ";
+//							selectListyInfo();
+//							b_firstVisibleItem=firstVisibleItem;
+//						}
+//			//			myLog(TAG, dbMsg);
+//					}catch (Exception e) {
+//						myErrorLog(TAG ,  dbMsg + "で" + e);
+//					}
+//				}
+//			});
+//			registerForContextMenu(lvID);							//コンテキストメニュー
+//			seekFromUser = false;
+//			pousePosition=0;
+//			list_player = findViewById(R.id.list_player);		//プレイヤーのインクルード
+//			playerView = list_player.findViewById(R.id.player_view);
+//			pv_bt = list_player.findViewById(R.id.pv_bt);
+//			lp_title = list_player.findViewById(R.id.titol_tv);
+//			lp_subtitol = list_player.findViewById(R.id.subtitle_tv);
+//			lp_quitButton = list_player.findViewById(R.id.quitBt);
+//			lp_quitButton.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
+//				public void onClick(View v) {	// クリックされた時の処理を記述
+//					final String TAG = "onClick";
+//					String dbMsg = "[lp_quitButton]";
+//					try{
+//						if( MPSIntent == null){
+//						}else{
+//
+//							stopService(MPSIntent);
+//						}
+//						quitMe();		//このアプリを終了する
+//						myLog(TAG, dbMsg);
+//					}catch (Exception e) {
+//						myErrorLog(TAG ,  dbMsg + "で" + e);
+//					}
+//				}
+//			});
+//
+//			mainHTF.setOnKeyListener( this);
+//			//ヘッダー部分のロングタップ/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//			mainHTF.setOnLongClickListener(new View.OnLongClickListener() {	// ボタンが長押しクリックされた時のハンドラ
+//				//	@Override
+//				public boolean onLongClick(View v) {	// 長押しクリックされた時の処理を記述
+//					final String TAG = "mainHTF.onLongClick";
+//					String dbMsg = "";
+//					try{
+//						dbMsg += "reqCode;" + reqCode;/////////////////////////////////////
+//						myLog(TAG, dbMsg);
+//					} catch (Exception e) {
+//						myErrorLog(TAG ,  dbMsg + "で" + e);
+//					}
+//					return false;
+//				}
+//
+//				//////////////////////////////デレクトリ名表示フィールドのロングタッチ//
+//			});
+//			mainHTF.setOnClickListener(new View.OnClickListener() {	// ヘッダー部分がクリックされた時のハンドラ
+//				public void onClick(View v) {	// クリックされた時の処理を記述
+//					headClickAction();//ヘッドが クリックされた時の処理
+//				}
+//			});
+//
+//			lvID.setOnKeyListener( this);
+//			artistAL = new ArrayList<Map<String, Object>>();
+//			albumAL = new ArrayList<Map<String, Object>>();
+//			albumList = new ArrayList<String>();		//アルバム名
+//			titolAL = new ArrayList<Map<String, Object>>();
+//
+//			dbMsg +=",imanoJyoutai=" + imanoJyoutai ;
+//			String comp1 = getString(R.string.artist_tuika01);			//コンピレーション</string>
+//			String comp2 = getString(R.string.artist_tuika02);				//サウンドトラック</string>
+//			String comp3  = getString(R.string.artist_tuika03);				//">クラシック</string>
+//			String comp4  = getString(R.string.comon_nuKnow_artist);				//"">アーティスト情報なし</string>
+//			compList = new String[]{ comp1 , comp2 , comp3 , comp4};
+//			comCount = compList.length;
+//			compSelection = "ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ? AND ALBUM_ARTIST <> ?";			//+ comp ;		//MediaStore.Audio.Media.ARTIST +" <> " + comp;			//2.projection  A list of which columns to return. Passing null will return all columns, which is inefficient.
+//			dbMsg += " , compList = " + compList+"の" + comCount + "件";		//03-28java.lang.IllegalArgumentException:  contains a path separator
+//			dbMsg +=  ">>ダイヤルキー=" + myPreferences.prTT_dpad;
+//			if(myPreferences.prTT_dpad){
+//				setKeyAri();									//d-pad対応
+//			}
+//			plTask  = new MuList.ploglessTask(this);
+//			getPList();
+//
+//			if( myPreferences.nowList.equals(getResources().getText(R.string.listmei_zemkyoku))){
+//				reqCode = MyConstants.v_artist;
+//			}
+//			long end=System.currentTimeMillis();		// 終了時刻の取得
+//			dbMsg += ":"+ ORGUT.sdf_mss.format(end - start) +"で起動終了"+ ",reqCode="+ reqCode + ",shigot_bangou="+ shigot_bangou ;
+//			jyoukyouBunki();
 			myLog(TAG, dbMsg);
 		} catch (Exception e) {
 			myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -12431,8 +12791,8 @@ public class MuList extends AppCompatActivity implements  View.OnClickListener ,
 							currentItemLayout.playBt.setVisibility(View.VISIBLE);
 							currentItemLayout.pouseBt.setVisibility(View.GONE);
 						}
+						registerForContextMenu(currentItemLayout);							//コンテキストメニュー
 					}
-					registerForContextMenu(currentItemLayout);							//コンテキストメニュー
 				}
 				myLog(TAG, dbMsg);
 			} catch (Exception e) {
